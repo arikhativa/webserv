@@ -1,3 +1,4 @@
 #!bin/bash
 
-echo a
+echo AAA
+history
