@@ -3,6 +3,15 @@ before_install:
   - test -n $CC  && unset CC
   - test -n $CXX && unset CXX
 
+install:
+  - sudo apt-get install libgtest-dev
+  - sudo apt-get install cmake
+  - sudo mkdir build
+  - cd build
+  - sudo cmake ..
+  - sudo make 
+  - sudo make install
+
 language: cpp
 
 compiler: c++
