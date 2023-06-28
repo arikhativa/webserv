@@ -2,12 +2,16 @@
 install:
   - sudo apt-get install libgtest-dev
   - sudo apt-get install cmake
-  - cd /usr/src/gtest
-  - sudo mkdir build
-  - cd build
-  - sudo cmake ..
-  - sudo make
+  - cd res
+  - pwd
+  - tar xf release-1.8.0.tar.gz
+  - mv googletest-release-1.8.0 gtest
+  - cd gtest
+  - sudo cmake -DBUILD_SHARED_LIBS=ON .
+  - sudo cp -a googletest/include/gtest /usr/include
+  - sudo cp -a googlemock/gtest/libgtest_main.so googlemock/gtest/libgtest.so /usr/lib/ 
   - sudo make install
+  - sudo ldconfig -v | grep gtest
 
 
 language: cpp
