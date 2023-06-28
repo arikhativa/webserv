@@ -1,5 +1,5 @@
 
-language: makefile
+language: cpp
 
 script:
   - make test
