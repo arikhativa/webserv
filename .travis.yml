@@ -5,7 +5,7 @@ install:
 
 language: cpp
 
-compiler: c++
+compiler: clang
 
 script:
   - make test
