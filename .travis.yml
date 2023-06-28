@@ -10,3 +10,5 @@ compiler: clang
 script:
   - make
   - ./webserv
+  - export LDFLAGS="-Wl,--copy-dt-needed-entries"
+  - make test
