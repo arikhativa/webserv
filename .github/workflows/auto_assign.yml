@@ -1,0 +1,16 @@
+name: Auto Assign
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+
+jobs:
+  auto-assign:
+    permissions: write-all
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: kentaro-m/auto-assign-action@v1.2.4
+        with:
+          configuration-path: '.github/config.yml'
