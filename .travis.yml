@@ -13,7 +13,7 @@ install:
   - sudo cp -a googletest/include/gtest /usr/include
   - sudo cp -a googlemock/gtest/libgtest_main.so googlemock/gtest/libgtest.so /usr/lib/ 
   - sudo make install
-  - sudo ldconfig -v | grep gtest
+  - cd ../..
 
 language: cpp
 

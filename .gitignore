@@ -5,4 +5,5 @@ obj
 *.out
 *.del
 webserv
+gtest
 test
