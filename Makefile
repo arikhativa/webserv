@@ -6,7 +6,7 @@
 #    By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/18 13:56:52 by yrabby            #+#    #+#              #
-#    Updated: 2023/06/28 14:22:12 by yrabby           ###   ########.fr        #
+#    Updated: 2023/06/28 14:33:43 by yrabby           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,7 +58,7 @@ DEP						:= $(OBJ:$(OBJ_SUFFIX)=$(DEP_SUFFIX))
 # flags
 INCLUDE					= -I$(HEAD_DIR_TEMPLATE) -I$(HEAD_DIR_CLASS) -I$(HEAD_DIR_CODE)
 CC 						= c++
-TEST_CC 						= clang
+TEST_CC 				= c++
 CPPFLAGS 				= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 $(INCLUDE)
 TEST_COMPILE_FLAGS 		= -c $(SET_TEST_FLAG) $(INCLUDE)
 TEST_LN_FLAGS 			= $(SET_TEST_FLAG) -lgtest -lgtest_main -lpthread $(INCLUDE)

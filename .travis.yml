@@ -2,6 +2,7 @@
 install:
   - sudo apt-get install libgtest-dev
   - sudo apt-get install cmake
+  - export CXX="/usr/bin/c++"
   - cd res
   - pwd
   - tar xf release-1.8.0.tar.gz
@@ -16,7 +17,7 @@ install:
 
 language: cpp
 
-compiler: clang
+compiler: c++
 
 script:
   - make
