@@ -14,13 +14,14 @@ install:
   - sudo cp -a googlemock/gtest/libgtest_main.so googlemock/gtest/libgtest.so /usr/lib/ 
   - sudo make install
   - sudo ldconfig -v | grep gtest
-
+  - cd ../..
 
 language: cpp
 
 compiler: c++
 
 script:
+  - cd $TRAVIS_BUILD_DIR
   - make
   - ./webserv
   - make test
