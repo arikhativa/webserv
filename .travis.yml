@@ -1,7 +1,6 @@
 
 before_install:
-  - test -n $CC  && unset CC
-  - test -n $CXX && unset CXX
+  - -D_GLIBCXX_USE_CXX11_ABI=0
 
 install:
   - sudo cp -a res/gtest/googletest/include/gtest /usr/include
