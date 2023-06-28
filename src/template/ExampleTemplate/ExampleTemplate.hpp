@@ -1,53 +1,60 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ExampleTemaplate.hpp                               :+:      :+:    :+:   */
+/*   ExampleTemplate.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 10:49:23 by yrabby            #+#    #+#             */
-/*   Updated: 2023/06/28 10:49:48 by yrabby           ###   ########.fr       */
+/*   Updated: 2023/06/28 11:51:49 by yrabby           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EXAMPLETEMAPLATE_HPP
-# define EXAMPLETEMAPLATE_HPP
+#ifndef EXAMPLETEMPLATE_HPP
+# define EXAMPLETEMPLATE_HPP
 
 # include <iostream>
-# include <string>
 
 template < typename T >
-class ExampleTemaplate
+class ExampleTemplate
 {
-
 	public:
-
-
 	/*
 	** ------------------------------- CONSTRUCTOR --------------------------------
 	*/
 
-		ExampleTemaplate() {};
-		ExampleTemaplate( ExampleTemaplate const & src ) {};
+		ExampleTemplate(T value)
+			: _value(value)
+		{
+
+		};
+		ExampleTemplate( ExampleTemplate const & src )
+			: _value(src.getValue())
+		{
+			
+		};
 
 
 	/*
 	** -------------------------------- DESTRUCTOR --------------------------------
 	*/
 
-		~ExampleTemaplate() {};
+		~ExampleTemplate()
+		{
+			
+		};
 
 
 	/*
 	** --------------------------------- OVERLOAD ---------------------------------
 	*/
 
-		ExampleTemaplate &		operator=( ExampleTemaplate const & rhs )
+		ExampleTemplate &		operator=( ExampleTemplate const & rhs )
 		{
-			//if ( this != &rhs )
-			//{
-				//this->_value = rhs.getValue();
-			//}
+			if ( this != &rhs )
+			{
+				this->_value = rhs.getValue();
+			}
 			return *this;
 		}
 
@@ -55,8 +62,21 @@ class ExampleTemaplate
 	** --------------------------------- METHODS ----------------------------------
 	*/
 
+	T	getValue(void) const
+	{
+		return this->_value;
+	}
+
 	private:
+		T _value;
 
 };
 
-#endif /* ********************************************** EXAMPLETEMAPLATE_HPP */
+template <typename T>
+std::ostream &			operator<<( std::ostream & o, ExampleTemplate<T> const & i )
+{
+	o << "ExampleTemplate[" << i.getValue() << "]";
+	return o;
+}
+
+#endif /* *********************************************** EXAMPLETEMPLATE_HPP */
