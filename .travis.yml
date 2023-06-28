@@ -4,7 +4,7 @@ before_install:
   - test -n $CXX && unset CXX
 
 install:
-  - sudo cp -a googletest/include/gtest /usr/include
+  - sudo cp -a res/gtest/googletest/include/gtest /usr/include
 
 language: cpp
 
