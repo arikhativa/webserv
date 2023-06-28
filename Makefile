@@ -6,13 +6,14 @@
 #    By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/18 13:56:52 by yrabby            #+#    #+#              #
-#    Updated: 2023/06/28 11:49:58 by yrabby           ###   ########.fr        #
+#    Updated: 2023/06/28 13:11:19 by yrabby           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME 					= webserv
 
 # unit test
+TEST					= test
 TEST_SUFFIX				= .test.cpp
 TEST_DIR				= src
 TEST_FULL_PATH			= $(wildcard src/**/**/*$(TEST_SUFFIX))
@@ -41,26 +42,42 @@ HEAD_FULL_PATH			= $(SRC_FULL_PATH:$(SRC_SUFFIX)=$(HEAD_SUFFIX))
 HEAD					= $(HEAD_FULL_PATH)
 
 # obj
+TEST_OBJ_SUFFIX			= .test.o
+TEST_OBJ				= $(subst $(SRC_DIR),$(OBJ_DIR), $(TEST_FULL_PATH:$(SRC_SUFFIX)=$(OBJ_SUFFIX)))
+
 OBJ_SUFFIX				= .o
 OBJ_DIR					= obj
 OBJ						= $(subst $(SRC_DIR),$(OBJ_DIR), $(SRC_FULL_PATH:$(SRC_SUFFIX)=$(OBJ_SUFFIX)))
+OBJ_NO_MAIN	 			= $(filter-out obj/code/main/main.o,$(OBJ))
 
 # dep
 DEP_SUFFIX				= .d
 DEP						:= $(OBJ:$(OBJ_SUFFIX)=$(DEP_SUFFIX))
 
 # flags
+INCLUDE					= -I$(HEAD_DIR_TEMPLATE) -I$(HEAD_DIR_CLASS) -I$(HEAD_DIR_CODE)
 CC 						= c++
-CPPFLAGS 				= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 -I$(HEAD_DIR_CODE) -I$(HEAD_DIR_CLASS) -I$(HEAD_DIR_TEMPLATE)
+CPPFLAGS 				= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 $(INCLUDE)
+TEST_LN_FLAGS 			= -lgtest_main -pthread $(INCLUDE)
+TEST_LIB			 	= /usr/lib/libgtest.a
 
 # implicit rules
 $(addprefix $(OBJ_DIR)/, %$(OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(SRC_SUFFIX))
 	$(CC) $(CPPFLAGS) $< -o $(@)
 
+$(addprefix $(OBJ_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(TEST_SUFFIX))
+	$(CC) -c $(INCLUDE) $< -o $(@)
+
 # rules
-.PHONY: clean fclean re all
+.PHONY: clean fclean re all test
 
 all: $(NAME)
+
+
+$(TEST): $(OBJ_DIR) $(TEST_OBJ) $(OBJ_NO_MAIN)
+	$(CC) $(TEST_LN_FLAGS) $(TEST_OBJ) $(OBJ_NO_MAIN) $(TEST_LIB) -o $@
+	./$@
+
 
 $(NAME): $(OBJ_DIR) $(OBJ)
 	$(CC) $(OBJ) -o $@
@@ -70,11 +87,15 @@ $(OBJ_DIR):
 	@find $(OBJ_DIR) -type f -delete
 
 clean:
-	$(RM) $(OBJ) $(DEP)
+	$(RM) $(OBJ) $(DEP) $(TEST)
 
 fclean: clean
 	$(RM) $(NAME)
 
 re: fclean all
 
+
+
 -include $(DEP)
+
+

@@ -6,11 +6,11 @@
 /*   By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 10:22:25 by yrabby            #+#    #+#             */
-/*   Updated: 2023/06/28 11:06:50 by yrabby           ###   ########.fr       */
+/*   Updated: 2023/06/28 12:01:04 by yrabby           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ExampleClass.hpp"
+#include <ExampleClass/ExampleClass.hpp>
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
