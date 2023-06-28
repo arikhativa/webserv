@@ -1,0 +1,9 @@
+.vscode
+obj
+*.o
+*.d
+*.out
+*.del
+webserv
+gtest
+test
