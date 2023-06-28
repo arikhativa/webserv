@@ -4,13 +4,7 @@ before_install:
   - test -n $CXX && unset CXX
 
 install:
-  - sudo apt-get install libgtest-dev
-  - sudo apt-get install cmake
-  - sudo mkdir build
-  - cd build
-  - sudo cmake ..
-  - sudo make 
-  - sudo make install
+  - sudo cp -a googletest/include/gtest /usr/include
 
 language: cpp
 

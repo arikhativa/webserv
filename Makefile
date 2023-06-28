@@ -6,7 +6,7 @@
 #    By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/18 13:56:52 by yrabby            #+#    #+#              #
-#    Updated: 2023/06/28 13:53:12 by yrabby           ###   ########.fr        #
+#    Updated: 2023/06/28 14:07:51 by yrabby           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,8 +60,8 @@ INCLUDE					= -I$(HEAD_DIR_TEMPLATE) -I$(HEAD_DIR_CLASS) -I$(HEAD_DIR_CODE)
 CC 						= c++
 CPPFLAGS 				= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 $(INCLUDE)
 TEST_COMPILE_FLAGS 		= -c $(SET_TEST_FLAG) $(INCLUDE)
-TEST_LN_FLAGS 			= $(SET_TEST_FLAG) -lgtest -lgtest_main -lpthread $(INCLUDE)
-TEST_LIB			 	= 
+TEST_LN_FLAGS 			= $(SET_TEST_FLAG) -lpthread $(INCLUDE)
+TEST_LIB			 	= res/gtest/googlemock/gtest/libgtest_main.so res/gtest/googlemock/gtest/libgtest.so
 
 # implicit rules
 $(addprefix $(OBJ_DIR)/, %$(OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(SRC_SUFFIX))
@@ -75,7 +75,6 @@ $(addprefix $(OBJ_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(TEST_
 
 all: $(NAME)
 
-
 $(TEST): $(OBJ_DIR) $(TEST_OBJ) $(OBJ_NO_MAIN)
 	$(CC) $(TEST_LN_FLAGS) $(TEST_OBJ) $(OBJ_NO_MAIN) $(TEST_LIB) -o $@
 	./$@
@@ -88,7 +87,7 @@ $(OBJ_DIR):
 	@find $(OBJ_DIR) -type f -delete
 
 clean:
-	$(RM) $(OBJ) $(DEP) $(TEST)
+	$(RM) $(OBJ) $(DEP) $(TEST) $(TEST_OBJ)
 
 fclean: clean
 	$(RM) $(NAME)
