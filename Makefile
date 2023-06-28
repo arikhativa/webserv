@@ -6,7 +6,7 @@
 #    By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/18 13:56:52 by yrabby            #+#    #+#              #
-#    Updated: 2023/06/28 14:14:53 by yrabby           ###   ########.fr        #
+#    Updated: 2023/06/28 14:22:12 by yrabby           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,15 +61,15 @@ CC 						= c++
 TEST_CC 						= clang
 CPPFLAGS 				= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 $(INCLUDE)
 TEST_COMPILE_FLAGS 		= -c $(SET_TEST_FLAG) $(INCLUDE)
-TEST_LN_FLAGS 			= $(SET_TEST_FLAG) -lpthread $(INCLUDE)
-TEST_LIB			 	= res/gtest/googlemock/gtest/libgtest_main.so res/gtest/googlemock/gtest/libgtest.so
+TEST_LN_FLAGS 			= $(SET_TEST_FLAG) -lgtest -lgtest_main -lpthread $(INCLUDE)
+TEST_LIB			 	= ./res/gtest/googlemock/gtest/libgtest_main.so ./res/gtest/googlemock/gtest/libgtest.so
 
 # implicit rules
 $(addprefix $(OBJ_DIR)/, %$(OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(SRC_SUFFIX))
 	$(CC) $(CPPFLAGS) $< -o $(@)
 
 $(addprefix $(OBJ_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(TEST_SUFFIX))
-	$(TEST_CC) $(TEST_COMPILE_FLAGS) $< -o $(@)
+	$(TEST_CC) $(TEST_COMPILE_FLAGS)  $< -o $(@)
 
 # rules
 .PHONY: clean fclean re all test
