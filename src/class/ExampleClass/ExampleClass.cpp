@@ -6,7 +6,7 @@
 /*   By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 10:22:25 by yrabby            #+#    #+#             */
-/*   Updated: 2023/06/28 12:01:04 by yrabby           ###   ########.fr       */
+/*   Updated: 2023/06/28 13:17:17 by yrabby           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,11 @@
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
+
+ExampleClass::ExampleClass()
+	: _value(0)
+{
+}
 
 ExampleClass::ExampleClass(int i)
 	: _value(i)
@@ -65,6 +70,11 @@ std::ostream &			operator<<( std::ostream & o, ExampleClass const & i )
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+void	ExampleClass::_setValue(int value)
+{
+	this->_value = value;
+}
 
 int		ExampleClass::getValue(void) const
 {

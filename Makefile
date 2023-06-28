@@ -6,7 +6,7 @@
 #    By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/18 13:56:52 by yrabby            #+#    #+#              #
-#    Updated: 2023/06/28 13:11:19 by yrabby           ###   ########.fr        #
+#    Updated: 2023/06/28 13:32:23 by yrabby           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ TEST					= test
 TEST_SUFFIX				= .test.cpp
 TEST_DIR				= src
 TEST_FULL_PATH			= $(wildcard src/**/**/*$(TEST_SUFFIX))
+SET_TEST_FLAG			= -DTEST_ON=1
 
 # src
 SRC_SUFFIX				= .cpp
@@ -58,7 +59,8 @@ DEP						:= $(OBJ:$(OBJ_SUFFIX)=$(DEP_SUFFIX))
 INCLUDE					= -I$(HEAD_DIR_TEMPLATE) -I$(HEAD_DIR_CLASS) -I$(HEAD_DIR_CODE)
 CC 						= c++
 CPPFLAGS 				= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 $(INCLUDE)
-TEST_LN_FLAGS 			= -lgtest_main -pthread $(INCLUDE)
+TEST_COMPILE_FLAGS 		= -c $(SET_TEST_FLAG) $(INCLUDE)
+TEST_LN_FLAGS 			= $(SET_TEST_FLAG) -lgtest_main -pthread $(INCLUDE)
 TEST_LIB			 	= /usr/lib/libgtest.a
 
 # implicit rules
@@ -66,7 +68,7 @@ $(addprefix $(OBJ_DIR)/, %$(OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(SRC_SUFFIX
 	$(CC) $(CPPFLAGS) $< -o $(@)
 
 $(addprefix $(OBJ_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(TEST_SUFFIX))
-	$(CC) -c $(INCLUDE) $< -o $(@)
+	$(CC) $(TEST_COMPILE_FLAGS) $< -o $(@)
 
 # rules
 .PHONY: clean fclean re all test
@@ -77,7 +79,6 @@ all: $(NAME)
 $(TEST): $(OBJ_DIR) $(TEST_OBJ) $(OBJ_NO_MAIN)
 	$(CC) $(TEST_LN_FLAGS) $(TEST_OBJ) $(OBJ_NO_MAIN) $(TEST_LIB) -o $@
 	./$@
-
 
 $(NAME): $(OBJ_DIR) $(OBJ)
 	$(CC) $(OBJ) -o $@
