@@ -6,7 +6,7 @@
 #    By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/18 13:56:52 by yrabby            #+#    #+#              #
-#    Updated: 2023/06/28 15:01:46 by yrabby           ###   ########.fr        #
+#    Updated: 2023/06/28 18:17:16 by yrabby           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,18 +58,17 @@ DEP						:= $(OBJ:$(OBJ_SUFFIX)=$(DEP_SUFFIX))
 # flags
 INCLUDE					= -I$(HEAD_DIR_TEMPLATE) -I$(HEAD_DIR_CLASS) -I$(HEAD_DIR_CODE)
 CC 						= c++
-TEST_CC 				= c++
 CPPFLAGS 				= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 $(INCLUDE)
 TEST_COMPILE_FLAGS 		= -c $(SET_TEST_FLAG) $(INCLUDE)
-TEST_LN_FLAGS 			= $(SET_TEST_FLAG) -lgtest -lgtest_main -lpthread $(INCLUDE)
-TEST_LIB			 	= ./res/gtest/googlemock/gtest/libgtest_main.so ./res/gtest/googlemock/gtest/libgtest.so
+TEST_LN_FLAGS 			= $(SET_TEST_FLAG) -Lres -lgtest -lgtest_main -lpthread $(INCLUDE)
+TEST_LIB			 	= ./res/libgtest_main.so ./res/libgtest.so
 
 # implicit rules
 $(addprefix $(OBJ_DIR)/, %$(OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(SRC_SUFFIX))
 	$(CC) $(CPPFLAGS) $< -o $(@)
 
 $(addprefix $(OBJ_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(TEST_SUFFIX))
-	$(TEST_CC) $(TEST_COMPILE_FLAGS)  $< -o $(@)
+	$(CC) $(TEST_COMPILE_FLAGS) $< -o $(@)
 
 # rules
 .PHONY: clean fclean re all test
@@ -77,7 +76,7 @@ $(addprefix $(OBJ_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(TEST_
 all: $(NAME)
 
 $(TEST): $(OBJ_DIR) $(TEST_OBJ) $(OBJ_NO_MAIN)
-	$(TEST_CC) $(TEST_LN_FLAGS) $(TEST_OBJ) $(OBJ_NO_MAIN) $(TEST_LIB) -o $@
+	$(CC) $(TEST_LN_FLAGS) $(TEST_OBJ) $(OBJ_NO_MAIN) $(TEST_LIB) -o $@
 	./$@
 
 $(NAME): $(OBJ_DIR) $(OBJ)
@@ -95,6 +94,8 @@ fclean: clean
 
 re: fclean all
 
+install/gtest:
+	script/install_gtest.sh
 
 
 -include $(DEP)
