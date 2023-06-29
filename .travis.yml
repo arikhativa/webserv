@@ -1,4 +1,14 @@
 
+language: cpp
+sudo: true
+cache: package
+compiler: c++
+
+addons:
+  apt:
+    packages:
+      - valgrind
+
 install:
   - sudo apt-get install libgtest-dev
   - sudo apt-get install cmake
@@ -14,13 +24,7 @@ install:
   - sudo cp -a googlemock/gtest/libgtest_main.so googlemock/gtest/libgtest.so ..
   - sudo make install
 
-language: cpp
-
-compiler: c++
-
 script:
-  - echo $TRAVIS_BUILD_DIR
   - cd $TRAVIS_BUILD_DIR
-  - pwd
   - make
-  - make test
+  - make check
