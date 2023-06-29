@@ -1,6 +1,6 @@
 
-#include <gtest/gtest.h>
 #include <Replace/Replace.hpp>
+#include <gtest/gtest.h>
 
 TEST(Replace, CreateDestroy)
 {
