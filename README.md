@@ -1,8 +1,7 @@
 # Webserv
 
-![GitHub](https://img.shields.io/github/license/your-username/webserv)
-![GitHub repo size](https://img.shields.io/github/repo-size/your-username/webserv)
-![GitHub last commit](https://img.shields.io/github/last-commit/your-username/webserv)
+
+# Not Ready Yet :)
 
 Webserv is a project developed as part of the curriculum at 42 School. It is a basic HTTP server implementation that supports static and dynamic content, and handles GET and POST requests.
 
