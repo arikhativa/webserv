@@ -6,7 +6,7 @@
 #    By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/18 13:56:52 by yrabby            #+#    #+#              #
-#    Updated: 2023/06/28 18:17:16 by yrabby           ###   ########.fr        #
+#    Updated: 2023/06/29 12:57:35 by yrabby           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,6 +55,10 @@ OBJ_NO_MAIN	 			= $(filter-out obj/code/main/main.o,$(OBJ))
 DEP_SUFFIX				= .d
 DEP						:= $(OBJ:$(OBJ_SUFFIX)=$(DEP_SUFFIX))
 
+# script
+SCRIPT_DIR				= script
+GEN_CLASS_SCRIPT		= $(SCRIPT_DIR)/create_cpp_class.sh
+
 # flags
 INCLUDE					= -I$(HEAD_DIR_TEMPLATE) -I$(HEAD_DIR_CLASS) -I$(HEAD_DIR_CODE)
 CC 						= c++
@@ -71,9 +75,13 @@ $(addprefix $(OBJ_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(TEST_
 	$(CC) $(TEST_COMPILE_FLAGS) $< -o $(@)
 
 # rules
-.PHONY: clean fclean re all test
+.PHONY: clean fclean re all test class
 
 all: $(NAME)
+
+class:
+	$(GEN_CLASS_SCRIPT)
+	$(RM) -rf $(OBJ_DIR)
 
 $(TEST): $(OBJ_DIR) $(TEST_OBJ) $(OBJ_NO_MAIN)
 	$(CC) $(TEST_LN_FLAGS) $(TEST_OBJ) $(OBJ_NO_MAIN) $(TEST_LIB) -o $@
@@ -91,9 +99,11 @@ clean:
 
 fclean: clean
 	$(RM) $(NAME)
+	$(RM) -rf $(OBJ_DIR)
 
 re: fclean all
 
+# TODO not sure about this
 install/gtest:
 	script/install_gtest.sh
 
