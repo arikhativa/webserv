@@ -6,18 +6,21 @@
 #    By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/18 13:56:52 by yrabby            #+#    #+#              #
-#    Updated: 2023/06/29 12:57:35 by yrabby           ###   ########.fr        #
+#    Updated: 2023/06/29 13:07:30 by yrabby           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME 					= webserv
+export ROOT_DIR			= $(CURDIR)
 
 # unit test
-TEST					= test
+export TEST_EXEC		= test
 TEST_SUFFIX				= .test.cpp
 TEST_DIR				= src
 TEST_FULL_PATH			= $(wildcard src/**/**/*$(TEST_SUFFIX))
 SET_TEST_FLAG			= -DTEST_ON=1
+export VALGRIND_OUTPUT 	= valgrind_out.txt
+export TEST_RES			= unit_test_result.txt
 
 # src
 SRC_SUFFIX				= .cpp
@@ -58,6 +61,7 @@ DEP						:= $(OBJ:$(OBJ_SUFFIX)=$(DEP_SUFFIX))
 # script
 SCRIPT_DIR				= script
 GEN_CLASS_SCRIPT		= $(SCRIPT_DIR)/create_cpp_class.sh
+TEST_SCRIPT				= $(addprefix $(SCRIPT_DIR)/, test.sh)
 
 # flags
 INCLUDE					= -I$(HEAD_DIR_TEMPLATE) -I$(HEAD_DIR_CLASS) -I$(HEAD_DIR_CODE)
@@ -83,10 +87,6 @@ class:
 	$(GEN_CLASS_SCRIPT)
 	$(RM) -rf $(OBJ_DIR)
 
-$(TEST): $(OBJ_DIR) $(TEST_OBJ) $(OBJ_NO_MAIN)
-	$(CC) $(TEST_LN_FLAGS) $(TEST_OBJ) $(OBJ_NO_MAIN) $(TEST_LIB) -o $@
-	./$@
-
 $(NAME): $(OBJ_DIR) $(OBJ)
 	$(CC) $(OBJ) -o $@
 
@@ -95,7 +95,7 @@ $(OBJ_DIR):
 	@find $(OBJ_DIR) -type f -delete
 
 clean:
-	$(RM) $(OBJ) $(DEP) $(TEST) $(TEST_OBJ)
+	$(RM) $(OBJ) $(DEP) $(TEST_EXEC) $(TEST_OBJ)
 
 fclean: clean
 	$(RM) $(NAME)
@@ -106,6 +106,16 @@ re: fclean all
 # TODO not sure about this
 install/gtest:
 	script/install_gtest.sh
+
+$(TEST_EXEC): $(OBJ_DIR) $(TEST_OBJ) $(OBJ_NO_MAIN)
+	$(CC) $(TEST_LN_FLAGS) $(TEST_OBJ) $(OBJ_NO_MAIN) $(TEST_LIB) -o $@
+
+check: $(TEST_EXEC)
+	@bash $(TEST_SCRIPT) unit_test
+
+check/leaks: $(TEST_EXEC)
+	@bash $(TEST_SCRIPT) memory
+
 
 
 -include $(DEP)

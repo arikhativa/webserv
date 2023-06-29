@@ -1,17 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ExampleClass.hpp                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/28 10:22:28 by yrabby            #+#    #+#             */
-/*   Updated: 2023/06/28 13:29:18 by yrabby           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
-#ifndef EXAMPLECLASS_HPP
-# define EXAMPLECLASS_HPP
+#ifndef EXAMPLE_CLASS_HPP
+# define EXAMPLE_CLASS_HPP
 
 # ifdef TEST_ON
 #  define private public
@@ -23,9 +12,7 @@
 
 class ExampleClass
 {
-
 	public:
-
 		ExampleClass();
 		explicit ExampleClass(int i);
 		ExampleClass( ExampleClass const & src );
@@ -44,4 +31,4 @@ class ExampleClass
 
 std::ostream &			operator<<( std::ostream & o, ExampleClass const & i );
 
-#endif /* **************************************************** EXAMPLECLASS_H */
+#endif /* EXAMPLE_CLASS_HPP */

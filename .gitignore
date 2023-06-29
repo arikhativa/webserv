@@ -1,9 +1,10 @@
 .vscode
 obj
+webserv
+gtest
+test
 *.o
 *.d
 *.out
 *.del
-webserv
-gtest
-test
+*.txt
