@@ -116,8 +116,13 @@ check: $(TEST_EXEC)
 check/leaks: $(TEST_EXEC)
 	@bash $(TEST_SCRIPT) memory
 
-
+lint:
+	docker run -it --entrypoint /tmp/script/local_lint.sh \
+    -e RUN_LOCAL=true \
+    --env-file ".github/super-linter.env" \
+    -v "$(ROOT_DIR)/$(SRC_DIR)":/tmp/lint \
+    -v "$(ROOT_DIR)/.clang-format":/tmp/.clang-format \
+    -v "$(ROOT_DIR)/script/local_lint.sh":/tmp/script/local_lint.sh \
+	github/super-linter
 
 -include $(DEP)
-
-

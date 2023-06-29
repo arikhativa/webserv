@@ -11,69 +11,61 @@
 /* ************************************************************************** */
 
 #ifndef EXAMPLETEMPLATE_HPP
-# define EXAMPLETEMPLATE_HPP
+#define EXAMPLETEMPLATE_HPP
 
-# include <iostream>
+#include <iostream>
 
-template < typename T >
-class ExampleTemplate
+template <typename T> class ExampleTemplate
 {
-	public:
+  public:
 	/*
-	** ------------------------------- CONSTRUCTOR --------------------------------
+	** ------------------------------- CONSTRUCTOR -----------------------------
 	*/
 
-		ExampleTemplate(T value)
-			: _value(value)
-		{
+	ExampleTemplate(T value)
+		: _value(value){
 
-		};
-		ExampleTemplate( ExampleTemplate const & src )
-			: _value(src.getValue())
-		{
-			
-		};
+		  };
+	ExampleTemplate(ExampleTemplate const &src)
+		: _value(src.getValue()){
 
+		  };
 
 	/*
-	** -------------------------------- DESTRUCTOR --------------------------------
+	** -------------------------------- DESTRUCTOR -----------------------------
 	*/
 
-		~ExampleTemplate()
-		{
-			
-		};
+	~ExampleTemplate(){
 
+	};
 
 	/*
-	** --------------------------------- OVERLOAD ---------------------------------
+	** --------------------------------- OVERLOAD ------------------------------
 	*/
 
-		ExampleTemplate &		operator=( ExampleTemplate const & rhs )
+	ExampleTemplate &operator=(ExampleTemplate const &rhs)
+	{
+		if (this != &rhs)
 		{
-			if ( this != &rhs )
-			{
-				this->_value = rhs.getValue();
-			}
-			return *this;
+			this->_value = rhs.getValue();
 		}
+		return *this;
+	}
 
 	/*
-	** --------------------------------- METHODS ----------------------------------
+	** --------------------------------- METHODS -------------------------------
 	*/
 
-	T	getValue(void) const
+	T getValue(void) const
 	{
 		return this->_value;
 	}
 
-	private:
-		T _value;
-
+  private:
+	T _value;
 };
 
-template <typename T>
-std::ostream &			operator<<( std::ostream & o, ExampleTemplate<T> const & i )
+template <typename T> std::ostream &operator<<(std::ostream &o, ExampleTemplate<T> const &i)
 {
 	o << "ExampleTemplate[" << i.getValue() << "]";
 	return o;

@@ -15,11 +15,10 @@ ExampleClass::ExampleClass(int i)
 {
 }
 
-ExampleClass::ExampleClass( const ExampleClass & src )
+ExampleClass::ExampleClass(const ExampleClass &src)
 	: _value(src.getValue())
 {
 }
-
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
@@ -30,42 +29,39 @@ ExampleClass::~ExampleClass()
 	_value = 0;
 }
 
-
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-ExampleClass &				ExampleClass::operator=( ExampleClass const & rhs )
+ExampleClass &ExampleClass::operator=(ExampleClass const &rhs)
 {
-	if ( this != &rhs )
+	if (this != &rhs)
 	{
 		this->_value = rhs.getValue();
 	}
 	return *this;
 }
 
-std::ostream &			operator<<( std::ostream & o, ExampleClass const & i )
+std::ostream &operator<<(std::ostream &o, ExampleClass const &i)
 {
 	o << "ExampleClass[" << i.getValue() << "]";
 	return o;
 }
 
-
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
-
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-void	ExampleClass::_setValue(int value)
+void ExampleClass::_setValue(int value)
 {
 	this->_value = value;
 }
 
-int		ExampleClass::getValue(void) const
+int ExampleClass::getValue(void) const
 {
 	return this->_value;
 }

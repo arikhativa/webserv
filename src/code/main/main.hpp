@@ -11,11 +11,11 @@
 /* ************************************************************************** */
 
 #ifndef MAIN_HPP
-# define MAIN_HPP
+#define MAIN_HPP
 
-# include <iostream>
+#include <iostream>
 
-# include <ExampleClass/ExampleClass.hpp>
-# include <ExampleTemplate/ExampleTemplate.hpp>
+#include <ExampleClass/ExampleClass.hpp>
+#include <ExampleTemplate/ExampleTemplate.hpp>
 
-#endif /* ************************************************************ MAIN_H */
+#endif /* MAIN_H */

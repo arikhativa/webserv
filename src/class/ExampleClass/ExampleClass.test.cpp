@@ -1,6 +1,6 @@
 
-#include <gtest/gtest.h>
 #include <ExampleClass/ExampleClass.hpp>
+#include <gtest/gtest.h>
 
 TEST(ExampleClass, CreateDestroy)
 {
