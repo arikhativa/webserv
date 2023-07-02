@@ -24,5 +24,5 @@ class MockFooChild : public FooChild
 
 TEST(PainterTest, CanDrawSomething)
 {
-	MockFooChild a
+	MockFooChild a;
 }

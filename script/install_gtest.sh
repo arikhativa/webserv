@@ -7,6 +7,10 @@ sudo cmake -Bbuild
 sudo cmake --build build
 sudo cp ./build/lib/libgtest* /usr/lib
 
+
+# gmock
+sudo apt-get -y install google-mock
+
 # export CXX="/usr/bin/c++"
 # cd res
 # tar xf release-1.8.0.tar.gz

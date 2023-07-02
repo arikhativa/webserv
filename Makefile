@@ -10,17 +10,9 @@
 #                                                                              #
 # **************************************************************************** #
 
+
 NAME 					= webserv
 export ROOT_DIR			= $(CURDIR)
-
-# unit test
-export TEST_EXEC		= test
-TEST_SUFFIX				= .test.cpp
-TEST_DIR				= src
-TEST_FULL_PATH			= $(wildcard src/**/**/*$(TEST_SUFFIX))
-SET_TEST_FLAG			= -DTEST_ON=1
-export VALGRIND_OUTPUT 	= valgrind_out.txt
-export TEST_RES			= unit_test_result.txt
 
 # src
 SRC_SUFFIX				= .cpp
@@ -46,9 +38,6 @@ HEAD_FULL_PATH			= $(SRC_FULL_PATH:$(SRC_SUFFIX)=$(HEAD_SUFFIX))
 HEAD					= $(HEAD_FULL_PATH)
 
 # obj
-TEST_OBJ_SUFFIX			= .test.o
-TEST_OBJ				= $(subst $(SRC_DIR),$(OBJ_DIR), $(TEST_FULL_PATH:$(SRC_SUFFIX)=$(OBJ_SUFFIX)))
-
 OBJ_SUFFIX				= .o
 OBJ_DIR					= obj
 OBJ						= $(subst $(SRC_DIR),$(OBJ_DIR), $(SRC_FULL_PATH:$(SRC_SUFFIX)=$(OBJ_SUFFIX)))
@@ -67,26 +56,15 @@ TEST_SCRIPT				= $(addprefix $(SCRIPT_DIR)/, test.sh)
 INCLUDE					= -I$(HEAD_DIR_TEMPLATE) -I$(HEAD_DIR_CLASS) -I$(HEAD_DIR_CODE)
 CC 						= c++
 CPPFLAGS 				= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 $(INCLUDE)
-TEST_COMPILE_FLAGS 		= -c $(SET_TEST_FLAG) $(INCLUDE)
-TEST_LN_FLAGS 			= $(SET_TEST_FLAG) -lgtest_main -lgtest -lpthread $(INCLUDE)
 
 # implicit rules
 $(addprefix $(OBJ_DIR)/, %$(OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(SRC_SUFFIX))
 	$(CC) $(CPPFLAGS) $< -o $(@)
 
-$(addprefix $(OBJ_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(TEST_SUFFIX))
-	$(CC) $(TEST_COMPILE_FLAGS) $< -o $(@)
-
 # rules
-.PHONY: clean fclean re all test class
+.PHONY: clean fclean re all class $(INT_TEST_EXEC) $(TEST_EXEC) check/integration
 
 all: $(NAME)
-
-$(TEST_EXEC): $(OBJ_DIR) $(TEST_OBJ) $(OBJ_NO_MAIN)
-	$(CC) $(TEST_LN_FLAGS) $(TEST_OBJ) $(OBJ_NO_MAIN)  -o $@
-
-t:
-	$(CC) $(TEST_COMPILE_FLAGS) tests/example/example.cpp  ./res/libgmock_main.so ./res/libgmock.so
 
 class:
 	$(GEN_CLASS_SCRIPT)
@@ -100,7 +78,7 @@ $(OBJ_DIR):
 	@find $(OBJ_DIR) -type f -delete
 
 clean:
-	$(RM) $(OBJ) $(DEP) $(TEST_EXEC) $(TEST_OBJ) $(VALGRIND_OUTPUT) $(TEST_RES)
+	$(RM) $(OBJ) $(DEP) $(TEST_EXEC) $(TEST_OBJ) $(VALGRIND_OUTPUT) $(TEST_RES) $(INT_TEST_EXEC) $(INT_TEST_RES)
 
 fclean: clean
 	$(RM) $(NAME)
@@ -108,23 +86,5 @@ fclean: clean
 
 re: fclean all
 
-# TODO not sure about this
-install/gtest:
-	script/install_gtest.sh
-
-check: $(TEST_EXEC)
-	@bash $(TEST_SCRIPT) unit_test
-
-check/leaks: $(TEST_EXEC)
-	@bash $(TEST_SCRIPT) memory
-
-lint:
-	docker run -it --entrypoint /tmp/script/local_lint.sh \
-    -e RUN_LOCAL=true \
-    --env-file ".github/super-linter.env" \
-    -v "$(ROOT_DIR)/$(SRC_DIR)":/tmp/lint \
-    -v "$(ROOT_DIR)/.clang-format":/tmp/.clang-format \
-    -v "$(ROOT_DIR)/script/local_lint.sh":/tmp/script/local_lint.sh \
-	github/super-linter
-
+include test.mk
 -include $(DEP)
