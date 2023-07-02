@@ -62,7 +62,7 @@ $(addprefix $(OBJ_DIR)/, %$(OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(SRC_SUFFIX
 	$(CC) $(CPPFLAGS) $< -o $(@)
 
 # rules
-.PHONY: clean fclean re all class $(INT_TEST_EXEC) $(TEST_EXEC) check/integration
+.PHONY: clean fclean re all class $(TEST_EXEC)
 
 all: $(NAME)
 
@@ -78,7 +78,7 @@ $(OBJ_DIR):
 	@find $(OBJ_DIR) -type f -delete
 
 clean:
-	$(RM) $(OBJ) $(DEP) $(TEST_EXEC) $(TEST_OBJ) $(VALGRIND_OUTPUT) $(UNIT_TEST_RES) $(INT_TEST_EXEC) $(INT_TEST_RES)
+	$(RM) $(OBJ) $(DEP) $(TEST_EXEC) $(TEST_OBJ) $(VALGRIND_OUTPUT) $(TEST_RES) $(INT_TEST_OBJ)
 
 fclean: clean
 	$(RM) $(NAME)
