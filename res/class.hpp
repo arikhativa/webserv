@@ -2,13 +2,13 @@
 #ifndef REPLACE_HPP
 #define REPLACE_HPP
 
+#include <iostream>
+#include <string>
+
 #ifdef TEST_ON
 #define private public
 #define protected public
 #endif
-
-#include <iostream>
-#include <string>
 
 class Replace
 {
@@ -29,5 +29,10 @@ class Replace
 };
 
 std::ostream &operator<<(std::ostream &o, Replace const &i);
+
+#ifdef TEST_ON
+#undef private
+#undef protected
+#endif
 
 #endif /* REPLACE_HPP */

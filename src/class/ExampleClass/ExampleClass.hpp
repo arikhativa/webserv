@@ -2,13 +2,13 @@
 #ifndef EXAMPLE_CLASS_HPP
 #define EXAMPLE_CLASS_HPP
 
+#include <iostream>
+#include <string>
+
 #ifdef TEST_ON
 #define private public
 #define protected public
 #endif
-
-#include <iostream>
-#include <string>
 
 class ExampleClass
 {
@@ -29,5 +29,10 @@ class ExampleClass
 };
 
 std::ostream &operator<<(std::ostream &o, ExampleClass const &i);
+
+#ifdef TEST_ON
+#undef private
+#undef protected
+#endif
 
 #endif /* EXAMPLE_CLASS_HPP */

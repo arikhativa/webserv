@@ -10,7 +10,7 @@ run_tester()
 	fi
 }
 
-unit_test()
+gtest()
 {
 	# run test and save in TEST_RES
 	run_tester
