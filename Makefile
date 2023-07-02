@@ -78,7 +78,7 @@ $(OBJ_DIR):
 	@find $(OBJ_DIR) -type f -delete
 
 clean:
-	$(RM) $(OBJ) $(DEP) $(TEST_EXEC) $(TEST_OBJ) $(VALGRIND_OUTPUT) $(TEST_RES) $(INT_TEST_EXEC) $(INT_TEST_RES)
+	$(RM) $(OBJ) $(DEP) $(TEST_EXEC) $(TEST_OBJ) $(VALGRIND_OUTPUT) $(UNIT_TEST_RES) $(INT_TEST_EXEC) $(INT_TEST_RES)
 
 fclean: clean
 	$(RM) $(NAME)

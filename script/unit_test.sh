@@ -6,20 +6,20 @@ run_tester()
 	if [ $IS_VALGRIND_INSTALLED -eq $TRUE ]; then
 		run_with_valgrind
 	else
-		$ROOT_DIR/$TEST_EXEC > $ROOT_DIR/$TEST_RES
+		$ROOT_DIR/$TEST_EXEC > $ROOT_DIR/$UNIT_TEST_RES
 	fi
 }
 
 unit_test()
 {
-	# run test and save in TEST_RES
+	# run test and save in UNIT_TEST_RES
 	run_tester
 
 	# print res
-	cat $ROOT_DIR/$TEST_RES
+	cat $ROOT_DIR/$UNIT_TEST_RES
 
 	# check for failed tests
-	STT=$( cat $ROOT_DIR/$TEST_RES | grep -a "FAILED TEST" | awk '{print $1}')
+	STT=$( cat $ROOT_DIR/$UNIT_TEST_RES | grep -a "FAILED TEST" | awk '{print $1}')
 
 	# return the status as true/false
 	if [[ $STT -eq 0 ]]

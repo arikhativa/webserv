@@ -22,7 +22,37 @@ class MockFooChild : public FooChild
 	MOCK_METHOD(bool, doThat, (int n, double x), (override));
 };
 
+class Painter
+{
+  public:
+	Painter(FooChild *fooChild)
+		: fooChild(fooChild)
+	{
+	}
+	bool DrawCircle(void)
+	{
+		fooChild->doThis();
+		if (fooChild->doThat(1, 2.2))
+			return true;
+		return false;
+	}
+
+  private:
+	FooChild *fooChild;
+};
+
+using ::testing::AtLeast; // #1
+
 TEST(PainterTest, CanDrawSomething)
 {
-	MockFooChild a;
+	MockFooChild turtle;				// #2
+	EXPECT_CALL(turtle, doThis())		// #3
+		.Times(AtLeast(1));
+	EXPECT_CALL(turtle, doThat(1, 2.2)) // #3
+		.Times(AtLeast(1))
+		.WillOnce(testing::Return(true));
+
+	Painter painter(&turtle);		   // #4
+
+	EXPECT_TRUE(painter.DrawCircle()); // #5
 }

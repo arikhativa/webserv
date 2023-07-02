@@ -19,7 +19,7 @@ export TEST_EXEC		= unit_test.out
 TEST_DIR				= src
 TEST_FULL_PATH			= $(wildcard src/**/**/*$(TEST_SUFFIX))
 SET_TEST_FLAG			= -DTEST_ON=1
-export TEST_RES			= unit_test_result.txt
+export UNIT_TEST_RES	= unit_test_result.txt
 
 # unit test obj
 TEST_OBJ_SUFFIX			= .test.o
@@ -28,9 +28,8 @@ TEST_OBJ				= $(subst $(SRC_DIR),$(OBJ_DIR), $(TEST_FULL_PATH:$(SRC_SUFFIX)=$(OB
 # integration test
 INT_TEST_SUFFIX				= .int_test.cpp
 INT_TEST_DIR				= tests
-export INT_TEST_EXEC		= integration_test
 INT_TEST_FULL_PATH			= $(wildcard $(INT_TEST_DIR)/**/*$(INT_TEST_SUFFIX))
-INT_TEST_EXEC				= $(INT_TEST_FULL_PATH:$(INT_TEST_SUFFIX)=.out)
+export INT_TEST_EXEC		= $(INT_TEST_FULL_PATH:$(INT_TEST_SUFFIX)=.out)
 export INT_TEST_RES			= integration_test_result.txt
 
 # flags
@@ -44,9 +43,6 @@ $(addprefix $(OBJ_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(TEST_
 
 $(addprefix $(INT_TEST_DIR)/, %.out): $(addprefix $(INT_TEST_DIR)/, %$(INT_TEST_SUFFIX))
 	$(CC) $(INT_TEST_FLAGS) $< -o $(@)
-	touch $(INT_TEST_RES)
-	./$(@) >> $(INT_TEST_RES)
-	echo "\n--------------\n" >> $(INT_TEST_RES)
 
 # rules
 $(TEST_EXEC): $(OBJ_DIR) $(TEST_OBJ) $(OBJ_NO_MAIN)
@@ -59,7 +55,10 @@ check/leaks: $(TEST_EXEC)
 	@bash $(TEST_SCRIPT) memory
 
 check/integration: $(INT_TEST_EXEC)
-	cat $(INT_TEST_RES)
+	@bash $(TEST_SCRIPT) integration_test
+
+t:
+	@bash $(TEST_SCRIPT) integration_test
 
 lint:
 	docker run -it --entrypoint /tmp/script/local_lint.sh \
