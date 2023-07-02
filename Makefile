@@ -68,8 +68,7 @@ INCLUDE					= -I$(HEAD_DIR_TEMPLATE) -I$(HEAD_DIR_CLASS) -I$(HEAD_DIR_CODE)
 CC 						= c++
 CPPFLAGS 				= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 $(INCLUDE)
 TEST_COMPILE_FLAGS 		= -c $(SET_TEST_FLAG) $(INCLUDE)
-TEST_LN_FLAGS 			= $(SET_TEST_FLAG) -Lres -lgtest -lgtest_main -lpthread $(INCLUDE)
-TEST_LIB			 	= ./res/libgtest_main.so ./res/libgtest.so
+TEST_LN_FLAGS 			= $(SET_TEST_FLAG) -lgtest_main -lgtest -lpthread $(INCLUDE)
 
 # implicit rules
 $(addprefix $(OBJ_DIR)/, %$(OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(SRC_SUFFIX))
@@ -83,6 +82,12 @@ $(addprefix $(OBJ_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(TEST_
 
 all: $(NAME)
 
+$(TEST_EXEC): $(OBJ_DIR) $(TEST_OBJ) $(OBJ_NO_MAIN)
+	$(CC) $(TEST_LN_FLAGS) $(TEST_OBJ) $(OBJ_NO_MAIN)  -o $@
+
+t:
+	$(CC) $(TEST_COMPILE_FLAGS) tests/example/example.cpp  ./res/libgmock_main.so ./res/libgmock.so
+
 class:
 	$(GEN_CLASS_SCRIPT)
 	$(RM) -rf $(OBJ_DIR)
@@ -95,7 +100,7 @@ $(OBJ_DIR):
 	@find $(OBJ_DIR) -type f -delete
 
 clean:
-	$(RM) $(OBJ) $(DEP) $(TEST_EXEC) $(TEST_OBJ)
+	$(RM) $(OBJ) $(DEP) $(TEST_EXEC) $(TEST_OBJ) $(VALGRIND_OUTPUT) $(TEST_RES)
 
 fclean: clean
 	$(RM) $(NAME)
@@ -106,9 +111,6 @@ re: fclean all
 # TODO not sure about this
 install/gtest:
 	script/install_gtest.sh
-
-$(TEST_EXEC): $(OBJ_DIR) $(TEST_OBJ) $(OBJ_NO_MAIN)
-	$(CC) $(TEST_LN_FLAGS) $(TEST_OBJ) $(OBJ_NO_MAIN) $(TEST_LIB) -o $@
 
 check: $(TEST_EXEC)
 	@bash $(TEST_SCRIPT) unit_test
