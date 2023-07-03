@@ -25,8 +25,8 @@ install:
   - pwd
   - ls -l
   - mkdir build
-  - sudo cmake -Bbuild
-  - sudo cmake --build build
+  - cmake -Bbuild
+  - cmake --build build
   - sudo cp ./build/googlemock/gtest/libgtest*.a /usr/lib
   - sudo cp ./build/googlemock/libgmock* /usr/lib
 
