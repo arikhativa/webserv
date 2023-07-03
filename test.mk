@@ -15,7 +15,7 @@ $(addprefix $(OBJ_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(TEST_
 	$(CC) $(TEST_COMPILE_FLAGS) $< -o $(@)
 
 $(addprefix $(INT_TEST_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(INT_TEST_DIR)/, %$(TEST_SUFFIX))
-	$(CC) -c  $< -o $(@)
+	$(CC) $(TEST_COMPILE_FLAGS)  $< -o $(@)
 
 # rules 
 $(TEST_EXEC): $(OBJ_DIR) $(TEST_OBJ) $(INT_TEST_OBJ) $(OBJ_NO_MAIN)

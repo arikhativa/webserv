@@ -93,8 +93,6 @@ CPPFLAGS 				:= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 $(INCLUDE)
 TEST_COMPILE_FLAGS			:= -c -std=c++14 $(SET_TEST_FLAG) $(INCLUDE)
 TEST_LN_FLAGS				:= $(SET_TEST_FLAG) -std=c++14 -lgmock_main -lgmock -lgtest -lpthread $(INCLUDE)
 
-
-
 # implicit rules
 $(addprefix $(OBJ_DIR)/, %$(OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(SRC_SUFFIX))
 	$(CC) $(CPPFLAGS) $< -o $(@)
