@@ -1,4 +1,5 @@
 .vscode
+.makefile_logs
 obj
 webserv
 gtest
