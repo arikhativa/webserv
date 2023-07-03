@@ -22,11 +22,9 @@ install:
   - cd res
   - tar -xf release-1.8.0.tar.gz
   - cd googletest-release-1.8.0
-  - pwd
-  - ls -l
-  - mkdir build
   - cmake -Bbuild
   - cmake --build build
+  - sudo cp -a ./googlemock/include/gmock /usr/include/
   - sudo cp ./build/googlemock/gtest/libgtest*.a /usr/lib
   - sudo cp ./build/googlemock/libgmock* /usr/lib
 
