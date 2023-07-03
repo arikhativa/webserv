@@ -49,5 +49,5 @@ TEST(Server, CorrectPort)
 	Server server(config);
 
 	EXPECT_TRUE(server.start());
-	// delete config;
+	delete config;
 }

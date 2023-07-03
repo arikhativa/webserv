@@ -50,7 +50,7 @@ TEST(PainterTest, CanDrawSomething)
 		.Times(AtLeast(1));
 	EXPECT_CALL(turtle, doThat(1, 2.2)) // #3
 		.Times(AtLeast(1))
-		.WillOnce(testing::Return(false));
+		.WillOnce(testing::Return(true));
 
 	Painter painter(&turtle);		   // #4
 
