@@ -50,3 +50,4 @@ script:
   - cd $TRAVIS_BUILD_DIR
   - make
   - make check
+  - make check/leaks
