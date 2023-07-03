@@ -8,6 +8,9 @@ compiler: c++
 #   directories:
 #     - $TRAVIS_BUILD_DIR/res
 
+before_install:
+  - sudo apt-get update
+
 addons:
   apt:
     packages:
@@ -16,19 +19,19 @@ addons:
       - libgtest-dev
 
 install:
-  - export CXX="/usr/bin/c++"
   - cd res
-  - tar xf release-1.8.0.tar.gz
-  - mv googletest-release-1.8.0 gtest
-  - cd gtest
-  - sudo cmake -DBUILD_SHARED_LIBS=ON .
-  - sudo make
-  - sudo cp -a googletest/include/gtest /usr/include
-  - sudo cp -a googlemock/gtest/libgtest_main.so googlemock/gtest/libgtest.so /usr/lib/ 
-  - sudo cp -a googlemock/gtest/libgtest_main.so googlemock/gtest/libgtest.so ..
+  - tar -xf googletest-1.13.0.tar.gz
+  - cd googletest-1.13.0
+  - mkdir build
+  - cd build
+  - cmake build ..
+  - cd ..
+  - cmake --build build
+  - cd ./build/googlemock/
   - sudo make install
 
 script:
   - cd $TRAVIS_BUILD_DIR
   - make
   - make check
+  - make check/leaks

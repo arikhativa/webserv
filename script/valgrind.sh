@@ -11,7 +11,7 @@ check_leaks()
 	if [ $IS_VALGRIND_INSTALLED -eq $TRUE ]; then
 		local STT=$(grep "ERROR SUMMARY:" $VALGRIND_OUTPUT | awk '{print $4}')
 
-		if [ "$STT" == "0" ] ; then
+		if [ "$STT" == "0" ]; then
 			printf "No Leaks :)"
 			return $SUCCESS
 		else
