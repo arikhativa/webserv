@@ -8,19 +8,25 @@ compiler: c++
 #   directories:
 #     - $TRAVIS_BUILD_DIR/res
 
+before_install:
+  - sudo apt-get update
+
 addons:
   apt:
     packages:
       - valgrind
       - cmake
       - libgtest-dev
-      - googletest
+
 install:
-  - export CXX="/usr/bin/c++"
-  - cd /usr/src/gtest
+  - cd res
+  - tar -xf release-1.8.0.tar.gz
+  - cd googletest-release-1.8.0
   - sudo cmake -Bbuild
   - sudo cmake --build build
-  - sudo cp ./build/lib/libgtest* /usr/lib
+  - sudo cp ./build/googlemock/gtest/libgtest*.a /usr/lib
+  - sudo cp ./build/googlemock/libgmock* /usr/lib
+
   # - export CXX="/usr/bin/c++"
   # - cd res
   # - tar xf release-1.8.0.tar.gz
