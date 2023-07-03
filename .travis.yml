@@ -28,7 +28,7 @@ install:
   - cd ..
   - cmake --build build
   - cd ./build/googlemock/
-  - make install
+  - sudo make install
   # - sudo cp -a ./googletest/include/gtest/ /usr/include
   # - sudo cp -a ./googlemock/include/gmock /usr/include/
   # - sudo cp ./build/googlemock/gtest/libgtest*.a /usr/lib
