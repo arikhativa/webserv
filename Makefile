@@ -66,6 +66,9 @@ $(addprefix $(OBJ_DIR)/, %$(OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(SRC_SUFFIX
 
 all: $(NAME)
 
+t: 
+	@echo $(OBJ)
+
 class:
 	$(GEN_CLASS_SCRIPT)
 	$(RM) -rf $(OBJ_DIR)
