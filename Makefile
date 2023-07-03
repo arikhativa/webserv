@@ -98,7 +98,7 @@ $(addprefix $(OBJ_DIR)/, %$(OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(SRC_SUFFIX
 	$(CC) $(CPPFLAGS) $< -o $(@)
 
 # rules
-.PHONY: clean fclean re all class $(TEST_EXEC)
+.PHONY: clean fclean re all class
 
 all: $(NAME)
 
