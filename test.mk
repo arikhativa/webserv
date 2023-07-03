@@ -24,7 +24,7 @@ $(TEST_EXEC): $(OBJ_DIR) $(TEST_OBJ) $(INT_TEST_OBJ) $(OBJ_NO_MAIN)
 check: $(TEST_EXEC)
 	@bash $(TEST_SCRIPT) gtest
 
-check/leaks: $(TEST_EXEC)
+check/leaks:
 	@bash $(TEST_SCRIPT) memory
 
 lint:
