@@ -28,10 +28,6 @@ SET_TEST_FLAG				:= -DTEST_ON=1
 INT_TEST_DIR				:= tests
 INT_TEST_FULL_PATH			:= $(wildcard $(INT_TEST_DIR)/**/*$(TEST_SUFFIX))
 
-# flags
-TEST_COMPILE_FLAGS			:= -c -std=c++11 $(SET_TEST_FLAG) $(INCLUDE)
-TEST_LN_FLAGS				:= $(SET_TEST_FLAG) -std=c++11 -lgmock_main -lgmock -lgtest -lpthread $(INCLUDE)
-
 # 
 
 
@@ -91,6 +87,13 @@ TEST_SCRIPT				:= $(addprefix $(SCRIPT_DIR)/, test.sh)
 INCLUDE					:= -I$(HEAD_DIR_TEMPLATE) -I$(HEAD_DIR_CLASS) -I$(HEAD_DIR_CODE)
 CC 						:= c++
 CPPFLAGS 				:= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 $(INCLUDE)
+
+
+# flags
+TEST_COMPILE_FLAGS			:= -c -std=c++11 $(SET_TEST_FLAG) $(INCLUDE)
+TEST_LN_FLAGS				:= $(SET_TEST_FLAG) -std=c++11 -lgmock_main -lgmock -lgtest -lpthread $(INCLUDE)
+
+
 
 # implicit rules
 $(addprefix $(OBJ_DIR)/, %$(OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(SRC_SUFFIX))

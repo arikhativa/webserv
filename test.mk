@@ -12,7 +12,6 @@
 
 # implicit rules
 $(addprefix $(OBJ_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(SRC_DIR)/, %$(TEST_SUFFIX))
-	@echo "test obj"
 	$(CC) $(TEST_COMPILE_FLAGS) $< -o $(@)
 
 $(addprefix $(INT_TEST_DIR)/, %$(TEST_OBJ_SUFFIX)): $(addprefix $(INT_TEST_DIR)/, %$(TEST_SUFFIX))
