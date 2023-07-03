@@ -90,8 +90,8 @@ CPPFLAGS 				:= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 $(INCLUDE)
 
 
 # flags
-TEST_COMPILE_FLAGS			:= -c -std=c++11 $(SET_TEST_FLAG) $(INCLUDE)
-TEST_LN_FLAGS				:= $(SET_TEST_FLAG) -std=c++11 -lgmock_main -lgmock -lgtest -lpthread $(INCLUDE)
+TEST_COMPILE_FLAGS			:= -c -std=c++14 $(SET_TEST_FLAG) $(INCLUDE)
+TEST_LN_FLAGS				:= $(SET_TEST_FLAG) -std=c++14 -lgmock_main -lgmock -lgtest -lpthread $(INCLUDE)
 
 
 
