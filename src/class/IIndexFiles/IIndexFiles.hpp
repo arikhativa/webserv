@@ -13,7 +13,7 @@
 class IIndexFiles
 {
   public:
-	virtual ~IIndexFiles() = default;
+	virtual ~IIndexFiles(){};
 };
 
 #ifdef TEST_ON

@@ -13,7 +13,7 @@
 class ILimitExcept
 {
   public:
-	virtual ~ILimitExcept() = default;
+	virtual ~ILimitExcept(){};
 };
 
 #ifdef TEST_ON

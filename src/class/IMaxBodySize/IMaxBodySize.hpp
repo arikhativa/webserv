@@ -13,7 +13,7 @@
 class IMaxBodySize
 {
   public:
-	virtual ~IMaxBodySize() = default;
+	virtual ~IMaxBodySize(){};
 };
 
 #ifdef TEST_ON

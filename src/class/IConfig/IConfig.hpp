@@ -16,7 +16,7 @@
 class IConfig
 {
   public:
-	virtual ~IConfig(void) = default;
+	virtual ~IConfig(void){};
 
 	virtual std::list<IServerConf &> getServers(void) const = 0;
 	virtual std::string getFileName(void) const = 0;

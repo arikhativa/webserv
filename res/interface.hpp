@@ -13,7 +13,7 @@
 class Replace
 {
   public:
-	virtual ~Replace() = default;
+	virtual ~Replace(){};
 };
 
 #ifdef TEST_ON

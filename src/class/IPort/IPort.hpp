@@ -13,7 +13,7 @@
 class IPort
 {
   public:
-	virtual ~IPort() = default;
+	virtual ~IPort(){};
 };
 
 #ifdef TEST_ON

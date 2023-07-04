@@ -25,7 +25,7 @@
 class IServerConf
 {
   public:
-	virtual ~IServerConf() = default;
+	virtual ~IServerConf(){};
 
 	virtual std::string getName(void) const = 0;
 	virtual IPath &getRoot(void) const = 0;

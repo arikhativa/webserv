@@ -21,7 +21,7 @@ class ILocation
 {
   public:
 	virtual IPath &getRoot(void) const = 0;
-	virtual ~ILocation() = default;
+	virtual ~ILocation(){};
 	virtual IIndexFiles &getIndexFiles(void) const = 0;
 	virtual ILimitExcept &getLimitExcept(void) const = 0;
 	virtual IReturn &getReturn(void) const = 0;
