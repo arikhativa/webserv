@@ -1,16 +1,8 @@
 
 #include <Token/Token.hpp>
 
-std::map<std::string, bool> Token::_keywords = {
-	{"server", true},	{"server_name", true},	 {"root", true},	  {"listen", true},
-	{"index", true},	{"error_page", true},	 {"return", true},	  {"client_max_body_size", true},
-	{"location", true}, {"allow_methods", true}, {"autoindex", true}, {"upload", true},
-};
-
-std::map<t_token_type, std::string> Token::_type_name = {
-	{UNKNOWN, "UNKNOWN"},	  {KEYWORD, "KEYWORD"},		{WORD, "WORD"},	  {BLOCK_START, "BLOCK_START"},
-	{BLOCK_END, "BLOCK_END"}, {SEPARATOR, "SEPARATOR"}, {TILDE, "TILDE"},
-};
+std::map<std::string, bool> Token::_keywords;
+std::map<t_token_type, std::string> Token::_type_name;
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -24,7 +16,7 @@ Token::Token()
 
 // TODO think about exceptions
 Token::Token(const std::string &value)
-	: _type(_initType(value))
+	: _type(Token::_initType(value))
 	, _value(value)
 {
 	if (_type == UNKNOWN)
@@ -70,15 +62,50 @@ std::ostream &operator<<(std::ostream &o, Token const &i)
 /*
 ** ------------------------------ STATIC METHODS -------------------------------
 */
+void Token::_initTokenName(void)
+{
+	Token::_type_name[UNKNOWN] = "UNKNOWN";
+	Token::_type_name[KEYWORD] = "KEYWORD";
+	Token::_type_name[WORD] = "WORD";
+	Token::_type_name[BLOCK_START] = "BLOCK_START";
+	Token::_type_name[BLOCK_END] = "BLOCK_END";
+	Token::_type_name[SEPARATOR] = "SEPARATOR";
+	Token::_type_name[TILDE] = "TILDE";
+}
+
+void Token::_initKeywords(void)
+{
+	Token::_keywords["server"] = true;
+	Token::_keywords["server_name"] = true;
+	Token::_keywords["root"] = true;
+	Token::_keywords["listen"] = true;
+	Token::_keywords["index"] = true;
+	Token::_keywords["error_page"] = true;
+	Token::_keywords["return"] = true;
+	Token::_keywords["client_max_body_size"] = true;
+	Token::_keywords["location"] = true;
+	Token::_keywords["allow_methods"] = true;
+	Token::_keywords["autoindex"] = true;
+	Token::_keywords["upload"] = true;
+}
+
+bool Token::_isKeyword(const std::string &str)
+{
+	if (Token::_keywords.empty())
+		Token::_initKeywords();
+	return Token::_keywords[str];
+}
 
 std::string Token::getTypeName(t_token_type t)
 {
+	if (Token::_type_name.empty())
+		Token::_initTokenName();
 	return _type_name[t];
 }
 
 t_token_type Token::_initType(const std::string &str)
 {
-	if (_keywords[str])
+	if (_isKeyword(str))
 		return KEYWORD;
 	else if (str == "{")
 		return BLOCK_START;

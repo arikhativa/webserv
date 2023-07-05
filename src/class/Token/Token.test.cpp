@@ -8,24 +8,14 @@ TEST(Token, CreateDestroy)
 	delete obj;
 }
 
-TEST(Token, Accessor)
+TEST(Token, Print)
 {
-	int val(6);
 	Token obj;
+	std::stringstream buffer;
+	std::streambuf *sbuf = std::cout.rdbuf();
 
-	EXPECT_EQ(val, obj.getValue());
-	val = 7;
-	obj._setPath(val);
-	EXPECT_EQ(val, obj.getValue());
-}
-
-TEST(Token, Canonical)
-{
-	Token obj1(1);
-	Token obj2(2);
-	Token obj3(obj1);
-
-	EXPECT_EQ(obj1.getValue(), obj3.getValue());
-	obj2 = obj1;
-	EXPECT_EQ(obj1.getValue(), obj2.getValue());
+	std::cout.rdbuf(buffer.rdbuf());
+	std::cout << obj;
+	std::cout.rdbuf(sbuf);
+	ASSERT_EQ(buffer.str(), "Token[UNKNOWN]");
 }

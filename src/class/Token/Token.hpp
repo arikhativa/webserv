@@ -34,10 +34,10 @@ class Token
 
 	Token &operator=(Token const &rhs);
 
-	static std::string Token::getTypeName(t_token_type t);
+	static std::string getTypeName(t_token_type t);
 
-	t_token_type Token::getType(void) const;
-	std::string Token::getValue(void) const;
+	t_token_type getType(void) const;
+	std::string getValue(void) const;
 
   private:
 	static std::map<std::string, bool> _keywords;
@@ -46,7 +46,10 @@ class Token
 	t_token_type _type;
 	std::string _value;
 
+	static bool _isKeyword(const std::string &str);
 	static t_token_type _initType(const std::string &str);
+	static void _initKeywords(void);
+	static void _initTokenName(void);
 };
 
 std::ostream &operator<<(std::ostream &o, Token const &i);
