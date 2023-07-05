@@ -35,6 +35,7 @@ class Token
 	Token &operator=(Token const &rhs);
 
 	static std::string getTypeName(type t);
+	static bool isSpecialChar(char ch);
 
 	type getType(void) const;
 	std::string getValue(void) const;
@@ -42,6 +43,7 @@ class Token
   private:
 	static std::map<std::string, bool> _keywords;
 	static std::map<type, std::string> _type_name;
+	static std::map<char, bool> _special_char;
 
 	type _type;
 	std::string _value;

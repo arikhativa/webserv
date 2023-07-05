@@ -36,8 +36,21 @@ static std::map<std::string, bool> initKeywords(void)
 	return ret;
 }
 
+static std::map<char, bool> initSpecialChar(void)
+{
+	std::map<char, bool> ret;
+
+	ret['{'] = true;
+	ret['}'] = true;
+	ret['~'] = true;
+	ret[';'] = true;
+
+	return ret;
+}
+
 std::map<std::string, bool> Token::_keywords(initKeywords());
 std::map<Token::type, std::string> Token::_type_name(initTokenName());
+std::map<char, bool> Token::_special_char(initSpecialChar());
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -97,6 +110,11 @@ std::ostream &operator<<(std::ostream &o, Token const &i)
 /*
 ** ------------------------------ STATIC METHODS -------------------------------
 */
+
+bool Token::isSpecialChar(char ch)
+{
+	return (Token::_special_char[ch]);
+}
 
 bool Token::_isKeyword(const std::string &str)
 {
