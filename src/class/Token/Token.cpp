@@ -1,8 +1,43 @@
 
 #include <Token/Token.hpp>
 
-std::map<std::string, bool> Token::_keywords;
-std::map<t_token_type, std::string> Token::_type_name;
+static std::map<Token::type, std::string> initTokenName(void)
+{
+	std::map<Token::type, std::string> ret;
+
+	ret[Token::UNKNOWN] = "UNKNOWN";
+	ret[Token::KEYWORD] = "KEYWORD";
+	ret[Token::WORD] = "WORD";
+	ret[Token::BLOCK_START] = "BLOCK_START";
+	ret[Token::BLOCK_END] = "BLOCK_END";
+	ret[Token::SEPARATOR] = "SEPARATOR";
+	ret[Token::TILDE] = "TILDE";
+
+	return ret;
+}
+
+static std::map<std::string, bool> initKeywords(void)
+{
+	std::map<std::string, bool> ret;
+
+	ret["server"] = true;
+	ret["server_name"] = true;
+	ret["root"] = true;
+	ret["listen"] = true;
+	ret["index"] = true;
+	ret["error_page"] = true;
+	ret["return"] = true;
+	ret["client_max_body_size"] = true;
+	ret["location"] = true;
+	ret["allow_methods"] = true;
+	ret["autoindex"] = true;
+	ret["upload"] = true;
+
+	return ret;
+}
+
+std::map<std::string, bool> Token::_keywords(initKeywords());
+std::map<Token::type, std::string> Token::_type_name(initTokenName());
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -62,48 +97,18 @@ std::ostream &operator<<(std::ostream &o, Token const &i)
 /*
 ** ------------------------------ STATIC METHODS -------------------------------
 */
-void Token::_initTokenName(void)
-{
-	Token::_type_name[UNKNOWN] = "UNKNOWN";
-	Token::_type_name[KEYWORD] = "KEYWORD";
-	Token::_type_name[WORD] = "WORD";
-	Token::_type_name[BLOCK_START] = "BLOCK_START";
-	Token::_type_name[BLOCK_END] = "BLOCK_END";
-	Token::_type_name[SEPARATOR] = "SEPARATOR";
-	Token::_type_name[TILDE] = "TILDE";
-}
-
-void Token::_initKeywords(void)
-{
-	Token::_keywords["server"] = true;
-	Token::_keywords["server_name"] = true;
-	Token::_keywords["root"] = true;
-	Token::_keywords["listen"] = true;
-	Token::_keywords["index"] = true;
-	Token::_keywords["error_page"] = true;
-	Token::_keywords["return"] = true;
-	Token::_keywords["client_max_body_size"] = true;
-	Token::_keywords["location"] = true;
-	Token::_keywords["allow_methods"] = true;
-	Token::_keywords["autoindex"] = true;
-	Token::_keywords["upload"] = true;
-}
 
 bool Token::_isKeyword(const std::string &str)
 {
-	if (Token::_keywords.empty())
-		Token::_initKeywords();
 	return Token::_keywords[str];
 }
 
-std::string Token::getTypeName(t_token_type t)
+std::string Token::getTypeName(Token::type t)
 {
-	if (Token::_type_name.empty())
-		Token::_initTokenName();
 	return _type_name[t];
 }
 
-t_token_type Token::_initType(const std::string &str)
+Token::type Token::_initType(const std::string &str)
 {
 	if (_isKeyword(str))
 		return KEYWORD;
@@ -128,7 +133,7 @@ t_token_type Token::_initType(const std::string &str)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-t_token_type Token::getType(void) const
+Token::type Token::getType(void) const
 {
 	return this->_type;
 }

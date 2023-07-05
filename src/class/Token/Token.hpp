@@ -13,20 +13,20 @@
 #define protected public
 #endif
 
-typedef enum e_token_type
-{
-	UNKNOWN,
-	KEYWORD,
-	WORD,
-	BLOCK_START,
-	BLOCK_END,
-	SEPARATOR,
-	TILDE,
-} t_token_type;
-
 class Token
 {
   public:
+	enum type
+	{
+		UNKNOWN,
+		KEYWORD,
+		WORD,
+		BLOCK_START,
+		BLOCK_END,
+		SEPARATOR,
+		TILDE,
+	};
+
 	Token();
 	explicit Token(const std::string &value);
 	Token(Token const &src);
@@ -34,22 +34,20 @@ class Token
 
 	Token &operator=(Token const &rhs);
 
-	static std::string getTypeName(t_token_type t);
+	static std::string getTypeName(type t);
 
-	t_token_type getType(void) const;
+	type getType(void) const;
 	std::string getValue(void) const;
 
   private:
 	static std::map<std::string, bool> _keywords;
-	static std::map<t_token_type, std::string> _type_name;
+	static std::map<type, std::string> _type_name;
 
-	t_token_type _type;
+	type _type;
 	std::string _value;
 
 	static bool _isKeyword(const std::string &str);
-	static t_token_type _initType(const std::string &str);
-	static void _initKeywords(void);
-	static void _initTokenName(void);
+	static type _initType(const std::string &str);
 };
 
 std::ostream &operator<<(std::ostream &o, Token const &i);
