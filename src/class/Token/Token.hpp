@@ -15,6 +15,7 @@
 
 class Token
 {
+	// static
   public:
 	enum type
 	{
@@ -27,6 +28,27 @@ class Token
 		TILDE,
 	};
 
+	static std::string getTypeName(type t);
+	static bool isSpecialChar(char ch);
+	static const char CHAR_SEPARATOR;
+	static const char CHAR_TILDE;
+	static const char CHAR_BLOCK_START;
+	static const char CHAR_BLOCK_END;
+	static const std::string STR_SEPARATOR;
+	static const std::string STR_TILDE;
+	static const std::string STR_BLOCK_START;
+	static const std::string STR_BLOCK_END;
+
+  private:
+	static std::map<std::string, bool> _keywords;
+	static std::map<type, std::string> _type_name;
+	static std::map<char, bool> _special_char;
+
+	static bool _isKeyword(const std::string &str);
+	static type _initType(const std::string &str);
+
+	// object
+  public:
 	Token();
 	explicit Token(const std::string &value);
 	Token(Token const &src);
@@ -34,22 +56,12 @@ class Token
 
 	Token &operator=(Token const &rhs);
 
-	static std::string getTypeName(type t);
-	static bool isSpecialChar(char ch);
-
 	type getType(void) const;
 	std::string getValue(void) const;
 
   private:
-	static std::map<std::string, bool> _keywords;
-	static std::map<type, std::string> _type_name;
-	static std::map<char, bool> _special_char;
-
 	type _type;
 	std::string _value;
-
-	static bool _isKeyword(const std::string &str);
-	static type _initType(const std::string &str);
 };
 
 std::ostream &operator<<(std::ostream &o, Token const &i);

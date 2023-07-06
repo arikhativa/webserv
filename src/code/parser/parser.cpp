@@ -1,60 +1,61 @@
 
 #include <parser/parser.hpp>
 
+static std::map<std::string, bool> initServerValidKeywords(void)
+{
+	std::map<std::string, bool> map;
+
+	map["server_name"] = true;
+	map["root"] = true;
+	map["listen"] = true;
+	map["index"] = true;
+	map["error_page"] = true;
+	map["return"] = true;
+	map["client_max_body_size"] = true;
+	map["location"] = true;
+
+	return map;
+}
+
+static std::map<std::string, bool> initLocationValidKeywords(void)
+{
+	std::map<std::string, bool> map;
+
+	map["allow_methods"] = true;
+	map["client_max_body_size"] = true;
+	map["root"] = true;
+	map["index"] = true;
+	map["return"] = true;
+	map["autoindex"] = true;
+	map["upload"] = true;
+
+	return map;
+}
+
 bool parser::isValidServerKeyword(const std::list<Token>::const_iterator &it)
 {
-	if (it->getValue() == "server")
-		return false;
-	return true;
-}
-
-// TODO think about "on" and "off"
-bool parser::autoIndexRule(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
-{
-	++it;
-	if (it == end)
-		return false;
-	if (it->getType() != Token::WORD)
-		return false;
-	if (it->getValue() != "on" && it->getValue() != "off")
-		return false;
-	++it;
-	if (it == end)
-		return false;
-	if (it->getType() != Token::SEPARATOR)
-		return false;
-	return true;
-}
-
-bool parser::serverRule(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
-{
-	parser::t_rule f;
-	int i = 0;
-
-	++it;
-	while (it != end)
+	static const std::map<std::string, bool> valid_keywords(initServerValidKeywords());
+	try
 	{
-		if (it->getType() == Token::BLOCK_START)
-			++i;
-		else if (it->getType() == Token::BLOCK_END)
-			--i;
-		else if (it->getType() == Token::KEYWORD && !parser::isValidServerKeyword(it))
-			return false;
-		f = parser::getRule(it);
-		if (f && !f(it, end))
-			return false;
-		++it;
+		return valid_keywords.at(it->getValue());
 	}
-	return i == 0;
+	catch (...)
+	{
+		return false;
+	}
 }
 
-parser::t_rule parser::getRule(std::list<Token>::const_iterator it)
+bool parser::isValidLocationKeyword(const std::list<Token>::const_iterator &it)
 {
-	if (it->getValue() == "server")
-		return &parser::serverRule;
-	if (it->getValue() == "autoindex")
-		return &parser::autoIndexRule;
-	return NULL;
+	static const std::map<std::string, bool> valid_keywords(initLocationValidKeywords());
+	try
+	{
+		return valid_keywords.at(it->getValue());
+	}
+	catch (...)
+	{
+		return false;
+	}
 }
 
 // TODO think about "server"
@@ -71,7 +72,7 @@ bool parser::validate(const std::list<Token> &list)
 	{
 		if (it->getValue() == "server")
 		{
-			f = parser::getRule(it);
+			f = parser::rule::get(it);
 			if (!f(it, list.end()))
 				return false;
 		}

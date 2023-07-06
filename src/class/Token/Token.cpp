@@ -1,6 +1,16 @@
 
 #include <Token/Token.hpp>
 
+const std::string Token::STR_SEPARATOR(";");
+const std::string Token::STR_TILDE("~");
+const std::string Token::STR_BLOCK_START("{");
+const std::string Token::STR_BLOCK_END("}");
+
+const char Token::CHAR_SEPARATOR(';');
+const char Token::CHAR_TILDE('~');
+const char Token::CHAR_BLOCK_START('{');
+const char Token::CHAR_BLOCK_END('}');
+
 static std::map<Token::type, std::string> initTokenName(void)
 {
 	std::map<Token::type, std::string> ret;
@@ -40,10 +50,10 @@ static std::map<char, bool> initSpecialChar(void)
 {
 	std::map<char, bool> ret;
 
-	ret['{'] = true;
-	ret['}'] = true;
-	ret['~'] = true;
-	ret[';'] = true;
+	ret[Token::CHAR_SEPARATOR] = true;
+	ret[Token::CHAR_TILDE] = true;
+	ret[Token::CHAR_BLOCK_START] = true;
+	ret[Token::CHAR_BLOCK_END] = true;
 
 	return ret;
 }
@@ -130,13 +140,13 @@ Token::type Token::_initType(const std::string &str)
 {
 	if (_isKeyword(str))
 		return KEYWORD;
-	else if (str == "{")
+	else if (str == Token::STR_BLOCK_START)
 		return BLOCK_START;
-	else if (str == "}")
+	else if (str == Token::STR_BLOCK_END)
 		return BLOCK_END;
-	else if (str == ";")
+	else if (str == Token::STR_SEPARATOR)
 		return SEPARATOR;
-	else if (str == "~")
+	else if (str == Token::STR_TILDE)
 		return TILDE;
 	else if (!str.empty())
 		return WORD;
