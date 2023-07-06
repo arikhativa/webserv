@@ -19,7 +19,7 @@
 class ILocation
 {
   public:
-	virtual IPath getRoot(void) const = 0;
+	virtual IPath *getRoot(void) const = 0;
 	virtual ~ILocation(){};
 	virtual IIndexFiles getIndexFiles(void) const = 0;
 	virtual IAllowedMethods getAllowedMethods(void) const = 0;

@@ -27,7 +27,7 @@ class IServerConf
 	virtual ~IServerConf(){};
 
 	virtual std::string getName(void) const = 0;
-	virtual IPath getRoot(void) const = 0;
+	virtual IPath *getRoot(void) const = 0;
 	virtual std::pair<IAddress *, IPort *> getListen(void) const = 0;
 	virtual IIndexFiles getIndexFiles(void) const = 0;
 	virtual std::list<ILocation *> getLocations(void) const = 0;

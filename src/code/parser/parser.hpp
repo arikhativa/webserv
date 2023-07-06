@@ -10,8 +10,13 @@
 
 namespace parser
 {
-
 	typedef bool (*t_rule)(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end);
+
+	// is
+	bool isValidServerKeyword(const std::list<Token>::const_iterator &it);
+	bool isValidLocationKeyword(const std::list<Token>::const_iterator &it);
+
+	bool validate(const std::list<Token> &list);
 
 	namespace rule
 	{
@@ -37,12 +42,6 @@ namespace parser
 		bool tilde(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end);
 		bool separator(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end);
 	} // namespace rule
-
-	// is
-	bool isValidServerKeyword(const std::list<Token>::const_iterator &it);
-	bool isValidLocationKeyword(const std::list<Token>::const_iterator &it);
-
-	bool validate(const std::list<Token> &list);
 
 } // namespace parser
 
