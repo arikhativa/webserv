@@ -1,6 +1,6 @@
 
-#ifndef I_ALLOWED_METHODS_HPP
-#define I_ALLOWED_METHODS_HPP
+#ifndef I_LIMIT_EXCEPT_HPP
+#define I_LIMIT_EXCEPT_HPP
 
 #include <iostream>
 #include <string>
@@ -10,10 +10,10 @@
 #define protected public
 #endif
 
-class IAllowedMethods
+class ILimitExcept
 {
   public:
-	virtual ~IAllowedMethods(){};
+	virtual ~ILimitExcept() = default;
 };
 
 #ifdef TEST_ON
@@ -21,4 +21,4 @@ class IAllowedMethods
 #undef protected
 #endif
 
-#endif /* I_ALLOWED_METHODS_HPP */
+#endif /* I_LIMIT_EXCEPT_HPP */
