@@ -5,6 +5,7 @@ const std::string Token::STR_SEPARATOR(";");
 const std::string Token::STR_TILDE("~");
 const std::string Token::STR_BLOCK_START("{");
 const std::string Token::STR_BLOCK_END("}");
+const std::string Token::STR_GCI("}");
 
 const char Token::CHAR_SEPARATOR(';');
 const char Token::CHAR_TILDE('~');

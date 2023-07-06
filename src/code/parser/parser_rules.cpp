@@ -39,33 +39,95 @@ parser::t_rule parser::rule::get(std::list<Token>::const_iterator it)
 	}
 }
 
+static bool skipBlock(std::list<Token>::const_iterator &it, const std::list<Token>::const_iterator &end)
+{
+	int blocks = 1;
+
+	while (it != end && it->getType() != Token::BLOCK_START)
+		++it;
+	if (it == end)
+		return false;
+	++it;
+	while (it != end && blocks > 0)
+	{
+		if (it->getType() == Token::BLOCK_START)
+			++blocks;
+		else if (it->getType() == Token::BLOCK_END)
+			--blocks;
+		if (blocks > 0 && it != end)
+			++it;
+	}
+	return 0 == blocks;
+}
+
 bool parser::rule::server(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
 {
 	parser::t_rule f;
-	int i = 0;
+	bool block = false;
 
+	++it;
+	if (it == end || it->getType() != Token::BLOCK_START)
+		return false;
 	++it;
 	while (it != end)
 	{
 		if (it->getType() == Token::BLOCK_START)
-			++i;
+			return false;
+		else if (it->getType() == Token::BLOCK_END && block)
+			return false;
 		else if (it->getType() == Token::BLOCK_END)
-			--i;
+			block = true;
 		else if (it->getType() == Token::KEYWORD && !parser::isValidServerKeyword(it))
 			return false;
 		f = parser::rule::get(it);
 		if (f && !f(it, end))
 			return false;
-		++it;
+		if (it->getValue() == "location" && !skipBlock(it, end))
+			return false;
+		else
+			++it;
 	}
-	return i == 0;
+	return block;
 }
 
 bool parser::rule::location(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
 {
-	(void)it;
-	(void)end;
-	return true;
+	parser::t_rule f;
+	bool block = false;
+
+	++it;
+	if (it == end)
+		return false;
+	if (it->getType() == Token::TILDE)
+	{
+		++it;
+		if (it == end)
+			return false;
+	}
+	if (it->getType() != Token::WORD)
+		return false;
+	++it;
+	if (it == end || it->getType() != Token::BLOCK_START)
+		return false;
+	while (it != end)
+	{
+		if (it->getType() == Token::BLOCK_START)
+			return false;
+		else if (it->getType() == Token::BLOCK_END && block)
+			return false;
+		else if (it->getType() == Token::BLOCK_END)
+			block = true;
+		else if (it->getType() == Token::KEYWORD && !parser::isValidLocationKeyword(it))
+			return false;
+		f = parser::rule::get(it);
+		if (f && !f(it, end))
+			return false;
+		if (it->getValue() == "location" && !skipBlock(it, end))
+			return false;
+		else
+			++it;
+	}
+	return block;
 }
 
 static bool genericManyWordRule(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
@@ -208,8 +270,11 @@ bool parser::rule::blockEnd(std::list<Token>::const_iterator it, const std::list
 
 bool parser::rule::tilde(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
 {
-	(void)it;
-	(void)end;
+	++it;
+	if (it == end)
+		return true;
+	if (it->getType() != Token::WORD)
+		return false;
 	return true;
 }
 

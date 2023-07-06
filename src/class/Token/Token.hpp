@@ -38,6 +38,7 @@ class Token
 	static const std::string STR_TILDE;
 	static const std::string STR_BLOCK_START;
 	static const std::string STR_BLOCK_END;
+	static const std::string STR_GCI;
 
   private:
 	static std::map<std::string, bool> _keywords;
