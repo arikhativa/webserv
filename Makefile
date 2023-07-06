@@ -63,6 +63,7 @@ DEP							:= $(OBJ:$(OBJ_SUFFIX)=$(DEP_SUFFIX))
 # script
 SCRIPT_DIR					:= script
 GEN_CLASS_SCRIPT			:= $(addprefix $(SCRIPT_DIR)/, create_cpp_class.sh)
+GEN_INTERFACE_SCRIPT		:= $(addprefix $(SCRIPT_DIR)/, create_interface.sh)
 TEST_SCRIPT					:= $(addprefix $(SCRIPT_DIR)/, test.sh)
 
 # flags
@@ -102,6 +103,10 @@ re: fclean all
 
 class:
 	@$(GEN_CLASS_SCRIPT)
+	@$(RM) -rf $(OBJ_DIR)
+
+interface:
+	@$(GEN_INTERFACE_SCRIPT)
 	@$(RM) -rf $(OBJ_DIR)
 
 $(NAME): $(OBJ_DIR) $(OBJ)
