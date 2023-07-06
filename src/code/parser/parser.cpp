@@ -21,6 +21,7 @@ static std::map<std::string, bool> initLocationValidKeywords(void)
 {
 	std::map<std::string, bool> map;
 
+	map["location"] = true;
 	map["allow_methods"] = true;
 	map["client_max_body_size"] = true;
 	map["root"] = true;

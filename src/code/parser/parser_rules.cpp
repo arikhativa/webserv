@@ -69,7 +69,7 @@ bool parser::rule::server(std::list<Token>::const_iterator it, const std::list<T
 	if (it == end || it->getType() != Token::BLOCK_START)
 		return false;
 	++it;
-	while (it != end)
+	while (it != end && !block)
 	{
 		if (it->getType() == Token::BLOCK_START)
 			return false;
@@ -109,7 +109,8 @@ bool parser::rule::location(std::list<Token>::const_iterator it, const std::list
 	++it;
 	if (it == end || it->getType() != Token::BLOCK_START)
 		return false;
-	while (it != end)
+	++it;
+	while (it != end && !block)
 	{
 		if (it->getType() == Token::BLOCK_START)
 			return false;
@@ -179,15 +180,12 @@ static bool genericSingleWordRule(std::list<Token>::const_iterator it, const std
 	return true;
 }
 
-// TODO think about "on" and "off"
 static bool genericOnOffRule(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
 {
 	++it;
 	if (it == end)
 		return false;
 	if (it->getType() != Token::WORD)
-		return false;
-	if (it->getValue() != "on" && it->getValue() != "off")
 		return false;
 	++it;
 	if (it == end)
@@ -232,7 +230,6 @@ bool parser::rule::clientMaxBodySize(std::list<Token>::const_iterator it, const 
 	return genericSingleWordRule(it, end);
 }
 
-// TODO maybe Only GET POST DELETE (maybe not in the syntax part)
 bool parser::rule::allowMethods(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
 {
 	return genericManyWordRule(it, end);
