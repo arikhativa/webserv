@@ -13,7 +13,7 @@
 class IAddress
 {
   public:
-	virtual ~IAddress() = default;
+	virtual ~IAddress(){};
 };
 
 #ifdef TEST_ON

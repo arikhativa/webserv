@@ -13,7 +13,7 @@
 class ICGILocation
 {
   public:
-	virtual ~ICGILocation() = default;
+	virtual ~ICGILocation(){};
 };
 
 #ifdef TEST_ON

@@ -13,7 +13,7 @@
 class IReturn
 {
   public:
-	virtual ~IReturn() = default;
+	virtual ~IReturn(){};
 };
 
 #ifdef TEST_ON

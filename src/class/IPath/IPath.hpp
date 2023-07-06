@@ -13,7 +13,7 @@
 class IPath
 {
   public:
-	virtual ~IPath() = default;
+	virtual ~IPath(){};
 	virtual bool IsRelative() = 0;
 	virtual bool IsAbsolute() = 0;
 };

@@ -1,6 +1,6 @@
 
-#ifndef I_MAX_BODY_SIZE_HPP
-#define I_MAX_BODY_SIZE_HPP
+#ifndef I_ALLOWED_METHODS_HPP
+#define I_ALLOWED_METHODS_HPP
 
 #include <iostream>
 #include <string>
@@ -10,10 +10,10 @@
 #define protected public
 #endif
 
-class IMaxBodySize
+class IAllowedMethods
 {
   public:
-	virtual ~IMaxBodySize() = default;
+	virtual ~IAllowedMethods(){};
 };
 
 #ifdef TEST_ON
@@ -21,4 +21,4 @@ class IMaxBodySize
 #undef protected
 #endif
 
-#endif /* I_MAX_BODY_SIZE_HPP */
+#endif /* I_ALLOWED_METHODS_HPP */

@@ -13,7 +13,7 @@
 class IErrorPage
 {
   public:
-	virtual ~IErrorPage() = default;
+	virtual ~IErrorPage(){};
 };
 
 #ifdef TEST_ON
