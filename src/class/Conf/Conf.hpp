@@ -22,7 +22,7 @@ class Conf : public IConfig
 	virtual std::list<IServerConf *> getServers(void) const;
 	virtual std::string getFileName(void) const;
 
-	void Conf::addServer(IServerConf *s);
+	void addServer(IServerConf *s);
 
   private:
 	Conf(Conf const &src);

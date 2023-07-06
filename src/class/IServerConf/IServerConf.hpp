@@ -29,11 +29,11 @@ class IServerConf
 	virtual std::string getName(void) const = 0;
 	virtual IPath *getRoot(void) const = 0;
 	virtual std::pair<IAddress *, IPort *> getListen(void) const = 0;
-	virtual IIndexFiles getIndexFiles(void) const = 0;
+	virtual IIndexFiles *getIndexFiles(void) const = 0;
 	virtual std::list<ILocation *> getLocations(void) const = 0;
 	virtual std::list<ICGILocation *> getCGILocation(void) const = 0;
 	virtual std::list<IErrorPage *> getErrorPages(void) const = 0;
-	virtual IReturn getReturn(void) const = 0;
+	virtual IReturn *getReturn(void) const = 0;
 	virtual std::size_t getMaxBodySize(void) const = 0;
 };
 

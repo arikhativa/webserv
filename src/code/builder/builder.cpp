@@ -4,6 +4,9 @@
 
 IServerConf *builder::createServer(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
 {
+	(void)it;
+	(void)end;
+	return (NULL);
 }
 
 IConfig *createConf(const std::string &file_name, const std::list<Token> &list)
@@ -20,5 +23,5 @@ IConfig *createConf(const std::string &file_name, const std::list<Token> &list)
 		}
 		it++;
 	}
-	return (NULL);
+	return NULL;
 }
