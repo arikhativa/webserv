@@ -17,6 +17,25 @@ class Token
 {
 	// static
   public:
+	class Keyword
+	{
+	  private:
+		Keyword(){};
+
+	  public:
+		static const std::string SERVER;
+		static const std::string SERVER_NAME;
+		static const std::string ROOT;
+		static const std::string LISTEN;
+		static const std::string INDEX;
+		static const std::string ERROR_PAGE;
+		static const std::string RETURN;
+		static const std::string CLIENT_MAX_BODY_SIZE;
+		static const std::string LOCATION;
+		static const std::string ALLOW_METHODS;
+		static const std::string AUTOINDEX;
+		static const std::string UPLOAD;
+	};
 	enum type
 	{
 		UNKNOWN,
@@ -41,9 +60,9 @@ class Token
 	static const std::string STR_GCI;
 
   private:
-	static std::map<std::string, bool> _keywords;
-	static std::map<type, std::string> _type_name;
-	static std::map<char, bool> _special_char;
+	static const std::map<std::string, bool> _keywords;
+	static const std::map<type, std::string> _type_name;
+	static const std::map<char, bool> _special_char;
 
 	static bool _isKeyword(const std::string &str);
 	static type _initType(const std::string &str);

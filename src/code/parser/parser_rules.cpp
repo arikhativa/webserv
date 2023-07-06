@@ -5,23 +5,23 @@ static std::map<std::string, parser::t_rule> initRules(void)
 {
 	std::map<std::string, parser::t_rule> map;
 
-	map["server"] = &parser::rule::server;
-	map["server_name"] = &parser::rule::serverName;
-	map["root"] = &parser::rule::root;
-	map["listen"] = &parser::rule::listen;
-	map["index"] = &parser::rule::index;
-	map["error_page"] = &parser::rule::errorPage;
-	map["return"] = &parser::rule::redirect;
-	map["client_max_body_size"] = &parser::rule::clientMaxBodySize;
+	map[Token::Keyword::SERVER] = &parser::rule::server;
+	map[Token::Keyword::SERVER_NAME] = &parser::rule::serverName;
+	map[Token::Keyword::ROOT] = &parser::rule::root;
+	map[Token::Keyword::LISTEN] = &parser::rule::listen;
+	map[Token::Keyword::INDEX] = &parser::rule::index;
+	map[Token::Keyword::ERROR_PAGE] = &parser::rule::errorPage;
+	map[Token::Keyword::RETURN] = &parser::rule::redirect;
+	map[Token::Keyword::CLIENT_MAX_BODY_SIZE] = &parser::rule::clientMaxBodySize;
 	map[Token::STR_SEPARATOR] = &parser::rule::separator;
 	map[Token::STR_TILDE] = &parser::rule::tilde;
 	map[Token::STR_BLOCK_START] = &parser::rule::blockStart;
 	map[Token::STR_BLOCK_END] = &parser::rule::blockEnd;
 
-	map["location"] = &parser::rule::location;
-	map["autoindex"] = &parser::rule::autoIndex;
-	map["allow_methods"] = &parser::rule::allowMethods;
-	map["upload"] = &parser::rule::upload;
+	map[Token::Keyword::LOCATION] = &parser::rule::location;
+	map[Token::Keyword::AUTOINDEX] = &parser::rule::autoIndex;
+	map[Token::Keyword::ALLOW_METHODS] = &parser::rule::allowMethods;
+	map[Token::Keyword::UPLOAD] = &parser::rule::upload;
 
 	return map;
 }
@@ -82,7 +82,7 @@ bool parser::rule::server(std::list<Token>::const_iterator it, const std::list<T
 		f = parser::rule::get(it);
 		if (f && !f(it, end))
 			return false;
-		if (it->getValue() == "location" && !skipBlock(it, end))
+		if (it->getValue() == Token::Keyword::LOCATION && !skipBlock(it, end))
 			return false;
 		else
 			++it;
@@ -123,7 +123,7 @@ bool parser::rule::location(std::list<Token>::const_iterator it, const std::list
 		f = parser::rule::get(it);
 		if (f && !f(it, end))
 			return false;
-		if (it->getValue() == "location" && !skipBlock(it, end))
+		if (it->getValue() == Token::Keyword::LOCATION && !skipBlock(it, end))
 			return false;
 		else
 			++it;

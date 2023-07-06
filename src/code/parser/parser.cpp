@@ -5,14 +5,14 @@ static std::map<std::string, bool> initServerValidKeywords(void)
 {
 	std::map<std::string, bool> map;
 
-	map["server_name"] = true;
-	map["root"] = true;
-	map["listen"] = true;
-	map["index"] = true;
-	map["error_page"] = true;
-	map["return"] = true;
-	map["client_max_body_size"] = true;
-	map["location"] = true;
+	map[Token::Keyword::SERVER_NAME] = true;
+	map[Token::Keyword::ROOT] = true;
+	map[Token::Keyword::LISTEN] = true;
+	map[Token::Keyword::INDEX] = true;
+	map[Token::Keyword::ERROR_PAGE] = true;
+	map[Token::Keyword::RETURN] = true;
+	map[Token::Keyword::CLIENT_MAX_BODY_SIZE] = true;
+	map[Token::Keyword::LOCATION] = true;
 
 	return map;
 }
@@ -21,14 +21,14 @@ static std::map<std::string, bool> initLocationValidKeywords(void)
 {
 	std::map<std::string, bool> map;
 
-	map["location"] = true;
-	map["allow_methods"] = true;
-	map["client_max_body_size"] = true;
-	map["root"] = true;
-	map["index"] = true;
-	map["return"] = true;
-	map["autoindex"] = true;
-	map["upload"] = true;
+	map[Token::Keyword::LOCATION] = true;
+	map[Token::Keyword::ALLOW_METHODS] = true;
+	map[Token::Keyword::CLIENT_MAX_BODY_SIZE] = true;
+	map[Token::Keyword::ROOT] = true;
+	map[Token::Keyword::INDEX] = true;
+	map[Token::Keyword::RETURN] = true;
+	map[Token::Keyword::AUTOINDEX] = true;
+	map[Token::Keyword::UPLOAD] = true;
 
 	return map;
 }
@@ -59,7 +59,6 @@ bool parser::isValidLocationKeyword(const std::list<Token>::const_iterator &it)
 	}
 }
 
-// TODO think about "server"
 bool parser::validate(const std::list<Token> &list)
 {
 	parser::t_rule f;
@@ -67,11 +66,11 @@ bool parser::validate(const std::list<Token> &list)
 
 	if (list.empty())
 		return false;
-	if (it->getValue() != "server")
+	if (it->getValue() != Token::Keyword::SERVER)
 		return false;
 	while (it != list.end())
 	{
-		if (it->getValue() == "server")
+		if (it->getValue() == Token::Keyword::SERVER)
 		{
 			f = parser::rule::get(it);
 			if (!f(it, list.end()))

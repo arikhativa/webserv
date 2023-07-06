@@ -21,7 +21,7 @@ TEST(Token, Print)
 		ASSERT_EQ(buffer.str(), "Token[UNKNOWN]");
 	}
 	{
-		Token obj("server");
+		Token obj(Token::Keyword::SERVER);
 		std::stringstream buffer;
 		std::streambuf *sbuf = std::cout.rdbuf();
 
@@ -39,7 +39,7 @@ TEST(Token, Type)
 		ASSERT_EQ(obj.getType(), Token::UNKNOWN);
 	}
 	{
-		Token obj("server");
+		Token obj(Token::Keyword::SERVER);
 		ASSERT_EQ(obj.getType(), Token::KEYWORD);
 	}
 	{

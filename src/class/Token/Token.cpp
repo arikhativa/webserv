@@ -7,6 +7,19 @@ const std::string Token::STR_BLOCK_START("{");
 const std::string Token::STR_BLOCK_END("}");
 const std::string Token::STR_GCI("}");
 
+const std::string Token::Keyword::SERVER("server");
+const std::string Token::Keyword::SERVER_NAME("server_name");
+const std::string Token::Keyword::ROOT("root");
+const std::string Token::Keyword::LISTEN("listen");
+const std::string Token::Keyword::INDEX("index");
+const std::string Token::Keyword::ERROR_PAGE("error_page");
+const std::string Token::Keyword::RETURN("return");
+const std::string Token::Keyword::CLIENT_MAX_BODY_SIZE("client_max_body_size");
+const std::string Token::Keyword::LOCATION("location");
+const std::string Token::Keyword::ALLOW_METHODS("allow_methods");
+const std::string Token::Keyword::AUTOINDEX("autoindex");
+const std::string Token::Keyword::UPLOAD("upload");
+
 const char Token::CHAR_SEPARATOR(';');
 const char Token::CHAR_TILDE('~');
 const char Token::CHAR_BLOCK_START('{');
@@ -31,18 +44,18 @@ static std::map<std::string, bool> initKeywords(void)
 {
 	std::map<std::string, bool> ret;
 
-	ret["server"] = true;
-	ret["server_name"] = true;
-	ret["root"] = true;
-	ret["listen"] = true;
-	ret["index"] = true;
-	ret["error_page"] = true;
-	ret["return"] = true;
-	ret["client_max_body_size"] = true;
-	ret["location"] = true;
-	ret["allow_methods"] = true;
-	ret["autoindex"] = true;
-	ret["upload"] = true;
+	ret[Token::Keyword::SERVER] = true;
+	ret[Token::Keyword::SERVER_NAME] = true;
+	ret[Token::Keyword::ROOT] = true;
+	ret[Token::Keyword::LISTEN] = true;
+	ret[Token::Keyword::INDEX] = true;
+	ret[Token::Keyword::ERROR_PAGE] = true;
+	ret[Token::Keyword::RETURN] = true;
+	ret[Token::Keyword::CLIENT_MAX_BODY_SIZE] = true;
+	ret[Token::Keyword::LOCATION] = true;
+	ret[Token::Keyword::ALLOW_METHODS] = true;
+	ret[Token::Keyword::AUTOINDEX] = true;
+	ret[Token::Keyword::UPLOAD] = true;
 
 	return ret;
 }
@@ -59,9 +72,9 @@ static std::map<char, bool> initSpecialChar(void)
 	return ret;
 }
 
-std::map<std::string, bool> Token::_keywords(initKeywords());
-std::map<Token::type, std::string> Token::_type_name(initTokenName());
-std::map<char, bool> Token::_special_char(initSpecialChar());
+const std::map<std::string, bool> Token::_keywords(initKeywords());
+const std::map<Token::type, std::string> Token::_type_name(initTokenName());
+const std::map<char, bool> Token::_special_char(initSpecialChar());
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -124,17 +137,38 @@ std::ostream &operator<<(std::ostream &o, Token const &i)
 
 bool Token::isSpecialChar(char ch)
 {
-	return (Token::_special_char[ch]);
+	try
+	{
+		return (Token::_special_char.at(ch));
+	}
+	catch (...)
+	{
+		return false;
+	}
 }
 
 bool Token::_isKeyword(const std::string &str)
 {
-	return Token::_keywords[str];
+	try
+	{
+		return (Token::_keywords.at(str));
+	}
+	catch (...)
+	{
+		return false;
+	}
 }
 
 std::string Token::getTypeName(Token::type t)
 {
-	return _type_name[t];
+	try
+	{
+		return (Token::_type_name.at(t));
+	}
+	catch (...)
+	{
+		return "INVALID_TOKEN_TYPE";
+	}
 }
 
 Token::type Token::_initType(const std::string &str)
