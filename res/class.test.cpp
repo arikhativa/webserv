@@ -8,6 +8,17 @@ TEST(Replace, CreateDestroy)
 	delete obj;
 }
 
+TEST(Replace, Accessor)
+{
+	int val(6);
+	Replace obj;
+
+	EXPECT_EQ(val, obj.getValue());
+	val = 7;
+	obj._setPath(val);
+	EXPECT_EQ(val, obj.getValue());
+}
+
 TEST(Replace, Canonical)
 {
 	Replace obj1(1);
@@ -17,18 +28,4 @@ TEST(Replace, Canonical)
 	EXPECT_EQ(obj1.getValue(), obj3.getValue());
 	obj2 = obj1;
 	EXPECT_EQ(obj1.getValue(), obj2.getValue());
-}
-
-TEST(Replace, getValue)
-{
-	int val(6);
-	Replace obj(val);
-	EXPECT_EQ(val, obj.getValue());
-}
-
-TEST(Replace, _setValue)
-{
-	Replace obj;
-	obj._setValue(7);
-	EXPECT_EQ(obj.getValue(), 7);
 }
