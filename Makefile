@@ -122,6 +122,11 @@ $(TEST_EXEC): $(OBJ_DIR) $(TEST_OBJ) $(OBJ_NO_MAIN)
 check: $(TEST_EXEC)
 	@bash $(TEST_SCRIPT) gtest
 
+
+T := ""
+check/test: $(TEST_EXEC)
+	./$(TEST_EXEC) --gtest_filter=$(T)*
+
 check/leaks:
 	@bash $(TEST_SCRIPT) memory
 
