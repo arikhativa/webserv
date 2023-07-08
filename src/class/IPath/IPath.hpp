@@ -14,8 +14,10 @@ class IPath
 {
   public:
 	virtual ~IPath(){};
-	virtual bool IsRelative() = 0;
-	virtual bool IsAbsolute() = 0;
+	virtual const std::string &getPath(void) const = 0;
+	virtual void setPath(const std::string &path) = 0;
+	virtual bool isRelative(void) = 0;
+	virtual bool isAbsolute(void) = 0;
 };
 
 #ifdef TEST_ON
