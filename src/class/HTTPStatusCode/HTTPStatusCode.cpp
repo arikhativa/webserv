@@ -65,6 +65,15 @@ const std::map<HTTPStatusCode::Code, std::string> HTTPStatusCode::_map(initMap()
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
+HTTPStatusCode::HTTPStatusCode(const std::string &code)
+{
+	int int_code = std::atoi(code.c_str());
+
+	if (!HTTPStatusCode::isValid(int_code))
+		throw HTTPStatusCode::InvalidStatusCodeException();
+	this->_code = static_cast<HTTPStatusCode::Code>(int_code);
+}
+
 HTTPStatusCode::HTTPStatusCode(int code)
 {
 	if (!HTTPStatusCode::isValid(code))
@@ -136,6 +145,15 @@ std::string HTTPStatusCode::toString(void) const
 void HTTPStatusCode::set(HTTPStatusCode::Code code)
 {
 	this->_code = code;
+}
+
+void HTTPStatusCode::set(const std::string &code)
+{
+	int int_code = std::atoi(code.c_str());
+
+	if (!HTTPStatusCode::isValid(int_code))
+		throw HTTPStatusCode::InvalidStatusCodeException();
+	this->_code = static_cast<HTTPStatusCode::Code>(int_code);
 }
 
 void HTTPStatusCode::set(int code)
