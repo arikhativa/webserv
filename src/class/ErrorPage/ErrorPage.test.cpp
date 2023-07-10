@@ -45,5 +45,5 @@ TEST(ErrorPage, Print)
 
 	std::stringstream ss;
 	ss << obj;
-	EXPECT_EQ("ErrorPage[500 /internal_error.html]", ss.str());
+	EXPECT_EQ("{\"_status\": 500, \"_path\": \"/internal_error.html\"}", ss.str());
 }
