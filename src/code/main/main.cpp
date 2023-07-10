@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+        */
+/*   By: al7aro <al7aro@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 10:25:39 by yrabby            #+#    #+#             */
-/*   Updated: 2023/06/28 13:30:37 by yrabby           ###   ########.fr       */
+/*   Updated: 2023/07/10 18:01:51 by al7aro           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,11 @@ int main(void)
 
 	ExampleTemplate<long> b(-42);
 	std::cout << b << std::endl;
+
+	Server server;
+	server.bindSockets();
+	server.listenSockets();
+	server.start();
+
 	return 0;
 }
