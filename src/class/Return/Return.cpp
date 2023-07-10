@@ -1,21 +1,21 @@
 
-#include <ErrorPage/ErrorPage.hpp>
+#include <Return/Return.hpp>
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-ErrorPage::ErrorPage(const std::string &status, const std::string &path)
+Return::Return(const std::string &status, const std::string &path)
 	: BasePairCodePath(status, path)
 {
 }
 
-ErrorPage::ErrorPage(const HTTPStatusCode &status, const Path &path)
+Return::Return(const HTTPStatusCode &status, const Path &path)
 	: BasePairCodePath(status, path)
 {
 }
 
-ErrorPage::ErrorPage(const ErrorPage &src)
+Return::Return(const Return &src)
 	: BasePairCodePath(src)
 {
 }
@@ -24,7 +24,7 @@ ErrorPage::ErrorPage(const ErrorPage &src)
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
-ErrorPage::~ErrorPage()
+Return::~Return()
 {
 }
 
@@ -32,7 +32,7 @@ ErrorPage::~ErrorPage()
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-ErrorPage &ErrorPage::operator=(ErrorPage const &rhs)
+Return &Return::operator=(Return const &rhs)
 {
 	if (this != &rhs)
 	{
@@ -42,9 +42,9 @@ ErrorPage &ErrorPage::operator=(ErrorPage const &rhs)
 	return *this;
 }
 
-std::ostream &operator<<(std::ostream &o, ErrorPage const &i)
+std::ostream &operator<<(std::ostream &o, Return const &i)
 {
-	o << "ErrorPage[" << i.getStatus().get() << " " << i.getPath().get() << "]";
+	o << "Return[" << i.getStatus().get() << " " << i.getPath().get() << "]";
 	return o;
 }
 
@@ -56,12 +56,12 @@ std::ostream &operator<<(std::ostream &o, ErrorPage const &i)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-HTTPStatusCode ErrorPage::getStatus(void) const
+HTTPStatusCode Return::getStatus(void) const
 {
 	return BasePairCodePath::getStatus();
 }
 
-const IPath &ErrorPage::getPath(void) const
+const IPath &Return::getPath(void) const
 {
 	return BasePairCodePath::getPath();
 }

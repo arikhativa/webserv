@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 
+#include <BasePairCodePath/BasePairCodePath.hpp>
 #include <HTTPStatusCode/HTTPStatusCode.hpp>
 #include <IErrorPage/IErrorPage.hpp>
 #include <IPath/IPath.hpp>
@@ -15,7 +16,7 @@
 #define protected public
 #endif
 
-class ErrorPage : public IErrorPage
+class ErrorPage : public BasePairCodePath, public IErrorPage
 {
   public:
 	explicit ErrorPage(const std::string &status, const std::string &path);
@@ -27,15 +28,6 @@ class ErrorPage : public IErrorPage
 
 	virtual HTTPStatusCode getStatus(void) const;
 	virtual const IPath &getPath(void) const;
-
-	void setStatus(HTTPStatusCode status);
-	void setPath(const Path &path);
-	void setStatus(const std::string &status);
-	void setPath(const std::string &path);
-
-  private:
-	HTTPStatusCode _status;
-	Path _path;
 };
 
 std::ostream &operator<<(std::ostream &o, ErrorPage const &i);
