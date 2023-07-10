@@ -74,27 +74,36 @@ AllowedMethods &AllowedMethods::operator=(AllowedMethods const &rhs)
 	return *this;
 }
 
+std::ostream &operator<<(std::ostream &o, IAllowedMethods const &i)
+{
+	const AllowedMethods &tmp = dynamic_cast<const AllowedMethods &>(i);
+
+	o << tmp;
+	return o;
+}
+
 std::ostream &operator<<(std::ostream &o, AllowedMethods const &i)
 {
-
 	std::string str = "";
 
 	if (i.getGET())
-		str += AllowedMethods::GET;
+	{
+		str += "\"get\": true";
+	}
 	if (i.getPOST())
 	{
 		if (str != "")
 			str += ", ";
-		str += AllowedMethods::POST;
+		str += "\"post\": true";
 	}
 	if (i.getDELETE())
 	{
 		if (str != "")
 			str += ", ";
-		str += AllowedMethods::DELETE;
+		str += "\"delete\": true";
 	}
 
-	o << "AllowedMethods[" << str << "]";
+	o << "{" << str << "}";
 	return o;
 }
 

@@ -42,9 +42,19 @@ Return &Return::operator=(Return const &rhs)
 	return *this;
 }
 
-std::ostream &operator<<(std::ostream &o, Return const &i)
+std::ostream &operator<<(std::ostream &o, const IReturn &i)
 {
-	o << "Return[" << i.getStatus().get() << " " << i.getPath().get() << "]";
+	const Return &tmp = dynamic_cast<const Return &>(i);
+
+	o << tmp;
+	return o;
+}
+
+std::ostream &operator<<(std::ostream &o, const Return &i)
+{
+	const BasePairCodePath &tmp = dynamic_cast<const BasePairCodePath &>(i);
+
+	o << tmp;
 	return o;
 }
 

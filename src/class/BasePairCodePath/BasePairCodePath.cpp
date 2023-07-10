@@ -9,18 +9,27 @@ BasePairCodePath::BasePairCodePath(const std::string &status, const std::string 
 	: _status(status)
 	, _path(path)
 {
+	if (path.empty())
+		throw InvalidPathException();
 }
 
 BasePairCodePath::BasePairCodePath(const HTTPStatusCode &status, const Path &path)
 	: _status(status)
 	, _path(path)
 {
+	if (path.get().empty())
+		throw InvalidPathException();
 }
 
 BasePairCodePath::BasePairCodePath(const BasePairCodePath &src)
 	: _status(src.getStatus())
 	, _path(src.getPath().get())
 {
+}
+
+const char *BasePairCodePath::InvalidPathException::what() const throw()
+{
+	return "Invalid path";
 }
 
 /*
@@ -43,6 +52,15 @@ BasePairCodePath &BasePairCodePath::operator=(BasePairCodePath const &rhs)
 		_path.set(rhs.getPath().get());
 	}
 	return *this;
+}
+
+std::ostream &operator<<(std::ostream &o, const BasePairCodePath &i)
+{
+	o << "{";
+	o << "\"_status\": " << i.getStatus().get() << ", ";
+	o << "\"_path\": \"" << i.getPath().get() << "\"";
+	o << "}";
+	return o;
 }
 
 /*

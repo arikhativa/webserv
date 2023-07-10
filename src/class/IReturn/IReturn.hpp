@@ -22,6 +22,8 @@ class IReturn
 	virtual const IPath &getPath(void) const = 0;
 };
 
+std::ostream &operator<<(std::ostream &o, const IReturn &i);
+
 #ifdef TEST_ON
 #undef private
 #undef protected

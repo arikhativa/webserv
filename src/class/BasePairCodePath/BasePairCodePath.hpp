@@ -27,6 +27,12 @@ class BasePairCodePath
 	HTTPStatusCode getStatus(void) const;
 	const IPath &getPath(void) const;
 
+	class InvalidPathException : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
   protected:
 	void setStatus(HTTPStatusCode status);
 	void setPath(const Path &path);
@@ -37,6 +43,8 @@ class BasePairCodePath
 	HTTPStatusCode _status;
 	Path _path;
 };
+
+std::ostream &operator<<(std::ostream &o, const BasePairCodePath &i);
 
 #ifdef TEST_ON
 #undef private
