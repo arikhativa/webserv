@@ -21,6 +21,7 @@ HTTPRequest::HTTPRequest(const HTTPRequest &src)
 
 HTTPRequest::~HTTPRequest()
 {
+	close(this->_clientFd);
 }
 
 /*
