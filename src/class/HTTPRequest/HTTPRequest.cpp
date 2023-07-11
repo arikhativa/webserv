@@ -33,6 +33,7 @@ HTTPRequest &HTTPRequest::operator=(HTTPRequest const &rhs)
 	if (this != &rhs)
 	{
 		this->_clientFd = rhs.getClientFd();
+		this->_rawRequest = rhs.getRawRequest();
 		this->_response = rhs.getResponse();
 	}
 	return *this;
@@ -63,9 +64,10 @@ void HTTPRequest::sendResponse(void)
 	send(this->_clientFd, this->_response.c_str(), this->_response.size(), 0);
 }
 
+/* TODO: handle request according to HTTP */
 void HTTPRequest::handleRequest(void)
 {
-	this->_response = "This is a generic response from the server\n";
+	this->_response = this->_rawRequest;
 }
 
 /*
@@ -85,6 +87,21 @@ std::string HTTPRequest::getResponse(void) const
 int HTTPRequest::getClientFd(void) const
 {
 	return this->_clientFd;
+}
+
+void HTTPRequest::setRawRequest(std::string request)
+{
+	this->_rawRequest = request;
+}
+
+void HTTPRequest::setResponse(std::string response)
+{
+	this->_response = response;
+}
+
+void HTTPRequest::setClientFd(int fd)
+{
+	this->_clientFd = fd;
 }
 
 /* ************************************************************************** */
