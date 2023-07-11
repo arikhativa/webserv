@@ -57,7 +57,7 @@ void HTTPRequest::recvRequest(void)
 	this->_rawRequest = std::string(tmpRaw, tmpRecvLen);
 }
 
-void HTTPRequest::sendRequest(void)
+void HTTPRequest::sendResponse(void)
 {
 	send(this->_clientFd, this->_response.c_str(), this->_response.size(), 0);
 }
