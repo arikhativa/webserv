@@ -1,9 +1,9 @@
 
 #include <AllowedMethods/AllowedMethods.hpp>
 
-const std::string AllowedMethods::GET("GET /");
-const std::string AllowedMethods::POST("POST /");
-const std::string AllowedMethods::DELETE("DELETE /");
+const std::string AllowedMethods::GET("GET ");
+const std::string AllowedMethods::POST("POST ");
+const std::string AllowedMethods::DELETE("DELETE ");
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
