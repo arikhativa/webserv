@@ -6,37 +6,36 @@
 */
 
 Socket::Socket(IP ip, Port port)
-	: _ip(ip), _port(port), _fd(-1), _domain(AF_INET), _type(SOCK_STREAM), _protocol(0)
+	: _ip(ip)
+	, _port(port)
+	, _fd(-1)
+	, _domain(AF_INET)
+	, _type(SOCK_STREAM)
+	, _protocol(0)
 {
 	/* Create socket */
 	this->_fd = socket(this->_domain, this->_type, this->_protocol);
-	/* Check for socket errors */
+	if (this->_fd <= -1)
+		throw SocketCreationFailed();
 
 	/* Init sockaddr */
 	memset(&this->_sockaddr, 0, sizeof(this->_sockaddr));
 	this->_sockaddr.sin_family = this->_domain;
-	this->_sockaddr.sin_port = htons(this->_port.getPort());
+	this->_sockaddr.sin_port = htons(this->_port.get());
 	this->_sockaddr.sin_addr.s_addr = inet_addr(this->_ip.getAddress().c_str());
 }
 
-// Socket::Socket(IP ip, Port port, int domain, int type, int protocol)
-// 	: _ip(ip), _port(port), _fd(-1), _domain(domain), _type(type), _protocol(protocol)
-// {
-// 	/* Create socket */
-// 	this->_fd = socket(this->_domain, this->_type, this->_protocol);
-// 	/* Check for socket errors */
-
-// 	/* Init sockaddr */
-// 	memset(&this->_sockaddr, 0, sizeof(this->_sockaddr));
-// 	this->_sockaddr.sin_family = this->_domain;
-// 	this->_sockaddr.sin_port = htons(this->_port.getPort());
-// 	this->_sockaddr.sin_addr.s_addr = inet_addr(this->_ip.getAddress().c_str());
-// }
-
-Socket::Socket(const Socket &src)
-	: _ip(src.getIp()), _port(src.getPort()), _fd(src.getFd()),
-	_domain(src.getDomain()), _type(src.getType()), _protocol(src.getProtocol())
+const char *Socket::SocketCreationFailed::what() const throw()
 {
+	return "Socket creation failed";
+}
+const char *Socket::SocketListeningFailed::what() const throw()
+{
+	return "Socket setting to listening mode failed";
+}
+const char *Socket::SocketBindingFailed::what() const throw()
+{
+	return "Socket binding failed";
 }
 
 /*
@@ -45,23 +44,13 @@ Socket::Socket(const Socket &src)
 
 Socket::~Socket()
 {
+	if (this->_fd >= 0)
+		close(this->_fd);
 }
 
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
 */
-
-Socket &Socket::operator=(Socket const &rhs)
-{
-	if (this != &rhs)
-	{
-		this->_fd = rhs.getFd();
-		this->_domain = rhs.getDomain();
-		this->_type = rhs.getType();
-		this->_protocol = rhs.getProtocol();
-	}
-	return *this;
-}
 
 std::ostream &operator<<(std::ostream &o, Socket const &i)
 {
@@ -75,12 +64,18 @@ std::ostream &operator<<(std::ostream &o, Socket const &i)
 
 void Socket::bind(void)
 {
-	::bind(this->_fd, reinterpret_cast<const sockaddr *>(&this->_sockaddr), sizeof(this->_sockaddr));
+	int bind_status;
+	bind_status = ::bind(this->_fd, reinterpret_cast<const sockaddr *>(&this->_sockaddr), sizeof(this->_sockaddr));
+	if (bind_status <= -1)
+		throw SocketBindingFailed();
 }
 
 void Socket::listen(void)
 {
-	::listen(this->_fd, MAX_SYS_BACKLOG);
+	int listen_status;
+	listen_status = ::listen(this->_fd, MAX_SYS_BACKLOG);
+	if (listen_status <= -1)
+		throw SocketListeningFailed();
 }
 
 /*
