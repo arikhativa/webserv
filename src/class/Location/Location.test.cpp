@@ -21,6 +21,7 @@ TEST(Location, Accessor)
 	ptr->setReturn("200", "/index.html");
 	ptr->addErrorPage("404", "/404.html");
 	ptr->addErrorPage("505", "/505.html");
+	ptr->setRoot("/root");
 
 	EXPECT_EQ(true, ptr->isAutoIndexOn());
 	EXPECT_EQ(true, ptr->canUpload());
@@ -37,6 +38,7 @@ TEST(Location, Accessor)
 	EXPECT_EQ("/404.html", ptr->getErrorPages().front()->getPath().get());
 	EXPECT_EQ(505, ptr->getErrorPages().back()->getStatus().get());
 	EXPECT_EQ("/505.html", ptr->getErrorPages().back()->getPath().get());
+	EXPECT_EQ("/root", ptr->getRoot()->get());
 
 	delete ptr;
 }
@@ -47,7 +49,7 @@ TEST(Location, Print)
 		"{\"_path\": \"/path\", \"_auto_index\": true, \"_upload\": true, \"_max_body_size\": 100, "
 		"\"_allowed_methods\": {\"get\": true, \"post\": true, \"delete\": true}, \"_return\": {\"_status\": 200, "
 		"\"_path\": \"/index.html\"}, \"_index_files\": [\"index.html\", \"index.php\"], \"_error_pages\": "
-		"[{\"_status\": 404, \"_path\": \"/404.html\"}]}";
+		"[{\"_status\": 404, \"_path\": \"/404.html\"}], \"_root\": \"/root\"}";
 
 	Location obj;
 
@@ -59,6 +61,7 @@ TEST(Location, Print)
 	obj.setAllowedMethods(std::list<std::string>({"GET", "POST", "DELETE"}));
 	obj.setReturn("200", "/index.html");
 	obj.addErrorPage("404", "/404.html");
+	obj.setRoot("/root");
 
 	std::stringstream ss;
 	ss << obj;
@@ -130,6 +133,15 @@ TEST(Location, ExceptionErrorPage)
 	EXPECT_THROW(obj.addErrorPage("200", ""), BasePairCodePath::InvalidPathException);
 	obj.addErrorPage("200", "./file.html");
 	EXPECT_THROW(obj.addErrorPage("200", "./file.html"), Location::InvalidLocationException);
+}
+
+TEST(Location, ExceptionRoot)
+{
+	Location obj;
+
+	EXPECT_THROW(obj.setRoot(""), Location::InvalidLocationException);
+	obj.setRoot("/root");
+	EXPECT_THROW(obj.setRoot("/root"), Location::InvalidLocationException);
 }
 
 TEST(Location, getReturn)

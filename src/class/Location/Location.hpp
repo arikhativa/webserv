@@ -39,6 +39,7 @@ class Location : public ILocation
 	virtual const IReturn *getReturn(void) const;
 	virtual const std::list<std::string> &getIndexFiles(void) const;
 	virtual std::list<const IErrorPage *> getErrorPages(void) const;
+	virtual const IPath *getRoot(void) const;
 
 	void setPath(const std::string &path);
 	void setAutoIndex(const std::string &auto_index);
@@ -48,6 +49,7 @@ class Location : public ILocation
 	void setReturn(const std::string &status, const std::string &path);
 	void setIndexFiles(const std::list<std::string> &index_files);
 	void addErrorPage(const std::string &status, const std::string &path);
+	void setRoot(const std::string &root);
 
 	class InvalidLocationException : public std::exception
 	{
@@ -69,9 +71,10 @@ class Location : public ILocation
 	Return *_return;
 	std::list<std::string> _index_files;
 	std::list<ErrorPage> _error_pages;
+	Path *_root;
 };
 
-std::ostream &operator<<(std::ostream &o, Location const &i);
+std::ostream &operator<<(std::ostream &o, const Location &i);
 
 #ifdef TEST_ON
 #undef private
