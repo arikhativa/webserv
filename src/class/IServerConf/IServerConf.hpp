@@ -30,6 +30,7 @@ class IServerConf
 	virtual IPath getRoot(void) const = 0;
 	virtual std::pair<IAddress *, IPort *> getListen(void) const = 0;
 	virtual IIndexFiles getIndexFiles(void) const = 0;
+	virtual IAllowedMethods getAllowedMethods(void) const = 0;
 	virtual std::list<ILocation *> getLocations(void) const = 0;
 	virtual std::list<ICGILocation *> getCGILocation(void) const = 0;
 	virtual std::list<IErrorPage *> getErrorPages(void) const = 0;
