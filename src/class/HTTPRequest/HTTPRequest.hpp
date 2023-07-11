@@ -25,9 +25,19 @@ class HTTPRequest
 	std::string getResponse(void) const;
 	int getClientFd(void) const;
 
+	void setRawRequest(std::string request);
+	void setResponse(std::string response);
+	void setClientFd(int fd);
+
 	void recvRequest(void);
 	void sendResponse(void);
 	void handleRequest(void);
+
+	// class HTTPRequestException : public std::exception
+	// {
+	//   public:
+	// 	virtual const char *what() const throw();
+	// };
 
   private:
 	int _clientFd;
