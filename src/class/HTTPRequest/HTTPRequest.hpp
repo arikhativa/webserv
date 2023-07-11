@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <sys/socket.h>
 
 #ifdef TEST_ON
 #define private public
@@ -13,16 +14,25 @@
 class HTTPRequest
 {
   public:
-	explicit HTTPRequest(std::string rawRequest);
+	explicit HTTPRequest(int client_fd);
 	HTTPRequest(HTTPRequest const &src);
 	~HTTPRequest();
 
 	HTTPRequest &operator=(HTTPRequest const &rhs);
 
 	std::string getRawRequest(void) const;
+	std::string getResponse(void) const;
+	int getClientFd(void) const;
+
+	void recvRequest(void);
+	void sendRequest(void);
+	void handleRequest(void);
 
   private:
+	int _clientFd;
 	std::string _rawRequest;
+	/* TODO: how do we send files? */
+	std::string _response;
 };
 
 std::ostream &operator<<(std::ostream &o, HTTPRequest const &i);
