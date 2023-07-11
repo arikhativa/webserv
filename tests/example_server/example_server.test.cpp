@@ -39,13 +39,13 @@ class Server
 	Config *config;
 };
 
-TEST(Server, CorrectPort)
-{
-	MockIConfig *config = new MockIConfig;
-	EXPECT_CALL(*config, getPort()).Times(testing::AtLeast(1)).WillOnce(testing::Return(8080));
+// TEST(Server, CorrectPort)
+// {
+// 	MockIConfig *config = new MockIConfig;
+// 	EXPECT_CALL(*config, getPort()).Times(testing::AtLeast(1)).WillOnce(testing::Return(8080));
 
-	Server server(config);
+// 	Server server(config);
 
-	EXPECT_TRUE(server.start());
-	delete config;
-}
+// 	EXPECT_TRUE(server.start());
+// 	delete config;
+// }

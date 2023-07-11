@@ -26,6 +26,7 @@ class Server
 {
   public:
 	Server();
+	//explicit Server(Config config);
 	~Server();
 
 	void start();
@@ -33,7 +34,7 @@ class Server
 	void listenSockets();
 
   private:
-	// A config file var
+	//Config config;
 	Socket **_listener;
 	unsigned int _listenerSize;
 	enum status _status;
