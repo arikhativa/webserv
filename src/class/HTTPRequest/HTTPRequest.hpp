@@ -6,6 +6,7 @@
 #include <string>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 
 #ifdef TEST_ON
 #define private public
@@ -45,7 +46,6 @@ class HTTPRequest
   private:
 	const int _clientFd;
 	std::string _rawRequest;
-	/* TODO: how do we send files? */
 	std::string _response;
 };
 

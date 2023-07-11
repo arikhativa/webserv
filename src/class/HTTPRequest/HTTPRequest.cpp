@@ -44,7 +44,7 @@ std::ostream &operator<<(std::ostream &o, HTTPRequest const &i)
 
 void HTTPRequest::recvRequest(void)
 {
-				int MAX_BODY_SIZE = 512;
+	int MAX_BODY_SIZE = 512;
 	int tmpRecvLen;
 	char tmpRaw[MAX_BODY_SIZE];
 
@@ -65,7 +65,28 @@ void HTTPRequest::sendResponse(void)
 /* TODO: handle request according to HTTP */
 void HTTPRequest::handleRequest(void)
 {
-	this->_response = this->_rawRequest;
+	try
+	{
+		switch (HTTPRequestHandler::getRequestType(this->_rawRequest))
+		{
+			case IAllowedMethods::GET:
+				this->_response = HTTPRequestHandler::GET(this->_rawRequest);
+				break;
+			case IAllowedMethods::POST:
+				this->_response = HTTPRequestHandler::POST(this->_rawRequest);
+				break;
+			case IAllowedMethods::DELETE:
+				this->_response = HTTPRequestHandler::DELETE(this->_rawRequest);
+				break;
+			default: //Uknown request
+				this->_response = HTTPRequestHandler::UNKNOWN(this->_rawRequest);
+				break;
+		}
+	}
+	catch (const AllowedMethods::InvalidMethodException &e)
+	{
+		this->_response = HTTPRequestHandler::UNKNOWN(this->_rawRequest);
+	}
 }
 
 /*
