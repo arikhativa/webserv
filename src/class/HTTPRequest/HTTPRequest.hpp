@@ -25,7 +25,7 @@ class HTTPRequest
 	int getClientFd(void) const;
 
 	void recvRequest(void);
-	void sendRequest(void);
+	void sendResponse(void);
 	void handleRequest(void);
 
   private:
