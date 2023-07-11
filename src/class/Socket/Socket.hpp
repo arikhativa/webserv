@@ -8,35 +8,23 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 
 #include "../IP/IP.hpp"
+#include "../Port/Port.hpp"
 
 #ifdef TEST_ON
 #define private public
 #define protected public
 #endif
 
-class Port
-{
-	private:
-		int _port;
-	public:
-		Port(int port) { this->_port = port; }
-		uint16_t getPort() const { return (this->_port); }
-};
-
 #define MAX_SYS_BACKLOG 128
 
 class Socket
 {
   public:
-	// Socket();
 	explicit Socket(IP ip, Port port);
-	// explicit Socket(IP ip, Port port, int domain, int type, int protocol);
-	Socket(Socket const &src);
 	~Socket();
-
-	Socket &operator=(Socket const &rhs);
 
 	IP getIp(void) const;
 	Port getPort(void) const;
@@ -48,9 +36,25 @@ class Socket
 	void bind();
 	void listen();
 
+	class SocketCreationFailed : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+	class SocketListeningFailed : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+	class SocketBindingFailed : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
   private:
-	IP _ip;
-	Port _port;
+	const IP _ip;
+	const Port _port;
 	int _fd;
 	int _domain;
 	int _type;
