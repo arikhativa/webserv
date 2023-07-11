@@ -47,7 +47,7 @@ void Server::start(void)
 	this->_status = RUNNING;
 	while (RUNNING == this->_status)
 	{
-		/* Must be non-blockin (?) */
+		/* TODO: Must be non-blocking (?) */
 		pollCnt = poll(this->_poll, this->_listenerSize, -1);
 		(void)pollCnt;
 		for (unsigned int i = 0; i < this->_listenerSize; i++)
@@ -59,12 +59,16 @@ void Server::start(void)
 				/*
 				 * Nginx does not close connection after the client send the request,
 				 * tmp_client could be stored in a client-fd array and delete it server shutdown
+				 * TODO: IT DOES CLOSE THE CONNECTION BUT AFTER 5 LINE BREAKS ~weird~
 				*/
 				tmp_client = accept(this->_listener[i]->getFd(), NULL, NULL);
+				if (tmp_client <= -1)
+					continue ;
 				HTTPRequest http(tmp_client);
 				http.recvRequest();
 				http.handleRequest();
 				http.sendResponse();
+				close(tmp_client);
 			}
 		}
 	}
