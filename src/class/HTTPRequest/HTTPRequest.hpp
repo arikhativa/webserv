@@ -33,6 +33,12 @@ class HTTPRequest
 	void sendResponse(void);
 	void handleRequest(void);
 
+	// class HTTPRequestException : public std::exception
+	// {
+	//   public:
+	// 	virtual const char *what() const throw();
+	// };
+
   private:
 	int _clientFd;
 	std::string _rawRequest;
