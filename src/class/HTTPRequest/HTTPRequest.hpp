@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <sys/socket.h>
+#include <unistd.h>
 
 #ifdef TEST_ON
 #define private public
