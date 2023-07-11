@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <sys/poll.h>
 #include <unistd.h>
 #include <fcntl.h>
