@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include "Socket/Socket.hpp"
+#include "HTTPRequest/HTTPRequest.hpp"
 
 #ifdef TEST_ON
 #define private public

@@ -54,15 +54,14 @@ void Server::start(void)
 		{
 			if (!this->_poll[i].revents)
 				continue ;
-			tmp_client = accept(this->_listener[i]->getFd(), NULL, NULL);
-			/* Handle Client Request*/
-				char buff[512];
-				read(tmp_client, buff, sizeof(buff));
-				write(tmp_client, buff, strlen(buff));
-
-				write(1, buff, strlen(buff));
-				memset(buff, 0, sizeof(buff));
-				close(tmp_client);
+			/* Handle Client Request */
+			{
+				tmp_client = accept(this->_listener[i]->getFd(), NULL, NULL);
+				HTTPRequest http(tmp_client);
+				http.recvRequest();
+				http.handleRequest();
+				http.sendResponse();
+			}
 		}
 	}
 }

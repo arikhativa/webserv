@@ -30,7 +30,7 @@ class Port
 class Socket
 {
   public:
-	Socket();
+	// Socket();
 	explicit Socket(IP ip, Port port);
 	// explicit Socket(IP ip, Port port, int domain, int type, int protocol);
 	Socket(Socket const &src);
