@@ -10,9 +10,14 @@ HTTPRequest::HTTPRequest(int clientFd)
 {
 }
 
-HTTPRequest::HTTPRequest(const HTTPRequest &src)
-	: _clientFd(src.getClientFd()), _rawRequest(src.getRawRequest()), _response(src.getResponse())
+const char *HTTPRequest::SendingResponseError::what() const throw()
 {
+	return "Couldn't send response: send() failed";
+}
+
+const char *HTTPRequest::RecievingRequestError::what() const throw()
+{
+	return "Didn't recieve request: recv() failed";
 }
 
 /*
@@ -21,23 +26,11 @@ HTTPRequest::HTTPRequest(const HTTPRequest &src)
 
 HTTPRequest::~HTTPRequest()
 {
-	close(this->_clientFd);
 }
 
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
 */
-
-HTTPRequest &HTTPRequest::operator=(HTTPRequest const &rhs)
-{
-	if (this != &rhs)
-	{
-		this->_clientFd = rhs.getClientFd();
-		this->_rawRequest = rhs.getRawRequest();
-		this->_response = rhs.getResponse();
-	}
-	return *this;
-}
 
 std::ostream &operator<<(std::ostream &o, HTTPRequest const &i)
 {
@@ -56,12 +49,17 @@ void HTTPRequest::recvRequest(void)
 	char tmpRaw[MAX_BODY_SIZE];
 
 	tmpRecvLen = recv(this->_clientFd, tmpRaw, MAX_BODY_SIZE, 0);
+	if (tmpRecvLen <= -1)
+		throw RecievingRequestError();
 	this->_rawRequest = std::string(tmpRaw, tmpRecvLen);
 }
 
 void HTTPRequest::sendResponse(void)
 {
-	send(this->_clientFd, this->_response.c_str(), this->_response.size(), 0);
+	int sendStatus;
+	sendStatus = send(this->_clientFd, this->_response.c_str(), this->_response.size(), 0);
+	if (sendStatus <= -1)
+		throw SendingResponseError();
 }
 
 /* TODO: handle request according to HTTP */
@@ -97,11 +95,6 @@ void HTTPRequest::setRawRequest(std::string request)
 void HTTPRequest::setResponse(std::string response)
 {
 	this->_response = response;
-}
-
-void HTTPRequest::setClientFd(int fd)
-{
-	this->_clientFd = fd;
 }
 
 /* ************************************************************************** */

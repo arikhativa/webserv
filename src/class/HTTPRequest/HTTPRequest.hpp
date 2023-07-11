@@ -16,10 +16,7 @@ class HTTPRequest
 {
   public:
 	explicit HTTPRequest(int client_fd);
-	HTTPRequest(HTTPRequest const &src);
 	~HTTPRequest();
-
-	HTTPRequest &operator=(HTTPRequest const &rhs);
 
 	std::string getRawRequest(void) const;
 	std::string getResponse(void) const;
@@ -33,14 +30,20 @@ class HTTPRequest
 	void sendResponse(void);
 	void handleRequest(void);
 
-	// class HTTPRequestException : public std::exception
-	// {
-	//   public:
-	// 	virtual const char *what() const throw();
-	// };
+	class SendingResponseError : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
+	class RecievingRequestError : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
 
   private:
-	int _clientFd;
+	const int _clientFd;
 	std::string _rawRequest;
 	/* TODO: how do we send files? */
 	std::string _response;

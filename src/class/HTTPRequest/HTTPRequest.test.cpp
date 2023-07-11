@@ -10,27 +10,39 @@ TEST(HTTPRequest, CreateDestroy)
 
 TEST(HTTPRequest, Accessor)
 {
-	int fd(6);
-	HTTPRequest obj(fd);
+	int fd[2];
+	pipe(fd);
+	HTTPRequest obj(fd[0]);
 
-	/* Simple getter*/
 	std::string request("GET /");
-	EXPECT_EQ(fd, obj.getClientFd());
+	EXPECT_EQ(fd[0], obj.getClientFd());
 	obj.setRawRequest(request);
 	EXPECT_EQ(request, obj.getRawRequest());
 	EXPECT_TRUE(obj.getResponse().empty());
+	close(fd[0]);
+	close(fd[1]);
 }
 
-TEST(HTTPRequest, Canonical)
+TEST(HTTPRequest, RecievingRequestError)
 {
-	HTTPRequest obj1(1);
-	HTTPRequest obj2(2);
-	HTTPRequest obj3(obj1);
+	int fd[2];
+	pipe(fd);
+	HTTPRequest obj(fd[0]);
+	EXPECT_THROW(obj.recvRequest(), HTTPRequest::RecievingRequestError);
+	HTTPRequest obj1(-1);
+	EXPECT_THROW(obj.recvRequest(), HTTPRequest::RecievingRequestError);
+	close(fd[0]);
+	close(fd[1]);
+}
 
-	std::string request("GET /");
-	obj1.setRawRequest(request);
-	EXPECT_EQ(obj1.getClientFd(), obj3.getClientFd());
-	obj2 = obj1;
-	EXPECT_EQ(obj1.getClientFd(), obj2.getClientFd());
-	EXPECT_EQ(obj1.getRawRequest(), obj2.getRawRequest());
+TEST(HTTPRequest, SendingResponseError)
+{
+	int fd[2];
+	pipe(fd);
+	HTTPRequest obj(fd[0]);
+	EXPECT_THROW(obj.sendResponse(), HTTPRequest::SendingResponseError);
+	HTTPRequest obj1(-1);
+	EXPECT_THROW(obj.sendResponse(), HTTPRequest::SendingResponseError);
+	close(fd[0]);
+	close(fd[1]);
 }
