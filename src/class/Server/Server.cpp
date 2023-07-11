@@ -56,6 +56,10 @@ void Server::start(void)
 				continue ;
 			/* Handle Client Request */
 			{
+				/*
+				 * Nginx does not close connection after the client send the request,
+				 * tmp_client could be stored in a client-fd array and delete it server shutdown
+				*/
 				tmp_client = accept(this->_listener[i]->getFd(), NULL, NULL);
 				HTTPRequest http(tmp_client);
 				http.recvRequest();
