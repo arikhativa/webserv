@@ -27,6 +27,7 @@ class ILocation
 	virtual std::size_t getMaxBodySize(void) const = 0;
 	virtual bool isAutoIndexOn(void) const = 0;
 	virtual bool canUpload(void) const = 0;
+	virtual const IPath *getRoot(void) const = 0;
 };
 
 #ifdef TEST_ON
