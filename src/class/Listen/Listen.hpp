@@ -32,6 +32,9 @@ class Listen : public IListen
 	void setPort(const std::string &port);
 
   private:
+	static const std::string _defaultIP;
+	static const uint16_t _defaultPort;
+
 	IP _address;
 	Port _port;
 };

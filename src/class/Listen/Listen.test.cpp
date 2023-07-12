@@ -10,22 +10,22 @@ TEST(Listen, CreateDestroy)
 
 TEST(Listen, Accessor)
 {
-	int val(6);
 	Listen obj;
 
-	EXPECT_EQ(val, obj.getValue());
-	val = 7;
-	obj._setPath(val);
-	EXPECT_EQ(val, obj.getValue());
+	EXPECT_EQ(Listen::_defaultIP, obj.getAddress().getAddress());
+	EXPECT_EQ(Listen::_defaultPort, obj.getPort().get());
+	obj.setAddress("127.0.0.1");
+	obj.setPort("443");
+	EXPECT_EQ("127.0.0.1", obj.getAddress().getAddress());
+	EXPECT_EQ(443, obj.getPort().get());
 }
 
-TEST(Listen, Canonical)
+TEST(Listen, Print)
 {
-	Listen obj1(1);
-	Listen obj2(2);
-	Listen obj3(obj1);
+	Listen obj;
 
-	EXPECT_EQ(obj1.getValue(), obj3.getValue());
-	obj2 = obj1;
-	EXPECT_EQ(obj1.getValue(), obj2.getValue());
+	obj.setAddress("127.0.0.1");
+	std::stringstream ss;
+	ss << obj;
+	EXPECT_EQ("{ \"_address\": \"127.0.0.1\", \"_port\": 80 }", ss.str());
 }

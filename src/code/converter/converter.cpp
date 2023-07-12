@@ -44,3 +44,40 @@ bool converter::onOffStringToBool(const std::string &str)
 	else
 		throw std::invalid_argument("Invalid input: " + str);
 }
+
+static bool isValidLong(const std::string &str)
+{
+	if (str.empty())
+		return false;
+	size_t i = 0;
+	if (str[0] == '-')
+		i++;
+	while (i < str.length())
+	{
+		if (!isdigit(str[i]))
+			return false;
+		i++;
+	}
+	return true;
+}
+
+int converter::stringToInt(const std::string &str)
+{
+	if (!isValidLong(str))
+		throw std::invalid_argument("Invalid input: " + str);
+
+	const char *charStr = str.c_str();
+
+	char *endPtr;
+	errno = 0;
+	int ret;
+
+	long long longValue = std::strtoll(charStr, &endPtr, 10);
+	if (errno == ERANGE || longValue > std::numeric_limits<int>::max() || longValue < std::numeric_limits<int>::min())
+	{
+		throw std::out_of_range("Overflow: " + str);
+	}
+
+	ret = static_cast<int>(longValue);
+	return ret;
+}
