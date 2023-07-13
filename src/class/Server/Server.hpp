@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include "Socket/Socket.hpp"
-// #include "HTTPRequest/HTTPRequest.hpp"
+#include "HTTPRequest/HTTPRequest.hpp"
 
 #ifdef TEST_ON
 #define private public
@@ -37,7 +37,7 @@ class Server
 	};
 
 	// void start();
-	void acceptConnection(int socketIndex);
+	HTTPRequest acceptConnection(int socketIndex);
 	void bindSockets(void);
 	void listenSockets(void);
 	const std::vector<int> getListeners(void) const;

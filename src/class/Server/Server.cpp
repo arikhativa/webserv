@@ -76,7 +76,7 @@ Server::~Server()
 // 	}
 // }
 
-void Server::acceptConnection(int socketIndex)
+HTTPRequest Server::acceptConnection(int socketIndex)
 {
 	int tmp_client;
 
@@ -94,11 +94,7 @@ void Server::acceptConnection(int socketIndex)
 			tmp_client = accept(this->_listener.at(socketIndex).getFd(), NULL, NULL);
 			if (tmp_client <= -1)
 				throw Server::AcceptingConnectionFailed();
-			// HTTPRequest http(tmp_client);
-			// http.recvRequest();
-			// http.handleRequest();
-			// http.sendResponse();
-			close(tmp_client);
+			return HTTPRequest(tmp_client);
 		}
 	// }
 }
