@@ -17,7 +17,7 @@ const std::string Token::Keyword::RETURN("return");
 const std::string Token::Keyword::CLIENT_MAX_BODY_SIZE("client_max_body_size");
 const std::string Token::Keyword::LOCATION("location");
 const std::string Token::Keyword::ALLOW_METHODS("allow_methods");
-const std::string Token::Keyword::AUTOINDEX("autoindex");
+const std::string Token::Keyword::AUTO_INDEX("autoindex");
 const std::string Token::Keyword::UPLOAD("upload");
 
 const char Token::CHAR_SEPARATOR(';');
@@ -54,7 +54,7 @@ static std::map<std::string, bool> initKeywords(void)
 	ret[Token::Keyword::CLIENT_MAX_BODY_SIZE] = true;
 	ret[Token::Keyword::LOCATION] = true;
 	ret[Token::Keyword::ALLOW_METHODS] = true;
-	ret[Token::Keyword::AUTOINDEX] = true;
+	ret[Token::Keyword::AUTO_INDEX] = true;
 	ret[Token::Keyword::UPLOAD] = true;
 
 	return ret;

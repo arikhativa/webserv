@@ -27,7 +27,7 @@ static std::map<std::string, bool> initLocationValidKeywords(void)
 	map[Token::Keyword::ROOT] = true;
 	map[Token::Keyword::INDEX] = true;
 	map[Token::Keyword::RETURN] = true;
-	map[Token::Keyword::AUTOINDEX] = true;
+	map[Token::Keyword::AUTO_INDEX] = true;
 	map[Token::Keyword::UPLOAD] = true;
 
 	return map;

@@ -71,7 +71,7 @@ TEST(AllowedMethods, PrintPost)
 	AllowedMethods obj(m);
 	std::stringstream ss;
 	ss << obj;
-	EXPECT_EQ("AllowedMethods[POST]", ss.str());
+	EXPECT_EQ("{\"post\": true}", ss.str());
 }
 
 TEST(AllowedMethods, PrintAll)
@@ -84,5 +84,5 @@ TEST(AllowedMethods, PrintAll)
 	AllowedMethods obj(m);
 	std::stringstream ss;
 	ss << obj;
-	EXPECT_EQ("AllowedMethods[GET, POST, DELETE]", ss.str());
+	EXPECT_EQ("{\"get\": true, \"post\": true, \"delete\": true}", ss.str());
 }
