@@ -3,11 +3,6 @@ language: cpp
 sudo: true
 compiler: c++
 
-# TODO think about this
-# cache:
-#   directories:
-#     - $TRAVIS_BUILD_DIR/res
-
 before_install:
   - sudo apt-get update
 
