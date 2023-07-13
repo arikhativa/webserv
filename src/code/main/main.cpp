@@ -20,10 +20,5 @@ int main(void)
 	ExampleTemplate<long> b(-42);
 	std::cout << b << std::endl;
 
-	Server server;
-	server.bindSockets();
-	server.listenSockets();
-	server.start();
-
 	return 0;
 }

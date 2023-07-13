@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <cstring>
 #include <sys/poll.h>
 #include <unistd.h>
@@ -25,21 +26,28 @@ enum status
 class Server
 {
   public:
-	Server();
+	Server(void);
 	//explicit Server(Config config);
-	~Server();
+	~Server(void);
 
-	void start();
-	void bindSockets();
-	void listenSockets();
+	class AcceptingConnectionFailed : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
+	// void start();
+	HTTPRequest acceptConnection(int socketIndex);
+	void bindSockets(void);
+	void listenSockets(void);
+	const std::vector<int> getListeners(void) const;
 
   private:
 	//Config config;
-	Socket **_listener;
+	std::vector<Socket> _listener;
 	unsigned int _listenerSize;
 	enum status _status;
-
-	struct pollfd *_poll;
+	// struct pollfd *_poll;
 };
 
 #ifdef TEST_ON
