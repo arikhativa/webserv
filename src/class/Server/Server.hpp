@@ -30,11 +30,17 @@ class Server
 	//explicit Server(Config config);
 	~Server(void);
 
+	class AcceptingConnectionFailed : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
 	// void start();
-	void acceptConnections(const struct pollfd *poll);
+	void acceptConnection(int socketIndex);
 	void bindSockets(void);
 	void listenSockets(void);
-	const std::vector<Socket> getListeners(void) const;
+	const std::vector<int> getListeners(void) const;
 
   private:
 	//Config config;

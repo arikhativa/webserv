@@ -15,11 +15,17 @@ Server::Server()
 	/* Create listeners according to the config file */
 	for (size_t i = 0; i < this->_listenerSize; i++)
 	{
+		/* Example */
 		this->_listener.push_back(Socket(IP("127.0.0.1"), Port(1234)));
 		// fcntl(this->_listener[i]->getFd(), F_SETFL, O_NONBLOCK);
 		// this->_poll[i].fd = this->_listener[i]->getFd();
 		// this->_poll[i].events = POLLIN;
 	}
+}
+
+const char *Server::AcceptingConnectionFailed::what() const throw()
+{
+	return "Accepting connection failed";
 }
 
 /*
@@ -70,14 +76,14 @@ Server::~Server()
 // 	}
 // }
 
-void Server::acceptConnections(const struct pollfd *poll)
+void Server::acceptConnection(int socketIndex)
 {
 	int tmp_client;
 
-	for (unsigned int i = 0; i < this->_listenerSize; i++)
-	{
-		if (!poll[i].revents)
-			continue ;
+	// for (unsigned int i = 0; i < this->_listenerSize; i++)
+	// {
+	// 	if (!poll[i].revents)
+	// 		continue ;
 		/* Handle Client Request */
 		{
 			/*
@@ -85,16 +91,16 @@ void Server::acceptConnections(const struct pollfd *poll)
 				* tmp_client could be stored in a client-fd array and delete it server shutdown
 				* TODO: IT DOES CLOSE THE CONNECTION BUT AFTER 5 LINE BREAKS ~weird~
 			*/
-			tmp_client = accept(this->_listener.at(i).getFd(), NULL, NULL);
+			tmp_client = accept(this->_listener.at(socketIndex).getFd(), NULL, NULL);
 			if (tmp_client <= -1)
-				continue ;
+				throw Server::AcceptingConnectionFailed();
 			// HTTPRequest http(tmp_client);
 			// http.recvRequest();
 			// http.handleRequest();
 			// http.sendResponse();
 			close(tmp_client);
 		}
-	}
+	// }
 }
 
 void Server::bindSockets()
@@ -113,9 +119,15 @@ void Server::listenSockets()
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-const std::vector<Socket> Server::getListeners(void) const
+const std::vector<int> Server::getListeners(void) const
 {
-	return this->_listener;
+	std::vector<int> fds;
+
+	std::vector<Socket>::const_iterator it = this->_listener.begin();
+	std::vector<Socket>::const_iterator end = this->_listener.end();
+	for (; it != end; it++)
+		fds.push_back(it->getFd());
+	return fds;
 }
 
 /* ************************************************************************** */
