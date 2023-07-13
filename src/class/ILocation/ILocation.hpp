@@ -7,7 +7,6 @@
 
 #include <IAllowedMethods/IAllowedMethods.hpp>
 #include <IErrorPage/IErrorPage.hpp>
-#include <IIndexFiles/IIndexFiles.hpp>
 #include <IPath/IPath.hpp>
 #include <IReturn/IReturn.hpp>
 
@@ -21,7 +20,7 @@ class ILocation
   public:
 	virtual IPath getRoot(void) const = 0;
 	virtual ~ILocation(){};
-	virtual IIndexFiles getIndexFiles(void) const = 0;
+	virtual const std::list<std::string> &getIndexFiles(void) const = 0;
 	virtual IAllowedMethods getAllowedMethods(void) const = 0;
 	virtual IReturn getReturn(void) const = 0;
 	virtual std::list<IErrorPage *> getErrorPages(void) const = 0;
