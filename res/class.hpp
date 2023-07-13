@@ -15,10 +15,10 @@ class Replace
   public:
 	Replace();
 	explicit Replace(int i);
-	Replace(Replace const &src);
+	Replace(const Replace &src);
 	~Replace();
 
-	Replace &operator=(Replace const &rhs);
+	Replace &operator=(const Replace &rhs);
 
 	int getValue(void) const;
 

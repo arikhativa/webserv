@@ -14,9 +14,9 @@ TEST(Path, Canonical)
 	Path obj2("path2");
 	Path obj3(obj1);
 
-	EXPECT_EQ(obj1.getPath(), obj3.getPath());
+	EXPECT_EQ(obj1.get(), obj3.get());
 	obj2 = obj1;
-	EXPECT_EQ(obj1.getPath(), obj2.getPath());
+	EXPECT_EQ(obj1.get(), obj2.get());
 }
 
 TEST(Path, Accessor)
@@ -25,16 +25,16 @@ TEST(Path, Accessor)
 		std::string str = "";
 		Path obj;
 
-		EXPECT_EQ(str, obj.getPath());
+		EXPECT_EQ(str, obj.get());
 		str = "test";
-		obj.setPath(str);
-		EXPECT_EQ(str, obj.getPath());
+		obj.set(str);
+		EXPECT_EQ(str, obj.get());
 	}
 	{
 		std::string str = "test";
 		Path obj(str);
 
-		EXPECT_EQ(str, obj.getPath());
+		EXPECT_EQ(str, obj.get());
 	}
 }
 
@@ -43,9 +43,9 @@ TEST(Path, PathType)
 	Path obj("/absolute/path");
 	EXPECT_EQ(true, obj.isAbsolute());
 
-	obj.setPath("relative/path");
+	obj.set("relative/path");
 	EXPECT_EQ(true, obj.isRelative());
 
-	obj.setPath("");
+	obj.set("");
 	EXPECT_EQ(false, obj.isRelative());
 }
