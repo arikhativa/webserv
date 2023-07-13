@@ -39,18 +39,47 @@ Server::~Server()
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void Server::start(void)
+/* This function belongs to server manager */
+// void Server::start(void)
+// {
+// 	int pollCnt;
+
+// 	this->_status = RUNNING;
+// 	while (RUNNING == this->_status)
+// 	{
+// 		/* TODO: Must be non-blocking (?) */
+// 		pollCnt = poll(this->_poll, this->_listenerSize, -1);
+// 		(void)pollCnt;
+// 		this->acceptConnection();
+// 		for (unsigned int i = 0; i < this->_listenerSize; i++)
+// 		{
+// 			if (!this->_poll[i].revents)
+// 				continue ;
+// 			/* Handle Client Request */
+// 			{
+// 				/*
+// 				 * Nginx does not close connection after the client send the request,
+// 				 * tmp_client could be stored in a client-fd array and delete it server shutdown
+// 				 * TODO: IT DOES CLOSE THE CONNECTION BUT AFTER 5 LINE BREAKS ~weird~
+// 				*/
+// 				tmp_client = accept(this->_listener[i]->getFd(), NULL, NULL);
+// 				if (tmp_client <= -1)
+// 					continue ;
+// 				HTTPRequest http(tmp_client);
+// 				http.recvRequest();
+// 				http.handleRequest();
+// 				http.sendResponse();
+// 				close(tmp_client);
+// 			}
+// 		}
+// 	}
+// }
+
+void Server::acceptConnection(void)
 {
-	int pollCnt;
 	int tmp_client;
 
-	this->_status = RUNNING;
-	while (RUNNING == this->_status)
-	{
-		/* TODO: Must be non-blocking (?) */
-		pollCnt = poll(this->_poll, this->_listenerSize, -1);
-		(void)pollCnt;
-		for (unsigned int i = 0; i < this->_listenerSize; i++)
+	for (unsigned int i = 0; i < this->_listenerSize; i++)
 		{
 			if (!this->_poll[i].revents)
 				continue ;
@@ -64,14 +93,13 @@ void Server::start(void)
 				tmp_client = accept(this->_listener[i]->getFd(), NULL, NULL);
 				if (tmp_client <= -1)
 					continue ;
-				HTTPRequest http(tmp_client);
-				http.recvRequest();
-				http.handleRequest();
-				http.sendResponse();
+				// HTTPRequest http(tmp_client);
+				// http.recvRequest();
+				// http.handleRequest();
+				// http.sendResponse();
 				close(tmp_client);
 			}
 		}
-	}
 }
 
 void Server::bindSockets()
