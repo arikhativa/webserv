@@ -137,18 +137,37 @@ std::list<const ILocation *> ServerConf::getLocations(void) const
 
 void ServerConf::setName(const std::string &name)
 {
+	if (_name.isOn())
+		throw InvalidServerConf(Token::Keyword::SERVER_NAME + " is already set");
+	if (!name.size())
+		throw InvalidServerConf(Token::Keyword::SERVER_NAME + " can't be empty");
+	_name.setValue(name);
+	_name.setOn(true);
 }
 
 void ServerConf::setMaxBodySize(const std::string &size)
 {
+	if (_max_body_size.isOn())
+		throw InvalidServerConf(Token::Keyword::CLIENT_MAX_BODY_SIZE + " is already set");
+	std::size_t i = converter::stringToSizeT(size);
+	_max_body_size.setValue(i);
+	_max_body_size.setOn(true);
 }
 
 void ServerConf::setReturn(const std::string &status, const std::string &path)
 {
+	if (_return)
+		throw InvalidServerConf(Token::Keyword::RETURN + " is already set");
+	_return = new Return(status, path);
 }
 
 void ServerConf::setRoot(const std::string &path)
 {
+	if (_root)
+		throw InvalidServerConf(Token::Keyword::ROOT + " is already set");
+	if (!path.size())
+		throw InvalidServerConf(Token::Keyword::ROOT + " can't be empty");
+	_root = new Path(path);
 }
 
 void ServerConf::setIndexFiles(const std::list<std::string> &index_files)
@@ -166,22 +185,66 @@ void ServerConf::setIndexFiles(const std::list<std::string> &index_files)
 }
 void ServerConf::addErrorPage(const std::string &status, const std::string &path)
 {
+	ErrorPage page(status, path);
+
+	std::list<ErrorPage>::iterator it = _error_pages.begin();
+	while (it != _error_pages.end())
+	{
+		if (it->getStatus().get() == page.getStatus().get())
+			throw InvalidServerConf("Error page for status " + status + " is already set");
+		++it;
+	}
+	_error_pages.push_back(page);
 }
 
 void ServerConf::addListenByPort(const std::string &port)
 {
+	Listen listen;
+
+	listen.setPort(port);
+
+	addListen(listen);
 }
 
 void ServerConf::addListenByIP(const std::string &ip)
 {
+	Listen listen;
+
+	listen.setAddress(ip);
+
+	addListen(listen);
 }
 
 void ServerConf::addListen(const std::string &ip, const std::string &port)
 {
+	Listen listen(ip, port);
+
+	addListen(listen);
+}
+
+void ServerConf::addListen(const Listen &listen)
+{
+	std::list<Listen>::iterator it = _listen.begin();
+
+	while (it != _listen.end())
+	{
+		if (it->getAddress().getAddress() == listen.getAddress().getAddress() &&
+			it->getPort().get() == listen.getPort().get())
+		{
+			std::string str(listen.getAddress().getAddress());
+			str += ":";
+			std::string port = converter::numToString(listen.getPort().get());
+			str += port;
+			throw InvalidServerConf("Listen for Address: " + str + " is already set");
+		}
+		++it;
+	}
+	_listen.push_back(listen);
 }
 
 void ServerConf::addLocation(const Location &location)
 {
+	_locations.push_back(location);
 }
 
 /* ************************************************************************** */
