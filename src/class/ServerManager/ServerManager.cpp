@@ -7,9 +7,11 @@
 
 /* Server should be initialized using the config file, but we dont have it ready yet */
 ServerManager::ServerManager()
+	:_status(STOPED), _pollSize(0), _poll(new struct pollfd[4])
 {
-	this->_virtualServers.push_back(Server(1234));
-	this->_virtualServers.push_back(Server(4321));
+	this->_virtualServers.push_back(Server(1234, 4321));
+	this->_virtualServers.push_back(Server(1235, 5321));
+	this->_virtualServers.push_back(Server(1236, 6321));
 }
 
 // ServerManager::ServerManager(Config config)
@@ -32,6 +34,59 @@ ServerManager::~ServerManager()
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
+
+void ServerManager::setup()
+{
+	std::vector<Server>::iterator it = this->_virtualServers.begin();
+	std::vector<Server>::iterator end = this->_virtualServers.end();
+	for (int i = 0; it != end; it++)
+	{
+		it->bindSockets();
+		it->listenSockets();
+		std::vector<int> fds = it->getListeners();
+		std::vector<int>::iterator it_fds = fds.begin();
+		std::vector<int>::iterator end_fds = fds.end();
+		for (; it_fds != end_fds; i++, it_fds++)
+		{
+			this->_poll[i].fd = *it_fds;
+			this->_poll[i].events = POLLIN;
+			this->_pollServer.insert(std::pair<struct pollfd *, Server*>(this->_poll + i, &(*it)));
+			this->_pollSize++;
+		}
+	}
+}
+
+void ServerManager::start()
+{
+	int pollCnt;
+	int tmp_client;
+
+	this->_status = RUNNING;
+	while (RUNNING == this->_status)
+	{
+		/* TODO: Must be non-blocking (?) */
+		std::cout << "Poll is starting" << std::endl;
+		pollCnt = poll(this->_poll, this->_pollSize, -1);
+		std::cout << "Incoming connections: " << pollCnt << std::endl;
+		(void)pollCnt;
+		for (int i = 0; i < this->_pollSize; i++)
+		{
+			if (!this->_poll[i].revents)
+				continue ;
+			/* Handle Client Request */
+			{
+				tmp_client = this->_pollServer.at(this->_poll + i)->acceptConnection(this->_poll[i].fd);
+				if (tmp_client <= -1)
+					continue ;
+				HTTPRequest http = HTTPRequest(*this->_pollServer.at(this->_poll + i), tmp_client);
+				http.recvRequest();
+				http.handleRequest();
+				http.sendResponse();
+				close(tmp_client);
+			}
+		}
+	}
+}
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------

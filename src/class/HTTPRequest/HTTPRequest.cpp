@@ -1,14 +1,18 @@
-
 #include <HTTPRequest/HTTPRequest.hpp>
+
+const std::string HTTPRequest::GET_STRING("GET");
+const std::string HTTPRequest::POST_STRING("POST");
+const std::string HTTPRequest::DELETE_STRING("DELETE");
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-HTTPRequest::HTTPRequest(int clientFd)
-	: _clientFd(clientFd)
+HTTPRequest::HTTPRequest(const Server virtualServer, int clientFd)
+	: _virtualServer(virtualServer), _clientFd(clientFd)
 {
 }
+
 
 const char *HTTPRequest::SendingResponseError::what() const throw()
 {
@@ -42,16 +46,27 @@ std::ostream &operator<<(std::ostream &o, HTTPRequest const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+HTTPRequest::type HTTPRequest::getRequestType()
+{
+	if (!this->_rawRequest.compare(0, HTTPRequest::GET_STRING.size(), GET_STRING))
+		return (GET);
+	if (!this->_rawRequest.compare(0, HTTPRequest::POST_STRING.size(), POST_STRING))
+		return (POST);
+	if (!this->_rawRequest.compare(0, HTTPRequest::DELETE_STRING.size(), DELETE_STRING))
+		return (DELETE);
+	else
+		return (UNKNOWN);
+}
+
 void HTTPRequest::recvRequest(void)
 {
-	int MAX_BODY_SIZE = 512;
 	int tmpRecvLen;
-	char tmpRaw[MAX_BODY_SIZE];
+	char tmpRaw[512];
 
-	tmpRecvLen = recv(this->_clientFd, tmpRaw, MAX_BODY_SIZE, 0);
+	tmpRecvLen = recv(this->_clientFd, tmpRaw, 512, 0);
 	if (tmpRecvLen <= -1)
 		throw RecievingRequestError();
-	this->_rawRequest = std::string(tmpRaw, tmpRecvLen);
+	this->_rawRequest = std::string(strdup(tmpRaw));
 }
 
 void HTTPRequest::sendResponse(void)
@@ -65,27 +80,20 @@ void HTTPRequest::sendResponse(void)
 /* TODO: handle request according to HTTP */
 void HTTPRequest::handleRequest(void)
 {
-	try
+	switch (getRequestType())
 	{
-		switch (HTTPRequestHandler::getRequestType(this->_rawRequest))
-		{
-			case IAllowedMethods::GET:
-				this->_response = HTTPRequestHandler::GET(this->_rawRequest);
-				break;
-			case IAllowedMethods::POST:
-				this->_response = HTTPRequestHandler::POST(this->_rawRequest);
-				break;
-			case IAllowedMethods::DELETE:
-				this->_response = HTTPRequestHandler::DELETE(this->_rawRequest);
-				break;
-			default: //Uknown request
-				this->_response = HTTPRequestHandler::UNKNOWN(this->_rawRequest);
-				break;
-		}
-	}
-	catch (const AllowedMethods::InvalidMethodException &e)
-	{
-		this->_response = HTTPRequestHandler::UNKNOWN(this->_rawRequest);
+		case HTTPRequest::GET:
+			this->_response = HTTPRequestHandler::GET(this->_rawRequest);
+			break;
+		case HTTPRequest::POST:
+			this->_response = HTTPRequestHandler::POST(this->_rawRequest);
+			break;
+		case HTTPRequest::DELETE:
+			this->_response = HTTPRequestHandler::DELETE(this->_rawRequest);
+			break;
+		default: //Uknown request
+			this->_response = HTTPRequestHandler::UNKNOWN(this->_rawRequest);
+			break;
 	}
 }
 

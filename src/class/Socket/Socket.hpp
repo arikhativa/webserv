@@ -24,6 +24,7 @@ class Socket
 {
   public:
 	explicit Socket(IP ip, Port port);
+	Socket(Socket const &src);
 	~Socket();
 
 	IP getIp(void) const;
@@ -35,6 +36,7 @@ class Socket
 
 	void bind();
 	void listen();
+	void close();
 
 	class SocketCreationFailed : public std::exception
 	{

@@ -4,12 +4,9 @@
 
 #include <iostream>
 #include <string>
-#include <AllowedMethods/AllowedMethods.hpp>
 
 namespace HTTPRequestHandler
 {
-	IAllowedMethods::type getRequestType(std::string request);
-
 	std::string GET(std::string request);
 	std::string POST(std::string request);
 	std::string DELETE(std::string request);

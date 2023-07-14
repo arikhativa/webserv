@@ -25,6 +25,11 @@ Socket::Socket(IP ip, Port port)
 	this->_sockaddr.sin_addr.s_addr = inet_addr(this->_ip.getAddress().c_str());
 }
 
+Socket::Socket(Socket const &src)
+	:_ip(src._ip), _port(src._port), _fd(src._fd), _domain(src._domain),
+	_type(src._type), _protocol(src._protocol), _sockaddr(src._sockaddr)
+{}
+
 const char *Socket::SocketCreationFailed::what() const throw()
 {
 	return "Socket creation failed";
@@ -44,8 +49,6 @@ const char *Socket::SocketBindingFailed::what() const throw()
 
 Socket::~Socket()
 {
-	if (this->_fd >= 0)
-		close(this->_fd);
 }
 
 /*
@@ -76,6 +79,12 @@ void Socket::listen(void)
 	listen_status = ::listen(this->_fd, MAX_SYS_BACKLOG);
 	if (listen_status <= -1)
 		throw SocketListeningFailed();
+}
+
+void Socket::close(void)
+{
+	if (this->_fd >= -1)
+		::close(this->_fd);
 }
 
 /*

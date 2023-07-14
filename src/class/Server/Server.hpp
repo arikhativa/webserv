@@ -2,15 +2,14 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include "Socket/Socket.hpp"
+#include <cstring>
+#include <fcntl.h>
 #include <iostream>
 #include <string>
-#include <vector>
-#include <cstring>
 #include <sys/poll.h>
 #include <unistd.h>
-#include <fcntl.h>
-#include "Socket/Socket.hpp"
-#include "HTTPRequest/HTTPRequest.hpp"
+#include <vector>
 
 #ifdef TEST_ON
 #define private public
@@ -26,9 +25,9 @@ enum status
 class Server
 {
   public:
-	Server(void);
-	explicit Server(int port);
-	//explicit Server(Config config);
+	// TODO: this method is using for testing, should be removed later
+	explicit Server(int port0, int port1);
+	// explicit Server(Config config);
 	~Server(void);
 
 	class AcceptingConnectionFailed : public std::exception
@@ -38,16 +37,14 @@ class Server
 	};
 
 	// void start();
-	HTTPRequest acceptConnection(int socketIndex);
+	int acceptConnection(int socketIndex);
 	void bindSockets(void);
 	void listenSockets(void);
 	const std::vector<int> getListeners(void) const;
 
   private:
-	//Config config;
+	// Config config;
 	std::vector<Socket> _listener;
-	enum status _status;
-	// struct pollfd *_poll;
 };
 
 #ifdef TEST_ON

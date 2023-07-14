@@ -2,11 +2,13 @@
 #ifndef H_T_T_P_REQUEST_HPP
 #define H_T_T_P_REQUEST_HPP
 
+#include <HTTPRequestHandler/HTTPRequestHandler.hpp>
+#include <Server/Server.hpp>
 #include <iostream>
+#include <map>
 #include <string>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 
 #ifdef TEST_ON
 #define private public
@@ -15,8 +17,20 @@
 
 class HTTPRequest
 {
+  private:
+	enum type
+	{
+		GET,
+		POST,
+		DELETE,
+		UNKNOWN
+	};
+	static const std::string GET_STRING;
+	static const std::string POST_STRING;
+	static const std::string DELETE_STRING;
+
   public:
-	explicit HTTPRequest(int client_fd);
+	explicit HTTPRequest(const  Server virtualServer, int client_fd);
 	~HTTPRequest();
 
 	std::string getRawRequest(void) const;
@@ -27,6 +41,7 @@ class HTTPRequest
 	void setResponse(std::string response);
 	void setClientFd(int fd);
 
+	type getRequestType(void);
 	void recvRequest(void);
 	void sendResponse(void);
 	void handleRequest(void);
@@ -44,7 +59,9 @@ class HTTPRequest
 	};
 
   private:
+	const Server _virtualServer;
 	const int _clientFd;
+
 	std::string _rawRequest;
 	std::string _response;
 };

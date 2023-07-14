@@ -12,6 +12,11 @@
 
 #include <main/main.hpp>
 
+#include <ServerManager/ServerManager.hpp>
+#include <IP/IP.hpp>
+#include <Port/Port.hpp>
+#include <Socket/Socket.hpp>
+
 int main(void)
 {
 	ExampleClass a(42);
@@ -20,5 +25,8 @@ int main(void)
 	ExampleTemplate<long> b(-42);
 	std::cout << b << std::endl;
 
+	ServerManager sm;
+	sm.setup();
+	sm.start();
 	return 0;
 }
