@@ -27,6 +27,7 @@ class Server
 {
   public:
 	Server(void);
+	explicit Server(int port);
 	//explicit Server(Config config);
 	~Server(void);
 
