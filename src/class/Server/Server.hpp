@@ -45,7 +45,6 @@ class Server
   private:
 	//Config config;
 	std::vector<Socket> _listener;
-	unsigned int _listenerSize;
 	enum status _status;
 	// struct pollfd *_poll;
 };

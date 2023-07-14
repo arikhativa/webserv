@@ -6,21 +6,9 @@
 */
 
 Server::Server()
-	:_listenerSize(1), _status(STOPED)
+	:_status(STOPED)
 {
-	// this->_poll = new struct pollfd[this->_listenerSize];
-
-	// memset(this->_poll, 0, this->_listenerSize);
-
-	/* Create listeners according to the config file */
-	for (size_t i = 0; i < this->_listenerSize; i++)
-	{
-		/* Example */
-		this->_listener.push_back(Socket(IP("127.0.0.1"), Port(1234)));
-		// fcntl(this->_listener[i]->getFd(), F_SETFL, O_NONBLOCK);
-		// this->_poll[i].fd = this->_listener[i]->getFd();
-		// this->_poll[i].events = POLLIN;
-	}
+	this->_listener.push_back(Socket(IP("127.0.0.1"), Port(1234)));
 }
 
 const char *Server::AcceptingConnectionFailed::what() const throw()
@@ -39,42 +27,6 @@ Server::~Server()
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
-
-/* This function belongs to server manager */
-// void Server::start(void)
-// {
-// 	int pollCnt;
-
-// 	this->_status = RUNNING;
-// 	while (RUNNING == this->_status)
-// 	{
-// 		/* TODO: Must be non-blocking (?) */
-// 		pollCnt = poll(this->_poll, this->_listenerSize, -1);
-// 		(void)pollCnt;
-// 		this->acceptConnection();
-// 		for (unsigned int i = 0; i < this->_listenerSize; i++)
-// 		{
-// 			if (!this->_poll[i].revents)
-// 				continue ;
-// 			/* Handle Client Request */
-// 			{
-// 				/*
-// 				 * Nginx does not close connection after the client send the request,
-// 				 * tmp_client could be stored in a client-fd array and delete it server shutdown
-// 				 * TODO: IT DOES CLOSE THE CONNECTION BUT AFTER 5 LINE BREAKS ~weird~
-// 				*/
-// 				tmp_client = accept(this->_listener[i]->getFd(), NULL, NULL);
-// 				if (tmp_client <= -1)
-// 					continue ;
-// 				HTTPRequest http(tmp_client);
-// 				http.recvRequest();
-// 				http.handleRequest();
-// 				http.sendResponse();
-// 				close(tmp_client);
-// 			}
-// 		}
-// 	}
-// }
 
 HTTPRequest Server::acceptConnection(int socketIndex)
 {
