@@ -7,7 +7,7 @@
 
 /* Server should be initialized using the config file, but we dont have it ready yet */
 ServerManager::ServerManager()
-	:_status(STOPED), _pollSize(0), _poll(new struct pollfd[4])
+	:_status(STOPED), _pollSize(0), _poll(new struct pollfd[6])
 {
 	this->_virtualServers.push_back(Server(1234, 4321));
 	this->_virtualServers.push_back(Server(1235, 5321));

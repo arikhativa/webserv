@@ -66,7 +66,7 @@ void HTTPRequest::recvRequest(void)
 	tmpRecvLen = recv(this->_clientFd, tmpRaw, 512, 0);
 	if (tmpRecvLen <= -1)
 		throw RecievingRequestError();
-	this->_rawRequest = std::string(strdup(tmpRaw));
+	this->_rawRequest = std::string(tmpRaw);
 }
 
 void HTTPRequest::sendResponse(void)
