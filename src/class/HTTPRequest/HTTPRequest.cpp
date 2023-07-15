@@ -8,8 +8,10 @@ const std::string HTTPRequest::DELETE_STRING("DELETE ");
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
+const int HTTPRequest::MAX_REQUEST_ATTEMPTS = 10;
+
 HTTPRequest::HTTPRequest(const Server virtualServer, int clientFd)
-	: _virtualServer(virtualServer), _clientFd(clientFd), _response("\0")
+	: _attempts(0), _virtualServer(virtualServer), _clientFd(clientFd), _response("\0")
 {
 }
 
@@ -65,7 +67,10 @@ void HTTPRequest::recvRequest(void)
 
 	tmpRecvLen = recv(this->_clientFd, tmpRaw, 512, MSG_DONTWAIT);
 	if (tmpRecvLen <= -1)
+	{
+		this->_attempts++;
 		throw RecievingRequestError();
+	}
 	this->_rawRequest = std::string(tmpRaw);
 }
 
@@ -74,7 +79,10 @@ void HTTPRequest::sendResponse(void)
 	int sendStatus;
 	sendStatus = send(this->_clientFd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
 	if (sendStatus <= -1)
+	{
+		this->_attempts++;
 		throw SendingResponseError();
+	}
 }
 
 /* TODO: handle request according to HTTP */
@@ -97,6 +105,11 @@ void HTTPRequest::handleRequest(void)
 	}
 }
 
+void HTTPRequest::terminate(void)
+{
+	close(this->_clientFd);
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
@@ -116,6 +129,11 @@ int HTTPRequest::getClientFd(void) const
 	return this->_clientFd;
 }
 
+int HTTPRequest::getAttempts(void) const
+{
+	return this->_attempts;
+}
+
 void HTTPRequest::setRawRequest(std::string request)
 {
 	this->_rawRequest = request;
@@ -124,11 +142,6 @@ void HTTPRequest::setRawRequest(std::string request)
 void HTTPRequest::setResponse(std::string response)
 {
 	this->_response = response;
-}
-
-bool HTTPRequest::isCompleted(void) const
-{
-	return (this->_isCompleted);
 }
 
 /* ************************************************************************** */

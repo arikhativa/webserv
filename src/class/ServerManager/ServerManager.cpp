@@ -95,7 +95,14 @@ void ServerManager::start()
 				close((*it)->getClientFd());
 				this->_pendingRequests.erase(it);
 			}
-			catch (const std::exception &e)  {}
+			catch (const std::exception &e)
+			{
+				if ((*it)->getAttempts() >= HTTPRequest::MAX_REQUEST_ATTEMPTS)
+				{
+					(*it)->terminate();
+					this->_pendingRequests.erase(it);
+				}
+			}
 		}
 		if (this->_pendingRequests.empty())
 			timeOut = -1;

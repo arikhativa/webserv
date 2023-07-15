@@ -30,13 +30,14 @@ class HTTPRequest
 	static const std::string DELETE_STRING;
 
   public:
+	static const int MAX_REQUEST_ATTEMPTS;
 	explicit HTTPRequest(const Server virtualServer, int client_fd);
 	~HTTPRequest();
 
 	std::string getRawRequest(void) const;
 	std::string getResponse(void) const;
 	int getClientFd(void) const;
-	bool isCompleted(void) const;
+	int getAttempts(void) const;
 
 	void setRawRequest(std::string request);
 	void setResponse(std::string response);
@@ -46,6 +47,7 @@ class HTTPRequest
 	void recvRequest(void);
 	void sendResponse(void);
 	void handleRequest(void);
+	void terminate(void);
 
 	class SendingResponseError : public std::exception
 	{
@@ -60,7 +62,7 @@ class HTTPRequest
 	};
 
   private:
-	bool _isCompleted;
+	int _attempts;
 	const Server _virtualServer;
 	const int _clientFd;
 
