@@ -7,11 +7,15 @@
 
 /* Server should be initialized using the config file, but we dont have it ready yet */
 ServerManager::ServerManager()
-	:_status(STOPED), _pollSize(0), _poll(new struct pollfd[6])
+	:_status(STOPED)
 {
 	this->_virtualServers.push_back(Server(1234, 4321));
 	this->_virtualServers.push_back(Server(1235, 5321));
 	this->_virtualServers.push_back(Server(1236, 6321));
+
+	// Set the pollSize after virtualServers setup
+	this->_pollSize = this->getTotalListeners();
+	this->_poll = new struct pollfd[this->_pollSize];
 }
 
 // ServerManager::ServerManager(Config config)
@@ -51,7 +55,6 @@ void ServerManager::setup()
 			this->_poll[i].fd = *it_fds;
 			this->_poll[i].events = POLLIN;
 			this->_pollServer.insert(std::pair<struct pollfd *, Server*>(this->_poll + i, &(*it)));
-			this->_pollSize++;
 		}
 	}
 }
@@ -75,7 +78,7 @@ void ServerManager::start()
 				continue ;
 			/* Handle Client Request */
 			{
-				tmp_client = this->_pollServer.at(this->_poll + i)->acceptConnection(this->_poll[i].fd);
+				tmp_client = Server::acceptConnection(this->_poll[i].fd);
 				if (tmp_client <= -1)
 					continue ;
 				HTTPRequest http = HTTPRequest(*this->_pollServer.at(this->_poll + i), tmp_client);
@@ -91,5 +94,15 @@ void ServerManager::start()
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+int ServerManager::getTotalListeners(void) const
+{
+	int pollSize = 0;
+	std::vector<Server>::const_iterator it = this->_virtualServers.begin();
+	std::vector<Server>::const_iterator end = this->_virtualServers.end();
+	for (; it != end; it++)
+		pollSize += it->getListenersSize();
+	return pollSize;
+}
 
 /* ************************************************************************** */

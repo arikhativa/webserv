@@ -12,6 +12,12 @@ Server::Server(int port0, int port1)
 
 }
 
+// Server::Server(serverName, rootPath, listen, errorPage, return, clientMaxBody, location);
+// {
+
+// }
+
+
 const char *Server::AcceptingConnectionFailed::what() const throw()
 {
 	return "Accepting connection failed";
@@ -26,7 +32,7 @@ Server::~Server()
 }
 
 /*
-** --------------------------------- METHODS ----------------------------------
+** ------------------------------ STATIC METHODS -------------------------------
 */
 
 int Server::acceptConnection(int fd)
@@ -38,6 +44,10 @@ int Server::acceptConnection(int fd)
 		throw Server::AcceptingConnectionFailed();
 	return tmp_client;
 }
+
+/*
+** --------------------------------- METHODS ----------------------------------
+*/
 
 void Server::bindSockets()
 {
@@ -68,6 +78,11 @@ const std::vector<int> Server::getListeners(void) const
 	for (; it != end; it++)
 		fds.push_back(it->getFd());
 	return fds;
+}
+
+int Server::getListenersSize(void) const
+{
+	return this->_listener.size();
 }
 
 /* ************************************************************************** */

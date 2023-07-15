@@ -35,6 +35,8 @@ class ServerManager
 	int _pollSize;
 	struct pollfd *_poll;
 	std::map<struct pollfd *, Server*> _pollServer;
+
+	int getTotalListeners(void) const;
 };
 
 #ifdef TEST_ON

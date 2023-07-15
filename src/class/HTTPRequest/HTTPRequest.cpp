@@ -1,8 +1,8 @@
 #include <HTTPRequest/HTTPRequest.hpp>
 
-const std::string HTTPRequest::GET_STRING("GET");
-const std::string HTTPRequest::POST_STRING("POST");
-const std::string HTTPRequest::DELETE_STRING("DELETE");
+const std::string HTTPRequest::GET_STRING("GET ");
+const std::string HTTPRequest::POST_STRING("POST ");
+const std::string HTTPRequest::DELETE_STRING("DELETE ");
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------

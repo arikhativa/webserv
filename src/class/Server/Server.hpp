@@ -27,7 +27,6 @@ class Server
   public:
 	// TODO: this method is using for testing, should be removed later
 	explicit Server(int port0, int port1);
-	// explicit Server(Config config);
 	// explicit Server(serverName, rootPath, listen, errorPage, return, clientMaxBody, location);
 	~Server(void);
 
@@ -37,10 +36,12 @@ class Server
 		virtual const char *what() const throw();
 	};
 
-	int acceptConnection(int socketIndex);
 	void bindSockets(void);
 	void listenSockets(void);
 	const std::vector<int> getListeners(void) const;
+	int getListenersSize(void) const;
+	
+	static int acceptConnection(int socketIndex);
 
   private:
 	std::vector<Socket> _listener;
