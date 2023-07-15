@@ -83,16 +83,16 @@ void HTTPRequest::handleRequest(void)
 	switch (getRequestType())
 	{
 		case HTTPRequest::GET:
-			this->_response = HTTPRequestHandler::GET(this->_rawRequest);
+			this->_response = HTTPRequestHandler::GET(this->_virtualServer, this->_rawRequest);
 			break;
 		case HTTPRequest::POST:
-			this->_response = HTTPRequestHandler::POST(this->_rawRequest);
+			this->_response = HTTPRequestHandler::POST(this->_virtualServer, this->_rawRequest);
 			break;
 		case HTTPRequest::DELETE:
-			this->_response = HTTPRequestHandler::DELETE(this->_rawRequest);
+			this->_response = HTTPRequestHandler::DELETE(this->_virtualServer, this->_rawRequest);
 			break;
 		default: //Uknown request
-			this->_response = HTTPRequestHandler::UNKNOWN(this->_rawRequest);
+			this->_response = HTTPRequestHandler::UNKNOWN(this->_virtualServer, this->_rawRequest);
 			break;
 	}
 }
