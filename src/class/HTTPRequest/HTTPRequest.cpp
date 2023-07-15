@@ -9,7 +9,7 @@ const std::string HTTPRequest::DELETE_STRING("DELETE ");
 */
 
 HTTPRequest::HTTPRequest(const Server virtualServer, int clientFd)
-	: _virtualServer(virtualServer), _clientFd(clientFd)
+	: _virtualServer(virtualServer), _clientFd(clientFd), _response("\0")
 {
 }
 
@@ -63,7 +63,7 @@ void HTTPRequest::recvRequest(void)
 	int tmpRecvLen;
 	char tmpRaw[512];
 
-	tmpRecvLen = recv(this->_clientFd, tmpRaw, 512, 0);
+	tmpRecvLen = recv(this->_clientFd, tmpRaw, 512, MSG_DONTWAIT);
 	if (tmpRecvLen <= -1)
 		throw RecievingRequestError();
 	this->_rawRequest = std::string(tmpRaw);
@@ -72,7 +72,7 @@ void HTTPRequest::recvRequest(void)
 void HTTPRequest::sendResponse(void)
 {
 	int sendStatus;
-	sendStatus = send(this->_clientFd, this->_response.c_str(), this->_response.size(), 0);
+	sendStatus = send(this->_clientFd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
 	if (sendStatus <= -1)
 		throw SendingResponseError();
 }
@@ -124,6 +124,11 @@ void HTTPRequest::setRawRequest(std::string request)
 void HTTPRequest::setResponse(std::string response)
 {
 	this->_response = response;
+}
+
+bool HTTPRequest::isCompleted(void) const
+{
+	return (this->_isCompleted);
 }
 
 /* ************************************************************************** */

@@ -7,7 +7,7 @@
 
 /* Server should be initialized using the config file, but we dont have it ready yet */
 ServerManager::ServerManager()
-	:_status(STOPED)
+	: _status(STOPED)
 {
 	this->_virtualServers.push_back(Server(1234, 4321));
 	this->_virtualServers.push_back(Server(1235, 5321));
@@ -54,40 +54,54 @@ void ServerManager::setup()
 		{
 			this->_poll[i].fd = *it_fds;
 			this->_poll[i].events = POLLIN;
-			this->_pollServer.insert(std::pair<struct pollfd *, Server*>(this->_poll + i, &(*it)));
+			this->_pollServer.insert(std::pair<struct pollfd *, Server *>(this->_poll + i, &(*it)));
 		}
 	}
 }
-
+#include <errno.h>
+#include <stdio.h>
 void ServerManager::start()
 {
 	int pollCnt;
 	int tmp_client;
+	int timeOut = -1;
 
 	this->_status = RUNNING;
+	std::cout << "Starting server..." << std::endl;
 	while (RUNNING == this->_status)
 	{
 		/* TODO: Must be non-blocking (?) */
-		std::cout << "Poll is starting" << std::endl;
-		pollCnt = poll(this->_poll, this->_pollSize, -1);
-		std::cout << "Incoming connections: " << pollCnt << std::endl;
+		pollCnt = poll(this->_poll, this->_pollSize, timeOut);
 		(void)pollCnt;
 		for (int i = 0; i < this->_pollSize; i++)
 		{
 			if (!this->_poll[i].revents)
-				continue ;
+				continue;
 			/* Handle Client Request */
-			{
-				tmp_client = Server::acceptConnection(this->_poll[i].fd);
-				if (tmp_client <= -1)
-					continue ;
-				HTTPRequest http = HTTPRequest(*this->_pollServer.at(this->_poll + i), tmp_client);
-				http.recvRequest();
-				http.handleRequest();
-				http.sendResponse();
-				close(tmp_client);
-			}
+			tmp_client = Server::acceptConnection(this->_poll[i].fd);
+			if (tmp_client <= -1)
+				continue;
+			this->_pendingRequests.push_back(new HTTPRequest(*this->_pollServer.at(this->_poll + i), tmp_client));
 		}
+		std::vector<HTTPRequest*>::iterator it = this->_pendingRequests.begin();
+		std::vector<HTTPRequest*>::iterator end = this->_pendingRequests.end();
+		for (; it != end; it++)
+		{
+			try
+			{
+				(*it)->recvRequest();
+				(*it)->handleRequest();
+				(*it)->sendResponse();
+				close((*it)->getClientFd());
+				this->_pendingRequests.erase(it);
+			}
+			catch (const std::exception &e)  {}
+		}
+		if (this->_pendingRequests.empty())
+			timeOut = -1;
+		else
+			timeOut = 100;
+		std::cout << "Pending requests: " << this->_pendingRequests.size() << std::endl;
 	}
 }
 

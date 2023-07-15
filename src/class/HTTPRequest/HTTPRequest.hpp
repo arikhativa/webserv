@@ -30,12 +30,13 @@ class HTTPRequest
 	static const std::string DELETE_STRING;
 
   public:
-	explicit HTTPRequest(const  Server virtualServer, int client_fd);
+	explicit HTTPRequest(const Server virtualServer, int client_fd);
 	~HTTPRequest();
 
 	std::string getRawRequest(void) const;
 	std::string getResponse(void) const;
 	int getClientFd(void) const;
+	bool isCompleted(void) const;
 
 	void setRawRequest(std::string request);
 	void setResponse(std::string response);
@@ -59,6 +60,7 @@ class HTTPRequest
 	};
 
   private:
+	bool _isCompleted;
 	const Server _virtualServer;
 	const int _clientFd;
 

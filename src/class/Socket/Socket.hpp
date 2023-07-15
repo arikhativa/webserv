@@ -53,10 +53,16 @@ class Socket
 	  public:
 		virtual const char *what() const throw();
 	};
+	class SocketNotBinded : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
 
   private:
 	const IP _ip;
 	const Port _port;
+	bool _binded;
 	int _fd;
 	int _domain;
 	int _type;

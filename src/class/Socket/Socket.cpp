@@ -6,12 +6,8 @@
 */
 
 Socket::Socket(IP ip, Port port)
-	: _ip(ip)
-	, _port(port)
-	, _fd(-1)
-	, _domain(AF_INET)
-	, _type(SOCK_STREAM)
-	, _protocol(0)
+	: _ip(ip) , _port(port) , _binded(false)
+	, _fd(-1) , _domain(AF_INET) , _type(SOCK_STREAM) , _protocol(0)
 {
 	/* Create socket */
 	this->_fd = socket(this->_domain, this->_type, this->_protocol);
@@ -26,7 +22,7 @@ Socket::Socket(IP ip, Port port)
 }
 
 Socket::Socket(Socket const &src)
-	:_ip(src._ip), _port(src._port), _fd(src._fd), _domain(src._domain),
+	:_ip(src._ip), _port(src._port), _binded(src._binded), _fd(src._fd), _domain(src._domain),
 	_type(src._type), _protocol(src._protocol), _sockaddr(src._sockaddr)
 {}
 
@@ -41,6 +37,10 @@ const char *Socket::SocketListeningFailed::what() const throw()
 const char *Socket::SocketBindingFailed::what() const throw()
 {
 	return "Socket binding failed";
+}
+const char *Socket::SocketNotBinded::what() const throw()
+{
+	return "Socket not binded";
 }
 
 /*
@@ -68,14 +68,19 @@ std::ostream &operator<<(std::ostream &o, Socket const &i)
 void Socket::bind(void)
 {
 	int bind_status;
+	if (this->_binded)
+		return ;
 	bind_status = ::bind(this->_fd, reinterpret_cast<const sockaddr *>(&this->_sockaddr), sizeof(this->_sockaddr));
 	if (bind_status <= -1)
 		throw SocketBindingFailed();
+	this->_binded = true;
 }
 
 void Socket::listen(void)
 {
 	int listen_status;
+	if (!this->_binded)
+		throw SocketNotBinded();
 	listen_status = ::listen(this->_fd, MAX_SYS_BACKLOG);
 	if (listen_status <= -1)
 		throw SocketListeningFailed();

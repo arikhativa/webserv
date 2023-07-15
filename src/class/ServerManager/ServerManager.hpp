@@ -17,6 +17,12 @@
 
 # define MAX_POLL_SIZE 128
 
+enum status
+{
+	STOPED = 0,
+	RUNNING = 1
+};
+
 class ServerManager
 {
   public:
@@ -31,6 +37,7 @@ class ServerManager
   private:
 	enum status _status;
 	std::vector<Server> _virtualServers;
+	std::vector<HTTPRequest*> _pendingRequests;
 
 	int _pollSize;
 	struct pollfd *_poll;

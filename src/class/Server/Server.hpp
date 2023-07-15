@@ -16,12 +16,6 @@
 #define protected public
 #endif
 
-enum status
-{
-	STOPED = 0,
-	RUNNING = 1
-};
-
 class Server
 {
   public:
