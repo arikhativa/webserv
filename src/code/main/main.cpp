@@ -16,16 +16,21 @@
 #include <IP/IP.hpp>
 #include <Port/Port.hpp>
 #include <Socket/Socket.hpp>
+#include <csignal>
+
+ServerManager sm;
+
+void signalHandler( int signum )
+{
+	sm.close();
+	std::cout << "Server succesfully closed." << std::endl;
+	exit(signum);
+}
 
 int main(void)
 {
-	ExampleClass a(42);
-	std::cout << a << std::endl;
+	signal(SIGINT, signalHandler);
 
-	ExampleTemplate<long> b(-42);
-	std::cout << b << std::endl;
-
-	ServerManager sm;
 	sm.setup();
 	sm.start();
 	return 0;

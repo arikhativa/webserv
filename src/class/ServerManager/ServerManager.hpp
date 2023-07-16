@@ -32,6 +32,7 @@ class ServerManager
 	~ServerManager();
 
 	void start();
+	void close();
 	void setup();
 
   private:

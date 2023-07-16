@@ -49,6 +49,14 @@ int Server::acceptConnection(int fd)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+void Server::closeSockets(void)
+{
+	std::vector<Socket>::iterator it = this->_listener.begin();
+	std::vector<Socket>::iterator end = this->_listener.end();
+	for (; it != end; it++)
+		it->close();
+}
+
 void Server::bindSockets()
 {
 	std::vector<Socket>::iterator it = this->_listener.begin();

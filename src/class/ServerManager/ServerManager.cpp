@@ -39,6 +39,23 @@ ServerManager::~ServerManager()
 ** --------------------------------- METHODS ----------------------------------
 */
 
+void ServerManager::close(void)
+{
+	/* Terminate all pending requests */
+	std::vector<HTTPRequest*>::iterator it_http = this->_pendingRequests.begin();
+	std::vector<HTTPRequest*>::iterator end_http = this->_pendingRequests.end();
+	for (; it_http != end_http; it_http++)
+	{
+		(*it_http)->terminate();
+		this->_pendingRequests.erase(it_http);
+	}
+	/* Close all servers*/
+	std::vector<Server>::iterator it_server = this->_virtualServers.begin();
+	std::vector<Server>::iterator end_server = this->_virtualServers.end();
+	for (; it_server != end_server; it_server++)
+		it_server->closeSockets();
+}
+
 void ServerManager::setup()
 {
 	std::vector<Server>::iterator it = this->_virtualServers.begin();
@@ -92,7 +109,7 @@ void ServerManager::start()
 				(*it)->recvRequest();
 				(*it)->handleRequest();
 				(*it)->sendResponse();
-				close((*it)->getClientFd());
+				(*it)->terminate();
 				this->_pendingRequests.erase(it);
 			}
 			catch (const std::exception &e)
@@ -107,7 +124,7 @@ void ServerManager::start()
 		if (this->_pendingRequests.empty())
 			timeOut = -1;
 		else
-			timeOut = 100;
+			timeOut = 200;
 		std::cout << "Pending requests: " << this->_pendingRequests.size() << std::endl;
 	}
 }

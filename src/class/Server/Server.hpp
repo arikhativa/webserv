@@ -34,6 +34,7 @@ class Server
 	void listenSockets(void);
 	const std::vector<int> getListeners(void) const;
 	int getListenersSize(void) const;
+	void closeSockets(void);
 	
 	static int acceptConnection(int socketIndex);
 
