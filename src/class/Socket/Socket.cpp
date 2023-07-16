@@ -14,6 +14,10 @@ Socket::Socket(IP ip, Port port)
 	if (this->_fd <= -1)
 		throw SocketCreationFailed();
 
+	/* Set the socket to reuse (makes it re-bindable directly after close) */
+	int reuse_addr = true;
+    setsockopt(this->_fd, SOL_SOCKET, SO_REUSEADDR, &reuse_addr, sizeof(reuse_addr));
+
 	/* Init sockaddr */
 	memset(&this->_sockaddr, 0, sizeof(this->_sockaddr));
 	this->_sockaddr.sin_family = this->_domain;
