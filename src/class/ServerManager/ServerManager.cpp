@@ -5,6 +5,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
+// TODO: this method is using for testing, should be removed later
 /* Server should be initialized using the config file, but we dont have it ready yet */
 ServerManager::ServerManager()
 	: _status(STOPED)

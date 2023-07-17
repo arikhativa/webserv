@@ -5,6 +5,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
+// TODO: this method is using for testing, should be removed later
 Server::Server(int port0, int port1)
 {
 	this->_listener.push_back(Socket(IP("127.0.0.1"), Port(port0)));

@@ -36,6 +36,7 @@ class ServerManager
 	void setup();
 
   private:
+	// Config config;
 	enum status _status;
 	std::vector<Server> _virtualServers;
 	std::vector<HTTPRequest*> _pendingRequests;

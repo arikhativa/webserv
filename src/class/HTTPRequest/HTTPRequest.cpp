@@ -63,9 +63,9 @@ HTTPRequest::type HTTPRequest::getRequestType()
 void HTTPRequest::recvRequest(void)
 {
 	int tmpRecvLen;
-	char tmpRaw[512];
+	char tmpRaw[4096];
 
-	tmpRecvLen = recv(this->_clientFd, tmpRaw, 512, MSG_DONTWAIT);
+	tmpRecvLen = recv(this->_clientFd, tmpRaw, sizeof(tmpRaw), MSG_DONTWAIT);
 	if (tmpRecvLen <= -1)
 	{
 		this->_attempts++;
@@ -85,7 +85,6 @@ void HTTPRequest::sendResponse(void)
 	}
 }
 
-/* TODO: handle request according to HTTP */
 void HTTPRequest::handleRequest(void)
 {
 	switch (getRequestType())
