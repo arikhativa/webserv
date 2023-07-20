@@ -79,6 +79,7 @@ void ServerManager::setup()
 #include <stdio.h>
 void ServerManager::start()
 {
+	
 	int pollCnt;
 	int tmp_client;
 	int timeOut = -1;
@@ -125,8 +126,9 @@ void ServerManager::start()
 			timeOut = -1;
 		else
 			timeOut = 200;
-		std::cout << "Pending requests: " << this->_pendingRequests.size() << std::endl;
+		//std::cout << "Pending requests: " << this->_pendingRequests.size() << std::endl;
 	}
+	
 }
 
 /*

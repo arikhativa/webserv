@@ -29,9 +29,17 @@ void signalHandler( int signum )
 
 int main(void)
 {
-	signal(SIGINT, signalHandler);
+	try
+	{
+		signal(SIGINT, signalHandler);
 
-	sm.setup();
-	sm.start();
+		sm.setup();
+		sm.start();
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << "main!!" << '\n';
+		ILogger::consoleLogError(e.what());
+	}
 	return 0;
 }
