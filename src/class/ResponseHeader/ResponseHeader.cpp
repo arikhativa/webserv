@@ -8,7 +8,6 @@
 
 ResponseHeader::ResponseHeader(int code)
 {
-	std::cout << "pepepe" << std::endl;
 	defaultConstructor();
 	setStatusCode(code);
 	if (code == 408 || code == 503)
@@ -20,7 +19,6 @@ ResponseHeader::ResponseHeader(int code)
 	if (code == 500)
 	{
 		setContentType(".html");
-		//_header[CONNECTION].name = "";
 		_header[CONNECTION].value = "close";
 		setBody(defaultErrorPage(code));
 	}
@@ -56,7 +54,7 @@ ResponseHeader &ResponseHeader::operator=(ResponseHeader const &rhs)
 
 std::ostream &operator<<(std::ostream &o, ResponseHeader const &i)
 {
-	o << "ResponseHeader[" << i.getResponse() << "]";
+	(void)i;
 	return o;
 }
 
@@ -79,20 +77,17 @@ std::string ResponseHeader::defaultErrorPage(int code)
 	{
 		std::stringstream number;
 		number << code;
-		return ("<!DOCTYPE html>\n<html>\n<body>\n<h1>" + number.str() + " " + _status_codes[code]+ "</h1>\n</body>\n</html>");
+		return ("<!DOCTYPE html>\n<html>\n<body>\n<h1>" + number.str() + " " + IStatusCodes::_status_codes[code] + "</h1>\n</body>\n</html>");
 	}
 }
 
-std::string	ResponseHeader::getCurrentDate() const
+std::string	ResponseHeader::getCurrentDate(void)
 {
-	char			buffer[80];
-	std::time_t		now;
-	struct std::tm*	timeinfo;
+	//TODO temporal format: [2023-07-21  11:28:33] GMT
+	std::string formattedDate ="";
+	_header[DATE].name = "";
 
-	now = std::time(0);
-	timeinfo = std::gmtime(&now);
-	std::strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", timeinfo);
-	return (buffer);
+    return formattedDate;
 }
 
 void	ResponseHeader::setStatusCode(int code)
@@ -101,7 +96,7 @@ void	ResponseHeader::setStatusCode(int code)
 	std::stringstream	number;
 
 	number << code;
-	message = this->_status_codes[code];
+	message = IStatusCodes::_status_codes[code];
 	if (message == "")
 		throw std::runtime_error("Invalid status code");
 	this->_header.at(STANDARD).value = number.str() + " " + message;
@@ -109,7 +104,7 @@ void	ResponseHeader::setStatusCode(int code)
 
 void	ResponseHeader::setContentType(std::string type) 
 {
-	this->_header.at(CONNECTION_TYPE).value = _content_types[type];	
+	this->_header.at(CONNECTION_TYPE).value = IContentTypes::_content_types[type];	
 }
 
 void	ResponseHeader::setContentLength(int lenght)
@@ -169,7 +164,6 @@ void	ResponseHeader::MethodNotAllowed()
 void	ResponseHeader::NotFound()
 {
 	setContentType(".html");
-	//_header[CONNECTION].name = "";
 	_header[CONNECTION].value = "close";
 	setBody(defaultErrorPage(404));
 }
@@ -183,25 +177,38 @@ void ResponseHeader::defaultConstructor()
     	_header.insert(std::make_pair(f, defaultHeader));
 	}
 	_header[STANDARD].name = "HTTP/1.1 ";
+	_header[STANDARD].value = "";
 	_header[SERVER].name = "Server: ";
 	_header[SERVER].value = "webserv";
-	_header[DATE].name = "Date: ";
+	//_header[DATE].name = "Date: ";
 	_header[DATE].value = getCurrentDate();
 	_header[CONNECTION_TYPE].name = "Content-Type: ";
+	_header[CONNECTION_TYPE].value = "";
 	_header[CONTENT_LENGHT].name = "Content-Length: ";
+	_header[CONTENT_LENGHT].value = "";
 	_header[CONNECTION].name = "Connection: ";
 	_header[BODY].name = "\r\n";
+	_header[BODY].value = "";
 	setContentType(".txt");
 	setContentLength(0);
 	setConnection("keep-alive");
 }
-
-std::string ResponseHeader::getResponse() const
+std::string ResponseHeader::getResponse()
 {
-	std::string res;
-	for (field f = STANDARD; f <= BODY; f = static_cast<field>(static_cast<int>(f) + 1))
-		res += this->_header.at(f).name + this->_header.at(f).value + "\n";
-	return (res);
+    std::string res = "";
+    for (field f = STANDARD; f <= BODY; f = static_cast<field>(static_cast<int>(f) + 1))
+    {
+        std::string key = "";
+        if (_header.find(f) != _header.end())
+            key = _header.at(f).name;
+        if (key == "")
+            continue;
+        std::string value = "";
+        if (_header.find(f) != _header.end())
+            value = _header.at(f).value;
+        res += key + value + "\n";
+    }
+    return res;
 }
 
 /* ************************************************************************** */

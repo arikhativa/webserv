@@ -12,14 +12,17 @@
 #include <cstdlib>
 #include <limits>
 #include <ILogger/ILogger.hpp>
-
+#include <iomanip>
+#include <cstring>
+#include <sys/time.h>
+#include <time.h>
 
 #ifdef TEST_ON
 #define private public
 #define protected public
 #endif
 
-class ResponseHeader : public IStatusCodes, IContentTypes
+class ResponseHeader 
 {
 	struct HeaderFields
 	{
@@ -51,7 +54,7 @@ class ResponseHeader : public IStatusCodes, IContentTypes
 	void		setBody(std::string body);
 	std::string	getStatusMessage();
 	std::string	getContentType();
-	std::string	getResponse() const;
+	std::string	getResponse() ;
 	std::string	getConnection() ;
 	std::map<ResponseHeader::field, ResponseHeader::HeaderFields> getHeader() const;
   private:
@@ -59,7 +62,7 @@ class ResponseHeader : public IStatusCodes, IContentTypes
 	void		NotFound();
 	void		MethodNotAllowed();
 	void		defaultConstructor();
-	std::string	getCurrentDate() const;
+	std::string	getCurrentDate();
 	std::map<ResponseHeader::field, ResponseHeader::HeaderFields> _header;
 };
 std::ostream &operator<<(std::ostream &o, ResponseHeader const &i);

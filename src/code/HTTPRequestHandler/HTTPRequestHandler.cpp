@@ -9,7 +9,7 @@ std::string HTTPRequestHandler::get::GET(Server server, std::string request)
 		{
 			std::size_t pos = request.find("\r\n");
 			if (pos != std::string::npos)
-				ILogger::consoleLogDebug("GET request: " + request.substr(0, pos));
+				ILogger::consoleLogDebug("GET request: " + std::string(request.substr(0, pos)));
 			else
 				ILogger::consoleLogDebug("GET request: " + request);
 		}
@@ -27,8 +27,6 @@ std::string HTTPRequestHandler::get::GET(Server server, std::string request)
 		else if (httprequesthandlerGET::exists_file(path + file))
 		{
 			ILogger::consoleLogDebug("Is file(" + path + file + ")");
-
-			ILogger::consoleLogDebug("----Antes----");
 			ResponseHeader response(200);
 			if (file.find(".") != std::string::npos)
 				response.setContentType(file.substr(file.find_last_of(".")));
@@ -101,6 +99,9 @@ std::string HTTPRequestHandler::post::POST(Server server, std::string request)
 
 std::string HTTPRequestHandler::delete_::DELETE(Server server, std::string request)
 {
+
+	(void)server;
+	std::string path = "/home/rufo/Desktop/42/web_example/"; //temporal, server.getPath();
 	{
 		std::size_t pos = request.find("\r\n");
 		if (pos != std::string::npos)
@@ -109,15 +110,12 @@ std::string HTTPRequestHandler::delete_::DELETE(Server server, std::string reque
 			ILogger::consoleLogDebug("POST request: " + request);
 	}
 	std::string file = "";
-
 	std::size_t barra_pos = request.find("/");
 	if (barra_pos != std::string::npos) {
 		std::size_t espacio_pos = request.find(" ", barra_pos);
 		if (espacio_pos != std::string::npos) 
 			 file = request.substr(barra_pos + 1, espacio_pos - barra_pos - 1);
 	}
-
-	std::string path = "/home/rufo/Desktop/42/web_example/"; //temporal, server.getPath();
 	if (!httprequesthandlerDELETE::exists_file(path + file))
 	{
 		ILogger::consoleLogDebug("DELETE file not found(" + path + file + ")");
@@ -130,7 +128,6 @@ std::string HTTPRequestHandler::delete_::DELETE(Server server, std::string reque
 	response.setBody("<!DOCTYPE html>\n<html>\n<body>\n<h1>File deleted</h1>\n</body>\n</html>");
 	response.setContentType(".html");
 
-	(void)server;
 	return (response.getResponse());
 }
 

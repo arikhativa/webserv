@@ -13,11 +13,16 @@ bool	httprequesthandlerGET::is_directory(const std::string& path)
 	return (S_ISDIR(statbuf.st_mode));
 }
 
-std::string	httprequesthandlerGET::getFileContent(const std::string& path)
+std::string httprequesthandlerGET::getFileContent(const std::string& path)
 {
-	std::ifstream file(path.c_str());
-	std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-	return (content);
+    std::ifstream file(path.c_str());
+    if (!file)
+        return std::string();
+    std::stringstream contentStream;
+    contentStream << file.rdbuf();
+    file.close();
+    std::string content = contentStream.str();
+    return (content);
 }
 
 std::string httprequesthandlerGET::getFileDate(struct stat statbuf)
@@ -83,7 +88,7 @@ std::string httprequesthandlerGET::getQuery(std::string request)
 	{
 		std::map<std::string, std::string> parameters = getParameters(query);
 		//parameters will be used in the future for CGI
-		return (query.substr(0, query.find("?")));
+		return (std::string(query.substr(0, query.find("?"))));
 	}
 	return (query);
 }
