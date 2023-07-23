@@ -29,8 +29,16 @@ std::string HTTPRequestHandler::get::GET(Server server, std::string request)
 			ILogger::consoleLogDebug("Is file(" + path + file + ")");
 			ResponseHeader response(200);
 			if (file.find(".") != std::string::npos)
+			{
+				std::map<std::string, std::string> cgi ;//=server.get....();
+				//temporal
+				cgi[".py"] = "/usr/bin/python3";
+				cgi[".php"] = "/usr/bin/php-cgi";
+				if (cgi.find(file.substr(file.find_last_of("."))) != cgi.end())
+					response.setContentType(".html");
 				response.setContentType(file.substr(file.find_last_of(".")));
-			response.setBody(httprequesthandlerGET::getFileContent(path + file));
+			}
+			response.setBody(httprequesthandlerGET::getFileContent(path + file, server, request));
 			return (response.getResponse());
 		}
 		else
@@ -76,7 +84,6 @@ std::string HTTPRequestHandler::post::POST(Server server, std::string request)
 			ResponseHeader errorResponse(204);
 			errorResponse.setBody("");
 			ILogger::consoleLogDebug("POST status code 204");
-			ILogger::consoleLogDebug("response: " + errorResponse.getResponse());
 			return (errorResponse.getResponse());
 		}
 		std::string contentFile = httprequesthandlerPOST::getContentFilePost(body);

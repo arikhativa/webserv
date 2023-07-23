@@ -132,6 +132,8 @@ void	ResponseHeader::setBody(std::string body)
 		setContentLength(0);
 	else
 		setContentLength(body.length() + 1);
+	if (this->_header.at(CONNECTION_TYPE).value == "")
+		setContentType(".html");
 }
 
 std::string ResponseHeader::getStatusMessage()
