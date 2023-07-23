@@ -3,9 +3,49 @@
 
 std::string HTTPRequestHandler::get::GET(Server server, std::string request)
 {
-	(void)request;
-	(void)server;
-	return std::string("You sent a GET request:\n");
+	try
+	{
+		(void)server;
+		std::string path = "/home/rufo/Desktop/42/web_example/"; //temporal, server.getPath();
+		{
+			std::size_t pos = request.find("\r\n");
+			if (pos != std::string::npos)
+				ILogger::consoleLogDebug("GET request: " + std::string(request.substr(0, pos)));
+			else
+				ILogger::consoleLogDebug("GET request: " + request);
+		}
+		std::string file = httprequesthandlerGET::getQuery(request);
+		if (httprequesthandlerGET::is_directory(path + file))
+		{
+			ILogger::consoleLogDebug("Is directory(" + path + file + ")");
+			ResponseHeader response(200);
+			if (file[file.length() - 1] != '/')
+				file += "/";
+			response.setContentType(".html");
+			response.setBody(httprequesthandlerGET::getDirecoryContent(path, file));
+			return (response.getResponse());
+		}
+		else if (httprequesthandlerGET::exists_file(path + file))
+		{
+			ILogger::consoleLogDebug("Is file(" + path + file + ")");
+			ResponseHeader response(200);
+			response.setContentType(file.substr(file.find_last_of(".")));
+			response.setBody(httprequesthandlerGET::getFileContent(path + file, server, request));
+			return (response.getResponse());
+		}
+		else
+		{
+			ILogger::consoleLogDebug("Not found(" + path + file + ")");
+			ResponseHeader response(404);
+			return (response.getResponse());
+		}
+	}
+	catch(const std::exception& e)
+	{
+		ILogger::consoleLogError("Error: " + std::string(e.what()));
+		ResponseHeader errorResponse(500);
+		return (errorResponse.getResponse());
+	}
 }
 
 std::string HTTPRequestHandler::post::POST(Server server, std::string request)
