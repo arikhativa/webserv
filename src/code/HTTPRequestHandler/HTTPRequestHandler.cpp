@@ -10,9 +10,50 @@ std::string HTTPRequestHandler::get::GET(Server server, std::string request)
 
 std::string HTTPRequestHandler::post::POST(Server server, std::string request)
 {
-	(void)request;
-	(void)server;
-	return std::string("You sent a POST request:\n");
+	try
+	{
+		(void)server;
+		std::string path = "/home/rufo/Desktop/42/web_example/"; //temporal, server.getPath();
+		{
+			std::size_t pos = request.find("\r\n");
+			if (pos != std::string::npos)
+				ILogger::consoleLogDebug("POST request: " + request.substr(0, pos));
+			else
+				ILogger::consoleLogDebug("POST request: " + request);
+		}
+		std::string file = httprequesthandlerPOST::getQuery(request);
+		if (!httprequesthandlerPOST::exists_file(path + file))
+		{
+			ILogger::consoleLogDebug("POST Not found(" + path + file + ")");
+			ResponseHeader response(404);
+			ILogger::consoleLogDebug("POST status code 404");
+			return (response.getResponse());
+		}
+		std::string body = httprequesthandlerPOST::getBody(request);
+		std::string nameFile = httprequesthandlerPOST::getNameFilePost(body);
+		if (nameFile == "")
+		{
+			ResponseHeader errorResponse(204);
+			errorResponse.setBody("");
+			ILogger::consoleLogDebug("POST status code 204");
+			return (errorResponse.getResponse());
+		}
+		std::string contentFile = httprequesthandlerPOST::getContentFilePost(body);
+		std::ofstream outfile ((path + nameFile).c_str());
+		outfile << contentFile;
+		outfile.close();
+		ResponseHeader response(201);
+		ILogger::consoleLogDebug("POST status code 201");
+		response.setContentType(".html");
+		response.setBody("<html>\n<body>\n<h1>File uploaded</h1>\n</body>\n</html>");
+		return (response.getResponse());
+	}
+	catch(const std::exception& e)
+	{
+		ILogger::consoleLogError("Error: " + std::string(e.what()));
+		ResponseHeader errorResponse(500);
+		return (errorResponse.getResponse());
+	}
 }
 
 std::string HTTPRequestHandler::delete_::DELETE(Server server, std::string request)
