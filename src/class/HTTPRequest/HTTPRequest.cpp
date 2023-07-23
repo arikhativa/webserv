@@ -60,24 +60,44 @@ HTTPRequest::type HTTPRequest::getRequestType()
 		return (UNKNOWN);
 }
 
+#include <vector>
+
 void HTTPRequest::recvRequest(void)
 {
-	int tmpRecvLen;
-	char tmpRaw[4096];
+    int tmpRecvLen;
+    unsigned long long int maxRequestSize = 99999;
+    std::vector<char> tmpRaw;
 
-	tmpRecvLen = recv(this->_clientFd, tmpRaw, sizeof(tmpRaw), MSG_DONTWAIT);
-	if (tmpRecvLen <= -1)
-	{
-		this->_attempts++;
-		throw RecievingRequestError();
-	}
-	this->_rawRequest = std::string(tmpRaw);
+    while (true)
+    {
+        std::vector<char> buffer(maxRequestSize);
+        tmpRecvLen = recv(this->_clientFd, buffer.data(), maxRequestSize, MSG_DONTWAIT);
+
+        if (tmpRecvLen <= 0)
+        {
+            if (tmpRaw.empty())
+            {
+                this->_attempts++;
+                throw RecievingRequestError();
+            }
+            else
+            {
+                break; // Se ha recibido toda la solicitud
+            }
+        }
+
+        // Agregar los datos recibidos al vector tmpRaw
+        tmpRaw.insert(tmpRaw.end(), buffer.begin(), buffer.begin() + tmpRecvLen);
+    }
+
+    this->_rawRequest = std::string(tmpRaw.begin(), tmpRaw.end());
 }
+
 
 void HTTPRequest::sendResponse(void)
 {
 	int sendStatus;
-	sendStatus = send(this->_clientFd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
+	sendStatus = send(this->_clientFd, this->_response.c_str(), this->_response.size(), 0);
 	if (sendStatus <= -1)
 	{
 		this->_attempts++;
@@ -85,21 +105,22 @@ void HTTPRequest::sendResponse(void)
 	}
 }
 
+/* TODO: handle request according to HTTP */
 void HTTPRequest::handleRequest(void)
 {
 	switch (getRequestType())
 	{
 		case HTTPRequest::GET:
-			this->_response = HTTPRequestHandler::GET(this->_virtualServer, this->_rawRequest);
+			this->_response = HTTPRequestHandler::get::GET(this->_virtualServer, this->_rawRequest);
 			break;
 		case HTTPRequest::POST:
-			this->_response = HTTPRequestHandler::POST(this->_virtualServer, this->_rawRequest);
+			this->_response = HTTPRequestHandler::post::POST(this->_virtualServer, this->_rawRequest);
 			break;
 		case HTTPRequest::DELETE:
-			this->_response = HTTPRequestHandler::DELETE(this->_virtualServer, this->_rawRequest);
+			this->_response = HTTPRequestHandler::delete_::DELETE(this->_virtualServer, this->_rawRequest);
 			break;
 		default: //Uknown request
-			this->_response = HTTPRequestHandler::UNKNOWN(this->_virtualServer, this->_rawRequest);
+			this->_response = HTTPRequestHandler::unknown::UNKNOWN(this->_virtualServer, this->_rawRequest);
 			break;
 	}
 }

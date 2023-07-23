@@ -1,30 +1,33 @@
 
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 
-std::string HTTPRequestHandler::GET(Server server, std::string request)
+std::string HTTPRequestHandler::get::GET(Server server, std::string request)
 {
 	(void)request;
 	(void)server;
 	return std::string("You sent a GET request:\n");
 }
 
-std::string HTTPRequestHandler::POST(Server server, std::string request)
+std::string HTTPRequestHandler::post::POST(Server server, std::string request)
 {
 	(void)request;
 	(void)server;
 	return std::string("You sent a POST request:\n");
 }
 
-std::string HTTPRequestHandler::DELETE(Server server, std::string request)
+std::string HTTPRequestHandler::delete_::DELETE(Server server, std::string request)
 {
 	(void)request;
 	(void)server;
 	return std::string("You sent a DELETE request:\n");
 }
 
-std::string HTTPRequestHandler::UNKNOWN(Server server, std::string request)
+std::string HTTPRequestHandler::unknown::UNKNOWN(Server server, std::string request)
 {
-	(void)request;
+	ILogger::consoleLogDebug("UNKNOWN request: " + request);
 	(void)server;
-	return std::string("You sent an UNKNOWN request:\n");
+	ResponseHeader response(405);
+	//temporal, must use the server config
+		response.setConnection("GET, POST, DELETE");
+	return (response.getResponse());
 }
