@@ -29,7 +29,18 @@ std::string HTTPRequestHandler::get::GET(Server server, std::string request)
 		{
 			ILogger::consoleLogDebug("Is file(" + path + file + ")");
 			ResponseHeader response(200);
-			response.setContentType(file.substr(file.find_last_of(".")));
+			if (file.find(".") != std::string::npos)
+			{
+				//!temporal
+				std::map<std::string, std::string> cgi;//=server.get....();
+				cgi[".py"] = "/usr/bin/python3";
+				cgi[".php"] = "/usr/bin/php-cgi";
+
+
+				if (cgi.find(file.substr(file.find_last_of("."))) != cgi.end())
+					response.setContentType(".html");
+				response.setContentType(file.substr(file.find_last_of(".")));
+			}
 			response.setBody(httprequesthandlerGET::getFileContent(path + file, server, request));
 			return (response.getResponse());
 		}
@@ -62,6 +73,7 @@ std::string HTTPRequestHandler::post::POST(Server server, std::string request)
 				ILogger::consoleLogDebug("POST request: " + request);
 		}
 		std::string file = httprequesthandlerPOST::getQuery(request);
+		std::cout << "url: " << path + file << std::endl;
 		if (!httprequesthandlerPOST::exists_file(path + file))
 		{
 			ILogger::consoleLogDebug("POST Not found(" + path + file + ")");
@@ -69,14 +81,29 @@ std::string HTTPRequestHandler::post::POST(Server server, std::string request)
 			ILogger::consoleLogDebug("POST status code 404");
 			return (response.getResponse());
 		}
+		if (httprequesthandlerPOST::is_directory(path + file))
+		{
+			ILogger::consoleLogDebug("POST directory(" + path + file + ")");
+			ResponseHeader response(405);
+			ILogger::consoleLogDebug("POST status code 405");
+			return (response.getResponse());
+		}
 		std::string body = httprequesthandlerPOST::getBody(request);
 		std::string nameFile = httprequesthandlerPOST::getNameFilePost(body);
-		if (nameFile == "")
+		std::string args = httprequesthandlerPOST::getQueryCGIArgs(request);
+		if ((nameFile == "" && args == "") || (nameFile == "" && args != ""))
 		{
-			ResponseHeader errorResponse(204);
-			errorResponse.setBody("");
-			ILogger::consoleLogDebug("POST status code 204");
-			return (errorResponse.getResponse());
+			ResponseHeader response(200);
+			ILogger::consoleLogDebug("POST status code 200");
+			response.setContentType(".html");
+			response.setBody(httprequesthandlerPOST::getFileContent(path + file, server, request));
+			return (response.getResponse());
+		}
+		if (httprequesthandlerPOST::exists_file(path + nameFile))
+		{
+			ResponseHeader response(409);
+			ILogger::consoleLogDebug("POST status code 409");
+			return (response.getResponse());
 		}
 		std::string contentFile = httprequesthandlerPOST::getContentFilePost(body);
 		std::ofstream outfile ((path + nameFile).c_str());

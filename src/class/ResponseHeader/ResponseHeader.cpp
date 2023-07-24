@@ -110,9 +110,9 @@ void	ResponseHeader::setContentType(std::string type)
 void	ResponseHeader::setContentLength(int lenght)
 {
 	std::ostringstream	number;
-
 	number<<lenght;
-	this->_header.at(CONTENT_LENGHT).value = number.str();
+	std::string a = number.str();
+	this->_header.at(CONTENT_LENGHT).value = a;
 }
 
 void	ResponseHeader::setConnection(std::string connection)
@@ -128,10 +128,11 @@ void	ResponseHeader::setBody(std::string body)
 		body  = defaultErrorPage(413);
 	}
 	this->_header[BODY].value = body;
-	if (body.length() == 0)
-		setContentLength(0);
+	int lenght = body.length();
+	if (lenght == 0)
+		setContentLength(lenght);
 	else
-		setContentLength(body.length() + 1);
+		setContentLength(lenght + 1);
 	if (this->_header.at(CONNECTION_TYPE).value == "")
 		setContentType(".html");
 }
@@ -208,6 +209,7 @@ std::string ResponseHeader::getResponse()
         std::string value = "";
         if (_header.find(f) != _header.end())
             value = _header.at(f).value;
+		std::cout << f << std::endl;
         res += key + value + "\n";
     }
     return res;
