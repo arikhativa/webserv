@@ -209,7 +209,6 @@ std::string ResponseHeader::getResponse()
         std::string value = "";
         if (_header.find(f) != _header.end())
             value = _header.at(f).value;
-		std::cout << f << std::endl;
         res += key + value + "\n";
     }
     return res;

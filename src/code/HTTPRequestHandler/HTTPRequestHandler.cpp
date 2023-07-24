@@ -73,7 +73,6 @@ std::string HTTPRequestHandler::post::POST(Server server, std::string request)
 				ILogger::consoleLogDebug("POST request: " + request);
 		}
 		std::string file = httprequesthandlerPOST::getQuery(request);
-		std::cout << "url: " << path + file << std::endl;
 		if (!httprequesthandlerPOST::exists_file(path + file))
 		{
 			ILogger::consoleLogDebug("POST Not found(" + path + file + ")");
