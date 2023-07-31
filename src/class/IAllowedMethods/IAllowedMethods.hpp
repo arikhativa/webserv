@@ -2,7 +2,7 @@
 #ifndef I_ALLOWED_METHODS_HPP
 #define I_ALLOWED_METHODS_HPP
 
-#include <iostream>
+#include <list>
 #include <string>
 
 #ifdef TEST_ON
@@ -13,7 +13,15 @@
 class IAllowedMethods
 {
   public:
+	enum type
+	{
+		GET,
+		POST,
+		DELETE,
+	};
+
 	virtual ~IAllowedMethods(){};
+	virtual bool isAllowed(type method) const = 0;
 };
 
 #ifdef TEST_ON
