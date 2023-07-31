@@ -1,6 +1,7 @@
 addAssignees: author
 addReviewers: true
-numberOfReviewers: 1
+numberOfReviewers: 2
 reviewers:
   - arikhativa
   - dVaGaymer
+  - llanahp
