@@ -2,6 +2,7 @@
 #ifndef H_T_T_P_STATUS_CODE_HPP
 #define H_T_T_P_STATUS_CODE_HPP
 
+#include <cstdlib>
 #include <iostream>
 #include <map>
 #include <string>
@@ -71,6 +72,7 @@ class HTTPStatusCode
 	static bool isValid(int code);
 
 	// object
+	explicit HTTPStatusCode(const std::string &code);
 	explicit HTTPStatusCode(int code);
 	explicit HTTPStatusCode(HTTPStatusCode::Code code);
 	HTTPStatusCode(HTTPStatusCode const &src);
@@ -88,6 +90,7 @@ class HTTPStatusCode
 	HTTPStatusCode::Code get(void) const;
 	void set(HTTPStatusCode::Code code);
 	void set(int code);
+	void set(const std::string &code);
 
   private:
 	static const std::map<HTTPStatusCode::Code, std::string> _map;
