@@ -1,12 +1,10 @@
 
+# Ubuntu 22.04 (Jammy Jellyfish) 
+dist: jammy
+
 language: cpp
 sudo: true
 compiler: c++
-
-# TODO think about this
-# cache:
-#   directories:
-#     - $TRAVIS_BUILD_DIR/res
 
 before_install:
   - sudo apt-get update
@@ -16,19 +14,14 @@ addons:
     packages:
       - valgrind
       - cmake
-      - libgtest-dev
+      - googletest
 
 install:
-  - cd res
-  - tar -xf googletest-1.13.0.tar.gz
-  - cd googletest-1.13.0
-  - mkdir build
-  - cd build
-  - cmake build ..
-  - cd ..
-  - cmake --build build
-  - cd ./build/googlemock/
-  - sudo make install
+  - cd /usr/src/googletest
+  - sudo cmake -Bbuild
+  - sudo cmake --build build
+  - sudo cmake --install build
+  - sudo cmake --install build
 
 script:
   - cd $TRAVIS_BUILD_DIR
