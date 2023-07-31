@@ -17,6 +17,8 @@
 
 #include <Server/Server.hpp>
 #include <ILogger/ILogger.hpp>
+#include <ResponseHeader/ResponseHeader.hpp>
+#include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 
 namespace httprequesthandlerGET
 {
@@ -25,8 +27,8 @@ namespace httprequesthandlerGET
 	bool		isChunked(std::string request);
 	std::string	getUnchunkedBody(std::string bodyRequest);
 	std::string getQueryCGIArgs(std::string request);
-	std::string	getCGI(const std::string& path, Server server, std::string request);
-	std::string	getFileContent(const std::string& path, Server server, std::string request);
+	std::string	getCGI(const std::string& path, Server server, std::string request, ResponseHeader &response);
+	std::string	getFileContent(const std::string& path, Server server, std::string request, ResponseHeader &response);
 	std::string getFileDate(struct stat statbuf);
 	std::string getQuery(std::string request);
 	std::string treat_url(std::string url);

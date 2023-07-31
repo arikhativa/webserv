@@ -35,7 +35,11 @@ std::string	httprequesthandlerGET::getUnchunkedBody(std::string bodyRequest)
 		if (size_int == 0)
 			break;
 		bodyRequest = bodyRequest.substr(pos + 2);
+		if (bodyRequest.length() < size_int + 2)
+			throw HTTPRequestHandler::SizeError();
 		body += bodyRequest.substr(0, size_int);
+		if (bodyRequest.substr(size_int, 2) != "\r\n")
+			throw HTTPRequestHandler::SizeError();
 		bodyRequest = bodyRequest.substr(size_int + 2);
 	}
 	return (body);
@@ -156,12 +160,13 @@ std::string httprequesthandlerGET::createpipe(char **ch_env, char **argv, std::s
 	return ("");
 }
 
-std::string httprequesthandlerGET::getCGI(const std::string& path, Server server, std::string request)
+std::string httprequesthandlerGET::getCGI(const std::string& path, Server server, std::string request, ResponseHeader &response)
 {
 	//!temporal
 	std::map<std::string, std::string> cgi;//=server.get....();
 	cgi[".py"] = "/usr/bin/python3";
 	cgi[".php"] = "/usr/bin/php-cgi";
+	cgi[".sh"] = "/usr/bin/sh";
 
 	(void)server;
 	std::string bodyRequest;
@@ -182,21 +187,38 @@ std::string httprequesthandlerGET::getCGI(const std::string& path, Server server
 	argv[0] = strdup(ext_path.c_str());
 	argv[1] = strdup(cgi_path.c_str());
 	argv[2] = NULL;
-	return (createpipe(ch_env, argv, bodyRequest));
+	std::string content = createpipe(ch_env, argv, bodyRequest);
+	std::size_t pos = content.find("Content-Type: ");
+	std::string content_type ="";
+	if (pos != std::string::npos)
+	{
+		std::size_t pos2 = content.find("\r\n", pos);
+		if (pos2 != std::string::npos)
+		{
+			content_type = content.substr(pos + 14, pos2 - pos - 14);
+			response.setContentType(content_type);
+		}
+	}
+	response.setContentType(content_type);
+	pos = content.find("\r\n\r\n");
+	if (pos != std::string::npos)
+		content = content.substr(pos + 4);
+	return (content);
 }
 
-std::string httprequesthandlerGET::getFileContent(const std::string& path, Server server, std::string request)
+std::string httprequesthandlerGET::getFileContent(const std::string& path, Server server, std::string request, ResponseHeader &response)
 {
 	//!temporal
 	std::map<std::string, std::string> cgi;//=server.get....();
 	cgi[".py"] = "/usr/bin/python3";
 	cgi[".php"] = "/usr/bin/php-cgi";
+	cgi[".sh"] = "/usr/bin/sh";
 
 	if (path.find(".") != std::string::npos)
 	{
 		std::string ext = path.substr(path.find_last_of("."));
 		if (cgi.find(ext) != cgi.end())
-			return (getCGI(path, server, request));
+			return (getCGI(path, server, request, response));
 	}
 	std::ifstream file(path.c_str());
 	if (!file)
@@ -205,6 +227,8 @@ std::string httprequesthandlerGET::getFileContent(const std::string& path, Serve
 	contentStream << file.rdbuf();
 	file.close();
 	std::string content = contentStream.str();
+	if (path.find(".") != std::string::npos)
+		response.setContentType(path.substr(path.find_last_of(".")));
 	return (content);
 }
 

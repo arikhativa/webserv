@@ -29,6 +29,14 @@ namespace HTTPRequestHandler
 	{
 		std::string UNKNOWN(Server server, std::string request);
 	}
+	class SizeError : public std::exception
+	{
+		public:
+			virtual const char* what() const throw()
+			{
+				return ("Error in chunk size");
+			}
+	};
 };
 
 #endif /* H_T_T_P_REQUEST_HANDLER_HPP */

@@ -44,6 +44,11 @@ bool	httprequesthandlerPOST::is_directory(const std::string& path)
 	return (S_ISDIR(statbuf.st_mode));
 }
 
+bool	httprequesthandlerPOST::is_directory_writable(const std::string& path)
+{
+	return (exists_file(path) && is_directory(path) && access(path.c_str(), W_OK) == 0);
+}
+
 std::map<std::string, std::string> httprequesthandlerPOST::getParameters(std::string url)
 {
 	std::string query = url.substr(url.find("?") + 1);
@@ -132,8 +137,12 @@ std::string	httprequesthandlerPOST::getUnchunkedBody(std::string bodyRequest)
 		ss >> size_int;
 		if (size_int == 0)
 			break;
-		bodyRequest = bodyRequest.substr(pos + 2);
+		bodyRequest = bodyRequest.substr(size_int + 2);
+		if (bodyRequest.length() < size_int + 2)
+			throw HTTPRequestHandler::SizeError();
 		body += bodyRequest.substr(0, size_int);
+		if (bodyRequest.substr(size_int, 2) != "\r\n")
+			throw HTTPRequestHandler::SizeError();
 		bodyRequest = bodyRequest.substr(size_int + 2);
 	}
 	return (body);
@@ -159,6 +168,8 @@ char 	**httprequesthandlerPOST::setEnv(std::string bodyRequest, const std::strin
 	env["SERVER_PROTOCOL"] = request.substr(request.find(" ") + 1, request.find("\r\n") - request.find(" ") - 1);
 	env["SERVER_PORT"] = "1234" ;//std::to_string(server.getPort());
 	env["SERVER_NAME"] = "localhost";//server.getServerName();
+	//upload_dir
+	env["UPLOAD_DIR"] = "/home/rufo/Desktop/42/"; //server.getUploadDir();
 
 	char **ch_env = (char **)calloc(sizeof(char *), env.size() + 1);
 	std::map<std::string, std::string>::const_iterator it = env.begin();
@@ -195,9 +206,9 @@ std::string httprequesthandlerPOST::createpipe(char **ch_env, char **argv, std::
 	else if (pid > 0)
 	{
 		close(pipe_in[0]);
-        close(pipe_out[1]);
-        write(pipe_in[1], bodyRequest.c_str(), bodyRequest.size());
-        close(pipe_in[1]); 
+		close(pipe_out[1]);
+		write(pipe_in[1], bodyRequest.c_str(), bodyRequest.size());
+		close(pipe_in[1]); 
 		
 		char    buffer[40000  * 2];
 		size_t bytes_read = 0;
@@ -233,12 +244,13 @@ std::string httprequesthandlerPOST::createpipe(char **ch_env, char **argv, std::
 	return ("");
 }
 
-std::string httprequesthandlerPOST::getCGI(const std::string& path, Server server, std::string request)
+std::string httprequesthandlerPOST::getCGI(const std::string& path, Server server, std::string request, ResponseHeader &response)
 {
 	//!temporal
 	std::map<std::string, std::string> cgi;//=server.get....();
 	cgi[".py"] = "/usr/bin/python3";
 	cgi[".php"] = "/usr/bin/php-cgi";
+	cgi[".sh"] = "/usr/bin/sh";
 
 	(void)server;
 	std::string bodyRequest;
@@ -251,7 +263,6 @@ std::string httprequesthandlerPOST::getCGI(const std::string& path, Server serve
 
 	char **ch_env;
 	ch_env = setEnv(bodyRequest, path,  request, server);
-	
 	std::string ext_path;
 	ext_path = cgi[path.substr(path.find_last_of("."))];
 	std::string cgi_path = path; 
@@ -259,21 +270,49 @@ std::string httprequesthandlerPOST::getCGI(const std::string& path, Server serve
 	argv[0] = strdup(ext_path.c_str());
 	argv[1] = strdup(cgi_path.c_str());
 	argv[2] = NULL;
-	return (createpipe(ch_env, argv, bodyRequest));
+	std::string content = createpipe(ch_env, argv, bodyRequest);
+	std::size_t pos = content.find("Content-Type: ");
+	std::string content_type = "";
+	if (pos != std::string::npos)
+	{
+		content_type = content.substr(pos);
+		std::size_t pos2 = content_type.find("\n");
+		if (pos2 != std::string::npos)
+		{
+			
+			content_type = content.substr(pos , pos2);
+			pos  = content_type.find(":");
+			content_type = content_type.substr(pos + 2);
+			response.setContentType(content_type);
+		}
+	}
+
+	pos = content.find("\r\n\r\n");
+	if (pos != std::string::npos)
+		content = content.substr(pos + 4);
+	//si contiene content-type lo quito
+	if (content_type != "")
+	{
+		pos = content.find(content_type);
+		if (pos != std::string::npos)
+			content = content.substr(pos + content_type.size() + 2);
+	}
+	return (content);
 }
 
-std::string httprequesthandlerPOST::getFileContent(const std::string& path, Server server, std::string request)
+std::string httprequesthandlerPOST::getFileContent(const std::string& path, Server server, std::string request, ResponseHeader &response)
 {
 	//!temporal
 	std::map<std::string, std::string> cgi;//=server.get....();
 	cgi[".py"] = "/usr/bin/python3";
 	cgi[".php"] = "/usr/bin/php-cgi";
+	cgi[".sh"] = "/usr/bin/sh";
 
 	if (path.find(".") != std::string::npos)
 	{
 		std::string ext = path.substr(path.find_last_of("."));
 		if (cgi.find(ext) != cgi.end())
-			return (getCGI(path, server, request));
+			return (getCGI(path, server, request, response));
 	}
 	std::ifstream file(path.c_str());
 	if (!file)
@@ -282,5 +321,7 @@ std::string httprequesthandlerPOST::getFileContent(const std::string& path, Serv
 	contentStream << file.rdbuf();
 	file.close();
 	std::string content = contentStream.str();
+	if (path.find(".") != std::string::npos)
+		response.setContentType(path.substr(path.find_last_of(".")));
 	return (content);
 }

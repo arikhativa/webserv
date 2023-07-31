@@ -16,13 +16,10 @@ ResponseHeader::ResponseHeader(int code)
 		MethodNotAllowed();
 	if (code == 404)
 		NotFound();
-	if (code == 500)
-	{
-		setContentType(".html");
-		_header[CONNECTION].value = "close";
+	if (code == 400)
 		setBody(defaultErrorPage(code));
-	}
-	
+	if (code == 500)
+		setBody(defaultErrorPage(code));
 }
 
 ResponseHeader::ResponseHeader(const ResponseHeader &src)
@@ -77,7 +74,10 @@ std::string ResponseHeader::defaultErrorPage(int code)
 	{
 		std::stringstream number;
 		number << code;
-		return ("<!DOCTYPE html>\n<html>\n<body>\n<h1>" + number.str() + " " + IStatusCodes::_status_codes[code] + "</h1>\n</body>\n</html>");
+		setContentType(".html");
+		_header[CONNECTION].value = "close";
+		std::string body = "<!DOCTYPE html>\n<html>\n<body>\n<h1>" + number.str() + " " + IStatusCodes::_status_codes[code] + "</h1>\n</body>\n</html>";
+		return (body);
 	}
 }
 
@@ -104,6 +104,8 @@ void	ResponseHeader::setStatusCode(int code)
 
 void	ResponseHeader::setContentType(std::string type) 
 {
+	if (type == "")
+		type  = "text/plain";
 	this->_header.at(CONNECTION_TYPE).value = IContentTypes::_content_types[type];	
 }
 
@@ -198,19 +200,26 @@ void ResponseHeader::defaultConstructor()
 }
 std::string ResponseHeader::getResponse()
 {
+
     std::string res = "";
-    for (field f = STANDARD; f <= BODY; f = static_cast<field>(static_cast<int>(f) + 1))
-    {
-        std::string key = "";
-        if (_header.find(f) != _header.end())
-            key = _header.at(f).name;
-        if (key == "")
-            continue;
-        std::string value = "";
-        if (_header.find(f) != _header.end())
-            value = _header.at(f).value;
-        res += key + value + "\n";
-    }
+	try{
+		for (field f = STANDARD; f <= BODY; f = static_cast<field>(static_cast<int>(f) + 1))
+		{
+			std::string key = "";
+			if (_header.find(f) != _header.end())
+				key = _header.at(f).name;
+			if (key == "")
+				continue;
+			std::string value = "";
+			if (_header.find(f) != _header.end())
+				value = _header.at(f).value;
+			res += key + value + "\n";
+		}
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
     return res;
 }
 

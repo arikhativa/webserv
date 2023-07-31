@@ -3,7 +3,7 @@
 std::map<std::string, std::string> IContentTypes::create_map()
 {
 	std::map<std::string, std::string> ret;
-	ret[".html"] = "text/html";
+		ret[".html"] = "text/html";
 		ret[".htm"] = "text/html";
 		ret[".shtml"] = "text/html";
 		ret[".css"] = "text/css";
