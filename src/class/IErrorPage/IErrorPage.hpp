@@ -22,6 +22,8 @@ class IErrorPage
 	virtual const IPath &getPath(void) const = 0;
 };
 
+std::ostream &operator<<(std::ostream &o, IErrorPage const &i);
+
 #ifdef TEST_ON
 #undef private
 #undef protected
