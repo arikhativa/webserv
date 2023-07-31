@@ -33,7 +33,7 @@ class IServerConf
 	virtual std::list<ILocation *> getLocations(void) const = 0;
 	virtual std::list<ICGILocation *> getCGILocation(void) const = 0;
 	virtual std::list<IErrorPage *> getErrorPages(void) const = 0;
-	virtual IReturn getReturn(void) const = 0;
+	virtual const IReturn &getReturn(void) const = 0;
 	virtual std::size_t getMaxBodySize(void) const = 0;
 };
 
