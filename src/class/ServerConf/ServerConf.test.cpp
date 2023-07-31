@@ -7,6 +7,13 @@
 // 	ServerConf *obj = new ServerConf();
 // 	delete obj;
 // }
+TEST(ServerConf, CreateDestroy)
+{
+	ServerConf obj;
+
+	obj.setName("name");
+	std::cout << obj << std::endl;
+}
 
 // TEST(ServerConf, Accessor)
 // {

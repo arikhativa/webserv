@@ -5,8 +5,8 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Location::Location()
-	: _path(NULL)
+Location::Location(const Path &p)
+	: _path(p)
 	, _auto_index(false, false)
 	, _upload(false, false)
 	, _max_body_size(0, false)
@@ -167,10 +167,9 @@ const IPath *Location::getRoot(void) const
 	return _root;
 }
 
-void Location::setPath(const std::string &path)
+void Location::setPath(const Path &path)
 {
-	if (!_path)
-		_path = new Path(path);
+	_path = path;
 }
 
 void Location::setAutoIndex(const std::string &auto_index)
@@ -219,13 +218,15 @@ void Location::setIndexFiles(const std::list<std::string> &index_files)
 	}
 }
 
-void Location::setAllowedMethods(const std::list<std::string> &allowed_methods)
+// move to builder
+// if (!allowed_methods.size())
+// 	throw InvalidLocationException(Token::Keyword::INDEX + " can't be empty");
+void Location::setAllowedMethods(const AllowedMethods &allowed_methods)
 {
-	if (_allowed_methods)
+	if (_allowed_methods.isOn())
 		throw InvalidLocationException(Token::Keyword::ALLOW_METHODS + " is already set");
-	if (!allowed_methods.size())
-		throw InvalidLocationException(Token::Keyword::INDEX + " can't be empty");
-	_allowed_methods = new AllowedMethods(allowed_methods);
+	_allowed_methods.setValue(allowed_methods);
+	_allowed_methods.setOn(true);
 }
 
 void Location::addErrorPage(const std::string &status, const std::string &path)

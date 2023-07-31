@@ -26,7 +26,7 @@
 class Location : public ILocation
 {
   public:
-	Location();
+	explicit Location(const Path &p);
 	virtual ~Location();
 
 	void setDefaultSettingIfNeeded(void);
@@ -41,11 +41,11 @@ class Location : public ILocation
 	virtual std::list<const IErrorPage *> getErrorPages(void) const;
 	virtual const IPath *getRoot(void) const;
 
-	void setPath(const std::string &path);
 	void setAutoIndex(const std::string &auto_index);
 	void setUpload(const std::string &upload);
 	void setMaxBodySize(const std::string &max_body_size);
-	void setAllowedMethods(const std::list<std::string> &allowed_methods);
+	void setAllowedMethods(const AllowedMethods &allowed_methods);
+	// void setAllowedMethods(const std::list<std::string> &allowed_methods);
 	void setReturn(const std::string &status, const std::string &path);
 	void setIndexFiles(const std::list<std::string> &index_files);
 	void addErrorPage(const std::string &status, const std::string &path);
@@ -63,11 +63,11 @@ class Location : public ILocation
 	};
 
   private:
-	Path *_path;
+	Path _path;
 	OnOff<bool> _auto_index;
 	OnOff<bool> _upload;
 	OnOff<std::size_t> _max_body_size;
-	AllowedMethods *_allowed_methods;
+	OnOff<AllowedMethods> _allowed_methods;
 	Return *_return;
 	std::list<std::string> _index_files;
 	std::list<ErrorPage> _error_pages;
