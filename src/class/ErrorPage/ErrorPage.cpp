@@ -58,6 +58,14 @@ std::ostream &operator<<(std::ostream &o, const ErrorPage &i)
 	return o;
 }
 
+std::ostream &operator<<(std::ostream &o, IErrorPage const &i)
+{
+	const ErrorPage &tmp = dynamic_cast<const ErrorPage &>(i);
+
+	o << tmp;
+	return o;
+}
+
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
