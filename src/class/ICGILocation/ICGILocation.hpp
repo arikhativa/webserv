@@ -14,7 +14,6 @@ class ICGILocation
 {
   public:
 	virtual ~ICGILocation(){};
-	virtual IPath getPath(void) const = 0;
 };
 
 #ifdef TEST_ON
