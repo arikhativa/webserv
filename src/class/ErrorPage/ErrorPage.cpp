@@ -32,7 +32,7 @@ ErrorPage::~ErrorPage()
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-ErrorPage &ErrorPage::operator=(ErrorPage const &rhs)
+ErrorPage &ErrorPage::operator=(const ErrorPage &rhs)
 {
 	if (this != &rhs)
 	{
@@ -42,13 +42,15 @@ ErrorPage &ErrorPage::operator=(ErrorPage const &rhs)
 	return *this;
 }
 
-std::ostream &operator<<(std::ostream &o, ErrorPage const &i)
+std::ostream &operator<<(std::ostream &o, const ErrorPage &i)
 {
-	o << "ErrorPage[" << i.getStatus().get() << " " << i.getPath().get() << "]";
+	const BasePairCodePath &tmp = dynamic_cast<const BasePairCodePath &>(i);
+
+	o << tmp;
 	return o;
 }
 
-std::ostream &operator<<(std::ostream &o, IErrorPage const &i)
+std::ostream &operator<<(std::ostream &o, const IErrorPage &i)
 {
 	const ErrorPage &tmp = dynamic_cast<const ErrorPage &>(i);
 
