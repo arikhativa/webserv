@@ -32,14 +32,6 @@ ErrorPage::~ErrorPage()
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-std::ostream &operator<<(std::ostream &o, const IErrorPage &i)
-{
-	const ErrorPage &tmp = dynamic_cast<const ErrorPage &>(i);
-
-	o << tmp;
-	return o;
-}
-
 ErrorPage &ErrorPage::operator=(const ErrorPage &rhs)
 {
 	if (this != &rhs)
@@ -58,7 +50,7 @@ std::ostream &operator<<(std::ostream &o, const ErrorPage &i)
 	return o;
 }
 
-std::ostream &operator<<(std::ostream &o, IErrorPage const &i)
+std::ostream &operator<<(std::ostream &o, const IErrorPage &i)
 {
 	const ErrorPage &tmp = dynamic_cast<const ErrorPage &>(i);
 
