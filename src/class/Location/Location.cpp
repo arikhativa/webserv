@@ -12,6 +12,7 @@ Location::Location()
 	, _max_body_size(0, false)
 	, _allowed_methods(NULL)
 	, _return(NULL)
+	, _root(NULL)
 {
 }
 
@@ -42,6 +43,8 @@ Location::~Location()
 		delete _path;
 	if (_allowed_methods)
 		delete _allowed_methods;
+	if (_root)
+		delete _root;
 }
 
 /*
@@ -52,8 +55,6 @@ std::ostream &operator<<(std::ostream &o, Location const &i)
 {
 	o << std::boolalpha;
 
-	const IReturn *ptr = i.getReturn();
-
 	o << "{"
 	  << "\"_path\": \"" << i.getPath().get() << "\", "
 	  << "\"_auto_index\": " << i.isAutoIndexOn() << ", "
@@ -61,11 +62,33 @@ std::ostream &operator<<(std::ostream &o, Location const &i)
 	  << "\"_max_body_size\": " << i.getMaxBodySize() << ", "
 	  << "\"_allowed_methods\": " << i.getAllowedMethods() << ", ";
 
-	if (ptr)
-		o << "\"_return\": " << *ptr << ", ";
+	{
+		const IReturn *ptr = i.getReturn();
+
+		if (ptr)
+			o << "\"_return\": " << *ptr << ", ";
+	}
 
 	o << "\"_index_files\": " << i.getIndexFiles() << ", "
-	  << "\"_error_pages\": " << i.getErrorPages() << "}";
+	  << "\"_error_pages\": " << i.getErrorPages();
+
+	{
+		const IPath *ptr = i.getRoot();
+
+		if (ptr)
+			o << ", "
+			  << "\"_root\": \"" << ptr->get() << "\"";
+	}
+
+	o << "}";
+	return o;
+}
+
+std::ostream &operator<<(std::ostream &o, const ILocation &i)
+{
+	const Location &tmp = static_cast<const Location &>(i);
+	o << tmp;
+
 	return o;
 }
 
@@ -148,6 +171,11 @@ bool Location::canUpload(void) const
 	return false;
 }
 
+const IPath *Location::getRoot(void) const
+{
+	return _root;
+}
+
 void Location::setPath(const std::string &path)
 {
 	if (!_path)
@@ -221,6 +249,15 @@ void Location::addErrorPage(const std::string &status, const std::string &path)
 		++it;
 	}
 	_error_pages.push_back(page);
+}
+
+void Location::setRoot(const std::string &root)
+{
+	if (_root)
+		throw InvalidLocationException(Token::Keyword::ROOT + " is already set");
+	if (!root.size())
+		throw InvalidLocationException(Token::Keyword::ROOT + " can't be empty");
+	_root = new Path(root);
 }
 
 /* ************************************************************************** */

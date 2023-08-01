@@ -10,6 +10,7 @@
 
 namespace converter
 {
+	int stringToInt(const std::string &str);
 	std::size_t stringToSizeT(const std::string &str);
 	bool onOffStringToBool(const std::string &str);
 
