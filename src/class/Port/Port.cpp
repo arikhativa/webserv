@@ -8,11 +8,7 @@
 Port::Port(const std::string &port)
 	: _port(0)
 {
-	int p = std::atoi(port.c_str());
-
-	if (!Port::isValid(p))
-		throw InvalidPortException();
-	this->_port = static_cast<uint16_t>(p);
+	set(port);
 }
 
 Port::Port(uint16_t port)
@@ -70,6 +66,15 @@ bool Port::isValid(int port)
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+void Port::set(const std::string &port)
+{
+	int p = converter::stringToInt(port);
+
+	if (!Port::isValid(p))
+		throw InvalidPortException();
+	this->_port = static_cast<uint16_t>(p);
+}
 
 void Port::set(uint16_t port)
 {
