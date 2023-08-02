@@ -52,3 +52,16 @@ std::ostream &operator<<(std::ostream &o, const std::list<const ILocation *> &i)
 	o << "]";
 	return o;
 }
+
+std::ostream &operator<<(std::ostream &o, const std::list<const IServerConf *> &i)
+{
+	o << "[";
+	for (std::list<const IServerConf *>::const_iterator it = i.begin(); it != i.end(); it++)
+	{
+		o << **it;
+		if (it != --i.end())
+			o << ", ";
+	}
+	o << "]";
+	return o;
+}

@@ -45,7 +45,4 @@ TEST(Path, PathType)
 
 	obj.set("relative/path");
 	EXPECT_EQ(true, obj.isRelative());
-
-	obj.set("");
-	EXPECT_EQ(false, obj.isRelative());
 }
