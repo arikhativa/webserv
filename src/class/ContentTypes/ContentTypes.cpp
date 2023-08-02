@@ -1,8 +1,9 @@
-#include <IContentTypes/IContentTypes.hpp>
+#include <ContentTypes/ContentTypes.hpp>
 
-std::map<std::string, std::string> IContentTypes::create_map()
+static std::map<std::string, std::string> create_map(void)
 {
 	std::map<std::string, std::string> ret;
+
 	ret[".html"] = "text/html";
 	ret[".htm"] = "text/html";
 	ret[".shtml"] = "text/html";
@@ -120,7 +121,76 @@ std::map<std::string, std::string> IContentTypes::create_map()
 	ret[".asf"] = "video/x-ms-asf";
 	ret[".wmv"] = "video/x-ms-wmv";
 	ret[".avi"] = "video/x-msvideo";
+
 	return (ret);
 }
 
-std::map<std::string, std::string> IContentTypes::_content_types = create_map();
+const std::map<std::string, std::string> ContentTypes::_content_types(create_map());
+
+/*
+** ------------------------------- CONSTRUCTOR --------------------------------
+*/
+
+ContentTypes::ContentTypes(std::string content_type)
+{
+	if (!ContentTypes::isValid(content_type))
+		throw (ContentTypes::InvalidExtensionException());
+	this->_content_type = this->_content_types.at(content_type);
+}
+
+const char *ContentTypes::InvalidExtensionException::what() const throw()
+{
+	return "Invalid extension";
+}
+
+/*
+** -------------------------------- DESTRUCTOR --------------------------------
+*/
+
+ContentTypes::~ContentTypes()
+{
+}
+
+/*
+** --------------------------------- OVERLOAD ---------------------------------
+*/
+
+
+ContentTypes &ContentTypes::operator=(ContentTypes const &rhs)
+{
+	if (this != &rhs)
+	{
+		this->_content_type = rhs.get();
+	}
+	return *this;
+}
+
+std::ostream &operator<<(std::ostream &o, ContentTypes const &i)
+{
+	o << "ContentTypes[" << i.get() << "]";
+	return o;
+}
+
+
+/*
+** --------------------------------- METHODS ----------------------------------
+*/
+
+bool ContentTypes::isValid(std::string content_type)
+{
+	return (_content_types.find(content_type) != _content_types.end());
+}
+
+
+/*
+** --------------------------------- ACCESSOR ---------------------------------
+*/
+
+std::string ContentTypes::get(void) const
+{
+	if (this->_content_type.empty())
+		throw (std::invalid_argument("Invalid content type"));
+	return this->_content_type;
+}
+
+/* ************************************************************************** */
