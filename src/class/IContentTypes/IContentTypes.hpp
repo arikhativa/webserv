@@ -1,11 +1,10 @@
 #ifndef I_CONTENT_TYPES_HPP
 #define I_CONTENT_TYPES_HPP
 
-#include <list>
-#include <string>
 #include <iostream>
+#include <list>
 #include <map>
-
+#include <string>
 
 #ifdef TEST_ON
 #define private public
