@@ -22,10 +22,13 @@ class Path : public IPath
 
 	Path &operator=(const Path &rhs);
 
-	const std::string &get(void) const;
+	virtual bool isRelative(void);
+	virtual bool isAbsolute(void);
+	virtual const std::string &get(void) const;
+
 	void set(const std::string &path);
-	bool isRelative(void);
-	bool isAbsolute(void);
+
+	static bool isValid(const std::string &path);
 
   private:
 	std::string _path;

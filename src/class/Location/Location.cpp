@@ -86,7 +86,7 @@ std::ostream &operator<<(std::ostream &o, Location const &i)
 
 std::ostream &operator<<(std::ostream &o, const ILocation &i)
 {
-	const Location &tmp = static_cast<const Location &>(i);
+	const Location &tmp = dynamic_cast<const Location &>(i);
 	o << tmp;
 
 	return o;

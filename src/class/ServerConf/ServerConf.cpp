@@ -76,6 +76,14 @@ std::ostream &operator<<(std::ostream &o, ServerConf const &i)
 	return o;
 }
 
+std::ostream &operator<<(std::ostream &o, const IServerConf &i)
+{
+	const ServerConf &tmp = dynamic_cast<const ServerConf &>(i);
+	o << tmp;
+
+	return o;
+}
+
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
