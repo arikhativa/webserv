@@ -44,13 +44,18 @@ Path &Path::operator=(Path const &rhs)
 
 std::ostream &operator<<(std::ostream &o, Path const &i)
 {
-	o << "Path[" << i.get() << "]";
+	o << i.get();
 	return o;
 }
 
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
+
+bool Path::isValid(const std::string &path)
+{
+	return !path.empty();
+}
 
 bool Path::isRelative(void)
 {

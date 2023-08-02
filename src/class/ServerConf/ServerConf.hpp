@@ -50,6 +50,7 @@ class ServerConf : public IServerConf
 	void addListenByIP(const std::string &ip);
 	void addListen(const std::string &ip, const std::string &port);
 	void addListen(const Listen &listen);
+
 	Location &createGetLocation(void);
 
 	class InvalidServerConf : public std::exception

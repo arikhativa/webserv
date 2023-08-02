@@ -36,6 +36,8 @@ class IServerConf
 	virtual std::list<const ILocation *> getLocations(void) const = 0;
 };
 
+std::ostream &operator<<(std::ostream &o, const IServerConf &i);
+
 #ifdef TEST_ON
 #undef private
 #undef protected

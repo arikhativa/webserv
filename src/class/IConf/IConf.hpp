@@ -1,9 +1,8 @@
 
-#ifndef I_CONFIG_HPP
-#define I_CONFIG_HPP
+#ifndef I_CONF_HPP
+#define I_CONF_HPP
 
 #include <iostream>
-#include <list>
 #include <string>
 
 #include <IServerConf/IServerConf.hpp>
@@ -13,18 +12,20 @@
 #define protected public
 #endif
 
-class IConfig
+class IConf
 {
   public:
-	virtual ~IConfig(void){};
+	virtual ~IConf(){};
 
-	virtual std::list<IServerConf *> getServers(void) const = 0;
+	virtual std::list<const IServerConf *> getServers(void) const = 0;
 	virtual std::string getFileName(void) const = 0;
 };
+
+std::ostream &operator<<(std::ostream &o, const IConf &i);
 
 #ifdef TEST_ON
 #undef private
 #undef protected
 #endif
 
-#endif /* I_CONFIG_HPP */
+#endif /* I_CONF_HPP */

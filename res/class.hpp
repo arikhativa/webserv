@@ -28,7 +28,7 @@ class Replace
 	void _setValue(int value);
 };
 
-std::ostream &operator<<(std::ostream &o, Replace const &i);
+std::ostream &operator<<(std::ostream &o, const Replace &i);
 
 #ifdef TEST_ON
 #undef private
