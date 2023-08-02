@@ -15,20 +15,21 @@ class ContentTypes
 {
   public:
 	explicit ContentTypes(std::string content_type);
-	ContentTypes& operator=(const ContentTypes& rhs);
-  	~ContentTypes();
+	ContentTypes &operator=(const ContentTypes &rhs);
+	~ContentTypes();
 
 	class InvalidExtensionException : public std::exception
 	{
 	  public:
 		virtual const char *what() const throw();
 	};
-	
+
 	std::string get(void) const;
 	static bool isValid(std::string content_type);
-	private:
-		static const std::map<std::string, std::string> _content_types;
-		std::string _content_type;
+
+  private:
+	static const std::map<std::string, std::string> _content_types;
+	std::string _content_type;
 };
 
 std::ostream &operator<<(std::ostream &o, ContentTypes const &i);

@@ -134,7 +134,7 @@ const std::map<std::string, std::string> ContentTypes::_content_types(create_map
 ContentTypes::ContentTypes(std::string content_type)
 {
 	if (!ContentTypes::isValid(content_type))
-		throw (ContentTypes::InvalidExtensionException());
+		throw(ContentTypes::InvalidExtensionException());
 	this->_content_type = this->_content_types.at(content_type);
 }
 
@@ -155,7 +155,6 @@ ContentTypes::~ContentTypes()
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-
 ContentTypes &ContentTypes::operator=(ContentTypes const &rhs)
 {
 	if (this != &rhs)
@@ -171,7 +170,6 @@ std::ostream &operator<<(std::ostream &o, ContentTypes const &i)
 	return o;
 }
 
-
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
@@ -181,7 +179,6 @@ bool ContentTypes::isValid(std::string content_type)
 	return (_content_types.find(content_type) != _content_types.end());
 }
 
-
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
@@ -189,7 +186,7 @@ bool ContentTypes::isValid(std::string content_type)
 std::string ContentTypes::get(void) const
 {
 	if (this->_content_type.empty())
-		throw (std::invalid_argument("Invalid content type"));
+		throw(std::invalid_argument("Invalid content type"));
 	return this->_content_type;
 }
 
