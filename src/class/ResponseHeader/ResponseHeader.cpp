@@ -103,7 +103,7 @@ void ResponseHeader::defaultErrorPage(int code, const ErrorPage &default_page)
 	}
 	else
 		setBody("<!DOCTYPE html>\n<html>\n<body>\n<h1>" + converter::numToString(code) + " " +
-					HTTPStatusCode(code).toString() + "</h1>\n</body>\n</html>");
+				HTTPStatusCode(code).toString() + "</h1>\n</body>\n</html>");
 }
 
 std::string ResponseHeader::getCurrentDate(void)
@@ -155,7 +155,7 @@ void ResponseHeader::setConnection(std::string connection)
 
 void ResponseHeader::setBody(std::string body)
 {
-	
+
 	this->_header[BODY].value = body;
 	int lenght = body.length();
 	if (lenght == 0)

@@ -2,7 +2,6 @@
 #include <ResponseHeader/ResponseHeader.hpp>
 #include <gtest/gtest.h>
 
-
 TEST(ResponseHeader, CreateDestroy)
 {
 	ErrorPage default_page("404", "/404.html");
