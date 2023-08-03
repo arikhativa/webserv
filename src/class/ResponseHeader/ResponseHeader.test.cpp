@@ -84,7 +84,30 @@ TEST(ResponseHeader, Default_error_page)
 	std::list<const ErrorPage *> error_pages;
 	HTTPStatusCode code(404);
 	ErrorPage default_page("400", "/400.html");
+	ErrorPage default_page2("402", "/402.html");
+	ErrorPage default_page3("500", "/500.html");
+
 	error_pages.push_back(&default_page);
+	error_pages.push_back(&default_page2);
+	error_pages.push_back(&default_page3);
+	ResponseHeader obj(code, error_pages);
+	EXPECT_EQ("<!DOCTYPE html>\n<html>\n<body>\n<h1>404 Not Found</h1>\n</body>\n</html>", obj.getBody());
+
+	code.set(200);
+	ResponseHeader obj2(code, error_pages);
+	EXPECT_EQ("", obj2.getBody());
+
+	code.set(502);
+	ResponseHeader obj3(code, error_pages);
+	EXPECT_EQ("<!DOCTYPE html>\n<html>\n<body>\n<h1>502 Bad Gateway</h1>\n</body>\n</html>", obj3.getBody());
+}
+
+TEST(ResponseHeader, Empty_error_page)
+{
+
+	std::list<const ErrorPage *> error_pages;
+	HTTPStatusCode code(404);
+
 	ResponseHeader obj(code, error_pages);
 	EXPECT_EQ("<!DOCTYPE html>\n<html>\n<body>\n<h1>404 Not Found</h1>\n</body>\n</html>", obj.getBody());
 
