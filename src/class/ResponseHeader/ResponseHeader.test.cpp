@@ -5,7 +5,7 @@
 TEST(ResponseHeader, CreateDestroy)
 {
 	std::list<const ErrorPage *> error_pages;
-	ErrorPage default_page("404", "/404.html");
+	ErrorPage default_page("404", "res/404.html");
 	error_pages.push_back(&default_page);
 	HTTPStatusCode code(502);
 	ResponseHeader *obj = new ResponseHeader(code, error_pages);
@@ -15,7 +15,7 @@ TEST(ResponseHeader, CreateDestroy)
 TEST(ResponseHeader, Create)
 {
 	std::list<const ErrorPage *> error_pages;
-	ErrorPage default_page("200", "/200.html");
+	ErrorPage default_page("200", "res/200.html");
 	error_pages.push_back(&default_page);
 	HTTPStatusCode code(404);
 	ResponseHeader obj(code, error_pages);
@@ -25,7 +25,7 @@ TEST(ResponseHeader, Create)
 TEST(ResponseHeader, StatusMessage)
 {
 	std::list<const ErrorPage *> error_pages;
-	ErrorPage default_page("404", "/404.html");
+	ErrorPage default_page("404", "res/404.html");
 	error_pages.push_back(&default_page);
 	HTTPStatusCode code(300);
 	ResponseHeader obj(code, error_pages);
@@ -38,7 +38,7 @@ TEST(ResponseHeader, StatusMessage)
 TEST(ResponseHeader, InvalidStatusCodeException)
 {
 	std::list<const ErrorPage *> error_pages;
-	ErrorPage default_page("404", "/404.html");
+	ErrorPage default_page("404", "res/404.html");
 	error_pages.push_back(&default_page);
 	HTTPStatusCode code(200);
 	ResponseHeader obj(code, error_pages);
@@ -49,7 +49,7 @@ TEST(ResponseHeader, ContentType)
 {
 	std::list<const ErrorPage *> error_pages;
 	HTTPStatusCode code(404);
-	ErrorPage default_page("200", "/200.html");
+	ErrorPage default_page("200", "res/200.html");
 	error_pages.push_back(&default_page);
 	ResponseHeader obj(code, error_pages);
 
@@ -60,7 +60,7 @@ TEST(ResponseHeader, ConnectionClose)
 {
 	std::list<const ErrorPage *> error_pages;
 	HTTPStatusCode code(503);
-	ErrorPage default_page("404", "/404.html");
+	ErrorPage default_page("404", "res/404.html");
 	error_pages.push_back(&default_page);
 	ResponseHeader obj(code, error_pages);
 
@@ -71,7 +71,7 @@ TEST(ResponseHeader, ConnectionOpen)
 {
 	HTTPStatusCode code(200);
 	std::list<const ErrorPage *> error_pages;
-	ErrorPage default_page("404", "/404.html");
+	ErrorPage default_page("404", "res/404.html");
 	error_pages.push_back(&default_page);
 	ResponseHeader obj(code, error_pages);
 
@@ -83,15 +83,15 @@ TEST(ResponseHeader, Default_error_page)
 
 	std::list<const ErrorPage *> error_pages;
 	HTTPStatusCode code(404);
-	ErrorPage default_page("400", "/400.html");
-	ErrorPage default_page2("402", "/402.html");
-	ErrorPage default_page3("500", "/500.html");
+	ErrorPage default_page("400", "res/400.html");
+	ErrorPage default_page2("404", "res/404.html");
+	ErrorPage default_page3("500", "res/500.html");
 
 	error_pages.push_back(&default_page);
 	error_pages.push_back(&default_page2);
 	error_pages.push_back(&default_page3);
 	ResponseHeader obj(code, error_pages);
-	EXPECT_EQ("<!DOCTYPE html>\n<html>\n<body>\n<h1>404 Not Found</h1>\n</body>\n</html>", obj.getBody());
+	EXPECT_EQ("<div id=\"main\">\n\t<div class=\"fof\">\n\t\t\t<h1>Error 404</h1>\n\t</div>\n</div>", obj.getBody());
 
 	code.set(200);
 	ResponseHeader obj2(code, error_pages);
@@ -118,4 +118,13 @@ TEST(ResponseHeader, Empty_error_page)
 	code.set(502);
 	ResponseHeader obj3(code, error_pages);
 	EXPECT_EQ("<!DOCTYPE html>\n<html>\n<body>\n<h1>502 Bad Gateway</h1>\n</body>\n</html>", obj3.getBody());
+}
+
+TEST(ResponseHeader, error_page_not_found)
+{
+	std::list<const ErrorPage *> error_pages;
+	ErrorPage default_page("404", "res/40.html");
+	error_pages.push_back(&default_page);
+	HTTPStatusCode code(404);
+	EXPECT_THROW(ResponseHeader obj(code, error_pages), ResponseHeader::InvalidDefaultPage);
 }
