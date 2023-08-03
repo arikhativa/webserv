@@ -5,16 +5,16 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-ResponseHeader::ResponseHeader(int code, const ErrorPage &default_page)
+ResponseHeader::ResponseHeader(HTTPStatusCode code, std::list<const ErrorPage *> error_pages)
 {
-	defaultConstructor();
+	_defaultConstructor();
 	setStatusCode(code);
-	if (code >= 400)
+	if (_isErrorCode(code))
 	{
-		setContentType(".html");
-		setConnection("close");
-		defaultErrorPage(code, default_page);
-		if (code == 405)
+		setContentType(HTML_SUFFIX);
+		setConnection(CONNECTION_CLOSE);
+		_setErrorPageIfNeeded(code, error_pages);
+		if (code.get() == 405)
 			_header[CONNECTION].name = "Allow: ";
 	}
 }
@@ -60,38 +60,43 @@ std::ostream &operator<<(std::ostream &o, ResponseHeader const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void ResponseHeader::defaultConstructor()
+void ResponseHeader::_defaultConstructor()
 {
-
-	for (field f = STANDARD; f <= BODY; f = static_cast<field>(static_cast<int>(f) + 1))
+	for (field_key f = STANDARD; f <= BODY; f = static_cast<field_key>(static_cast<int>(f) + 1))
 	{
-		HeaderFields defaultHeader;
+		Field defaultHeader;
 		_header.insert(std::make_pair(f, defaultHeader));
 	}
-	_header[STANDARD].name = "HTTP/1.1 ";
+	_header[STANDARD].name = HTTP_VERSION;
 	_header[STANDARD].value = "";
-	_header[SERVER].name = "Server: ";
-	_header[SERVER].value = "webserv";
-	_header[DATE].name = "Date: ";
-	_header[DATE].value = getCurrentDate();
-	_header[CONNECTION_TYPE].name = "Content-Type: ";
+	_header[SERVER].name = SERVER_FIELD_KEY;
+	_header[SERVER].value = SERVER_FIELD_VALUE;
+	_header[DATE].name = DATE_FIELD_KEY;
+	_header[DATE].value = _getCurrentDate();
+	_header[CONNECTION_TYPE].name = CONTENT_TYPE_FIELD_KEY;
 	_header[CONNECTION_TYPE].value = "";
-	_header[CONTENT_LENGHT].name = "Content-Length: ";
+	_header[CONTENT_LENGHT].name = CONTENT_LENGHT_FIELD_KEY;
 	_header[CONTENT_LENGHT].value = "";
-	_header[CONNECTION].name = "Connection: ";
-	_header[BODY].name = "\r\n";
+	_header[CONNECTION].name = CONNECTION_FIELD_KEY;
+	_header[BODY].name = FIELD_BREAK;
 	_header[BODY].value = "";
-	setContentType(".txt");
-	setContentLength(0);
-	setConnection("keep-alive");
+	setContentType(TXT_SUFFIX);
+	_setContentLength(0);
+	setConnection(CONNECTION_ALIVE);
 }
 
-void ResponseHeader::defaultErrorPage(int code, const ErrorPage &default_page)
+void ResponseHeader::_setErrorPageIfNeeded(HTTPStatusCode code, std::list<const ErrorPage *> error_pages)
 {
-	HTTPStatusCode default_code = default_page.getStatus();
-	if (code == default_code.get())
+	std::list<const ErrorPage *>::iterator it = error_pages.begin();
+	while (it != error_pages.end())
 	{
-		std::string path = default_page.getPath().get();
+		if ((*it)->getStatus().get() == code.get())
+			break;
+		++it;
+	}
+	if (it != error_pages.end())
+	{
+		std::string path = (*it)->getPath().get();
 		std::ifstream file(path.c_str());
 		if (!file)
 			throw ResponseHeader::InvalidDefaultPage();
@@ -102,11 +107,11 @@ void ResponseHeader::defaultErrorPage(int code, const ErrorPage &default_page)
 		setBody(content);
 	}
 	else
-		setBody("<!DOCTYPE html>\n<html>\n<body>\n<h1>" + converter::numToString(code) + " " +
-				HTTPStatusCode(code).toString() + "</h1>\n</body>\n</html>");
+		setBody("<!DOCTYPE html>\n<html>\n<body>\n<h1>" + converter::numToString(code.get()) + " " + code.toString() +
+				"</h1>\n</body>\n</html>");
 }
 
-std::string ResponseHeader::getCurrentDate(void)
+const std::string ResponseHeader::_getCurrentDate(void)
 {
 	char buffer[80];
 	std::time_t now;
@@ -120,87 +125,92 @@ std::string ResponseHeader::getCurrentDate(void)
 	return (result);
 }
 
-void ResponseHeader::setContentLength(int lenght)
+void ResponseHeader::_setContentLength(size_t lenght)
 {
 	this->_header.at(CONTENT_LENGHT).value = converter::numToString(lenght);
+}
+
+bool ResponseHeader::_isErrorCode(HTTPStatusCode code)
+{
+	return (code.get() >= 400);
+}
+
+size_t ResponseHeader::_getTotalSize(void) const
+{
+	size_t totalSize = 0;
+	for (field_key f = STANDARD; f <= BODY; f = static_cast<field_key>(static_cast<int>(f) + 1))
+		totalSize += _header.at(f).name.length() + _header.at(f).value.length() + 10;
+	return (totalSize);
 }
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-void ResponseHeader::setStatusCode(int code)
+void ResponseHeader::setStatusCode(HTTPStatusCode code)
 {
-	std::string message;
-
-	message = HTTPStatusCode(code).toString();
-	if (message == "")
-		throw std::runtime_error("Invalid status code");
-	std::string value = converter::numToString(code) + " " + message;
+	std::string value = converter::numToString(code.get()) + " " + code.toString();
 	this->_header.at(STANDARD).value = value;
 }
 
-void ResponseHeader::setContentType(std::string type)
+void ResponseHeader::setContentType(const std::string &type)
 {
-	if (type == "")
-		type = "text/plain";
+	if (ContentTypes::isValid(type) == false)
+		throw ContentTypes::InvalidExtensionException();
 	ContentTypes contentType(type);
 	this->_header.at(CONNECTION_TYPE).value = contentType.get();
 }
 
-void ResponseHeader::setConnection(std::string connection)
+void ResponseHeader::setConnection(const std::string &connection)
 {
 	this->_header.at(CONNECTION).value = connection;
 }
 
-void ResponseHeader::setBody(std::string body)
+void ResponseHeader::setBody(const std::string &body)
 {
 
 	this->_header[BODY].value = body;
 	int lenght = body.length();
 	if (lenght == 0)
-		setContentLength(lenght);
+		_setContentLength(lenght);
 	else
-		setContentLength(lenght + 1);
+		_setContentLength(lenght + 1);
 	if (this->_header.at(CONNECTION_TYPE).value == "")
-		setContentType(".html");
+		setContentType(HTML_SUFFIX);
 }
 
-std::string ResponseHeader::getStatusMessage()
+const std::string ResponseHeader::getStatusMessage()
 {
 	return (this->_header.at(STANDARD).value);
 }
 
-std::string ResponseHeader::getContentType()
+const std::string ResponseHeader::getContentType()
 {
 	return (this->_header.at(CONNECTION_TYPE).value);
 }
 
-std::string ResponseHeader::getBody()
+const std::string ResponseHeader::getBody()
 {
 	return (this->_header.at(BODY).value);
 }
 
-std::string ResponseHeader::getConnection()
+const std::string ResponseHeader::getConnection()
 {
 	return (this->_header.at(CONNECTION).value);
 }
 
-std::map<ResponseHeader::field, ResponseHeader::HeaderFields> ResponseHeader::getHeader() const
+const std::map<ResponseHeader::field_key, ResponseHeader::Field> ResponseHeader::getHeader() const
 {
 	return (_header);
 }
 
-std::string ResponseHeader::getResponse() const
+const std::string ResponseHeader::getResponse() const
 {
 	std::string res = "";
 	try
 	{
-		size_t totalSize = 0;
-		for (field f = STANDARD; f <= BODY; f = static_cast<field>(static_cast<int>(f) + 1))
-			totalSize += _header.at(f).name.length() + _header.at(f).value.length() + 10;
-		res.reserve(totalSize);
-		for (field f = STANDARD; f <= BODY; f = static_cast<field>(static_cast<int>(f) + 1))
+		res.reserve(_getTotalSize());
+		for (field_key f = STANDARD; f <= BODY; f = static_cast<field_key>(static_cast<int>(f) + 1))
 		{
 			std::string key = "";
 			if (_header.find(f) != _header.end())
@@ -210,7 +220,7 @@ std::string ResponseHeader::getResponse() const
 			std::string value = "";
 			if (_header.find(f) != _header.end())
 				value = _header.at(f).value;
-			res += key + value + "\n";
+			res += key + value + FIELD_BREAK;
 		}
 	}
 	catch (const std::exception &e)

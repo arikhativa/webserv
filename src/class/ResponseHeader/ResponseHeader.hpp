@@ -6,6 +6,7 @@
 #include <ErrorPage/ErrorPage.hpp>
 #include <HTTPStatusCode/HTTPStatusCode.hpp>
 #include <converter/converter.hpp>
+
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -13,6 +14,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <list>
 #include <map>
 #include <sstream>
 #include <string>
@@ -24,11 +26,24 @@
 #define protected public
 #endif
 
+static const std::string HTML_SUFFIX = ".html";
+static const std::string TXT_SUFFIX = ".txt";
+static const std::string HTTP_VERSION = "HTTP/1.1 ";
+static const std::string FIELD_BREAK = "\r\n";
+static const std::string SERVER_FIELD_KEY = "Server: ";
+static const std::string SERVER_FIELD_VALUE = "webserv";
+static const std::string DATE_FIELD_KEY = "Date: ";
+static const std::string CONTENT_TYPE_FIELD_KEY = "Content-Type: ";
+static const std::string CONTENT_LENGHT_FIELD_KEY = "Content-Length: ";
+static const std::string CONNECTION_FIELD_KEY = "Connection: ";
+static const std::string CONNECTION_ALIVE = "keep-alive";
+static const std::string CONNECTION_CLOSE = "close";
+
 class ResponseHeader
 {
 
   public:
-	enum field
+	enum field_key
 	{
 		STANDARD,
 		SERVER,
@@ -38,25 +53,26 @@ class ResponseHeader
 		CONNECTION,
 		BODY,
 	};
-	struct HeaderFields
+	struct Field
 	{
 		std::string name;
 		std::string value;
 	};
-	explicit ResponseHeader(int code, const ErrorPage &default_page);
+	explicit ResponseHeader(HTTPStatusCode code, std::list<const ErrorPage *> error_pages);
 	ResponseHeader(ResponseHeader const &src);
 	~ResponseHeader();
 	ResponseHeader &operator=(ResponseHeader const &rhs);
-	void setStatusCode(int code);
-	void setContentType(std::string type);
-	void setConnection(std::string connection);
-	void setBody(std::string body);
-	std::string getStatusMessage();
-	std::string getContentType();
-	std::string getBody();
-	std::string getResponse() const;
-	std::string getConnection();
-	std::map<ResponseHeader::field, ResponseHeader::HeaderFields> getHeader() const;
+	void setStatusCode(HTTPStatusCode code);
+	void setContentType(const std::string &type);
+	void setConnection(const std::string &connection);
+	void setBody(const std::string &body);
+	const std::string getStatusMessage(void);
+	const std::string getContentType(void);
+	const std::string getBody(void);
+	const std::string getResponse(void) const;
+	const std::string getConnection(void);
+	size_t _getTotalSize(void) const;
+	const std::map<ResponseHeader::field_key, ResponseHeader::Field> getHeader() const;
 
 	class InvalidDefaultPage : public std::exception
 	{
@@ -65,11 +81,12 @@ class ResponseHeader
 	};
 
   private:
-	void setContentLength(int lenght);
-	void defaultErrorPage(int code, const ErrorPage &default_page);
-	void defaultConstructor();
-	std::string getCurrentDate();
-	std::map<ResponseHeader::field, ResponseHeader::HeaderFields> _header;
+	void _setContentLength(size_t lenght);
+	void _setErrorPageIfNeeded(HTTPStatusCode code, std::list<const ErrorPage *> error_pages);
+	void _defaultConstructor();
+	const std::string _getCurrentDate();
+	bool _isErrorCode(HTTPStatusCode code);
+	std::map<ResponseHeader::field_key, ResponseHeader::Field> _header;
 };
 std::ostream &operator<<(std::ostream &o, ResponseHeader const &i);
 
