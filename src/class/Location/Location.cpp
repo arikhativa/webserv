@@ -17,7 +17,7 @@ Location::Location()
 }
 
 Location::InvalidLocationException::InvalidLocationException(const std::string &msg)
-	: _msg(msg)
+	: _msg("Invalid location: " + msg)
 {
 }
 
@@ -27,8 +27,7 @@ Location::InvalidLocationException::~InvalidLocationException() throw()
 
 const char *Location::InvalidLocationException::what() const throw()
 {
-	std::string tmp("Invalid location: " + _msg);
-	return tmp.c_str();
+	return _msg.c_str();
 }
 
 /*
@@ -217,7 +216,7 @@ void Location::setReturn(const std::string &status, const std::string &path)
 void Location::setIndexFiles(const std::list<std::string> &index_files)
 {
 	if (_index_files.size())
-		throw InvalidLocationException(Token::Keyword::INDEX + " is already set");
+		throw InvalidLocationException("is already set");
 	if (!index_files.size())
 		throw InvalidLocationException(Token::Keyword::INDEX + " can't be empty");
 	std::list<std::string>::const_iterator it = index_files.begin();

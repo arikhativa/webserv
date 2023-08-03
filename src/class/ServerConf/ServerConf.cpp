@@ -19,7 +19,7 @@ ServerConf::ServerConf()
 }
 
 ServerConf::InvalidServerConf::InvalidServerConf(const std::string &msg)
-	: _msg(msg)
+	: _msg("Invalid ServerConf: " + msg)
 {
 }
 
@@ -29,8 +29,7 @@ ServerConf::InvalidServerConf::~InvalidServerConf() throw()
 
 const char *ServerConf::InvalidServerConf::what() const throw()
 {
-	std::string tmp("Invalid ServerConf: " + _msg);
-	return tmp.c_str();
+	return _msg.c_str();
 }
 
 /*
