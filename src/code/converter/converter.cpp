@@ -81,3 +81,36 @@ int converter::stringToInt(const std::string &str)
 	ret = static_cast<int>(longValue);
 	return ret;
 }
+
+std::string converter::escapeString(const std::string &input)
+{
+	std::string escapedString;
+	for (size_t i = 0; i < input.length(); i++)
+	{
+		switch (input[i])
+		{
+		case '\"':
+			escapedString += "\\\"";
+			break;
+		case '\'':
+			escapedString += "\\\'";
+			break;
+		case '\\':
+			escapedString += "\\\\";
+			break;
+		case '\n':
+			escapedString += "\\n";
+			break;
+		case '\r':
+			escapedString += "\\r";
+			break;
+		case '\t':
+			escapedString += "\\t";
+			break;
+		default:
+			escapedString += input[i];
+			break;
+		}
+	}
+	return escapedString;
+}
