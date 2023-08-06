@@ -1,6 +1,9 @@
 
 #include <FileManager/FileManager.hpp>
 
+const std::string FileManager::PREVIOUS_DIR("/..");
+const std::string FileManager::ACTUAL_DIR("/.");
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -96,77 +99,57 @@ bool FileManager::isDirectory(const std::string &path)
 
 std::string FileManager::getFileDate(const std::string &path)
 {
-	try
-	{
-		char buf[32];
-		struct tm *tm;
+	char buf[32];
+	struct tm *tm;
 
-		struct stat statbuf;
-		if (stat(path.c_str(), &statbuf) == -1)
-			throw FileManager::FileManagerException();
-		tm = gmtime(&statbuf.st_mtime);
-		int ret = strftime(buf, 32, "%d-%b-%Y %H:%M", tm);
-		return (std::string(buf, ret));
-	}
-	catch (const std::exception &e)
-	{
+	struct stat statbuf;
+	if (stat(path.c_str(), &statbuf) == -1)
 		throw FileManager::FileManagerException();
-	}
+	tm = gmtime(&statbuf.st_mtime);
+	int ret = strftime(buf, 32, "%d-%b-%Y %H:%M", tm);
+	return (std::string(buf, ret));
 }
 
 std::string FileManager::getFileContent(const std::string &path)
 {
-	try
-	{
-		std::string content = "";
-		std::ifstream file(path.c_str());
-		if (!file.is_open())
-			throw FileManager::FileManagerException();
-		std::stringstream buffer;
-		buffer << file.rdbuf();
-		file.close();
-		content = buffer.str();
-		return (content);
-	}
-	catch (const std::exception &e)
-	{
+	std::string content = "";
+	std::ifstream file(path.c_str());
+	if (!file.is_open())
 		throw FileManager::FileManagerException();
-	}
+	std::stringstream buffer;
+	buffer << file.rdbuf();
+	file.close();
+	content = buffer.str();
+	return (content);
 }
 
 size_t FileManager::getFileSize(const std::string &path)
 {
-	try
-	{
-		struct stat statbuf;
-		if (stat(path.c_str(), &statbuf) == -1)
-			throw FileManager::FileManagerException();
-		return (statbuf.st_size);
-	}
-	catch (const std::exception &e)
-	{
+	struct stat statbuf;
+	if (stat(path.c_str(), &statbuf) == -1)
 		throw FileManager::FileManagerException();
-	}
+	return (statbuf.st_size);
 }
 
-std::string FileManager::_setUrlForHyperlinks(std::string url)
+std::string FileManager::_setUrlForHyperlinks(const std::string &url)
 {
-	while (url.size() >= PREVIOUS_DIR.length() && url.substr(url.length() - 3) == PREVIOUS_DIR)
+	std::string result = url;
+	while (result.size() >= PREVIOUS_DIR.length() && result.substr(result.length() - 3) == PREVIOUS_DIR)
 	{
-		size_t pos = url.find_last_of(PREVIOUS_DIR);
+		size_t pos = result.find_last_of(PREVIOUS_DIR);
 		if (pos != std::string::npos)
 		{
-			std::string url_tmp = url.substr(0, pos - 2);
+			std::string url_tmp = result.substr(0, pos - 2);
 			size_t pos2 = url_tmp.find_last_of("/");
 			if (pos2 != std::string::npos)
-				url = url_tmp.substr(0, pos2 + 1) + url.substr(pos + 1);
+				result = url_tmp.substr(0, pos2 + 1) + result.substr(pos + 1);
 			else
-				url = url.substr(pos + 1);
+				result = result.substr(pos + 1);
 		}
 	}
-	if (url.size() >= ACTUAL_DIR.length() && url.substr(url.length() - 2) == ACTUAL_DIR)
-		url = url.substr(0, url.length() - 2);
-	return (url);
+	if (result.size() >= ACTUAL_DIR.length() && result.substr(result.length() - 2) == ACTUAL_DIR)
+		result = result.substr(0, result.length() - 2);
+	return (result);
 }
 
 std::string FileManager::_setHyperlinks(const std::string &path, std::string relative_path, std::string name)
