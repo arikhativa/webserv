@@ -18,9 +18,6 @@
 #define protected public
 #endif
 
-static const std::string PREVIOUS_DIR = "/..";
-static const std::string ACTUAL_DIR = "/.";
-
 class FileManager
 {
   public:
@@ -43,9 +40,11 @@ class FileManager
 
   private:
 	std::string _path;
-	static std::string _setUrlForHyperlinks(std::string url);
+	static std::string _setUrlForHyperlinks(const std::string &url);
 	static std::string _setHyperlinks(const std::string &path, std::string relative_path, std::string name);
 	void _setPath(const std::string &path);
+	static const std::string PREVIOUS_DIR;
+	static const std::string ACTUAL_DIR;
 };
 
 std::ostream &operator<<(std::ostream &o, const FileManager &i);
