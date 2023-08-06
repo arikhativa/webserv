@@ -114,7 +114,7 @@ TEST(FileManager, getFileDate)
 	std::string url = "res/404.html";
 	FileManager obj(url);
 
-	EXPECT_EQ("03-Aug-2023 11:42", obj.getFileDate(url));
+	EXPECT_EQ("06-Aug-2023 10:00", obj.getFileDate(url));
 
 	EXPECT_THROW(obj.getFileDate(""), FileManager::FileManagerException);
 	EXPECT_THROW(obj.getFileDate("other"), FileManager::FileManagerException);
@@ -140,10 +140,10 @@ TEST(FileManager, getDirectoryPreview)
 		"<head><title>Index of preview</title></head>\r\n"
 		"<body>\r\n"
 		"<h1>Index of preview</h1><hr><pre>\n"
-		"<a href=\"preview/400.html\">400.html</a>                                           06-Aug-2023 15:12         "
+		"<a href=\"preview/400.html\">400.html</a>                                           06-Aug-2023 15:51         "
 		"         71<br>"
-		"<a href=\"\">..</a>                                                06-Aug-2023 15:11                   -<br>"
-		"<a href=\"preview\">.</a>                                                 06-Aug-2023 15:12                   "
+		"<a href=\"\">..</a>                                                06-Aug-2023 15:51                   -<br>"
+		"<a href=\"preview\">.</a>                                                 06-Aug-2023 15:51                   "
 		"-<br>"
 		"</body>\n"
 		"</html>";
