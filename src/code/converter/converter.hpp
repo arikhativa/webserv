@@ -22,6 +22,8 @@ namespace converter
 		return ss.str();
 	}
 
+	std::string escapeString(const std::string &input);
+
 } // namespace converter
 
 #endif

@@ -6,6 +6,7 @@
 #include <ErrorPage/ErrorPage.hpp>
 #include <HTTPStatusCode/HTTPStatusCode.hpp>
 #include <converter/converter.hpp>
+#include <httpConstants/httpConstants.hpp>
 
 #include <cstdlib>
 #include <cstring>
@@ -29,7 +30,6 @@
 static const std::string HTML_SUFFIX = ".html";
 static const std::string TXT_SUFFIX = ".txt";
 static const std::string HTTP_VERSION = "HTTP/1.1 ";
-static const std::string FIELD_BREAK = "\r\n";
 static const std::string SERVER_FIELD_KEY = "Server: ";
 static const std::string SERVER_FIELD_VALUE = "webserv";
 static const std::string DATE_FIELD_KEY = "Date: ";
