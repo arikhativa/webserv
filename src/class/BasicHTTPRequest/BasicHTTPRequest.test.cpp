@@ -91,11 +91,3 @@ TEST(BasicHTTPRequest, Print)
 	ss << obj;
 	EXPECT_EQ(res, ss.str());
 }
-
-TEST(BasicHTTPRequest, Print2)
-{
-
-	BasicHTTPRequest obj("GET /over/there HTTP/1.5\r\nHost: localhost:8081");
-
-	std::cout << obj << std::endl;
-}
