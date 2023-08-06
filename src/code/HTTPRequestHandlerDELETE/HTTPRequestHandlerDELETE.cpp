@@ -1,4 +1,4 @@
-#include <HTTPRequestHandler/HTTPRequestHandlerDELETE.hpp>
+#include <HTTPRequestHandlerDELETE/HTTPRequestHandlerDELETE.hpp>
 
 bool httprequesthandlerDELETE::isFileExists(const std::string &path)
 {
