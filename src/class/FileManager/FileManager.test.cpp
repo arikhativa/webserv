@@ -96,3 +96,60 @@ TEST(FileManager, exceptions)
 	EXPECT_THROW(FileManager::isDirectory(""), FileManager::FileManagerException);
 	EXPECT_THROW(FileManager::isFileExists(""), FileManager::FileManagerException);
 }
+
+TEST(FileManager, fileContent)
+{
+	std::string url = "res/404.html";
+	std::string content = "<div id=\"main\">\n\t<div class=\"fof\">\n\t\t\t<h1>Error 404</h1>\n\t</div>\n</div>";
+	FileManager obj(url);
+
+	EXPECT_EQ(content, obj.getFileContent(url));
+
+	EXPECT_THROW(obj.getFileContent(""), FileManager::FileManagerException);
+	EXPECT_THROW(obj.getFileContent("other"), FileManager::FileManagerException);
+}
+
+TEST(FileManager, getFileDate)
+{
+	std::string url = "res/404.html";
+	FileManager obj(url);
+
+	EXPECT_EQ("03-Aug-2023 11:42", obj.getFileDate(url));
+
+	EXPECT_THROW(obj.getFileDate(""), FileManager::FileManagerException);
+	EXPECT_THROW(obj.getFileDate("other"), FileManager::FileManagerException);
+}
+
+TEST(FileManager, getFileSize)
+{
+	std::string url = "res/404.html";
+	FileManager obj(url);
+
+	EXPECT_EQ(71, obj.getFileSize(url));
+
+	EXPECT_THROW(obj.getFileSize(""), FileManager::FileManagerException);
+	EXPECT_THROW(obj.getFileSize("other"), FileManager::FileManagerException);
+}
+
+TEST(FileManager, getDirectoryPreview)
+{
+	std::string path = "res/";
+	std::string relativePath = "preview";
+	std::string directory =
+		"<!DOCTYPE html><html>\r\n"
+		"<head><title>Index of preview</title></head>\r\n"
+		"<body>\r\n"
+		"<h1>Index of preview</h1><hr><pre>\n"
+		"<a href=\"preview/400.html\">400.html</a>                                           06-Aug-2023 15:12         "
+		"         71<br>"
+		"<a href=\"\">..</a>                                                06-Aug-2023 15:11                   -<br>"
+		"<a href=\"preview\">.</a>                                                 06-Aug-2023 15:12                   "
+		"-<br>"
+		"</body>\n"
+		"</html>";
+
+	EXPECT_EQ(directory, FileManager::getDirectoryPreview(path, relativePath));
+
+	EXPECT_THROW(FileManager::getDirectoryPreview("", ""), FileManager::FileManagerException);
+	EXPECT_THROW(FileManager::getDirectoryPreview("some", "some"), FileManager::FileManagerException);
+}
