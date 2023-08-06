@@ -141,16 +141,14 @@ TEST(FileManager, getDirectoryPreview)
 		"<body>\r\n"
 		"<h1>Index of preview</h1><hr><pre>\n"
 		"<a href=\"preview/400.html\">400.html</a>                                           06-Aug-2023";
-	std::string directoryEnd =
-		"                   "
-		"-<br>"
-		"</body>\n"
-		"</html>";
+	std::string directoryEnd = "                   "
+							   "-<br>"
+							   "</body>\n"
+							   "</html>";
 
 	std::string result = FileManager::getDirectoryPreview(path, relativePath);
 	EXPECT_EQ(directoryStart, result.substr(0, directoryStart.length()));
 	EXPECT_EQ(directoryEnd, result.substr(result.length() - directoryEnd.length()));
-	
 
 	EXPECT_THROW(FileManager::getDirectoryPreview("", ""), FileManager::FileManagerException);
 	EXPECT_THROW(FileManager::getDirectoryPreview("some", "some"), FileManager::FileManagerException);
