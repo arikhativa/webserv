@@ -27,10 +27,6 @@ class FileManager
 	{
 		virtual const char *what() const throw();
 	};
-	class UndefinedFilePathException : public FileManagerException
-	{
-		virtual const char *what() const throw();
-	};
 
   private:
 	std::string _path;

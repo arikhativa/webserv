@@ -51,11 +51,6 @@ const char *FileManager::FileManagerException::what() const throw()
 	return ("Error when accessing the path");
 }
 
-const char *FileManager::UndefinedFilePathException::what() const throw()
-{
-	return ("Undefined file path");
-}
-
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
@@ -69,8 +64,8 @@ bool FileManager::isFileExists(const std::string &path)
 {
 	try
 	{
-		if (path.empty())
-			throw FileManager::UndefinedFilePathException();
+		if (path.empty() || path == "")
+			throw FileManager::FileManagerException();
 		struct stat statbuf;
 		if (stat(path.c_str(), &statbuf) == 0)
 			return (!isDirectory(path));
@@ -79,24 +74,23 @@ bool FileManager::isFileExists(const std::string &path)
 	catch (const std::exception &e)
 	{
 		throw FileManager::FileManagerException();
-		return (false);
 	}
 }
-
 bool FileManager::isDirectory(const std::string &path)
 {
 	try
 	{
-		if (path.empty())
-			throw FileManager::UndefinedFilePathException();
+
+		if (path.empty() || path == "")
+			throw FileManager::FileManagerException();
 		struct stat statbuf;
-		stat(path.c_str(), &statbuf);
-		return (S_ISDIR(statbuf.st_mode));
+		if (stat(path.c_str(), &statbuf) == 0)
+			return (S_ISDIR(statbuf.st_mode));
+		return (false);
 	}
 	catch (const std::exception &e)
 	{
 		throw FileManager::FileManagerException();
-		return (false);
 	}
 }
 

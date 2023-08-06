@@ -56,7 +56,6 @@ TEST(FileManager, directory)
 
 TEST(FileManager, file)
 {
-
 	EXPECT_EQ(true, FileManager::isFileExists("res/404.html"));
 	EXPECT_EQ(true, FileManager::isFileExists("res/./404.html"));
 	EXPECT_EQ(true, FileManager::isFileExists("res/../res/404.html"));
@@ -70,6 +69,14 @@ TEST(FileManager, file)
 	EXPECT_EQ(false, FileManager::isFileExists("res/../res/"));
 	EXPECT_EQ(false, FileManager::isFileExists("res/../res/./"));
 	EXPECT_EQ(false, FileManager::isFileExists("other"));
+	EXPECT_EQ(false, FileManager::isFileExists("/res"));
+	EXPECT_EQ(false, FileManager::isFileExists("/res/"));
+	EXPECT_EQ(false, FileManager::isFileExists("/res/./"));
+	EXPECT_EQ(false, FileManager::isFileExists("/res/././"));
+	EXPECT_EQ(false, FileManager::isFileExists("/res/../res"));
+	EXPECT_EQ(false, FileManager::isFileExists("/res/../res/"));
+	EXPECT_EQ(false, FileManager::isFileExists("/res/../res/./"));
+	EXPECT_EQ(false, FileManager::isFileExists("other"));
 
 	FileManager obj("res/");
 	EXPECT_EQ(true, FileManager::isFileExists(obj.getPath() + "/404.html"));
@@ -82,4 +89,10 @@ TEST(FileManager, file)
 	EXPECT_EQ(true, obj.isFileExists(obj.getPath() + "/../res/../res/../res/404.html"));
 	EXPECT_EQ(true, obj.isFileExists(obj.getPath() + "/../res/../res/../res/./404.html"));
 	EXPECT_EQ(true, obj.isFileExists(obj.getPath() + "/../res/../res/../res/../res/404.html"));
+}
+
+TEST(FileManager, exceptions)
+{
+	EXPECT_THROW(FileManager::isDirectory(""), FileManager::FileManagerException);
+	EXPECT_THROW(FileManager::isFileExists(""), FileManager::FileManagerException);
 }
