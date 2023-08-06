@@ -81,3 +81,12 @@ int converter::stringToInt(const std::string &str)
 	ret = static_cast<int>(longValue);
 	return ret;
 }
+
+size_t converter::hexStringToSizeT(const std::string &hexStr)
+{
+	size_t result = 0;
+	std::stringstream ss;
+	ss << std::hex << hexStr;
+	ss >> result;
+	return (result);
+}
