@@ -78,7 +78,7 @@ void ResponseHeader::_defaultConstructor()
 	_header[CONTENT_LENGHT].name = CONTENT_LENGHT_FIELD_KEY;
 	_header[CONTENT_LENGHT].value = "";
 	_header[CONNECTION].name = CONNECTION_FIELD_KEY;
-	_header[BODY].name = FIELD_BREAK;
+	_header[BODY].name = httpConstants::FIELD_BREAK;
 	_header[BODY].value = "";
 	setContentType(TXT_SUFFIX);
 	_setContentLength(0);
@@ -220,7 +220,7 @@ const std::string ResponseHeader::getResponse() const
 			std::string value = "";
 			if (_header.find(f) != _header.end())
 				value = _header.at(f).value;
-			res += key + value + FIELD_BREAK;
+			res += key + value + httpConstants::FIELD_BREAK;
 		}
 	}
 	catch (const std::exception &e)
