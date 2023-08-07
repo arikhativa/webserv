@@ -24,15 +24,15 @@ TEST(builder, SimpleFile)
 	EXPECT_EQ(1, conf->getServers().size());
 	EXPECT_EQ("", server->getName());
 
-	EXPECT_EQ("0.0.0.0", (*it)->getAddress().getAddress());
+	EXPECT_EQ("0.0.0.0", (*it)->getAddress().get());
 	EXPECT_EQ(88, (*it)->getPort().get());
 
 	++it;
-	EXPECT_EQ("201.0.0.1", (*it)->getAddress().getAddress());
+	EXPECT_EQ("201.0.0.1", (*it)->getAddress().get());
 	EXPECT_EQ(80, (*it)->getPort().get());
 
 	++it;
-	EXPECT_EQ("101.0.0.2", (*it)->getAddress().getAddress());
+	EXPECT_EQ("101.0.0.2", (*it)->getAddress().get());
 	EXPECT_EQ(666, (*it)->getPort().get());
 
 	delete conf;
@@ -64,7 +64,7 @@ TEST(builder, FullFile)
 	{
 		std::list<const IListen *> l = (*s_it)->getListen();
 		std::list<const IListen *>::iterator it = l.begin();
-		EXPECT_EQ("0.0.0.0", (*it)->getAddress().getAddress());
+		EXPECT_EQ("0.0.0.0", (*it)->getAddress().get());
 		EXPECT_EQ(80, (*it)->getPort().get());
 	}
 
@@ -87,7 +87,7 @@ TEST(builder, FullFile)
 	{
 		std::list<const IListen *> l = (*s_it)->getListen();
 		std::list<const IListen *>::iterator it = l.begin();
-		EXPECT_EQ("127.0.0.2", (*it)->getAddress().getAddress());
+		EXPECT_EQ("127.0.0.2", (*it)->getAddress().get());
 		EXPECT_EQ(6660, (*it)->getPort().get());
 	}
 	{
@@ -123,11 +123,11 @@ TEST(builder, FullFile)
 		std::list<const IListen *> l = (*s_it)->getListen();
 		std::list<const IListen *>::iterator it = l.begin();
 
-		EXPECT_EQ("1.1.2.2", (*it)->getAddress().getAddress());
+		EXPECT_EQ("1.1.2.2", (*it)->getAddress().get());
 		EXPECT_EQ(89, (*it)->getPort().get());
 
 		++it;
-		EXPECT_EQ("8.8.8.8", (*it)->getAddress().getAddress());
+		EXPECT_EQ("8.8.8.8", (*it)->getAddress().get());
 		EXPECT_EQ(88, (*it)->getPort().get());
 	}
 	{
