@@ -10,6 +10,8 @@
 #                                                                              #
 # **************************************************************************** #
 
+include nginx.mk
+
 # general
 NAME 						:= webserv
 export ROOT_DIR				:= $(CURDIR)
