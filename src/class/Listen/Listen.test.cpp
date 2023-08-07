@@ -12,11 +12,11 @@ TEST(Listen, Accessor)
 {
 	Listen obj;
 
-	EXPECT_EQ(Listen::_defaultIP, obj.getAddress().getAddress());
+	EXPECT_EQ(Listen::_defaultIP, obj.getAddress().get());
 	EXPECT_EQ(Listen::_defaultPort, obj.getPort().get());
 	obj.setAddress("127.0.0.1");
 	obj.setPort("443");
-	EXPECT_EQ("127.0.0.1", obj.getAddress().getAddress());
+	EXPECT_EQ("127.0.0.1", obj.getAddress().get());
 	EXPECT_EQ(443, obj.getPort().get());
 }
 

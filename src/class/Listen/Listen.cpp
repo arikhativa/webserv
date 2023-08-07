@@ -34,7 +34,7 @@ Listen::~Listen()
 
 std::ostream &operator<<(std::ostream &o, Listen const &i)
 {
-	o << "{ \"_address\": \"" << i.getAddress().getAddress() << "\", \"_port\": " << i.getPort().get() << " }";
+	o << "{ \"_address\": \"" << i.getAddress().get() << "\", \"_port\": " << i.getPort().get() << " }";
 	return o;
 }
 

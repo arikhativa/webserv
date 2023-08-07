@@ -22,8 +22,8 @@ class IP : public IAddress
 
 	IP &operator=(IP const &rhs);
 
-	virtual std::string getAddress(void) const;
-	virtual void setAddress(const std::string &address);
+	virtual std::string get(void) const;
+	void setAddress(const std::string &address);
 
 	static bool isValid(const std::string &ip);
 
