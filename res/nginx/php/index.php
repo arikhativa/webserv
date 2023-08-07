@@ -1,36 +1,25 @@
 <?php
-header("Content-Type: text/html; charset=utf-8");
 header("Transfer-Encoding: chunked");
+header("Content-Encoding: none");
 
-// Function to send a chunk of data
-function send_chunk($data) {
-    echo dechex(strlen($data)) . "\r\n"; // Send the chunk size in hexadecimal
-    echo $data . "\r\n"; // Send the chunk data followed by CRLF
-    ob_flush();
-    flush(); // Flush the output buffer to send the chunk immediately
+// Send chunk to browser
+function send_chunk($chunk)
+{
+    // The chunk must fill the output buffer or php won't send it
+    $chunk = str_pad($chunk, 4096);
+
+    printf("%x\r\n%s\r\n", strlen($chunk), $chunk);
+    flush();
 }
 
-// Start output buffering
-ob_start();
+// Send your content in chunks
+for($i=0; $i<10; $i++)
+{
+    send_chunk("This is Chunk #$i.<br>\r\n");
+    usleep(1000000);
+}
 
-// HTML content to be sent in chunks
-$html = '
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Chunked Transfer Encoding</title>
-</head>
-<body>
-    <h1>Hello, Chunked Transfer Encoding!</h1>
-    <p>This is an example of an HTML page generated using chunked transfer encoding in PHP.</p>
-</body>
-</html>
-';
-
-// Generate the response in chunks
-send_chunk($html);
-
-// Send the last zero-size chunk to signal the end of the response
+// note that if you send an empty chunk
+// the browser won't display additional output
 echo "0\r\n\r\n";
-
-ob_end_flush(); // End output buffering and send any remaining data
+flush();
