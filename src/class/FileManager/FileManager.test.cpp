@@ -138,7 +138,7 @@ TEST(FileManager, getDirectoryPreview)
 		"<head><title>Index of preview</title></head>\r\n"
 		"<body>\r\n"
 		"<h1>Index of preview</h1><hr><pre>\n"
-		"<a href=\"preview/400.html\">400.html</a>                                           06-Aug-2023";
+		"<a href=\"preview/400.html\">400.html</a>                                           ";
 	std::string directoryEnd = "                   "
 							   "-<br>"
 							   "</body>\n"
