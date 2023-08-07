@@ -30,7 +30,7 @@ class ServerConf : public IServerConf
 	ServerConf();
 	virtual ~ServerConf();
 
-	virtual std::string getName(void) const;
+	virtual const std::list<std::string> &getName(void) const;
 	virtual std::size_t getMaxBodySize(void) const;
 	virtual const IReturn *getReturn(void) const;
 	virtual const IPath *getRoot(void) const;
@@ -40,7 +40,7 @@ class ServerConf : public IServerConf
 	virtual std::list<const ILocation *> getLocations(void) const;
 
 	void setDefaultSettingIfNeeded(void);
-	void setName(const std::string &name);
+	void addName(const std::string &name);
 	void setMaxBodySize(const std::string &size);
 	void setReturn(const std::string &status, const std::string &path);
 	void setRoot(const std::string &path);
@@ -65,7 +65,7 @@ class ServerConf : public IServerConf
 	};
 
   private:
-	OnOff<std::string> _name;
+	std::list<std::string> _name;
 	OnOff<std::size_t> _max_body_size;
 	Return *_return;
 	Path *_root;

@@ -12,7 +12,7 @@ TEST(ServerConf, Accessor)
 {
 	ServerConf obj;
 
-	obj.setName("name");
+	obj.addName("name");
 	obj.setMaxBodySize("100");
 	obj.setReturn("500", "/500.html");
 	obj.setRoot("/root");
@@ -33,7 +33,7 @@ TEST(ServerConf, Accessor)
 		l.setDefaultSettingIfNeeded();
 	}
 
-	EXPECT_EQ("name", obj.getName());
+	EXPECT_EQ("name", obj.getName().front());
 	EXPECT_EQ(100, obj.getMaxBodySize());
 	EXPECT_EQ(500, obj.getReturn()->getStatus().get());
 	EXPECT_EQ("/500.html", obj.getReturn()->getPath().get());
@@ -56,7 +56,7 @@ TEST(ServerConf, Accessor)
 TEST(ServerConf, Print)
 {
 	static const char *res =
-		"{\"_name\": \"name\", \"_max_body_size\": 100, \"_return\": {\"_status\": 500, \"_path\": \"/500.html\"}, "
+		"{\"_name\": [\"name\"], \"_max_body_size\": 100, \"_return\": {\"_status\": 500, \"_path\": \"/500.html\"}, "
 		"\"_root\": \"/root\", \"_index_files\": [\"index.html\", \"index.php\"], \"_error_pages\": [{\"_status\": "
 		"404, \"_path\": \"/404.html\"}, {\"_status\": 505, \"_path\": \"/505.html\"}], \"_listen\": [{ \"_address\": "
 		"\"0.0.0.0\", \"_port\": 1111 }, { \"_address\": \"200.11.0.1\", \"_port\": 80 }, { \"_address\": "
@@ -68,7 +68,7 @@ TEST(ServerConf, Print)
 
 	ServerConf obj;
 
-	obj.setName("name");
+	obj.addName("name");
 	obj.setMaxBodySize("100");
 	obj.setReturn("500", "/500.html");
 	obj.setRoot("/root");
@@ -95,15 +95,6 @@ TEST(ServerConf, Print)
 	std::stringstream ss;
 	ss << obj;
 	EXPECT_EQ(res, ss.str());
-}
-
-TEST(ServerConf, setName)
-{
-	ServerConf obj;
-
-	EXPECT_THROW(obj.setName(""), ServerConf::InvalidServerConf);
-	obj.setName("name");
-	EXPECT_THROW(obj.setName("name"), ServerConf::InvalidServerConf);
 }
 
 TEST(ServerConf, setMaxBodySize)
@@ -162,7 +153,7 @@ TEST(ServerConf, setDefaultSettingIfNeeded)
 	ServerConf obj;
 
 	obj.setDefaultSettingIfNeeded();
-	EXPECT_EQ(ServerConf::DEFAULT_SERVER_NAME, obj.getName());
+	EXPECT_EQ(ServerConf::DEFAULT_SERVER_NAME, obj.getName().front());
 	EXPECT_EQ(ServerConf::DEFAULT_ROOT, obj.getRoot()->get());
 	EXPECT_EQ(ServerConf::DEFAULT_HTML, obj.getIndexFiles().front());
 	EXPECT_EQ(ServerConf::DEFAULT_HTM, obj.getIndexFiles().back());
