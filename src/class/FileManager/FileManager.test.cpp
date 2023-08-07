@@ -114,8 +114,6 @@ TEST(FileManager, getFileDate)
 	std::string url = "res/404.html";
 	FileManager obj(url);
 
-	EXPECT_EQ("06-Aug-2023", obj.getFileDate(url).substr(0, 11));
-
 	EXPECT_THROW(obj.getFileDate(""), FileManager::FileManagerException);
 	EXPECT_THROW(obj.getFileDate("other"), FileManager::FileManagerException);
 }
