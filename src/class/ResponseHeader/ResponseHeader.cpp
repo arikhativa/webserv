@@ -11,11 +11,11 @@ ResponseHeader::ResponseHeader(HTTPStatusCode code, std::list<const ErrorPage *>
 	setStatusCode(code);
 	if (_isErrorCode(code))
 	{
-		setContentType(HTML_SUFFIX);
-		setConnection(CONNECTION_CLOSE);
+		setContentType(httpConstants::HTML_SUFFIX);
+		setConnection(httpConstants::CONNECTION_CLOSE);
 		_setErrorPageIfNeeded(code, error_pages);
-		if (code.get() == 405)
-			_header[CONNECTION].name = "Allow: ";
+		if (code.get() == HTTPStatusCode::METHOD_NOT_ALLOWED)
+			_header[CONNECTION].name = httpConstants::ALLOW_HEADER;
 	}
 }
 
@@ -67,22 +67,22 @@ void ResponseHeader::_defaultConstructor()
 		Field defaultHeader;
 		_header.insert(std::make_pair(f, defaultHeader));
 	}
-	_header[STANDARD].name = HTTP_VERSION;
+	_header[STANDARD].name = httpConstants::HTTP_VERSION;
 	_header[STANDARD].value = "";
-	_header[SERVER].name = SERVER_FIELD_KEY;
-	_header[SERVER].value = SERVER_FIELD_VALUE;
-	_header[DATE].name = DATE_FIELD_KEY;
+	_header[SERVER].name = httpConstants::SERVER_FIELD_KEY;
+	_header[SERVER].value = httpConstants::SERVER_FIELD_VALUE;
+	_header[DATE].name = httpConstants::DATE_FIELD_KEY;
 	_header[DATE].value = _getCurrentDate();
-	_header[CONNECTION_TYPE].name = CONTENT_TYPE_FIELD_KEY;
+	_header[CONNECTION_TYPE].name = httpConstants::CONTENT_TYPE_FIELD_KEY;
 	_header[CONNECTION_TYPE].value = "";
-	_header[CONTENT_LENGHT].name = CONTENT_LENGHT_FIELD_KEY;
+	_header[CONTENT_LENGHT].name = httpConstants::CONTENT_LENGHT_FIELD_KEY;
 	_header[CONTENT_LENGHT].value = "";
-	_header[CONNECTION].name = CONNECTION_FIELD_KEY;
+	_header[CONNECTION].name = httpConstants::CONNECTION_FIELD_KEY;
 	_header[BODY].name = httpConstants::FIELD_BREAK;
 	_header[BODY].value = "";
-	setContentType(TXT_SUFFIX);
+	setContentType(httpConstants::TXT_SUFFIX);
 	_setContentLength(0);
-	setConnection(CONNECTION_ALIVE);
+	setConnection(httpConstants::CONNECTION_ALIVE);
 }
 
 void ResponseHeader::_setErrorPageIfNeeded(HTTPStatusCode code, std::list<const ErrorPage *> error_pages)
@@ -107,8 +107,8 @@ void ResponseHeader::_setErrorPageIfNeeded(HTTPStatusCode code, std::list<const 
 		setBody(content);
 	}
 	else
-		setBody("<!DOCTYPE html>\n<html>\n<body>\n<h1>" + converter::numToString(code.get()) + " " + code.toString() +
-				"</h1>\n</body>\n</html>");
+		setBody("<!DOCTYPE html>\n<html>\n<body>\n<h1>" + converter::numToString(code.get()) + httpConstants::SPACE +
+				code.toString() + "</h1>\n</body>\n</html>");
 }
 
 const std::string ResponseHeader::_getCurrentDate(void)
@@ -132,7 +132,7 @@ void ResponseHeader::_setContentLength(size_t lenght)
 
 bool ResponseHeader::_isErrorCode(HTTPStatusCode code)
 {
-	return (code.get() >= 400);
+	return (code.get() >= HTTPStatusCode::BAD_REQUEST);
 }
 
 size_t ResponseHeader::_getTotalSize(void) const
@@ -149,7 +149,7 @@ size_t ResponseHeader::_getTotalSize(void) const
 
 void ResponseHeader::setStatusCode(HTTPStatusCode code)
 {
-	std::string value = converter::numToString(code.get()) + " " + code.toString();
+	std::string value = converter::numToString(code.get()) + httpConstants::SPACE + code.toString();
 	this->_header.at(STANDARD).value = value;
 }
 
@@ -176,7 +176,7 @@ void ResponseHeader::setBody(const std::string &body)
 	else
 		_setContentLength(lenght + 1);
 	if (this->_header.at(CONNECTION_TYPE).value == "")
-		setContentType(HTML_SUFFIX);
+		setContentType(httpConstants::HTML_SUFFIX);
 }
 
 const std::string ResponseHeader::getStatusMessage()
