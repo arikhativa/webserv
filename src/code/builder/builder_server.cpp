@@ -57,8 +57,11 @@ void builder::server::location(ServerConf &server, std::list<Token>::const_itera
 void builder::server::serverName(ServerConf &server, std::list<Token>::const_iterator it)
 {
 	++it;
-
-	server.setName(it->getValue());
+	while (it->getType() != Token::SEPARATOR)
+	{
+		server.addName(it->getValue());
+		++it;
+	}
 }
 
 void builder::server::root(ServerConf &server, std::list<Token>::const_iterator it)
