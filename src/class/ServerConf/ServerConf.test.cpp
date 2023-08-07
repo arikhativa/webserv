@@ -33,7 +33,7 @@ TEST(ServerConf, Accessor)
 		l.setDefaultSettingIfNeeded();
 	}
 
-	EXPECT_EQ("name", obj.getName().front());
+	EXPECT_EQ("name", obj.getNames().front());
 	EXPECT_EQ(100, obj.getMaxBodySize());
 	EXPECT_EQ(500, obj.getReturn()->getStatus().get());
 	EXPECT_EQ("/500.html", obj.getReturn()->getPath().get());
@@ -153,7 +153,7 @@ TEST(ServerConf, setDefaultSettingIfNeeded)
 	ServerConf obj;
 
 	obj.setDefaultSettingIfNeeded();
-	EXPECT_EQ(ServerConf::DEFAULT_SERVER_NAME, obj.getName().front());
+	EXPECT_EQ(ServerConf::DEFAULT_SERVER_NAME, obj.getNames().front());
 	EXPECT_EQ(ServerConf::DEFAULT_ROOT, obj.getRoot()->get());
 	EXPECT_EQ(ServerConf::DEFAULT_HTML, obj.getIndexFiles().front());
 	EXPECT_EQ(ServerConf::DEFAULT_HTM, obj.getIndexFiles().back());

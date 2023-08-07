@@ -22,7 +22,7 @@ TEST(builder, SimpleFile)
 	std::list<const IListen *>::iterator it = listen.begin();
 
 	EXPECT_EQ(1, conf->getServers().size());
-	EXPECT_EQ("", server->getName().front());
+	EXPECT_EQ("", server->getNames().front());
 
 	EXPECT_EQ("0.0.0.0", (*it)->getAddress().get());
 	EXPECT_EQ(88, (*it)->getPort().get());
@@ -52,7 +52,7 @@ TEST(builder, FullFile)
 	std::list<const IServerConf *>::iterator s_it = servers.begin();
 
 	// server #0
-	EXPECT_EQ("", (*s_it)->getName().front());
+	EXPECT_EQ("", (*s_it)->getNames().front());
 	EXPECT_EQ(0, (*s_it)->getMaxBodySize());
 	{
 		std::list<std::string> l = (*s_it)->getIndexFiles();
@@ -70,8 +70,8 @@ TEST(builder, FullFile)
 
 	// server #1
 	++s_it;
-	EXPECT_EQ("antonio", (*s_it)->getName().front());
-	EXPECT_EQ("pigafetta", (*s_it)->getName().back());
+	EXPECT_EQ("antonio", (*s_it)->getNames().front());
+	EXPECT_EQ("pigafetta", (*s_it)->getNames().back());
 	EXPECT_EQ(20, (*s_it)->getMaxBodySize());
 	EXPECT_EQ(200, (*s_it)->getReturn()->getStatus().get());
 	EXPECT_EQ("/200.html", (*s_it)->getReturn()->getPath().get());
@@ -106,7 +106,7 @@ TEST(builder, FullFile)
 
 	// server #2
 	++s_it;
-	EXPECT_EQ("yoda.com", (*s_it)->getName().front());
+	EXPECT_EQ("yoda.com", (*s_it)->getNames().front());
 	EXPECT_EQ(100, (*s_it)->getMaxBodySize());
 	EXPECT_EQ(500, (*s_it)->getReturn()->getStatus().get());
 	EXPECT_EQ("/500.html", (*s_it)->getReturn()->getPath().get());
@@ -171,9 +171,26 @@ TEST(builder, FullFile)
 	delete conf;
 }
 
-TEST(builder, ValidationDupName)
+TEST(builder, validateNoDupNames)
 {
 	const char *file_name = "res/tests/builder/dup_names.conf";
+	std::fstream fs(file_name);
+	std::list<Token> list = lexer::tokenize(fs);
+	if (false == parser::validate(list))
+	{
+		EXIT_FAILURE;
+	}
+
+	const IConf *conf = builder::createConf(file_name, list);
+
+	EXPECT_THROW(builder::validate(conf), std::runtime_error);
+
+	delete conf;
+}
+
+TEST(builder, validateNoDupLocations)
+{
+	const char *file_name = "res/tests/builder/dup_locations.conf";
 	std::fstream fs(file_name);
 	std::list<Token> list = lexer::tokenize(fs);
 	if (false == parser::validate(list))

@@ -44,6 +44,14 @@ std::ostream &operator<<(std::ostream &o, Conf const &i)
 	return o;
 }
 
+std::ostream &operator<<(std::ostream &o, const IConf &i)
+{
+	const Conf &tmp = dynamic_cast<const Conf &>(i);
+
+	o << tmp;
+	return o;
+}
+
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
