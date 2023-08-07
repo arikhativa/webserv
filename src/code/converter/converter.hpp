@@ -13,6 +13,7 @@ namespace converter
 	int stringToInt(const std::string &str);
 	std::size_t stringToSizeT(const std::string &str);
 	bool onOffStringToBool(const std::string &str);
+	size_t hexStringToSizeT(const std::string &hexStr);
 
 	template <typename T>
 	std::string numToString(T num)
