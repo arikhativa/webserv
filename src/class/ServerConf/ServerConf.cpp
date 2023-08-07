@@ -11,8 +11,7 @@ const std::string ServerConf::DEFAULT_HTML("index.html");
 */
 
 ServerConf::ServerConf()
-	: _name("", false)
-	, _max_body_size(0, false)
+	: _max_body_size(0, false)
 	, _return(NULL)
 	, _root(NULL)
 {
@@ -53,7 +52,7 @@ std::ostream &operator<<(std::ostream &o, ServerConf const &i)
 	o << std::boolalpha;
 
 	o << "{"
-	  << "\"_name\": \"" << i.getName() << "\", "
+	  << "\"_name\": " << i.getName() << ", "
 	  << "\"_max_body_size\": " << i.getMaxBodySize() << ", ";
 	{
 		const IReturn *ptr = i.getReturn();
@@ -94,11 +93,9 @@ std::ostream &operator<<(std::ostream &o, const IServerConf &i)
 ** ------------------------------------ GET ------------------------------------
 */
 
-std::string ServerConf::getName(void) const
+const std::list<std::string> &ServerConf::getName(void) const
 {
-	if (_name.isOn())
-		return _name.getValue();
-	return "";
+	return _name;
 }
 
 std::size_t ServerConf::getMaxBodySize(void) const
@@ -170,15 +167,10 @@ void ServerConf::setDefaultSettingIfNeeded(void)
 {
 	if (_listen.empty())
 		addListen(Listen());
-	if (!_name.isOn())
-	{
-		_name.setValue(DEFAULT_SERVER_NAME);
-		_name.setOn(true);
-	}
+	if (_name.empty())
+		_name.push_back(DEFAULT_SERVER_NAME);
 	if (!_root)
-	{
 		_root = new Path(DEFAULT_ROOT);
-	}
 	if (!_index_files.size())
 	{
 		_index_files.push_back(DEFAULT_HTML);
@@ -186,16 +178,10 @@ void ServerConf::setDefaultSettingIfNeeded(void)
 	}
 }
 
-void ServerConf::setName(const std::string &name)
+void ServerConf::addName(const std::string &name)
 {
-	if (_name.isOn())
-		throw InvalidServerConf(Token::Keyword::SERVER_NAME + " is already set");
-	if (!name.size())
-		throw InvalidServerConf(Token::Keyword::SERVER_NAME + " can't be empty");
-	_name.setValue(name);
-	_name.setOn(true);
+	_name.push_back(name);
 }
-
 void ServerConf::setMaxBodySize(const std::string &size)
 {
 	if (_max_body_size.isOn())
@@ -279,10 +265,9 @@ void ServerConf::addListen(const Listen &listen)
 
 	while (it != _listen.end())
 	{
-		if (it->getAddress().getAddress() == listen.getAddress().getAddress() &&
-			it->getPort().get() == listen.getPort().get())
+		if (it->getAddress().get() == listen.getAddress().get() && it->getPort().get() == listen.getPort().get())
 		{
-			std::string str(listen.getAddress().getAddress());
+			std::string str(listen.getAddress().get());
 			str += ":";
 			std::string port = converter::numToString(listen.getPort().get());
 			str += port;

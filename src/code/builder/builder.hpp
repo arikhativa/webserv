@@ -16,6 +16,8 @@ namespace builder
 	const IConf *createConf(const std::string &file_name, const std::list<Token> &list);
 	void creatServer(Conf &conf, std::list<Token>::const_iterator it);
 
+	void validate(const IConf *conf);
+
 	void initAllServers(Conf &conf, std::list<Token>::const_iterator &it, const std::list<Token>::const_iterator &end);
 
 	namespace server

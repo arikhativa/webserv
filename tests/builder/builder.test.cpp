@@ -22,17 +22,17 @@ TEST(builder, SimpleFile)
 	std::list<const IListen *>::iterator it = listen.begin();
 
 	EXPECT_EQ(1, conf->getServers().size());
-	EXPECT_EQ("", server->getName());
+	EXPECT_EQ("", server->getName().front());
 
-	EXPECT_EQ("0.0.0.0", (*it)->getAddress().getAddress());
+	EXPECT_EQ("0.0.0.0", (*it)->getAddress().get());
 	EXPECT_EQ(88, (*it)->getPort().get());
 
 	++it;
-	EXPECT_EQ("201.0.0.1", (*it)->getAddress().getAddress());
+	EXPECT_EQ("201.0.0.1", (*it)->getAddress().get());
 	EXPECT_EQ(80, (*it)->getPort().get());
 
 	++it;
-	EXPECT_EQ("101.0.0.2", (*it)->getAddress().getAddress());
+	EXPECT_EQ("101.0.0.2", (*it)->getAddress().get());
 	EXPECT_EQ(666, (*it)->getPort().get());
 
 	delete conf;
@@ -52,7 +52,7 @@ TEST(builder, FullFile)
 	std::list<const IServerConf *>::iterator s_it = servers.begin();
 
 	// server #0
-	EXPECT_EQ("", (*s_it)->getName());
+	EXPECT_EQ("", (*s_it)->getName().front());
 	EXPECT_EQ(0, (*s_it)->getMaxBodySize());
 	{
 		std::list<std::string> l = (*s_it)->getIndexFiles();
@@ -64,13 +64,14 @@ TEST(builder, FullFile)
 	{
 		std::list<const IListen *> l = (*s_it)->getListen();
 		std::list<const IListen *>::iterator it = l.begin();
-		EXPECT_EQ("0.0.0.0", (*it)->getAddress().getAddress());
+		EXPECT_EQ("0.0.0.0", (*it)->getAddress().get());
 		EXPECT_EQ(80, (*it)->getPort().get());
 	}
 
 	// server #1
 	++s_it;
-	EXPECT_EQ("pigafetta", (*s_it)->getName());
+	EXPECT_EQ("antonio", (*s_it)->getName().front());
+	EXPECT_EQ("pigafetta", (*s_it)->getName().back());
 	EXPECT_EQ(20, (*s_it)->getMaxBodySize());
 	EXPECT_EQ(200, (*s_it)->getReturn()->getStatus().get());
 	EXPECT_EQ("/200.html", (*s_it)->getReturn()->getPath().get());
@@ -87,7 +88,7 @@ TEST(builder, FullFile)
 	{
 		std::list<const IListen *> l = (*s_it)->getListen();
 		std::list<const IListen *>::iterator it = l.begin();
-		EXPECT_EQ("127.0.0.2", (*it)->getAddress().getAddress());
+		EXPECT_EQ("127.0.0.2", (*it)->getAddress().get());
 		EXPECT_EQ(6660, (*it)->getPort().get());
 	}
 	{
@@ -105,7 +106,7 @@ TEST(builder, FullFile)
 
 	// server #2
 	++s_it;
-	EXPECT_EQ("yoda.com", (*s_it)->getName());
+	EXPECT_EQ("yoda.com", (*s_it)->getName().front());
 	EXPECT_EQ(100, (*s_it)->getMaxBodySize());
 	EXPECT_EQ(500, (*s_it)->getReturn()->getStatus().get());
 	EXPECT_EQ("/500.html", (*s_it)->getReturn()->getPath().get());
@@ -123,11 +124,11 @@ TEST(builder, FullFile)
 		std::list<const IListen *> l = (*s_it)->getListen();
 		std::list<const IListen *>::iterator it = l.begin();
 
-		EXPECT_EQ("1.1.2.2", (*it)->getAddress().getAddress());
+		EXPECT_EQ("1.1.2.2", (*it)->getAddress().get());
 		EXPECT_EQ(89, (*it)->getPort().get());
 
 		++it;
-		EXPECT_EQ("8.8.8.8", (*it)->getAddress().getAddress());
+		EXPECT_EQ("8.8.8.8", (*it)->getAddress().get());
 		EXPECT_EQ(88, (*it)->getPort().get());
 	}
 	{
@@ -166,6 +167,23 @@ TEST(builder, FullFile)
 		EXPECT_EQ(false, (*it)->isAutoIndexOn());
 		EXPECT_EQ(true, (*it)->canUpload());
 	}
+
+	delete conf;
+}
+
+TEST(builder, ValidationDupName)
+{
+	const char *file_name = "res/tests/builder/dup_names.conf";
+	std::fstream fs(file_name);
+	std::list<Token> list = lexer::tokenize(fs);
+	if (false == parser::validate(list))
+	{
+		EXIT_FAILURE;
+	}
+
+	const IConf *conf = builder::createConf(file_name, list);
+
+	EXPECT_THROW(builder::validate(conf), std::runtime_error);
 
 	delete conf;
 }
