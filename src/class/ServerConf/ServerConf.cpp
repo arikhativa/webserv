@@ -279,10 +279,9 @@ void ServerConf::addListen(const Listen &listen)
 
 	while (it != _listen.end())
 	{
-		if (it->getAddress().getAddress() == listen.getAddress().getAddress() &&
-			it->getPort().get() == listen.getPort().get())
+		if (it->getAddress().get() == listen.getAddress().get() && it->getPort().get() == listen.getPort().get())
 		{
-			std::string str(listen.getAddress().getAddress());
+			std::string str(listen.getAddress().get());
 			str += ":";
 			std::string port = converter::numToString(listen.getPort().get());
 			str += port;
