@@ -133,12 +133,11 @@ TEST(FileManager, getDirectoryPreview)
 {
 	std::string path = "res/";
 	std::string relativePath = "preview";
-	std::string directoryStart =
-		"<!DOCTYPE html><html>\r\n"
-		"<head><title>Index of preview</title></head>\r\n"
-		"<body>\r\n"
-		"<h1>Index of preview</h1><hr><pre>\n"
-		"<a href=\"preview/400.html\">400.html</a>                                           ";
+	std::string directoryStart = "<!DOCTYPE html><html>\r\n"
+								 "<head><title>Index of preview</title></head>\r\n"
+								 "<body>\r\n"
+								 "<h1>Index of preview</h1><hr><pre>\n"
+								 "<a href=\"preview/400.html\">400.html</a>                                           ";
 	std::string directoryEnd = "                   "
 							   "-<br>"
 							   "</body>\n"
