@@ -4,7 +4,9 @@
 
 TEST(CgiManager, CreateDestroy)
 {
-	BasicHTTPRequest basicHTTPRequest("GET / HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
+	BasicHTTPRequest basicHTTPRequest("GET / HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
+									  "text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
+									  "deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -26,7 +28,9 @@ TEST(CgiManager, Accessor)
 
 TEST(CgiManager, Canonical)
 {
-	BasicHTTPRequest basicHTTPRequest("GET / HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
+	BasicHTTPRequest basicHTTPRequest("GET / HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
+									  "text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
+									  "deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -40,21 +44,32 @@ TEST(CgiManager, Canonical)
 
 TEST(CgiManager, setCgiManager)
 {
-	BasicHTTPRequest basicHTTPRequest("POST /res/get_hello.py?first_name=pepe&last_name=juan HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
+	BasicHTTPRequest basicHTTPRequest(
+		"POST /res/get_hello.py?first_name=pepe&last_name=juan HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: "
+		"Mozilla/5.0\r\nAccept: text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
+		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
 
-
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
-	std::string content = obj1.setCgiManager();
+	std::string content = "Content-type: text/html\r\n"
+						  "Content-Length: 58\r\n\r\n\n"
+						  "<html>\n"
+						  "<body>\n"
+						  "<h2>Hello, pepe juan!</h2>\n"
+						  "</body>\n"
+						  "</html>\n\n";
 
-	EXPECT_EQ(content, "pepe\n");
+	EXPECT_EQ(content, obj1.setCgiManager());
 }
 
 TEST(CgiManager, envCgi)
 {
-	BasicHTTPRequest basicHTTPRequest("POST /res/env.py?pepe=juan HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
+	BasicHTTPRequest basicHTTPRequest(
+		"POST /res/env.py?pepe=juan HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
+		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: "
+		"keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -67,13 +82,25 @@ TEST(CgiManager, envCgi)
 
 TEST(CgiManager, waitCgi)
 {
-	BasicHTTPRequest basicHTTPRequest("POST /res/form.py?name=juan&Email=juan@gmail.com&Message=Hello HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
+	BasicHTTPRequest basicHTTPRequest("POST /res/form.py?name=juan&Email=juan@gmail.com&Message=Hello "
+									  "HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
+									  "text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
+									  "deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
-	std::string content = obj1.setCgiManager();
+	std::string content = "Content-type: text/html\r\n"
+						  "Content-Length: 119\r\n\r\n\n"
+						  "<html>\n"
+						  "<body>\n"
+						  "<h1>Form Data</h1>\n"
+						  "<p>Name: juan</p>\n"
+						  "<p>Email: juan@gmail.com</p>\n"
+						  "<p>Message: Hello</p>\n"
+						  "</body>\n"
+						  "</html>\n\n";
 
-	EXPECT_EQ(content, "\n");
+	EXPECT_EQ(content, obj1.setCgiManager());
 }

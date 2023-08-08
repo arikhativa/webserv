@@ -5,11 +5,11 @@
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <Path/Path.hpp>
 
+#include <cstring>
 #include <iostream>
 #include <string>
-#include <cstring>
-#include <unistd.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #ifdef TEST_ON
 #define private public
@@ -19,7 +19,8 @@
 class CgiManager
 {
   public:
-	explicit CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI,const std::string &serverName,const std::string &port);
+	explicit CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const std::string &serverName,
+						const std::string &port);
 	CgiManager(const CgiManager &src);
 	~CgiManager();
 
@@ -35,9 +36,9 @@ class CgiManager
 	void setPort(const std::string &port);
 	void setBasicHTTPRequest(const BasicHTTPRequest &basicHTTPRequest);
 
-	const std::string setCgiManager(void) ;
+	const std::string setCgiManager(void);
 
-	//exception
+	// exception
 	class CgiManagerException : public std::exception
 	{
 	  public:
@@ -55,11 +56,9 @@ class CgiManager
 
 	std::string _createpipe(char **ch_env, char **argv);
 	char **_setEnv(void) const;
-	void	_free_argv_env(char **argv, char **env) ;
+	void _free_argv_env(char **argv, char **env);
 
-	//void _writeInPipe(int fd, const std::string &str);
-
-
+	// void _writeInPipe(int fd, const std::string &str);
 };
 
 std::ostream &operator<<(std::ostream &o, const CgiManager &i);

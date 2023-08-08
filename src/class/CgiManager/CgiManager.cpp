@@ -5,15 +5,20 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-
-CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const std::string &serverName,const std::string &port)
-	: _basicHTTPRequest(basicHTTPRequest), _pathCGI(pathCGI), _serverName(serverName), _port(port)
+CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const std::string &serverName,
+					   const std::string &port)
+	: _basicHTTPRequest(basicHTTPRequest)
+	, _pathCGI(pathCGI)
+	, _serverName(serverName)
+	, _port(port)
 {
 }
 
-
 CgiManager::CgiManager(const CgiManager &src)
-	: _basicHTTPRequest(src.getBasicHTTPRequest()), _pathCGI(src.getPathCGI()), _serverName(src.getServerName()), _port(src.getPort())
+	: _basicHTTPRequest(src.getBasicHTTPRequest())
+	, _pathCGI(src.getPathCGI())
+	, _serverName(src.getServerName())
+	, _port(src.getPort())
 {
 }
 
@@ -49,10 +54,10 @@ CgiManager &CgiManager::operator=(CgiManager const &rhs)
 std::ostream &operator<<(std::ostream &o, CgiManager const &i)
 {
 	o << "CgiManager[ ServerName=\"" << i.getServerName() << "\""
-	<< "Port=\"" << i.getPort() << "\""
-	<< "PathCGI=\"" << i.getPathCGI() << "\""
-	<< "BasicHTTPRequest=\"" << i.getBasicHTTPRequest() << "\""
-	<<	 "]";
+	  << "Port=\"" << i.getPort() << "\""
+	  << "PathCGI=\"" << i.getPathCGI() << "\""
+	  << "BasicHTTPRequest=\"" << i.getBasicHTTPRequest() << "\""
+	  << "]";
 	return o;
 }
 
@@ -107,7 +112,7 @@ const BasicHTTPRequest CgiManager::getBasicHTTPRequest(void) const
 char **CgiManager::_setEnv(void) const
 {
 	std::map<std::string, std::string> env;
-	//TODO -> env["CONTENT_LENGTH"] = _basicHTTPRequest.getBody().length();
+	// TODO -> env["CONTENT_LENGTH"] = _basicHTTPRequest.getBody().length();
 	std::string bodyRequest = "this is a test";
 	env["CONTENT_LENGTH"] = bodyRequest.size();
 	if (_basicHTTPRequest.getHeaders().find(httpConstants::CONTENT_TYPE_FIELD) != _basicHTTPRequest.getHeaders().end())
@@ -120,8 +125,7 @@ char **CgiManager::_setEnv(void) const
 	env[httpConstants::SERVER_PORT] = _port;
 	env[httpConstants::SERVER_NAME] = _serverName;
 
-
-	char	**ch_env = (char **)calloc(sizeof(char *), env.size() + 1);
+	char **ch_env = (char **)calloc(sizeof(char *), env.size() + 1);
 	if (!ch_env)
 		throw CgiManager::CgiManagerException();
 	std::map<std::string, std::string>::const_iterator it = env.begin();
@@ -157,10 +161,10 @@ std::string CgiManager::_createpipe(char **ch_env, char **argv)
 	{
 		close(_inputPipe[0]);
 		close(_outputPipe[1]);
-		//TODO -> write(_inputPipe[1], _basicHTTPRequest.getBody().c_str(), _basicHTTPRequest.getBody().length());
+		// TODO -> write(_inputPipe[1], _basicHTTPRequest.getBody().c_str(), _basicHTTPRequest.getBody().length());
 		std::string bodyRequest = "this is a test";
 		write(_inputPipe[1], bodyRequest.c_str(), bodyRequest.size());
-		
+
 		close(_inputPipe[1]);
 
 		char buffer[40000 * 2];
@@ -191,7 +195,7 @@ std::string CgiManager::_createpipe(char **ch_env, char **argv)
 	return ("");
 }
 
-void CgiManager::_free_argv_env(char **ch_env, char **argv) 
+void CgiManager::_free_argv_env(char **ch_env, char **argv)
 {
 	if (argv != NULL)
 	{
@@ -217,11 +221,11 @@ void CgiManager::_free_argv_env(char **ch_env, char **argv)
 	}
 }
 
-const std::string CgiManager::setCgiManager(void) 
+const std::string CgiManager::setCgiManager(void)
 {
-	char		**ch_env = NULL;
-	char		**argv = NULL;
-	std::string	content = "";
+	char **ch_env = NULL;
+	char **argv = NULL;
+	std::string content = "";
 	try
 	{
 		ch_env = _setEnv();
@@ -239,7 +243,7 @@ const std::string CgiManager::setCgiManager(void)
 		_free_argv_env(argv, ch_env);
 		throw CgiManager::CgiManagerException();
 	}
-	/* //! TODO: move this to a httprequesthandler 
+	/* //! TODO: move this to a httprequesthandler
 	std::size_t pos = content.find("Content-Type: ");
 	std::string content_type = "";
 	if (pos != std::string::npos)
