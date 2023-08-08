@@ -27,18 +27,6 @@
 #define protected public
 #endif
 
-static const std::string HTML_SUFFIX = ".html";
-static const std::string TXT_SUFFIX = ".txt";
-static const std::string HTTP_VERSION = "HTTP/1.1 ";
-static const std::string SERVER_FIELD_KEY = "Server: ";
-static const std::string SERVER_FIELD_VALUE = "webserv";
-static const std::string DATE_FIELD_KEY = "Date: ";
-static const std::string CONTENT_TYPE_FIELD_KEY = "Content-Type: ";
-static const std::string CONTENT_LENGHT_FIELD_KEY = "Content-Length: ";
-static const std::string CONNECTION_FIELD_KEY = "Connection: ";
-static const std::string CONNECTION_ALIVE = "keep-alive";
-static const std::string CONNECTION_CLOSE = "close";
-
 class ResponseHeader
 {
 
