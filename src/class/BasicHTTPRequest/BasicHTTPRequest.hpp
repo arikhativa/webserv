@@ -52,24 +52,32 @@ class BasicHTTPRequest
 
 	BasicHTTPRequest &operator=(const BasicHTTPRequest &rhs);
 
+	void setBody(void);
+
+	const std::string &getRawRequest(void) const;
 	Type getType(void) const;
 	const std::string &getPath(void) const;
 	const std::string &getQuery(void) const;
 	HTTPVersion getHTTPVersion(void) const;
 	const std::map<std::string, std::string> &getHeaders(void) const;
+	const std::string &getBody(void) const;
 
   private:
+	const std::string _raw;
 	Type _type;
 	Path _path;
 	std::string _query;
 	HTTPVersion _http_version;
 	std::map<std::string, std::string> _headers;
+	std::string _body;
 
-	static BasicHTTPRequest::Type _parseRequestType(const std::string &raw_request);
-	static Path _parseRequestPath(const std::string &raw_request);
-	static std::string _parseRequestQuery(const std::string &raw_request);
-	static HTTPVersion _parseRequestHTTPVersion(const std::string &raw_request);
-	static std::map<std::string, std::string> _parseRequestHeaders(const std::string &raw_request);
+	bool isChunked(void) const;
+
+	static BasicHTTPRequest::Type _parseType(const std::string &raw_request);
+	static Path _parsePath(const std::string &raw_request);
+	static std::string _parseQuery(const std::string &raw_request);
+	static HTTPVersion _parseHTTPVersion(const std::string &raw_request);
+	static std::map<std::string, std::string> _parseHeaders(const std::string &raw_request);
 };
 
 std::ostream &operator<<(std::ostream &o, const BasicHTTPRequest &i);

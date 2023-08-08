@@ -6,11 +6,12 @@
 */
 
 BasicHTTPRequest::BasicHTTPRequest(const std::string &raw_request)
-	: _type(_parseRequestType(raw_request))
-	, _path(_parseRequestPath(raw_request))
-	, _query(_parseRequestQuery(raw_request))
-	, _http_version(_parseRequestHTTPVersion(raw_request))
-	, _headers(_parseRequestHeaders(raw_request))
+	: _raw(raw_request)
+	, _type(_parseType(raw_request))
+	, _path(_parsePath(raw_request))
+	, _query(_parseQuery(raw_request))
+	, _http_version(_parseHTTPVersion(raw_request))
+	, _headers(_parseHeaders(raw_request))
 {
 }
 
@@ -97,7 +98,7 @@ std::ostream &operator<<(std::ostream &o, BasicHTTPRequest const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-BasicHTTPRequest::Type BasicHTTPRequest::_parseRequestType(const std::string &raw_request)
+BasicHTTPRequest::Type BasicHTTPRequest::_parseType(const std::string &raw_request)
 {
 	if (raw_request.find("GET") == 0)
 		return BasicHTTPRequest::GET;
@@ -108,7 +109,7 @@ BasicHTTPRequest::Type BasicHTTPRequest::_parseRequestType(const std::string &ra
 	throw BasicHTTPRequest::InvalidRequestException("Bad type.");
 }
 
-Path BasicHTTPRequest::_parseRequestPath(const std::string &raw_request)
+Path BasicHTTPRequest::_parsePath(const std::string &raw_request)
 {
 	std::size_t start = raw_request.find("/");
 	std::size_t query_pos = raw_request.find("?", start);
@@ -124,7 +125,7 @@ Path BasicHTTPRequest::_parseRequestPath(const std::string &raw_request)
 	return Path(raw_request.substr(start, end - start));
 }
 
-std::string BasicHTTPRequest::_parseRequestQuery(const std::string &raw_request)
+std::string BasicHTTPRequest::_parseQuery(const std::string &raw_request)
 {
 	std::size_t start = raw_request.find("/");
 	std::size_t query_pos = raw_request.find("?", start);
@@ -138,7 +139,7 @@ std::string BasicHTTPRequest::_parseRequestQuery(const std::string &raw_request)
 	return raw_request.substr(query_pos, end - query_pos);
 }
 
-BasicHTTPRequest::HTTPVersion BasicHTTPRequest::_parseRequestHTTPVersion(const std::string &raw_request)
+BasicHTTPRequest::HTTPVersion BasicHTTPRequest::_parseHTTPVersion(const std::string &raw_request)
 {
 	std::size_t start = raw_request.find("HTTP/");
 
@@ -160,7 +161,7 @@ BasicHTTPRequest::HTTPVersion BasicHTTPRequest::_parseRequestHTTPVersion(const s
 	return BasicHTTPRequest::UNKNOWN;
 }
 
-std::map<std::string, std::string> BasicHTTPRequest::_parseRequestHeaders(const std::string &raw_request)
+std::map<std::string, std::string> BasicHTTPRequest::_parseHeaders(const std::string &raw_request)
 {
 	std::map<std::string, std::string> headers;
 
@@ -192,9 +193,37 @@ std::map<std::string, std::string> BasicHTTPRequest::_parseRequestHeaders(const 
 	return headers;
 }
 
+bool BasicHTTPRequest::isChunked(void) const
+{
+	std::map<std::string, std::string>::const_iterator it = _headers.find(httpConstants::headers::TRANSFER_ENCODING);
+	if (it == _headers.end())
+		return false;
+	return it->second == httpConstants::headers::CHUNKED;
+}
+
+void BasicHTTPRequest::setBody(void)
+{
+	std::map<std::string, std::string>::const_iterator it = _headers.find(httpConstants::headers::CONTENT_LENGTH);
+	if (it == _headers.end())
+		return;
+
+	std::size_t content_length = converter::stringToSizeT(it->second);
+
+	std::size_t start = _raw.find(httpConstants::HEADER_BREAK);
+	if (start == std::string::npos)
+		return;
+	start += 4;
+	_body = _raw.substr(start, content_length);
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+const std::string &BasicHTTPRequest::getRawRequest(void) const
+{
+	return this->_raw;
+}
 
 BasicHTTPRequest::Type BasicHTTPRequest::getType(void) const
 {
@@ -219,6 +248,11 @@ BasicHTTPRequest::HTTPVersion BasicHTTPRequest::getHTTPVersion(void) const
 const std::map<std::string, std::string> &BasicHTTPRequest::getHeaders(void) const
 {
 	return this->_headers;
+}
+
+const std::string &BasicHTTPRequest::getBody(void) const
+{
+	return this->_body;
 }
 
 /* ************************************************************************** */
