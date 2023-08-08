@@ -42,7 +42,7 @@ TEST(CgiManager, Canonical)
 	EXPECT_EQ(obj1.getPathCGI().get(), "/usr/bin/python3");
 }
 
-TEST(CgiManager, setCgiManager)
+TEST(CgiManager, simplecgi)
 {
 	BasicHTTPRequest basicHTTPRequest(
 		"POST /res/get_hello.py?first_name=pepe&last_name=juan HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: "
@@ -80,7 +80,7 @@ TEST(CgiManager, envCgi)
 	EXPECT_EQ(content, "pepe=juan\n");
 }
 
-TEST(CgiManager, waitCgi)
+TEST(CgiManager, envFormCgi)
 {
 	BasicHTTPRequest basicHTTPRequest("POST /res/form.py?name=juan&Email=juan@gmail.com&Message=Hello "
 									  "HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
@@ -101,6 +101,22 @@ TEST(CgiManager, waitCgi)
 						  "<p>Message: Hello</p>\n"
 						  "</body>\n"
 						  "</html>\n\n";
+
+	EXPECT_EQ(content, obj1.setCgiManager());
+}
+
+TEST(CgiManager, formContentCgi)
+{
+	BasicHTTPRequest basicHTTPRequest("POST /res/formSimple.py "
+									  "HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
+									  "text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
+									  "deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
+	Path pathCGI("/usr/bin/python3");
+	std::string serverName("serverName");
+	std::string port("1234");
+
+	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
+	std::string content = "this is a test\n";
 
 	EXPECT_EQ(content, obj1.setCgiManager());
 }
