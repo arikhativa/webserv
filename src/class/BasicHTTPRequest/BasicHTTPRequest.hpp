@@ -78,6 +78,7 @@ class BasicHTTPRequest
 	static std::string _parseQuery(const std::string &raw_request);
 	static HTTPVersion _parseHTTPVersion(const std::string &raw_request);
 	static std::map<std::string, std::string> _parseHeaders(const std::string &raw_request);
+	static bool _isKeyRestricted(const std::string &key);
 };
 
 std::ostream &operator<<(std::ostream &o, const BasicHTTPRequest &i);

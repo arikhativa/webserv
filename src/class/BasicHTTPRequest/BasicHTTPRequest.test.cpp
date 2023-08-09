@@ -106,3 +106,17 @@ TEST(BasicHTTPRequest, setBody)
 	obj.setBody();
 	EXPECT_STREQ("body", obj.getBody().c_str());
 }
+
+TEST(BasicHTTPRequest, ExceptionDupHeaders)
+{
+	EXPECT_THROW(BasicHTTPRequest obj("POST / HTTP/1.1\r\nContent-Length: 4\r\nContent-Length: 4\r\n\r\nbody"),
+				 BasicHTTPRequest::InvalidRequestException);
+}
+
+TEST(BasicHTTPRequest, AppendDupHeaders)
+{
+	BasicHTTPRequest obj("POST / HTTP/1.1\r\nasd: 4\r\nasd: 4\r\n\r\nbody");
+
+	std::map<std::string, std::string> h = obj.getHeaders();
+	EXPECT_STREQ("4, 4", h["asd"].c_str());
+}

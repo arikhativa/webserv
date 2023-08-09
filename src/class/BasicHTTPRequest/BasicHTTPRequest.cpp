@@ -161,6 +161,12 @@ BasicHTTPRequest::HTTPVersion BasicHTTPRequest::_parseHTTPVersion(const std::str
 	return BasicHTTPRequest::UNKNOWN;
 }
 
+bool BasicHTTPRequest::_isKeyRestricted(const std::string &key)
+{
+	return (key == httpConstants::headers::HOST || key == httpConstants::headers::DATE ||
+			key == httpConstants::headers::CONTENT_LENGTH);
+}
+
 std::map<std::string, std::string> BasicHTTPRequest::_parseHeaders(const std::string &raw_request)
 {
 	std::map<std::string, std::string> headers;
@@ -185,7 +191,14 @@ std::map<std::string, std::string> BasicHTTPRequest::_parseHeaders(const std::st
 
 		colon_pos += 2;
 		std::string value = raw_request.substr(colon_pos, end - colon_pos);
-		headers[key] = value;
+		if (_isKeyRestricted(key) && !headers[key].empty())
+		{
+			throw BasicHTTPRequest::InvalidRequestException("Bad header: duplicate key");
+		}
+		if (headers[key].empty())
+			headers[key] = value;
+		else
+			headers[key] += ", " + value;
 
 		start = end + 2;
 		end = raw_request.find(httpConstants::FIELD_BREAK, start);
