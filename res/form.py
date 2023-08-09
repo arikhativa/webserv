@@ -35,6 +35,5 @@ body = """
 """ % (name, email, message)
 
 print ("Content-type: text/html\r")
-print ("Content-Length: %d\r" % len(body))
-print ("\r")
+print ("Content-Length: %d\r\n\r" % len(body))
 print(body)

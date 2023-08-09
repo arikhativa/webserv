@@ -51,6 +51,7 @@ TEST(CgiManager, simplecgi)
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
+	Path serverPath(".");
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
 	std::string content = "Content-type: text/html\r\n"
@@ -59,9 +60,9 @@ TEST(CgiManager, simplecgi)
 						  "<body>\n"
 						  "<h2>Hello, pepe juan!</h2>\n"
 						  "</body>\n"
-						  "</html>\n\n";
+						  "</html>\n";
 
-	EXPECT_EQ(content, obj1.setCgiManager());
+	EXPECT_EQ(content, obj1.setCgiManager(serverPath, ""));
 }
 
 TEST(CgiManager, envCgi)
@@ -73,9 +74,10 @@ TEST(CgiManager, envCgi)
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
+	Path serverPath(".");
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
-	std::string content = obj1.setCgiManager();
+	std::string content = obj1.setCgiManager(serverPath, "");
 
 	EXPECT_EQ(content, "pepe=juan\n");
 }
@@ -89,6 +91,7 @@ TEST(CgiManager, envFormCgi)
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
+	Path serverPath(".");
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
 	std::string content = "Content-type: text/html\r\n"
@@ -100,23 +103,43 @@ TEST(CgiManager, envFormCgi)
 						  "<p>Email: juan@gmail.com</p>\n"
 						  "<p>Message: Hello</p>\n"
 						  "</body>\n"
-						  "</html>\n\n";
+						  "</html>\n";
 
-	EXPECT_EQ(content, obj1.setCgiManager());
+	EXPECT_EQ(content, obj1.setCgiManager(serverPath, ""));
 }
 
 TEST(CgiManager, formContentCgi)
 {
-	BasicHTTPRequest basicHTTPRequest("POST /res/formSimple.py "
+	BasicHTTPRequest basicHTTPRequest(
+		"POST /res/formSimple.py "
+		"HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
+		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
+		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nthis is a test");
+	Path pathCGI("/usr/bin/python3");
+	std::string serverName("serverName");
+	std::string port("1234");
+	Path serverPath(".");
+
+	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
+
+	EXPECT_EQ("this is a test\n", obj1.setCgiManager(serverPath, "this is a test"));
+}
+
+TEST(CgiManager, contentLengthCgi)
+{
+	BasicHTTPRequest basicHTTPRequest("POST /res/content_length.py "
 									  "HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 									  "text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 									  "deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
+	Path serverPath(".");
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
-	std::string content = "this is a test\n";
+	std::string expected = "Content-type: text/plain\r\n"
+						   "Content-Length: 37\r\n\r\n"
+						   "this is a test for the content_length";
 
-	EXPECT_EQ(content, obj1.setCgiManager());
+	EXPECT_EQ(expected, obj1.setCgiManager(serverPath, ""));
 }
