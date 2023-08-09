@@ -32,6 +32,7 @@ namespace httpConstants
 	const std::string CONTENT_TYPE("CONTENT_TYPE");
 	const std::string CONTENT_LENGTH("CONTENT_LENGTH");
 	const std::string UPLOAD_DIR("UPLOAD_DIR");
+	const std::string PATH_INFO("PATH_INFO");
 	const std::string PREVIOUS_DIR("/..");
 	const std::string ACTUAL_DIR("/.");
 	const std::string SEPARATOR(":");

@@ -1,10 +1,6 @@
 #!/usr/bin/python3
-
-import cgi
 import sys
 import os
-# Create instance of FieldStorage
-form = cgi.FieldStorage()
 
 # Get data from fields
 env = os.environ["QUERY_STRING"]

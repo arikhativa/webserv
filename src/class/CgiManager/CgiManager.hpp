@@ -32,7 +32,6 @@ class CgiManager
 	const std::string getPort(void) const;
 	const BasicHTTPRequest getBasicHTTPRequest(void) const;
 
-	void writeOnInputPipe(const std::string &content);
 	const std::string setCgiManager(const Path &pathServer, const std::string &body);
 
 	// exception

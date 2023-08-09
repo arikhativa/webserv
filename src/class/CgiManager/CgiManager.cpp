@@ -104,6 +104,7 @@ char **CgiManager::_setEnv(const std::string &bodyRequest) const
 	env[httpConstants::SERVER_PROTOCOL] = _basicHTTPRequest.getHTTPVersion();
 	env[httpConstants::SERVER_PORT] = _port;
 	env[httpConstants::SERVER_NAME] = _serverName;
+	env[httpConstants::PATH_INFO] = _basicHTTPRequest.getPath();
 
 	char **ch_env = (char **)calloc(sizeof(char *), env.size() + 1);
 	if (!ch_env)
@@ -141,7 +142,7 @@ std::string CgiManager::_createpipe(char **ch_env, char **argv, const std::strin
 	{
 		close(_inputPipe[0]);
 		close(_outputPipe[1]);
-		writeOnInputPipe(bodyRequest);
+		write(_inputPipe[1], bodyRequest.c_str(), bodyRequest.size());
 		close(_inputPipe[1]);
 
 		char buffer[40000 * 2];
@@ -197,11 +198,6 @@ const BasicHTTPRequest CgiManager::getBasicHTTPRequest(void) const
 	return this->_basicHTTPRequest;
 }
 
-void CgiManager::writeOnInputPipe(const std::string &content)
-{
-	write(_inputPipe[1], content.c_str(), content.size());
-}
-
 const std::string CgiManager::setCgiManager(const Path &pathServer, const std::string &body)
 {
 	char **ch_env = NULL;
@@ -224,22 +220,6 @@ const std::string CgiManager::setCgiManager(const Path &pathServer, const std::s
 		_free_argv_env(argv, ch_env);
 		throw CgiManager::CgiManagerException();
 	}
-	/* //! TODO: move this to a httprequesthandler
-	std::size_t pos = content.find("Content-Type: ");
-	std::string content_type = "";
-	if (pos != std::string::npos)
-	{
-		std::size_t pos2 = content.find(httpConstants::FIELD_BREAK, pos);
-		if (pos2 != std::string::npos)
-		{
-			content_type = content.substr(pos + 14, pos2 - pos - 14);
-			response.setContentType(content_type);
-		}
-	}
-	response.setContentType(content_type);
-	pos = content.find(httpConstants::HEADER_BREAK);
-	if (pos != std::string::npos)
-		content = content.substr(pos + 4);*/
 	return (content);
 }
 

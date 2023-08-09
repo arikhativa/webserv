@@ -1,11 +1,7 @@
 #!/usr/bin/env python
-import cgi
+
 import sys
 import os
-
-# Get the form data from the request
-form = cgi.FieldStorage()
-
 
 env = os.environ["QUERY_STRING"]
 
