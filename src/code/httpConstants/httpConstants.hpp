@@ -37,6 +37,13 @@ namespace httpConstants
 	const std::string ACTUAL_DIR("/.");
 	const std::string SEPARATOR(":");
 	const std::string SPACE(" ");
+
+	namespace headers
+	{
+		const std::string TRANSFER_ENCODING("Transfer-Encoding");
+		const std::string CONTENT_LENGTH("Content-Length");
+		const std::string CHUNKED("chunked");
+	} // namespace headers
 } // namespace httpConstants
 
 #endif

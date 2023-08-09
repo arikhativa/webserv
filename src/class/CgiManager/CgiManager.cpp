@@ -91,10 +91,10 @@ void CgiManager::_free_argv_env(char **ch_env, char **argv)
 	}
 }
 
-char **CgiManager::_setEnv(const std::string &bodyRequest) const
+char **CgiManager::_setEnv(void) const
 {
 	std::map<std::string, std::string> env;
-	env[httpConstants::CONTENT_LENGTH] = bodyRequest.length();
+	env[httpConstants::CONTENT_LENGTH] = _basicHTTPRequest.getBody().length();
 	if (_basicHTTPRequest.getHeaders().find(httpConstants::CONTENT_TYPE_FIELD) != _basicHTTPRequest.getHeaders().end())
 		env[httpConstants::CONTENT_TYPE_FIELD] = _basicHTTPRequest.getHeaders().at(httpConstants::CONTENT_TYPE_FIELD);
 	env[httpConstants::REQUEST_METHOD] = _basicHTTPRequest.getType();
@@ -119,7 +119,7 @@ char **CgiManager::_setEnv(const std::string &bodyRequest) const
 	return (ch_env);
 }
 
-std::string CgiManager::_createpipe(char **ch_env, char **argv, const std::string &bodyRequest)
+std::string CgiManager::_createpipe(char **ch_env, char **argv)
 {
 	int _exit_status;
 	if (pipe(_inputPipe) < 0 || pipe(_outputPipe) < 0)
@@ -142,7 +142,7 @@ std::string CgiManager::_createpipe(char **ch_env, char **argv, const std::strin
 	{
 		close(_inputPipe[0]);
 		close(_outputPipe[1]);
-		write(_inputPipe[1], bodyRequest.c_str(), bodyRequest.size());
+		write(_inputPipe[1], _basicHTTPRequest.getBody().c_str(), _basicHTTPRequest.getBody().size());
 		close(_inputPipe[1]);
 
 		char buffer[40000 * 2];
@@ -198,14 +198,14 @@ const BasicHTTPRequest CgiManager::getBasicHTTPRequest(void) const
 	return this->_basicHTTPRequest;
 }
 
-const std::string CgiManager::setCgiManager(const Path &pathServer, const std::string &body)
+const std::string CgiManager::setCgiManager(const Path &pathServer)
 {
 	char **ch_env = NULL;
 	char **argv = NULL;
 	std::string content = "";
 	try
 	{
-		ch_env = _setEnv(body);
+		ch_env = _setEnv();
 		argv = (char **)calloc(sizeof(char *), 3);
 		if (!argv)
 			throw CgiManager::CgiManagerException();
@@ -213,7 +213,7 @@ const std::string CgiManager::setCgiManager(const Path &pathServer, const std::s
 		std::string path = pathServer.get() + _basicHTTPRequest.getPath();
 		argv[1] = strdup(path.c_str());
 		argv[2] = NULL;
-		content = _createpipe(ch_env, argv, body);
+		content = _createpipe(ch_env, argv);
 	}
 	catch (CgiManager::CgiManagerException &e)
 	{

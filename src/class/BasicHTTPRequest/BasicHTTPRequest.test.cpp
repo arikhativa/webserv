@@ -91,3 +91,18 @@ TEST(BasicHTTPRequest, Print)
 	ss << obj;
 	EXPECT_EQ(res, ss.str());
 }
+
+TEST(BasicHTTPRequest, isChunked)
+{
+	BasicHTTPRequest obj("POST / HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n4body\r\n0\r\n\r\n");
+
+	EXPECT_TRUE(obj.isChunked());
+}
+
+TEST(BasicHTTPRequest, setBody)
+{
+	BasicHTTPRequest obj("POST / HTTP/1.1\r\nContent-Length: 4\r\n\r\nbody");
+
+	obj.setBody();
+	EXPECT_STREQ("body", obj.getBody().c_str());
+}

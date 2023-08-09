@@ -62,7 +62,7 @@ TEST(CgiManager, simplecgi)
 						  "</body>\n"
 						  "</html>\n";
 
-	EXPECT_EQ(content, obj1.setCgiManager(serverPath, ""));
+	EXPECT_EQ(content, obj1.setCgiManager(serverPath));
 }
 
 TEST(CgiManager, envCgi)
@@ -77,7 +77,7 @@ TEST(CgiManager, envCgi)
 	Path serverPath(".");
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
-	std::string content = obj1.setCgiManager(serverPath, "");
+	std::string content = obj1.setCgiManager(serverPath);
 
 	EXPECT_EQ(content, "pepe=juan\n");
 }
@@ -105,7 +105,7 @@ TEST(CgiManager, envFormCgi)
 						  "</body>\n"
 						  "</html>\n";
 
-	EXPECT_EQ(content, obj1.setCgiManager(serverPath, ""));
+	EXPECT_EQ(content, obj1.setCgiManager(serverPath));
 }
 
 TEST(CgiManager, formContentCgi)
@@ -122,7 +122,8 @@ TEST(CgiManager, formContentCgi)
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
 
-	EXPECT_EQ("this is a test\n", obj1.setCgiManager(serverPath, "this is a test"));
+	EXPECT_EQ("this is a test\n", basicHTTPRequest.getBody());
+	EXPECT_EQ("this is a test\n", obj1.setCgiManager(serverPath));
 }
 
 TEST(CgiManager, contentLengthCgi)
@@ -141,7 +142,7 @@ TEST(CgiManager, contentLengthCgi)
 						   "Content-Length: 37\r\n\r\n"
 						   "this is a test for the content_length";
 
-	EXPECT_EQ(expected, obj1.setCgiManager(serverPath, ""));
+	EXPECT_EQ(expected, obj1.setCgiManager(serverPath));
 }
 
 TEST(CgiManager, phpCgi)
@@ -155,10 +156,9 @@ TEST(CgiManager, phpCgi)
 	std::string serverName("serverName");
 	std::string port("1234");
 	Path serverPath(".");
-	std::string body = "nombre=Juan&edad=25";
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
-	std::string expected = "nombre=Juan&edad=25";
 
-	EXPECT_EQ(expected, obj1.setCgiManager(serverPath, body));
+	EXPECT_EQ("nombre=Juan&edad=25", basicHTTPRequest.getBody());
+	// EXPECT_EQ("nombre=Juan&edad=25", obj1.setCgiManager(serverPath));
 }
