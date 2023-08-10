@@ -59,7 +59,9 @@ void builder::server::serverName(ServerConf &server, std::list<Token>::const_ite
 	++it;
 	while (it->getType() != Token::SEPARATOR)
 	{
-		server.addName(it->getValue());
+		std::string tmp = it->getValue();
+
+		server.addName(converter::removeQuotesIfNeeded(tmp));
 		++it;
 	}
 }

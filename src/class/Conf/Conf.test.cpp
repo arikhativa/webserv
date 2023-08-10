@@ -113,7 +113,7 @@ TEST(Conf, Default)
 	std::list<const IServerConf *> server = obj.getServers();
 	const IServerConf *s = server.front();
 
-	EXPECT_EQ("", s->getName().front());
+	EXPECT_EQ("", s->getNames().front());
 	EXPECT_EQ(0, s->getMaxBodySize());
 	EXPECT_EQ("/var/www/html", s->getRoot()->get());
 	{

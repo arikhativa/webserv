@@ -30,7 +30,7 @@ class ServerConf : public IServerConf
 	ServerConf();
 	virtual ~ServerConf();
 
-	virtual const std::list<std::string> &getName(void) const;
+	virtual const std::list<std::string> &getNames(void) const;
 	virtual std::size_t getMaxBodySize(void) const;
 	virtual const IReturn *getReturn(void) const;
 	virtual const IPath *getRoot(void) const;
