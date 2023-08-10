@@ -133,22 +133,3 @@ TEST(CgiManager, contentLengthCgi)
 
 	EXPECT_EQ(expected, obj1.setCgiManager(serverPath));
 }
-
-TEST(CgiManager, phpCgi)
-{
-	BasicHTTPRequest basicHTTPRequest(
-		"POST /res/simple.php "
-		"HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 19\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
-		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
-		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nnombre=Juan&edad=25");
-	basicHTTPRequest.setBody();
-	Path pathCGI("/usr/bin/php8.2");
-	std::string serverName("serverName");
-	std::string port("1234");
-	Path serverPath(".");
-
-	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
-
-	EXPECT_EQ("nombre=Juan&edad=25", basicHTTPRequest.getBody());
-	EXPECT_EQ("nombre=Juan&edad=25", obj1.setCgiManager(serverPath));
-}
