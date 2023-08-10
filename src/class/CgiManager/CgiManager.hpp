@@ -27,14 +27,12 @@ class CgiManager
 
 	CgiManager &operator=(const CgiManager &rhs);
 
-	const Path getPathCGI(void) const;
+	Path getPathCGI(void) const;
 	const std::string getServerName(void) const;
 	const std::string getPort(void) const;
-	const BasicHTTPRequest getBasicHTTPRequest(void) const;
+	BasicHTTPRequest getBasicHTTPRequest(void) const;
 
 	const std::string setCgiManager(const Path &pathServer);
-
-	// exception
 	class CgiManagerException : public std::exception
 	{
 	  public:
@@ -50,11 +48,9 @@ class CgiManager
 	int _inputPipe[2];
 	int _outputPipe[2];
 
-	std::string _createpipe(char **ch_env, char **argv);
+	const std::string _createpipe(char **ch_env, char **argv);
 	char **_setEnv(void) const;
-	void _free_argv_env(char **argv, char **env);
-
-	// void _writeInPipe(int fd, const std::string &str);
+	static void _free_argv_env(char **argv, char **env);
 };
 
 std::ostream &operator<<(std::ostream &o, const CgiManager &i);

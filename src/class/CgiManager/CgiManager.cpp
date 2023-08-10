@@ -4,7 +4,6 @@
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
-
 CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const std::string &serverName,
 					   const std::string &port)
 	: _basicHTTPRequest(basicHTTPRequest)
@@ -119,7 +118,7 @@ char **CgiManager::_setEnv(void) const
 	return (ch_env);
 }
 
-std::string CgiManager::_createpipe(char **ch_env, char **argv)
+const std::string CgiManager::_createpipe(char **ch_env, char **argv)
 {
 	int _exit_status;
 	if (pipe(_inputPipe) < 0 || pipe(_outputPipe) < 0)
@@ -142,7 +141,7 @@ std::string CgiManager::_createpipe(char **ch_env, char **argv)
 	{
 		close(_inputPipe[0]);
 		close(_outputPipe[1]);
-		write(_inputPipe[1], _basicHTTPRequest.getBody().c_str(), _basicHTTPRequest.getBody().size());
+		write(_inputPipe[1], _basicHTTPRequest.getBody().c_str(), _basicHTTPRequest.getBody().length());
 		close(_inputPipe[1]);
 
 		char buffer[40000 * 2];
@@ -178,7 +177,7 @@ std::string CgiManager::_createpipe(char **ch_env, char **argv)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-const Path CgiManager::getPathCGI(void) const
+Path CgiManager::getPathCGI(void) const
 {
 	return this->_pathCGI;
 }
@@ -193,7 +192,7 @@ const std::string CgiManager::getPort(void) const
 	return this->_port;
 }
 
-const BasicHTTPRequest CgiManager::getBasicHTTPRequest(void) const
+BasicHTTPRequest CgiManager::getBasicHTTPRequest(void) const
 {
 	return this->_basicHTTPRequest;
 }

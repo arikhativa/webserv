@@ -16,11 +16,13 @@ BasicHTTPRequest::BasicHTTPRequest(const std::string &raw_request)
 }
 
 BasicHTTPRequest::BasicHTTPRequest(const BasicHTTPRequest &src)
-	: _type(src._type)
+	: _raw(src._raw)
+	, _type(src._type)
 	, _path(src._path)
 	, _query(src._query)
 	, _http_version(src._http_version)
 	, _headers(src._headers)
+	, _body(src._body)
 {
 }
 

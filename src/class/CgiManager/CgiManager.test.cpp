@@ -14,18 +14,6 @@ TEST(CgiManager, CreateDestroy)
 	delete obj;
 }
 
-/*
-TEST(CgiManager, Accessor)
-{
-	int val(6);
-	CgiManager obj;
-
-	EXPECT_EQ(val, obj.getValue());
-	val = 7;
-	obj._setPath(val);
-	EXPECT_EQ(val, obj.getValue());
-}*/
-
 TEST(CgiManager, Canonical)
 {
 	BasicHTTPRequest basicHTTPRequest("GET / HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
@@ -112,9 +100,10 @@ TEST(CgiManager, formContentCgi)
 {
 	BasicHTTPRequest basicHTTPRequest(
 		"POST /res/formSimple.py "
-		"HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
+		"HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 14\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nthis is a test");
+	basicHTTPRequest.setBody();
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -122,7 +111,7 @@ TEST(CgiManager, formContentCgi)
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
 
-	EXPECT_EQ("this is a test\n", basicHTTPRequest.getBody());
+	EXPECT_EQ("this is a test", basicHTTPRequest.getBody());
 	EXPECT_EQ("this is a test\n", obj1.setCgiManager(serverPath));
 }
 
@@ -149,9 +138,10 @@ TEST(CgiManager, phpCgi)
 {
 	BasicHTTPRequest basicHTTPRequest(
 		"POST /res/simple.php "
-		"HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
+		"HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 19\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nnombre=Juan&edad=25");
+	basicHTTPRequest.setBody();
 	Path pathCGI("/usr/bin/php");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -160,5 +150,5 @@ TEST(CgiManager, phpCgi)
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
 
 	EXPECT_EQ("nombre=Juan&edad=25", basicHTTPRequest.getBody());
-	// EXPECT_EQ("nombre=Juan&edad=25", obj1.setCgiManager(serverPath));
+	EXPECT_EQ("nombre=Juan&edad=25", obj1.setCgiManager(serverPath));
 }

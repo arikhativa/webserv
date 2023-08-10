@@ -63,7 +63,7 @@ class BasicHTTPRequest
 	const std::string &getBody(void) const;
 
   private:
-	const std::string _raw;
+	std::string _raw;
 	Type _type;
 	Path _path;
 	std::string _query;
