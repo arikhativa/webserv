@@ -5,8 +5,11 @@
 #include <cerrno>
 #include <cstdlib>
 #include <limits>
+#include <map>
 #include <sstream>
 #include <string>
+
+#include <httpConstants/httpConstants.hpp>
 
 namespace converter
 {
@@ -24,6 +27,8 @@ namespace converter
 	}
 
 	std::string escapeString(const std::string &input);
+	std::string toNginxStyle(const std::string &input);
+	std::string headersToString(std::map<std::string, std::string> map);
 
 } // namespace converter
 
