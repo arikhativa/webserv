@@ -61,6 +61,7 @@ class BasicHTTPRequest
 	HTTPVersion getHTTPVersion(void) const;
 	const std::map<std::string, std::string> &getHeaders(void) const;
 	const std::string &getBody(void) const;
+	std::string toString(void) const;
 
   private:
 	std::string _raw;
@@ -78,6 +79,7 @@ class BasicHTTPRequest
 	static std::string _parseQuery(const std::string &raw_request);
 	static HTTPVersion _parseHTTPVersion(const std::string &raw_request);
 	static std::map<std::string, std::string> _parseHeaders(const std::string &raw_request);
+	static bool _isKeyRestricted(const std::string &key);
 };
 
 std::ostream &operator<<(std::ostream &o, const BasicHTTPRequest &i);
