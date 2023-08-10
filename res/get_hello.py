@@ -8,7 +8,6 @@ env = os.environ["QUERY_STRING"]
 
 pairs = env.split('&')
 
-# Crear un diccionario para almacenar los pares clave-valor
 result = {}
 for pair in pairs:
     key, value = pair.split('=')
