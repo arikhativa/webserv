@@ -38,8 +38,11 @@ namespace httpConstants
 
 	namespace headers
 	{
-		const std::string TRANSFER_ENCODING("Transfer-Encoding");
+		const std::string DATE("Date");
+		const std::string CONNECTION("Connection");
 		const std::string CONTENT_LENGTH("Content-Length");
+		const std::string HOST("Host");
+		const std::string TRANSFER_ENCODING("Transfer-Encoding");
 		const std::string CHUNKED("chunked");
 	} // namespace headers
 } // namespace httpConstants

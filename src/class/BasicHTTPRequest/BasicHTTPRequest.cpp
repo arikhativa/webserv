@@ -98,6 +98,41 @@ std::ostream &operator<<(std::ostream &o, BasicHTTPRequest const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+std::string BasicHTTPRequest::toString(void) const
+{
+	std::string type = "UNKNOWN";
+	std::string http_version = "UNKNOWN";
+
+	if (this->getHTTPVersion() == BasicHTTPRequest::HTTP_0_9)
+		http_version = "HTTP/0.9";
+	else if (this->getHTTPVersion() == BasicHTTPRequest::HTTP_1_0)
+		http_version = "HTTP/1.0";
+	else if (this->getHTTPVersion() == BasicHTTPRequest::HTTP_1_1)
+		http_version = "HTTP/1.1";
+	else if (this->getHTTPVersion() == BasicHTTPRequest::HTTP_2_0)
+		http_version = "HTTP/2.0";
+	else if (this->getHTTPVersion() == BasicHTTPRequest::HTTP_3)
+		http_version = "HTTP/3";
+
+	if (this->getType() == BasicHTTPRequest::GET)
+		type = "GET";
+	else if (this->getType() == BasicHTTPRequest::POST)
+		type = "POST";
+	else if (this->getType() == BasicHTTPRequest::DELETE)
+		type = "DELETE";
+
+	std::string ret;
+
+	ret += type + httpConstants::SPACE + this->getPath();
+
+	if (!this->getQuery().empty())
+		ret += httpConstants::SPACE + this->getQuery();
+	ret += httpConstants::SPACE + http_version + httpConstants::FIELD_BREAK +
+		   converter::headersToString(this->getHeaders()) + this->getBody();
+
+	return ret;
+}
+
 BasicHTTPRequest::Type BasicHTTPRequest::_parseType(const std::string &raw_request)
 {
 	if (raw_request.find("GET") == 0)
@@ -161,6 +196,12 @@ BasicHTTPRequest::HTTPVersion BasicHTTPRequest::_parseHTTPVersion(const std::str
 	return BasicHTTPRequest::UNKNOWN;
 }
 
+bool BasicHTTPRequest::_isKeyRestricted(const std::string &key)
+{
+	return (key == httpConstants::headers::HOST || key == httpConstants::headers::DATE ||
+			key == httpConstants::headers::CONTENT_LENGTH);
+}
+
 std::map<std::string, std::string> BasicHTTPRequest::_parseHeaders(const std::string &raw_request)
 {
 	std::map<std::string, std::string> headers;
@@ -181,11 +222,18 @@ std::map<std::string, std::string> BasicHTTPRequest::_parseHeaders(const std::st
 		if (colon_pos > end)
 			throw BasicHTTPRequest::InvalidRequestException("Bad header: missing colon");
 
-		std::string key = raw_request.substr(start, colon_pos - start);
+		std::string key = converter::toNginxStyle(raw_request.substr(start, colon_pos - start));
 
 		colon_pos += 2;
 		std::string value = raw_request.substr(colon_pos, end - colon_pos);
-		headers[key] = value;
+		if (_isKeyRestricted(key) && !headers[key].empty())
+		{
+			throw BasicHTTPRequest::InvalidRequestException("Bad header: duplicate key");
+		}
+		if (headers[key].empty())
+			headers[key] = value;
+		else
+			headers[key] += ", " + value;
 
 		start = end + 2;
 		end = raw_request.find(httpConstants::FIELD_BREAK, start);
