@@ -29,6 +29,7 @@ namespace converter
 	std::string escapeString(const std::string &input);
 	std::string toNginxStyle(const std::string &input);
 	std::string headersToString(std::map<std::string, std::string> map);
+	std::string removeQuotesIfNeeded(std::string &str);
 
 } // namespace converter
 

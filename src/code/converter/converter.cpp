@@ -166,3 +166,10 @@ std::string converter::headersToString(std::map<std::string, std::string> map)
 	}
 	return result + httpConstants::FIELD_BREAK;
 }
+
+std::string converter::removeQuotesIfNeeded(std::string &str)
+{
+	if (str.length() >= 2 && str[0] == '"' && str[str.length() - 1] == '"')
+		return str.substr(1, str.length() - 2);
+	return str;
+}

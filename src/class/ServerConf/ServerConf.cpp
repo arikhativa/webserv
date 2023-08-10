@@ -52,7 +52,7 @@ std::ostream &operator<<(std::ostream &o, ServerConf const &i)
 	o << std::boolalpha;
 
 	o << "{"
-	  << "\"_name\": " << i.getName() << ", "
+	  << "\"_name\": " << i.getNames() << ", "
 	  << "\"_max_body_size\": " << i.getMaxBodySize() << ", ";
 	{
 		const IReturn *ptr = i.getReturn();
@@ -93,7 +93,7 @@ std::ostream &operator<<(std::ostream &o, const IServerConf &i)
 ** ------------------------------------ GET ------------------------------------
 */
 
-const std::list<std::string> &ServerConf::getName(void) const
+const std::list<std::string> &ServerConf::getNames(void) const
 {
 	return _name;
 }
