@@ -5,6 +5,7 @@
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <Path/Path.hpp>
 #include <Pipe/Pipe.hpp>
+#include <Tab/Tab.hpp>
 #include <converter/converter.hpp>
 
 #include <cstring>
@@ -29,7 +30,7 @@ class CgiManager
 	const std::string getServerName(void) const;
 	const std::string getPort(void) const;
 	BasicHTTPRequest getBasicHTTPRequest(void) const;
-	char **getCEnv(void) const;
+	// char **getCEnv(void) const;
 
 	const std::string setCgiManager(const Path &pathServer);
 	class CgiManagerException : public std::exception
@@ -43,15 +44,16 @@ class CgiManager
 	Path _pathCGI;
 	std::string _serverName;
 	std::string _port;
-	char **_env;
+	Tab _env;
+	Tab _argv;
 	Pipe _pipe;
 
 	/*int _inputPipe[2];
 	int _outputPipe[2];*/
 
-	const std::string _createpipe(char **argv);
+	const std::string _createpipe(void);
 	void _setEnv(void);
-	static void _freeTable(char **var);
+	// static void _freeTable(char **var);
 
 	static const int ERROR;
 	static const int CHILD;

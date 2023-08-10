@@ -15,7 +15,8 @@ CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pat
 	, _serverName(serverName)
 	, _port(port)
 {
-	_env = NULL;
+	_env = Tab();
+	_argv = Tab();
 	_pipe = Pipe();
 }
 
@@ -50,21 +51,6 @@ std::ostream &operator<<(std::ostream &o, CgiManager const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void CgiManager::_freeTable(char **var)
-{
-	if (var != NULL)
-	{
-		for (int i = 0; var[i] != NULL; i++)
-		{
-			if (var[i] != NULL)
-				free(var[i]);
-			var[i] = NULL;
-		}
-		free(var);
-		var = NULL;
-	}
-}
-
 void CgiManager::_setEnv(void)
 {
 	std::map<std::string, std::string> env;
@@ -80,21 +66,13 @@ void CgiManager::_setEnv(void)
 	env[httpConstants::SERVER_PORT] = _port;
 	env[httpConstants::SERVER_NAME] = _serverName;
 	env[httpConstants::PATH_INFO] = _basicHTTPRequest.getPath();
-	if (_env != NULL)
-		_freeTable(_env);
-	_env = (char **)calloc(sizeof(char *), env.size() + 1);
-	if (!_env)
-		throw CgiManager::CgiManagerException();
+
 	std::map<std::string, std::string>::const_iterator it = env.begin();
 	for (int i = 0; it != env.end(); it++, i++)
-	{
-		std::string tmp = it->first + "=" + it->second;
-		_env[i] = strdup(tmp.c_str());
-	}
-	_env[env.size()] = NULL;
+		_env.add(it->first + "=" + it->second);
 }
 
-const std::string CgiManager::_createpipe(char **argv)
+const std::string CgiManager::_createpipe(void)
 {
 	int _exit_status;
 
@@ -104,7 +82,7 @@ const std::string CgiManager::_createpipe(char **argv)
 	if (pid == CHILD)
 	{
 		_pipe.setChild();
-		_exit_status = execve(argv[0], argv, getCEnv());
+		_exit_status = execve(_argv.toCTable()[0], _argv.toCTable(), _env.toCTable());
 		if (_exit_status < 0)
 			throw CgiManager::CgiManagerException();
 		exit(_exit_status);
@@ -139,8 +117,6 @@ const std::string CgiManager::_createpipe(char **argv)
 				}
 			}
 		}
-		_freeTable(_env);
-		_freeTable(argv);
 		return (output);
 	}
 	return ("");
@@ -170,31 +146,18 @@ BasicHTTPRequest CgiManager::getBasicHTTPRequest(void) const
 	return this->_basicHTTPRequest;
 }
 
-char **CgiManager::getCEnv(void) const
-{
-	return this->_env;
-}
-
 const std::string CgiManager::setCgiManager(const Path &pathServer)
 {
-	char **argv = NULL;
 	std::string content = "";
 	try
 	{
 		_setEnv();
-		argv = (char **)calloc(sizeof(char *), 3);
-		if (!argv)
-			throw CgiManager::CgiManagerException();
-		argv[0] = strdup(_pathCGI.get().c_str());
-		std::string path = pathServer.get() + _basicHTTPRequest.getPath();
-		argv[1] = strdup(path.c_str());
-		argv[2] = NULL;
-		content = _createpipe(argv);
+		_argv.add(_pathCGI.get());
+		_argv.add(pathServer.get() + _basicHTTPRequest.getPath());
+		content = _createpipe();
 	}
 	catch (CgiManager::CgiManagerException &e)
 	{
-		_freeTable(argv);
-		_freeTable(_env);
 		throw CgiManager::CgiManagerException();
 	}
 	return (content);
