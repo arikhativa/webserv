@@ -30,9 +30,8 @@ class CgiManager
 	const std::string getServerName(void) const;
 	const std::string getPort(void) const;
 	BasicHTTPRequest getBasicHTTPRequest(void) const;
-	// char **getCEnv(void) const;
 
-	const std::string setCgiManager(const Path &pathServer);
+	const std::string executeCgiManager(const Path &pathServer);
 	class CgiManagerException : public std::exception
 	{
 	  public:
@@ -48,12 +47,12 @@ class CgiManager
 	Tab _argv;
 	Pipe _pipe;
 
-	/*int _inputPipe[2];
-	int _outputPipe[2];*/
-
-	const std::string _createpipe(void);
 	void _setEnv(void);
-	// static void _freeTable(char **var);
+	void _setArgv(const Path &pathServer);
+	static int _createFork(void);
+	void _childProcess(void);
+	std::string _parentProcess(const int &pid);
+	std::string _readCgiOutput(void);
 
 	static const int ERROR;
 	static const int CHILD;

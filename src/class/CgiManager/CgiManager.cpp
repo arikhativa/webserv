@@ -72,54 +72,71 @@ void CgiManager::_setEnv(void)
 		_env.add(it->first + "=" + it->second);
 }
 
-const std::string CgiManager::_createpipe(void)
+void CgiManager::_setArgv(const Path &pathServer)
 {
-	int _exit_status;
+	_argv.add(_pathCGI.get());
+	_argv.add(pathServer.get() + _basicHTTPRequest.getPath());
+}
 
+int CgiManager::_createFork(void)
+{
 	int pid = fork();
 	if (pid < ERROR)
 		throw CgiManager::CgiManagerException();
-	if (pid == CHILD)
-	{
-		_pipe.setChild();
-		_exit_status = execve(_argv.toCTable()[0], _argv.toCTable(), _env.toCTable());
-		if (_exit_status < 0)
-			throw CgiManager::CgiManagerException();
-		exit(_exit_status);
-	}
-	else
-	{
-		_pipe.setParent();
-		if (_basicHTTPRequest.getBody() != "")
-			_pipe.write(_basicHTTPRequest.getBody());
-		_pipe.closeInput();
+	return (pid);
+}
 
-		char buffer[BUFFER_SIZE];
-		size_t bytes_read = 0;
-		std::string output;
-		waitpid(pid, &_exit_status, 0);
-		std::size_t pos;
-		int contentLenght;
-		while ((bytes_read = read(_pipe.getOutput(), buffer, sizeof(buffer))) > 0)
+void CgiManager::_childProcess(void)
+{
+	int _exit_status;
+	_pipe.setChild();
+	_exit_status = execve(_argv.toCTable()[0], _argv.toCTable(), _env.toCTable());
+	if (_exit_status < 0)
+		throw CgiManager::CgiManagerException();
+	exit(_exit_status);
+}
+
+std::string CgiManager::_parentProcess(const int &pid)
+{
+	int statusExit;
+
+	_pipe.setParent();
+	if (_basicHTTPRequest.getBody() != "")
+		_pipe.write(_basicHTTPRequest.getBody());
+	_pipe.closeInput();
+
+	int status = waitpid(pid, &statusExit, 0);
+	if (status < 0)
+		throw CgiManager::CgiManagerException();
+	return (_readCgiOutput());
+}
+
+std::string CgiManager::_readCgiOutput(void)
+{
+	std::string output = "";
+	size_t bytes_read = 0;
+	char buffer[BUFFER_SIZE];
+	std::size_t pos;
+	int contentLenght;
+
+	while ((bytes_read = read(_pipe.getOutput(), buffer, sizeof(buffer))) > 0)
+	{
+		output.append(buffer, bytes_read);
+		if ((pos = output.find(httpConstants::CONTENT_LENGHT_FIELD_KEY)) != std::string::npos)
 		{
-			output.append(buffer, bytes_read);
-			if ((pos = output.find(httpConstants::CONTENT_LENGHT_FIELD_KEY)) != std::string::npos)
+			std::string content_length = output.substr(pos + httpConstants::CONTENT_LENGHT_FIELD_KEY.length());
+			if ((pos = content_length.find(httpConstants::FIELD_BREAK)) != std::string::npos)
+				contentLenght = converter::stringToInt(content_length.substr(0, pos));
+			pos = output.find(httpConstants::HEADER_BREAK);
+			if ((pos != std::string::npos) &&
+				output.substr(pos + httpConstants::HEADER_BREAK.length()).length() >= (size_t)contentLenght)
 			{
-				std::string content_length = output.substr(pos + httpConstants::CONTENT_LENGHT_FIELD_KEY.length());
-				if ((pos = content_length.find(httpConstants::FIELD_BREAK)) != std::string::npos)
-					contentLenght = converter::stringToInt(content_length.substr(0, pos));
-				pos = output.find(httpConstants::HEADER_BREAK);
-				if ((pos != std::string::npos) &&
-					output.substr(pos + httpConstants::HEADER_BREAK.length()).length() >= (size_t)contentLenght)
-				{
-					output = output.substr(0, pos + httpConstants::HEADER_BREAK.length() + contentLenght);
-					break;
-				}
+				output = output.substr(0, pos + httpConstants::HEADER_BREAK.length() + contentLenght);
+				break;
 			}
 		}
-		return (output);
 	}
-	return ("");
+	return (output);
 }
 
 /*
@@ -146,20 +163,16 @@ BasicHTTPRequest CgiManager::getBasicHTTPRequest(void) const
 	return this->_basicHTTPRequest;
 }
 
-const std::string CgiManager::setCgiManager(const Path &pathServer)
+const std::string CgiManager::executeCgiManager(const Path &pathServer)
 {
 	std::string content = "";
-	try
-	{
-		_setEnv();
-		_argv.add(_pathCGI.get());
-		_argv.add(pathServer.get() + _basicHTTPRequest.getPath());
-		content = _createpipe();
-	}
-	catch (CgiManager::CgiManagerException &e)
-	{
-		throw CgiManager::CgiManagerException();
-	}
+	_setEnv();
+	_setArgv(pathServer);
+	int pid = _createFork();
+	if (pid == CHILD)
+		_childProcess();
+	else
+		content = _parentProcess(pid);
 	return (content);
 }
 
