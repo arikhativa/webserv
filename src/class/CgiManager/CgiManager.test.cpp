@@ -142,7 +142,7 @@ TEST(CgiManager, phpCgi)
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nnombre=Juan&edad=25");
 	basicHTTPRequest.setBody();
-	Path pathCGI("/usr/bin/php");
+	Path pathCGI("/usr/bin/php8.2");
 	std::string serverName("serverName");
 	std::string port("1234");
 	Path serverPath(".");
