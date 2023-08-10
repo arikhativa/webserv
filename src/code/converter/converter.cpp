@@ -123,3 +123,46 @@ std::string converter::escapeString(const std::string &input)
 	}
 	return escapedString;
 }
+
+std::string converter::toNginxStyle(const std::string &input)
+{
+	std::string result;
+	char c = 0;
+	int i = 0;
+	bool capitalizeNext = true;
+
+	while (input[i])
+	{
+		c = input[i];
+		if (std::isalpha(c))
+		{
+			if (capitalizeNext)
+			{
+				result += static_cast<char>(std::toupper(c));
+				capitalizeNext = false;
+			}
+			else
+				result += static_cast<char>(std::tolower(c));
+		}
+		else if (c == ' ' || c == '-')
+		{
+			capitalizeNext = true;
+			result += '-';
+		}
+		else
+			result += c;
+		++i;
+	}
+	return result;
+}
+
+std::string converter::headersToString(std::map<std::string, std::string> map)
+{
+	std::string result;
+
+	for (std::map<std::string, std::string>::iterator it = map.begin(); it != map.end(); ++it)
+	{
+		result += it->first + ": " + it->second + httpConstants::FIELD_BREAK;
+	}
+	return result + httpConstants::FIELD_BREAK;
+}

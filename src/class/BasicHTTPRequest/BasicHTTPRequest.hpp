@@ -61,6 +61,7 @@ class BasicHTTPRequest
 	HTTPVersion getHTTPVersion(void) const;
 	const std::map<std::string, std::string> &getHeaders(void) const;
 	const std::string &getBody(void) const;
+	std::string toString(void) const;
 
   private:
 	const std::string _raw;
