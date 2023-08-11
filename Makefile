@@ -10,8 +10,6 @@
 #                                                                              #
 # **************************************************************************** #
 
-include nginx.mk
-
 # general
 NAME 						:= webserv
 export ROOT_DIR				:= $(CURDIR)
@@ -142,3 +140,4 @@ lint:
 	github/super-linter
 
 -include $(DEP)
+include nginx.mk
