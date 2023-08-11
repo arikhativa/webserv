@@ -30,7 +30,7 @@ int main()
 	fcntl(clientSocket, F_SETFL, flags | O_NONBLOCK);
 
 	{
-		const char *str = "hey";
+		const char *str = "01234567891";
 		send(clientSocket, str, strlen(str), 0);
 		sleep(1);
 	}
