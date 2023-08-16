@@ -10,9 +10,11 @@ namespace httpConstants
 	const std::string NEW_LINE("\n");
 	const std::string FIELD_BREAK("\r\n");
 	const std::string HEADER_BREAK("\r\n\r\n");
+	const std::string CHUNKED_END("0\r\n\r\n");
 	const std::string HTML_SUFFIX(".html");
 	const std::string TXT_SUFFIX(".txt");
 	const std::string HTTP_VERSION("HTTP/1.1 ");
+	const std::string HTTP_VERSION_PREFIX("HTTP/");
 	const std::string SERVER_FIELD_KEY("Server: ");
 	const std::string SERVER_FIELD_VALUE("webserv");
 	const std::string DATE_FIELD_KEY("Date: ");
@@ -43,6 +45,7 @@ namespace httpConstants
 		const std::string DATE("Date");
 		const std::string CONNECTION("Connection");
 		const std::string CONTENT_LENGTH("Content-Length");
+		const std::string CONTENT_TYPE("Content-Type");
 		const std::string HOST("Host");
 		const std::string TRANSFER_ENCODING("Transfer-Encoding");
 		const std::string CHUNKED("chunked");

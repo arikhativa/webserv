@@ -23,6 +23,7 @@ TEST(matcher, requestToServerWithHost)
 	builder::validate(conf);
 
 	BasicHTTPRequest req("GET / HTTP/1.1\r\nHost: pigafetta\r\n\r\n");
+	req.parseRaw();
 
 	Listen listen;
 
@@ -45,7 +46,8 @@ TEST(matcher, requestToServerDefault)
 
 	builder::validate(conf);
 
-	BasicHTTPRequest req("GET / HTTP/1.1");
+	BasicHTTPRequest req("GET / HTTP/1.1\r\nTest: yes\r\n\r\n");
+	req.parseRaw();
 
 	Listen listen;
 
@@ -69,6 +71,7 @@ TEST(matcher, requestToServerDefaultWithHost)
 	builder::validate(conf);
 
 	BasicHTTPRequest req("GET / HTTP/1.1\r\nHost:\r\n\r\n");
+	req.parseRaw();
 
 	Listen listen;
 	const IServerConf *server = matcher::requestToServer(conf, &listen, req);
@@ -91,6 +94,7 @@ TEST(matcher, noMatchByListen)
 	builder::validate(conf);
 
 	BasicHTTPRequest req("GET / HTTP/1.1\r\nHost: antonio\r\n\r\n");
+	req.parseRaw();
 
 	Listen listen;
 	const IServerConf *server = matcher::requestToServer(conf, &listen, req);
@@ -113,6 +117,7 @@ TEST(matcher, MatchByListenNoHost)
 	builder::validate(conf);
 
 	BasicHTTPRequest req("GET / HTTP/1.1\r\nHost: antonio\r\n\r\n");
+	req.parseRaw();
 
 	Listen listen;
 	const IServerConf *server = matcher::requestToServer(conf, &listen, req);
@@ -135,6 +140,7 @@ TEST(matcher, requestToLocation)
 	builder::validate(conf);
 
 	BasicHTTPRequest req("GET /2 HTTP/1.1\r\nHost: \r\n\r\n");
+	req.parseRaw();
 
 	Listen listen;
 	const IServerConf *server = matcher::requestToServer(conf, &listen, req);

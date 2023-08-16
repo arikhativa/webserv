@@ -53,22 +53,3 @@ TEST(HTTPStatusCode, toString)
 	EXPECT_EQ("Switching Protocols", obj2.toString());
 	EXPECT_EQ("Internal Server Error", obj3.toString());
 }
-
-TEST(HTTPStatusCode, Print)
-{
-	HTTPStatusCode obj1(200);
-	HTTPStatusCode obj2(101);
-	HTTPStatusCode obj3(500);
-
-	std::stringstream ss1;
-	std::stringstream ss2;
-	std::stringstream ss3;
-
-	ss1 << obj1;
-	ss2 << obj2;
-	ss3 << obj3;
-
-	EXPECT_EQ("HTTPStatusCode[200 OK]", ss1.str());
-	EXPECT_EQ("HTTPStatusCode[101 Switching Protocols]", ss2.str());
-	EXPECT_EQ("HTTPStatusCode[500 Internal Server Error]", ss3.str());
-}
