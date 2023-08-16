@@ -119,7 +119,7 @@ HTTPStatusCode &HTTPStatusCode::operator=(HTTPStatusCode const &rhs)
 
 std::ostream &operator<<(std::ostream &o, HTTPStatusCode const &i)
 {
-	o << "HTTPStatusCode[" << i.get() << " " << i.toString() << "]";
+	o << i.get() << " " << i.toString();
 	return o;
 }
 
