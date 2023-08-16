@@ -17,6 +17,7 @@
 class HTTPResponse : public ABaseHTTPCall
 {
   public:
+	HTTPResponse();
 	explicit HTTPResponse(const std::string &raw);
 	HTTPResponse(const HTTPResponse &src);
 	virtual ~HTTPResponse();

@@ -28,6 +28,7 @@ class BasicHTTPRequest : public ABaseHTTPCall
 		DELETE,
 	};
 
+	BasicHTTPRequest();
 	explicit BasicHTTPRequest(const std::string &raw_request);
 	BasicHTTPRequest(const BasicHTTPRequest &src);
 	virtual ~BasicHTTPRequest();
