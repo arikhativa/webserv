@@ -36,6 +36,7 @@ TEST(CgiManager, simplecgi)
 		"POST /res/cgi/get_hello.py?first_name=pepe&last_name=juan HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: "
 		"Mozilla/5.0\r\nAccept: text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
+	basicHTTPRequest.parseRaw();
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -50,7 +51,6 @@ TEST(CgiManager, simplecgi)
 						  "<h2>Hello, pepe juan!</h2>\n"
 						  "</body>\n"
 						  "</html>\n";
-
 	EXPECT_EQ(content, obj1.executeCgiManager(serverPath, pollMngr));
 }
 
@@ -60,6 +60,7 @@ TEST(CgiManager, envCgi)
 		"POST /res/cgi/env.py?pepe=juan HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: "
 		"keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
+	basicHTTPRequest.parseRaw();
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -78,6 +79,7 @@ TEST(CgiManager, envFormCgi)
 									  "HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 									  "text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 									  "deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
+	basicHTTPRequest.parseRaw();
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -106,7 +108,7 @@ TEST(CgiManager, formContentCgi)
 		"HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 14\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nthis is a test");
-	basicHTTPRequest.setBody();
+	basicHTTPRequest.parseRaw();
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -125,6 +127,7 @@ TEST(CgiManager, contentLengthCgi)
 									  "HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 									  "text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 									  "deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
+	basicHTTPRequest.parseRaw();
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -146,7 +149,7 @@ TEST(CgiManager, phpCgi)
 		"HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 19\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nnombre=Juan&edad=25");
-	basicHTTPRequest.setBody();
+	basicHTTPRequest.parseRaw();
 	Path pathCGI("/usr/bin/php");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -166,7 +169,8 @@ TEST(CgiManager, timeoutCgi)
 		"HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 19\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nnombre=Juan&edad=25");
-	basicHTTPRequest.setBody();
+
+	basicHTTPRequest.parseRaw();
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");

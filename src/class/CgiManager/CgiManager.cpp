@@ -18,6 +18,9 @@ CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pat
 	_env = Tab();
 	_argv = Tab();
 	_pipe = Pipe();
+	_basicHTTPRequest.parseRaw();
+	if (_basicHTTPRequest.isBody())
+		_basicHTTPRequest.parseBody();
 }
 
 const char *CgiManager::CgiManagerException::what() const throw()
@@ -99,8 +102,10 @@ void CgiManager::_childProcess(void)
 std::string CgiManager::_parentProcess(PollManager poll)
 {
 	_pipe.setParent();
-	if (_basicHTTPRequest.getBody() != "" && poll.isAvailable(_pipe.getInput(), POLLOUT))
+	if (_basicHTTPRequest.isBody() && poll.isAvailable(_pipe.getInput(), POLLOUT))
+	{
 		_pipe.write(_basicHTTPRequest.getBody());
+	}
 	_pipe.closeInput();
 	return (_readCgiOutput(poll));
 }
