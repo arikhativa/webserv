@@ -48,6 +48,7 @@ class Poll
 	static const int _TIMEOUT = 1000;
 
 	bool _run;
+	std::list<Tasks> _tasks;
 	std::vector<pollfd> _fds;
 	std::vector<t_handler> _handlers;
 
