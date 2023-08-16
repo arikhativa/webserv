@@ -52,7 +52,7 @@ class CgiManager
 	void _setArgv(const Path &pathServer);
 	static int _createFork(void);
 	void _childProcess(void);
-	std::string _parentProcess(const int &pid, PollManager poll);
+	std::string _parentProcess(PollManager poll);
 	std::string _readCgiOutput(PollManager poll);
 
 	static const int ERROR;

@@ -8,59 +8,53 @@ TEST(PollManager, CreateDestroy)
 	delete obj;
 }
 
-TEST(PollManager, addFds)
+TEST(PollManager, fdsNotAvailable)
 {
 	PollManager obj;
 	int fd[2];
-	pipe(fd);
-	obj.addFd(fd[0], POLLIN);
-	obj.addFd(fd[1], POLLOUT);
-}
+	int someRandomFd = 1234;
+	int someRandomFd2 = 5678;
+	fd[0] = someRandomFd;
+	fd[1] = someRandomFd2;
 
-TEST(PollManager, removeFds)
-{
-	PollManager obj;
-	int fd[2];
-	pipe(fd);
-	obj.addFd(fd[0], POLLIN);
-	obj.addFd(fd[1], POLLOUT);
-	obj.removeFd(fd[0]);
-
-	EXPECT_THROW(obj.removeFd(fd[0]), PollManager::PollManagerException);
+	EXPECT_EQ(obj.isAvailable(fd[0], POLLOUT), false);
+	EXPECT_EQ(obj.isAvailable(fd[1], POLLOUT), false);
+	EXPECT_EQ(obj.isAvailable(fd[0], POLLIN), false);
+	EXPECT_EQ(obj.isAvailable(fd[1], POLLIN), false);
 }
 
 TEST(PollManager, poll)
 {
 	PollManager obj;
 	int fd[2];
+
 	pipe(fd);
-	obj.addFd(fd[0], POLLIN);
-	obj.addFd(fd[1], POLLOUT);
-	// See if i can write to fd[1] and read from fd[0]
-	EXPECT_EQ(obj.isInActivity(fd[1]), 1);
+
+	EXPECT_EQ(obj.isAvailable(fd[1], POLLOUT), true);
 	write(fd[1], "a", 1);
-	EXPECT_EQ(obj.isInActivity(fd[1]), 1);
+	EXPECT_EQ(obj.isAvailable(fd[1], POLLOUT), true);
 
-	// See if i can read from fd[0]
-	EXPECT_EQ(obj.isInActivity(fd[0]), 1);
-	char buf[1];
+	EXPECT_EQ(obj.isAvailable(fd[0], POLLIN), true);
+
+	char buf[2];
 	read(fd[0], buf, 1);
+	buf[1] = '\0';
+	std::string res = buf;
 
-	// See if i can write to fd[1]
-	EXPECT_EQ(obj.isInActivity(fd[1]), 1);
+	EXPECT_EQ(res, "a");
+	EXPECT_EQ(obj.isAvailable(fd[1], POLLOUT), true);
 }
 
-TEST(PollManager, externalFile)
+TEST(PollManager, dupFd)
 {
 	PollManager obj;
-	int fd = open("res/404.html", O_CREAT | O_RDWR, 0666);
+	int fd = open("res/cgi/simple.php", O_CREAT | O_RDWR, 0666);
 
-	obj.addFd(fd, POLLIN);
-	EXPECT_EQ(obj.isInActivity(fd), false);
+	EXPECT_EQ(obj.isAvailable(fd, POLLIN), true);
+	EXPECT_EQ(obj.isAvailable(fd, POLLOUT), true);
 
-	int fd2 = open("res/404.html", O_CREAT | O_RDWR, 0666);
-	obj.addFd(fd2, POLLIN);
-	EXPECT_EQ(obj.isInActivity(fd2), true);
+	int fd2 = dup(fd);
+	EXPECT_EQ(obj.isAvailable(fd2, POLLIN), true);
 
 	close(fd);
 	close(fd2);

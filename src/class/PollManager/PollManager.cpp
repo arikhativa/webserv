@@ -5,6 +5,10 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
+const int PollManager::TIMEOUT(5000);
+const int PollManager::ERROR(0);
+const int PollManager::TIMEOUT_VALUE(0);
+
 PollManager::PollManager()
 {
 }
@@ -14,6 +18,10 @@ const char *PollManager::PollManagerException::what() const throw()
 	return "PollManagerException";
 }
 
+const char *PollManager::PollTimeoutException::what() const throw()
+{
+	return "PollTimeoutException";
+}
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
@@ -26,56 +34,39 @@ PollManager::~PollManager()
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void PollManager::addFd(int fd, short events)
+pollfd PollManager::newFdPoll(int fd, short events)
 {
 	// Set the file descriptor as non-blocking
 	fcntl(fd, F_SETFL, O_NONBLOCK);
 
-	struct pollfd newFd;
+	pollfd newFd;
 	newFd.fd = fd;
 	newFd.events = events;
-	_fds.push_back(newFd);
+	return (newFd);
 }
 
-void PollManager::removeFd(int fd)
+int PollManager::pollFunction(pollfd actual)
 {
-	for (std::vector<pollfd>::iterator it = _fds.begin(); it != _fds.end(); ++it)
-	{
-		if (it->fd == fd)
-		{
-			_fds.erase(it);
-			return;
-		}
-	}
-	throw PollManager::PollManagerException();
-}
-
-int PollManager::pollFunction(int fd)
-{
-	std::vector<pollfd>::iterator it = _fds.begin();
-	for (; it != _fds.end(); ++it)
-	{
-		if (it->fd == fd)
-			break;
-	}
-	if (it == _fds.end())
+	int result = ::poll(&actual, 1, TIMEOUT);
+	if (result == TIMEOUT_VALUE)
+		throw PollManager::PollTimeoutException();
+	if (result < ERROR)
 		throw PollManager::PollManagerException();
-	int result = ::poll(&(*it), _fds.size(), 0);
-	if (result == 0) // this fd doesn't have any event
-		return (0);
-	if (result < 0) // error
-		throw PollManager::PollManagerException();
-	// this fd has activity
-	return (result);
+	return (actual.revents);
 }
 
-bool PollManager::isInActivity(int fd)
+bool PollManager::isAvailable(int fd, short events)
 {
-	int result = pollFunction(fd);
-	std::cout << "result: " << result << std::endl;
-	return (result > 0);
-}
+	pollfd actual = newFdPoll(fd, events);
+	int status = pollFunction(actual);
 
+	if ((events & POLLIN) && (status & POLLIN)) // Readable
+		return true;
+	else if ((events & POLLOUT) && (status & POLLOUT)) // Writable
+		return true;
+	else // Not readable or writable
+		return false;
+}
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */

@@ -25,14 +25,20 @@ class PollManager
 	  public:
 		virtual const char *what() const throw();
 	};
+	class PollTimeoutException : public PollManagerException
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
 
-	void addFd(int fd, short events);
-	void removeFd(int fd);
-	int pollFunction(int fd);
-	bool isInActivity(int fd);
+	pollfd newFdPoll(int fd, short events);
+	int pollFunction(pollfd actual);
+	bool isAvailable(int fd, short events);
 
   private:
-	std::vector<pollfd> _fds;
+	static const int TIMEOUT;
+	static const int ERROR;
+	static const int TIMEOUT_VALUE;
 };
 
 #ifdef TEST_ON

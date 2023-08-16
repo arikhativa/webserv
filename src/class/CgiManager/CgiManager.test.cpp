@@ -33,7 +33,7 @@ TEST(CgiManager, Canonical)
 TEST(CgiManager, simplecgi)
 {
 	BasicHTTPRequest basicHTTPRequest(
-		"POST /res/get_hello.py?first_name=pepe&last_name=juan HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: "
+		"POST /res/cgi/get_hello.py?first_name=pepe&last_name=juan HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: "
 		"Mozilla/5.0\r\nAccept: text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
 	Path pathCGI("/usr/bin/python3");
@@ -57,7 +57,7 @@ TEST(CgiManager, simplecgi)
 TEST(CgiManager, envCgi)
 {
 	BasicHTTPRequest basicHTTPRequest(
-		"POST /res/env.py?pepe=juan HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
+		"POST /res/cgi/env.py?pepe=juan HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: "
 		"keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
 	Path pathCGI("/usr/bin/python3");
@@ -74,7 +74,7 @@ TEST(CgiManager, envCgi)
 
 TEST(CgiManager, envFormCgi)
 {
-	BasicHTTPRequest basicHTTPRequest("POST /res/form.py?name=juan&Email=juan@gmail.com&Message=Hello "
+	BasicHTTPRequest basicHTTPRequest("POST /res/cgi/form.py?name=juan&Email=juan@gmail.com&Message=Hello "
 									  "HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 									  "text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 									  "deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
@@ -102,7 +102,7 @@ TEST(CgiManager, envFormCgi)
 TEST(CgiManager, formContentCgi)
 {
 	BasicHTTPRequest basicHTTPRequest(
-		"POST /res/formSimple.py "
+		"POST /res/cgi/formSimple.py "
 		"HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 14\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nthis is a test");
@@ -121,7 +121,7 @@ TEST(CgiManager, formContentCgi)
 
 TEST(CgiManager, contentLengthCgi)
 {
-	BasicHTTPRequest basicHTTPRequest("POST /res/content_length.py "
+	BasicHTTPRequest basicHTTPRequest("POST /res/cgi/content_length.py "
 									  "HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 									  "text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 									  "deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
@@ -142,7 +142,7 @@ TEST(CgiManager, contentLengthCgi)
 TEST(CgiManager, phpCgi)
 {
 	BasicHTTPRequest basicHTTPRequest(
-		"POST /res/simple.php "
+		"POST /res/cgi/simple.php "
 		"HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 19\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nnombre=Juan&edad=25");
@@ -157,4 +157,22 @@ TEST(CgiManager, phpCgi)
 
 	EXPECT_EQ("nombre=Juan&edad=25", basicHTTPRequest.getBody());
 	EXPECT_EQ("nombre=Juan&edad=25", obj1.executeCgiManager(serverPath, pollMngr));
+}
+
+TEST(CgiManager, timeoutCgi)
+{
+	BasicHTTPRequest basicHTTPRequest(
+		"POST /res/cgi/timeout.py "
+		"HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 19\r\nUser-Agent: Mozilla/5.0\r\nAccept: "
+		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
+		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nnombre=Juan&edad=25");
+	basicHTTPRequest.setBody();
+	Path pathCGI("/usr/bin/python3");
+	std::string serverName("serverName");
+	std::string port("1234");
+	Path serverPath(".");
+	PollManager pollMngr;
+
+	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
+	EXPECT_THROW(obj1.executeCgiManager(serverPath, pollMngr), PollManager::PollTimeoutException);
 }
