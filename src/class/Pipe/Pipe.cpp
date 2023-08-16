@@ -60,7 +60,12 @@ void Pipe::closeInput(void)
 
 int Pipe::getOutput(void) const
 {
-	return _outputPipe[0];
+	return (_outputPipe[0]);
+}
+
+int Pipe::getInput(void) const
+{
+	return (_inputPipe[1]);
 }
 
 /*

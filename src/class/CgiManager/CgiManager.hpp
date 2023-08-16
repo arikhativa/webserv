@@ -5,6 +5,7 @@
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <Path/Path.hpp>
 #include <Pipe/Pipe.hpp>
+#include <PollManager/PollManager.hpp>
 #include <Tab/Tab.hpp>
 #include <converter/converter.hpp>
 
@@ -31,7 +32,7 @@ class CgiManager
 	const std::string getPort(void) const;
 	BasicHTTPRequest getBasicHTTPRequest(void) const;
 
-	const std::string executeCgiManager(const Path &pathServer);
+	const std::string executeCgiManager(const Path &pathServer, PollManager PollManager);
 	class CgiManagerException : public std::exception
 	{
 	  public:
@@ -51,8 +52,8 @@ class CgiManager
 	void _setArgv(const Path &pathServer);
 	static int _createFork(void);
 	void _childProcess(void);
-	std::string _parentProcess(const int &pid);
-	std::string _readCgiOutput(void);
+	std::string _parentProcess(const int &pid, PollManager poll);
+	std::string _readCgiOutput(PollManager poll);
 
 	static const int ERROR;
 	static const int CHILD;

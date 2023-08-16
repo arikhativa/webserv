@@ -29,6 +29,7 @@ class Pipe
 	void write(const std::string &str);
 	void closeInput(void);
 	int getOutput(void) const;
+	int getInput(void) const;
 
   private:
 	int _inputPipe[2];

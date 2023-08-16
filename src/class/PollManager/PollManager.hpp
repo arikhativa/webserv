@@ -17,7 +17,7 @@
 class PollManager
 {
   public:
-	PollManager(void);
+	explicit PollManager(void);
 	~PollManager();
 
 	class PollManagerException : public std::exception
@@ -28,7 +28,8 @@ class PollManager
 
 	void addFd(int fd, short events);
 	void removeFd(int fd);
-	int poll(void);
+	int pollFunction(int fd);
+	bool isInActivity(int fd);
 
   private:
 	std::vector<pollfd> _fds;
