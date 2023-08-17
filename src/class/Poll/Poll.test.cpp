@@ -16,7 +16,7 @@ TEST(Poll, Canonical)
 
 	sockaddr_in serverAddr;
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(8087);
+	serverAddr.sin_port = htons(8080);
 	serverAddr.sin_addr.s_addr = INADDR_ANY;
 
 	if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1)

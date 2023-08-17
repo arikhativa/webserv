@@ -45,14 +45,14 @@ class Poll
 	static ret_stt WriteClient(Poll &p, int fd, int revents);
 
   private:
-	static const int _TIMEOUT = 1000;
+	static const int _TIMEOUT = 10000;
 
 	bool _run;
-	std::list<Tasks> _tasks;
 	std::vector<pollfd> _fds;
 	std::vector<t_handler> _handlers;
 
-	void _pop(int fd);
+	void _pop(std::vector<int> &fds_to_close);
+	void _pop_index(int i);
 };
 
 #ifdef TEST_ON
