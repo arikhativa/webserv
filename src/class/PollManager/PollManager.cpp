@@ -34,7 +34,7 @@ PollManager::~PollManager()
 ** --------------------------------- METHODS ----------------------------------
 */
 
-pollfd PollManager::newFdPoll(int fd, short events)
+const pollfd PollManager::_newFdPoll(int fd, short events) const
 {
 	// Set the file descriptor as non-blocking
 	fcntl(fd, F_SETFL, O_NONBLOCK);
@@ -45,7 +45,7 @@ pollfd PollManager::newFdPoll(int fd, short events)
 	return (newFd);
 }
 
-int PollManager::pollFunction(pollfd actual)
+int PollManager::_pollFunction(pollfd actual) const
 {
 	int result = ::poll(&actual, 1, TIMEOUT);
 	if (result == TIMEOUT_VALUE)
@@ -55,10 +55,14 @@ int PollManager::pollFunction(pollfd actual)
 	return (actual.revents);
 }
 
-bool PollManager::isAvailable(int fd, short events)
+/*
+** --------------------------------- ACCESSOR ---------------------------------
+*/
+
+bool PollManager::isAvailable(const int &fd, const short &events) const
 {
-	pollfd actual = newFdPoll(fd, events);
-	int status = pollFunction(actual);
+	pollfd actual = _newFdPoll(fd, events);
+	int status = _pollFunction(actual);
 
 	if ((events & POLLIN) && (status & POLLIN)) // Readable
 		return true;
@@ -67,8 +71,5 @@ bool PollManager::isAvailable(int fd, short events)
 	else // Not readable or writable
 		return false;
 }
-/*
-** --------------------------------- ACCESSOR ---------------------------------
-*/
 
 /* ************************************************************************** */

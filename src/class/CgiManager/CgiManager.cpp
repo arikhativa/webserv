@@ -103,9 +103,7 @@ std::string CgiManager::_parentProcess(PollManager poll)
 {
 	_pipe.setParent();
 	if (_basicHTTPRequest.isBody() && poll.isAvailable(_pipe.getInput(), POLLOUT))
-	{
 		_pipe.write(_basicHTTPRequest.getBody());
-	}
 	_pipe.closeInput();
 	return (_readCgiOutput(poll));
 }

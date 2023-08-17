@@ -31,11 +31,12 @@ class PollManager
 		virtual const char *what() const throw();
 	};
 
-	pollfd newFdPoll(int fd, short events);
-	int pollFunction(pollfd actual);
-	bool isAvailable(int fd, short events);
+	bool isAvailable(const int &fd, const short &events) const;
 
   private:
+	const pollfd _newFdPoll(int fd, short events) const;
+	int _pollFunction(pollfd actual) const;
+
 	static const int TIMEOUT;
 	static const int ERROR;
 	static const int TIMEOUT_VALUE;
