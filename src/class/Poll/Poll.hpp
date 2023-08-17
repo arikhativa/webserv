@@ -28,7 +28,7 @@ class Poll
 		CONTINUE,
 		DONE,
 	};
-	typedef ret_stt (*t_handler)(Poll &p, int fd, int revents);
+	typedef ret_stt (*t_handler)(Poll &p, int fd, int revents, void *call);
 
 	Poll();
 	~Poll();
@@ -37,12 +37,8 @@ class Poll
 	Poll &operator=(Poll const &rhs);
 
 	void loop(void);
-	void addRead(int fd, t_handler h);
-	void addWrite(int fd, t_handler h);
-
-	static ret_stt newClient(Poll &p, int fd, int revents);
-	static ret_stt ReadClient(Poll &p, int fd, int revents);
-	static ret_stt WriteClient(Poll &p, int fd, int revents);
+	void addRead(int fd, t_handler h, void *call);
+	void addWrite(int fd, t_handler h, void *call);
 
   private:
 	static const int _TIMEOUT = 10000;
@@ -50,6 +46,7 @@ class Poll
 	bool _run;
 	std::vector<pollfd> _fds;
 	std::vector<t_handler> _handlers;
+	std::vector<std::string> _buffers;
 
 	void _pop(std::vector<int> &fds_to_close);
 	void _pop_index(int i);
