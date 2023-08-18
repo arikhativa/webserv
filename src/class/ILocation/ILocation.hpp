@@ -7,7 +7,6 @@
 
 #include <IAllowedMethods/IAllowedMethods.hpp>
 #include <IErrorPage/IErrorPage.hpp>
-#include <IIndexFiles/IIndexFiles.hpp>
 #include <IPath/IPath.hpp>
 #include <IReturn/IReturn.hpp>
 
@@ -19,16 +18,19 @@
 class ILocation
 {
   public:
-	virtual IPath getRoot(void) const = 0;
 	virtual ~ILocation(){};
-	virtual IIndexFiles getIndexFiles(void) const = 0;
-	virtual IAllowedMethods getAllowedMethods(void) const = 0;
-	virtual IReturn getReturn(void) const = 0;
-	virtual std::list<IErrorPage *> getErrorPages(void) const = 0;
-	virtual bool isAutoIndexOn(void) const = 0;
+	virtual const IPath &getPath(void) const = 0;
+	virtual const std::list<std::string> &getIndexFiles(void) const = 0;
+	virtual const IAllowedMethods &getAllowedMethods(void) const = 0;
+	virtual const IReturn *getReturn(void) const = 0;
+	virtual std::list<const IErrorPage *> getErrorPages(void) const = 0;
 	virtual std::size_t getMaxBodySize(void) const = 0;
+	virtual bool isAutoIndexOn(void) const = 0;
 	virtual bool canUpload(void) const = 0;
+	virtual const IPath *getRoot(void) const = 0;
 };
+
+std::ostream &operator<<(std::ostream &o, const ILocation &i);
 
 #ifdef TEST_ON
 #undef private

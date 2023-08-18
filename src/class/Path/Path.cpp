@@ -16,7 +16,7 @@ Path::Path(const std::string &path)
 }
 
 Path::Path(const Path &src)
-	: _path(src.getPath())
+	: _path(src.get())
 {
 }
 
@@ -37,20 +37,25 @@ Path &Path::operator=(Path const &rhs)
 {
 	if (this != &rhs)
 	{
-		this->_path = rhs.getPath();
+		this->_path = rhs.get();
 	}
 	return *this;
 }
 
 std::ostream &operator<<(std::ostream &o, Path const &i)
 {
-	o << "Path[" << i.getPath() << "]";
+	o << i.get();
 	return o;
 }
 
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
+
+bool Path::isValid(const std::string &path)
+{
+	return !path.empty();
+}
 
 bool Path::isRelative(void)
 {
@@ -70,12 +75,12 @@ bool Path::isAbsolute(void)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-void Path::setPath(const std::string &path)
+void Path::set(const std::string &path)
 {
 	this->_path = path;
 }
 
-const std::string &Path::getPath(void) const
+const std::string &Path::get(void) const
 {
 	return this->_path;
 }
