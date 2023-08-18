@@ -9,6 +9,7 @@
 #include <string>
 
 #include <IPort/IPort.hpp>
+#include <converter/converter.hpp>
 
 #ifdef TEST_ON
 #define private public
@@ -26,6 +27,7 @@ class Port : public IPort
 	Port &operator=(Port const &rhs);
 
 	virtual uint16_t get(void) const;
+	void set(const std::string &port);
 	void set(uint16_t port);
 
 	static bool isValid(int);

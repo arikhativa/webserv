@@ -15,7 +15,8 @@
 
 #include <iostream>
 
-template <typename T> class ExampleTemplate
+template <typename T>
+class ExampleTemplate
 {
   public:
 	/*
@@ -65,7 +66,8 @@ template <typename T> class ExampleTemplate
 	T _value;
 };
 
-template <typename T> std::ostream &operator<<(std::ostream &o, ExampleTemplate<T> const &i)
+template <typename T>
+std::ostream &operator<<(std::ostream &o, ExampleTemplate<T> const &i)
 {
 	o << "ExampleTemplate[" << i.getValue() << "]";
 	return o;

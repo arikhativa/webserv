@@ -1,4 +1,5 @@
 .vscode
+.ignore
 .makefile_logs
 obj
 webserv
