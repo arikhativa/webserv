@@ -17,15 +17,18 @@ class Path : public IPath
   public:
 	Path();
 	explicit Path(const std::string &path);
-	Path(Path const &src);
+	Path(const Path &src);
 	virtual ~Path();
 
-	Path &operator=(Path const &rhs);
+	Path &operator=(const Path &rhs);
 
-	const std::string &getPath(void) const;
-	void setPath(const std::string &path);
-	bool isRelative(void);
-	bool isAbsolute(void);
+	virtual bool isRelative(void);
+	virtual bool isAbsolute(void);
+	virtual const std::string &get(void) const;
+
+	void set(const std::string &path);
+
+	static bool isValid(const std::string &path);
 
   private:
 	std::string _path;

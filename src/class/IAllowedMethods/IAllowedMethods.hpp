@@ -24,6 +24,8 @@ class IAllowedMethods
 	virtual bool isAllowed(type method) const = 0;
 };
 
+std::ostream &operator<<(std::ostream &o, const IAllowedMethods &i);
+
 #ifdef TEST_ON
 #undef private
 #undef protected

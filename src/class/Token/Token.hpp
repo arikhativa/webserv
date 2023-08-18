@@ -33,7 +33,7 @@ class Token
 		static const std::string CLIENT_MAX_BODY_SIZE;
 		static const std::string LOCATION;
 		static const std::string ALLOW_METHODS;
-		static const std::string AUTOINDEX;
+		static const std::string AUTO_INDEX;
 		static const std::string UPLOAD;
 	};
 	enum type

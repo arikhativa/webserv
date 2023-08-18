@@ -15,10 +15,10 @@ class Replace
   public:
 	Replace();
 	explicit Replace(int i);
-	Replace(Replace const &src);
+	Replace(const Replace &src);
 	~Replace();
 
-	Replace &operator=(Replace const &rhs);
+	Replace &operator=(const Replace &rhs);
 
 	int getValue(void) const;
 
@@ -28,7 +28,7 @@ class Replace
 	void _setValue(int value);
 };
 
-std::ostream &operator<<(std::ostream &o, Replace const &i);
+std::ostream &operator<<(std::ostream &o, const Replace &i);
 
 #ifdef TEST_ON
 #undef private
