@@ -14,8 +14,7 @@ class IAddress
 {
   public:
 	virtual ~IAddress(){};
-	virtual std::string getAddress(void) const = 0;
-	virtual void setAddress(const std::string &address) = 0;
+	virtual std::string get(void) const = 0;
 };
 
 #ifdef TEST_ON
