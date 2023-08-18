@@ -1,45 +1,46 @@
 
 #include <pollHandler/pollHandler.hpp>
 
-Poll::ret_stt pollHandler::writeClient(Poll &p, int fd, int revents, void *call)
+Poll::ret_stt pollHandler::writeClient(Poll &p, int fd, int revents, Poll::Param param)
 {
-	if (revents == POLLOUT)
-	{
-		std::cout << "WriteClient => POLLOUT" << std::endl;
-		std::string msg =
-			"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<html><body><h1>Hello, World!</h1></body></html>\r\n";
-		int bytesSent = send(fd, msg.c_str(), msg.length(), 0);
-		(void)bytesSent;
-
-		return Poll::DONE;
-	}
-	return Poll::CONTINUE;
-}
-
-Poll::ret_stt pollHandler::readFile(Poll &p, int fd, int revents, void *call)
-{
-	if (revents != POLLIN)
+	(void)p;
+	if (revents != POLLOUT)
 		return Poll::CONTINUE;
 
-	BasicHTTPRequest *req = reinterpret_cast<BasicHTTPRequest *>(call);
+	std::cout << "WriteClient => POLLOUT" << std::endl;
 
-	if (!req)
+	std::ifstream file(param.req.getPath().c_str());
+	if (!file.is_open())
 	{
-		std::cerr << "call is NULL" << std::endl;
+		std::cerr << "Error opening file." << std::endl;
 		return Poll::ERROR;
 	}
-	p.addWrite(fd, writeClient, req);
+
+	std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+	file.close();
+
+	HTTPResponse res("HTTP/1.1 200 OK\r\n");
+	std::string tmp("Content-Length: ");
+
+	tmp += converter::numToString<size_t>(content.length());
+	tmp += "\r\n";
+
+	res.extenedRaw(tmp);
+	res.extenedRaw("Content-Type: text/html\r\n\r\n");
+	res.extenedRaw(content);
+	res.parseRaw();
+	res.parseBody();
+
+	std::cout << "Response: " << res << std::endl;
+
+	int bytesSent = send(fd, res.toString().c_str(), res.toString().length(), 0);
+	(void)bytesSent;
+
+	return Poll::DONE;
 }
 
-Poll::ret_stt pollHandler::readClient(Poll &p, int fd, int revents, void *call)
+Poll::ret_stt pollHandler::readClient(Poll &p, int fd, int revents, Poll::Param param)
 {
-	BasicHTTPRequest *req = reinterpret_cast<BasicHTTPRequest *>(call);
-	if (!req)
-	{
-		std::cerr << "call is NULL" << std::endl;
-		return Poll::ERROR;
-	}
-
 	if (revents == POLLIN)
 	{
 		std::cout << "ReadClient => POLLIN" << std::endl;
@@ -52,10 +53,10 @@ Poll::ret_stt pollHandler::readClient(Poll &p, int fd, int revents, void *call)
 		{
 			buffer[bytesReceived] = '\0';
 
-			req->setRaw(buffer);
-			req->parseRaw();
+			param.req.setRaw(buffer);
+			param.req.parseRaw();
 
-			p.addRead(fd, readFile, req);
+			p.addWrite(fd, writeClient, param);
 			return Poll::DONE;
 		}
 		else if (bytesReceived == 0)
@@ -71,9 +72,8 @@ Poll::ret_stt pollHandler::readClient(Poll &p, int fd, int revents, void *call)
 	return Poll::CONTINUE;
 }
 
-Poll::ret_stt pollHandler::newClient(Poll &p, int fd, int revents, void *call)
+Poll::ret_stt pollHandler::newClient(Poll &p, int fd, int revents, Poll::Param param)
 {
-	(void)call;
 	if (revents == POLLIN)
 	{
 		std::cout << "newClient => POLLIN" << std::endl;
@@ -83,7 +83,8 @@ Poll::ret_stt pollHandler::newClient(Poll &p, int fd, int revents, void *call)
 			int flags = fcntl(clientSocket, F_GETFL, 0);
 			fcntl(clientSocket, F_SETFL, flags | O_NONBLOCK);
 
-			p.addRead(clientSocket, readClient);
+			param.src_socket = clientSocket;
+			p.addRead(clientSocket, readClient, param);
 			return Poll::CONTINUE;
 		}
 	}

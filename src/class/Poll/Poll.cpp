@@ -60,7 +60,7 @@ void Poll::loop(void)
 
 				if (_fds[i].revents == POLLOUT || _fds[i].revents == POLLIN)
 				{
-					ret_stt s = _handlers[i](*this, _fds[i].fd, _fds[i].revents);
+					ret_stt s = _handlers[i](*this, _fds[i].fd, _fds[i].revents, _params[i]);
 					if (DONE == s)
 						pop_indexes.push_back(i);
 					else if (ERROR == s)
@@ -79,7 +79,7 @@ void Poll::loop(void)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-void Poll::addRead(int fd, t_handler h)
+void Poll::addRead(int fd, t_handler h, Param p)
 {
 	pollfd pfd = {fd, POLLIN, 0};
 
@@ -87,15 +87,17 @@ void Poll::addRead(int fd, t_handler h)
 
 	_fds.push_back(pfd);
 	_handlers.push_back(h);
+	_params.push_back(p);
 }
 
-void Poll::addWrite(int fd, t_handler h)
+void Poll::addWrite(int fd, t_handler h, Param p)
 {
 	pollfd pfd = {fd, POLLOUT, 0};
 
 	std::cout << "addWrite(fd):" << fd << std::endl;
 	_fds.push_back(pfd);
 	_handlers.push_back(h);
+	_params.push_back(p);
 }
 
 void Poll::_pop_index(int fd_index)
@@ -119,6 +121,7 @@ void Poll::_pop_index(int fd_index)
 
 	_fds.erase(_fds.begin() + fd_index);
 	_handlers.erase(_handlers.begin() + fd_index);
+	_params.erase(_params.begin() + fd_index);
 }
 
 void Poll::_pop(std::vector<int> &fds_to_close)

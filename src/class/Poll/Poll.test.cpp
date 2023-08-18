@@ -1,6 +1,7 @@
 
 #include <Poll/Poll.hpp>
 #include <gtest/gtest.h>
+#include <pollHandler/pollHandler.hpp>
 
 TEST(Poll, CreateDestroy)
 {
@@ -16,7 +17,7 @@ TEST(Poll, Canonical)
 
 	sockaddr_in serverAddr;
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(8080);
+	serverAddr.sin_port = htons(8083);
 	serverAddr.sin_addr.s_addr = INADDR_ANY;
 
 	if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1)
@@ -34,6 +35,7 @@ TEST(Poll, Canonical)
 	int flags = fcntl(serverSocket, F_GETFL, 0);
 	fcntl(serverSocket, F_SETFL, flags | O_NONBLOCK);
 
-	p.addRead(serverSocket, Poll::newClient);
+	Poll::Param param;
+	p.addRead(serverSocket, pollHandler::newClient, param);
 	p.loop();
 }
