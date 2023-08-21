@@ -83,7 +83,6 @@ bool FileManager::isDirectory(const std::string &path)
 {
 	try
 	{
-
 		if (path.empty() || path == "")
 			throw FileManager::FileManagerException();
 		struct stat statbuf;
