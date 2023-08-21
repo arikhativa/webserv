@@ -10,14 +10,12 @@ Server::Server(int port0, int port1)
 {
 	this->_listener.push_back(Socket(IP("127.0.0.1"), Port(port0)));
 	this->_listener.push_back(Socket(IP("127.0.0.1"), Port(port1)));
-
 }
 
 // Server::Server(serverName, rootPath, listen, errorPage, return, clientMaxBody, location);
 // {
 
 // }
-
 
 const char *Server::AcceptingConnectionFailed::what() const throw()
 {
@@ -39,7 +37,7 @@ Server::~Server()
 int Server::acceptConnection(int fd)
 {
 	int tmp_client;
-	
+
 	tmp_client = accept(fd, NULL, NULL);
 	if (tmp_client <= -1)
 		throw Server::AcceptingConnectionFailed();

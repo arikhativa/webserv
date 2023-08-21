@@ -8,6 +8,7 @@ compiler: c++
 
 before_install:
   - sudo apt-get update
+  - sudo apt-get install -y php-cli
 
 addons:
   apt:
@@ -15,6 +16,7 @@ addons:
       - valgrind
       - cmake
       - googletest
+      - php-cli
 
 install:
   - cd /usr/src/googletest
