@@ -6,8 +6,13 @@
 */
 
 Socket::Socket(IP ip, Port port)
-	: _ip(ip) , _port(port) , _binded(false)
-	, _fd(-1) , _domain(AF_INET) , _type(SOCK_STREAM) , _protocol(0)
+	: _ip(ip)
+	, _port(port)
+	, _binded(false)
+	, _fd(-1)
+	, _domain(AF_INET)
+	, _type(SOCK_STREAM)
+	, _protocol(0)
 {
 	/* Create socket */
 	this->_fd = socket(this->_domain, this->_type, this->_protocol);
@@ -16,7 +21,7 @@ Socket::Socket(IP ip, Port port)
 
 	/* Set the socket to reuse (makes it re-bindable directly after close) */
 	int reuse_addr = true;
-    setsockopt(this->_fd, SOL_SOCKET, SO_REUSEADDR, &reuse_addr, sizeof(reuse_addr));
+	setsockopt(this->_fd, SOL_SOCKET, SO_REUSEADDR, &reuse_addr, sizeof(reuse_addr));
 
 	/* Init sockaddr */
 	memset(&this->_sockaddr, 0, sizeof(this->_sockaddr));
@@ -26,9 +31,16 @@ Socket::Socket(IP ip, Port port)
 }
 
 Socket::Socket(Socket const &src)
-	:_ip(src._ip), _port(src._port), _binded(src._binded), _fd(src._fd), _domain(src._domain),
-	_type(src._type), _protocol(src._protocol), _sockaddr(src._sockaddr)
-{}
+	: _ip(src._ip)
+	, _port(src._port)
+	, _binded(src._binded)
+	, _fd(src._fd)
+	, _domain(src._domain)
+	, _type(src._type)
+	, _protocol(src._protocol)
+	, _sockaddr(src._sockaddr)
+{
+}
 
 const char *Socket::SocketCreationFailed::what() const throw()
 {
@@ -73,7 +85,7 @@ void Socket::bind(void)
 {
 	int bind_status;
 	if (this->_binded)
-		return ;
+		return;
 	bind_status = ::bind(this->_fd, reinterpret_cast<const sockaddr *>(&this->_sockaddr), sizeof(this->_sockaddr));
 	if (bind_status <= -1)
 		throw SocketBindingFailed();
