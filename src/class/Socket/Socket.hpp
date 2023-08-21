@@ -2,12 +2,12 @@
 #ifndef SOCKET_HPP
 #define SOCKET_HPP
 
-#include <iostream>
-#include <string>
-#include <cstring>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
+#include <cstring>
+#include <iostream>
+#include <netinet/in.h>
+#include <string>
+#include <sys/socket.h>
 #include <unistd.h>
 
 #include "../IP/IP.hpp"
