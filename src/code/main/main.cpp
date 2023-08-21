@@ -14,10 +14,5 @@
 
 int main(void)
 {
-	ExampleClass a(42);
-	std::cout << a << std::endl;
-
-	ExampleTemplate<long> b(-42);
-	std::cout << b << std::endl;
 	return 0;
 }
