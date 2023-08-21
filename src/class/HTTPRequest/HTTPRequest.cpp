@@ -11,10 +11,12 @@ const std::string HTTPRequest::DELETE_STRING("DELETE ");
 const int HTTPRequest::MAX_REQUEST_ATTEMPTS = 10;
 
 HTTPRequest::HTTPRequest(const Server virtualServer, int clientFd)
-	: _attempts(0), _virtualServer(virtualServer), _clientFd(clientFd), _response("\0")
+	: _attempts(0)
+	, _virtualServer(virtualServer)
+	, _clientFd(clientFd)
+	, _response("\0")
 {
 }
-
 
 const char *HTTPRequest::SendingResponseError::what() const throw()
 {
@@ -89,18 +91,18 @@ void HTTPRequest::handleRequest(void)
 {
 	switch (getRequestType())
 	{
-		case HTTPRequest::GET:
-			this->_response = HTTPRequestHandler::GET(this->_virtualServer, this->_rawRequest);
-			break;
-		case HTTPRequest::POST:
-			this->_response = HTTPRequestHandler::POST(this->_virtualServer, this->_rawRequest);
-			break;
-		case HTTPRequest::DELETE:
-			this->_response = HTTPRequestHandler::DELETE(this->_virtualServer, this->_rawRequest);
-			break;
-		default: //Uknown request
-			this->_response = HTTPRequestHandler::UNKNOWN(this->_virtualServer, this->_rawRequest);
-			break;
+	case HTTPRequest::GET:
+		this->_response = HTTPRequestHandler::GET(this->_virtualServer, this->_rawRequest);
+		break;
+	case HTTPRequest::POST:
+		this->_response = HTTPRequestHandler::POST(this->_virtualServer, this->_rawRequest);
+		break;
+	case HTTPRequest::DELETE:
+		this->_response = HTTPRequestHandler::DELETE(this->_virtualServer, this->_rawRequest);
+		break;
+	default: // Uknown request
+		this->_response = HTTPRequestHandler::UNKNOWN(this->_virtualServer, this->_rawRequest);
+		break;
 	}
 }
 

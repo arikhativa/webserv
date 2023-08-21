@@ -43,8 +43,8 @@ ServerManager::~ServerManager()
 void ServerManager::close(void)
 {
 	/* Terminate all pending requests */
-	std::vector<HTTPRequest*>::iterator it_http = this->_pendingRequests.begin();
-	std::vector<HTTPRequest*>::iterator end_http = this->_pendingRequests.end();
+	std::vector<HTTPRequest *>::iterator it_http = this->_pendingRequests.begin();
+	std::vector<HTTPRequest *>::iterator end_http = this->_pendingRequests.end();
 	for (; it_http != end_http; it_http++)
 	{
 		(*it_http)->terminate();
@@ -101,8 +101,8 @@ void ServerManager::start()
 				continue;
 			this->_pendingRequests.push_back(new HTTPRequest(*this->_pollServer.at(this->_poll + i), tmp_client));
 		}
-		std::vector<HTTPRequest*>::iterator it = this->_pendingRequests.begin();
-		std::vector<HTTPRequest*>::iterator end = this->_pendingRequests.end();
+		std::vector<HTTPRequest *>::iterator it = this->_pendingRequests.begin();
+		std::vector<HTTPRequest *>::iterator end = this->_pendingRequests.end();
 		for (; it != end; it++)
 		{
 			try

@@ -19,6 +19,7 @@ namespace httpConstants
 	const std::string SERVER_FIELD_VALUE("webserv");
 	const std::string DATE_FIELD_KEY("Date: ");
 	const std::string CONTENT_TYPE_FIELD_KEY("Content-Type: ");
+	const std::string CONTENT_TYPE_FIELD("Content-Type");
 	const std::string CONTENT_LENGHT_FIELD_KEY("Content-Length: ");
 	const std::string CONNECTION_FIELD_KEY("Connection: ");
 	const std::string ALLOW_HEADER("Allow: ");
@@ -33,6 +34,7 @@ namespace httpConstants
 	const std::string CONTENT_TYPE("CONTENT_TYPE");
 	const std::string CONTENT_LENGTH("CONTENT_LENGTH");
 	const std::string UPLOAD_DIR("UPLOAD_DIR");
+	const std::string PATH_INFO("PATH_INFO");
 	const std::string PREVIOUS_DIR("/..");
 	const std::string ACTUAL_DIR("/.");
 	const std::string SEPARATOR(":");

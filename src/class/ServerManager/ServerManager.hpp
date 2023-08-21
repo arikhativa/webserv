@@ -15,7 +15,7 @@
 #define protected public
 #endif
 
-# define MAX_POLL_SIZE 128
+#define MAX_POLL_SIZE 128
 
 enum status
 {
@@ -39,11 +39,11 @@ class ServerManager
 	// Config config;
 	enum status _status;
 	std::vector<Server> _virtualServers;
-	std::vector<HTTPRequest*> _pendingRequests;
+	std::vector<HTTPRequest *> _pendingRequests;
 
 	int _pollSize;
 	struct pollfd *_poll;
-	std::map<struct pollfd *, Server*> _pollServer;
+	std::map<struct pollfd *, Server *> _pollServer;
 
 	int getTotalListeners(void) const;
 };
