@@ -35,7 +35,7 @@ class Server
 	const std::vector<int> getListeners(void) const;
 	int getListenersSize(void) const;
 	void closeSockets(void);
-	
+
 	static int acceptConnection(int socketIndex);
 
   private:
@@ -46,7 +46,7 @@ class Server
 	// _errorPage
 	// _return;
 	// _cientMaxBody;
-	// _location 
+	// _location
 };
 
 #ifdef TEST_ON
