@@ -15,7 +15,4 @@
 
 #include <iostream>
 
-#include <ExampleClass/ExampleClass.hpp>
-#include <ExampleTemplate/ExampleTemplate.hpp>
-
 #endif /* MAIN_H */
