@@ -19,7 +19,7 @@ static std::map<std::string, parser::t_rule> initRules(void)
 	map[Token::STR_BLOCK_END] = &parser::rule::blockEnd;
 
 	map[Token::Keyword::LOCATION] = &parser::rule::location;
-	map[Token::Keyword::AUTOINDEX] = &parser::rule::autoIndex;
+	map[Token::Keyword::AUTO_INDEX] = &parser::rule::autoIndex;
 	map[Token::Keyword::ALLOW_METHODS] = &parser::rule::allowMethods;
 	map[Token::Keyword::UPLOAD] = &parser::rule::upload;
 

@@ -13,7 +13,7 @@ IP::IP(const std::string &ip)
 }
 
 IP::IP(const IP &src)
-	: _ip(src.getAddress())
+	: _ip(src.get())
 {
 }
 
@@ -39,14 +39,14 @@ IP &IP::operator=(IP const &rhs)
 {
 	if (this != &rhs)
 	{
-		this->_ip = rhs.getAddress();
+		this->_ip = rhs.get();
 	}
 	return *this;
 }
 
 std::ostream &operator<<(std::ostream &o, IP const &i)
 {
-	o << i.getAddress();
+	o << i.get();
 	return o;
 }
 
@@ -116,7 +116,7 @@ void IP::setAddress(const std::string &address)
 		this->_ip = address;
 }
 
-std::string IP::getAddress(void) const
+std::string IP::get(void) const
 {
 	return this->_ip;
 }
