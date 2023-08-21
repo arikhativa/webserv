@@ -22,7 +22,7 @@ Socket::Socket(IP ip, Port port)
 	memset(&this->_sockaddr, 0, sizeof(this->_sockaddr));
 	this->_sockaddr.sin_family = this->_domain;
 	this->_sockaddr.sin_port = htons(this->_port.get());
-	this->_sockaddr.sin_addr.s_addr = inet_addr(this->_ip.getAddress().c_str());
+	this->_sockaddr.sin_addr.s_addr = inet_addr(this->_ip.get().c_str());
 }
 
 Socket::Socket(Socket const &src)
