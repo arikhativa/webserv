@@ -2,7 +2,9 @@
 #ifndef SERVER_MANAGER_HPP
 #define SERVER_MANAGER_HPP
 
+#include <Conf/Conf.hpp>
 #include <HTTPRequest/HTTPRequest.hpp>
+#include <IConf/IConf.hpp>
 #include <Server/Server.hpp>
 #include <iostream>
 #include <map>
@@ -26,9 +28,7 @@ enum status
 class ServerManager
 {
   public:
-	// TODO: this method is using for testing, should be removed later
-	ServerManager();
-	// explicit ServerManager(Config config);
+	ServerManager(const IConf *conf);
 	~ServerManager();
 
 	void start();
@@ -36,7 +36,7 @@ class ServerManager
 	void setup();
 
   private:
-	// Config config;
+	const IConf *_conf;
 	enum status _status;
 	std::vector<Server> _virtualServers;
 	std::vector<HTTPRequest *> _pendingRequests;

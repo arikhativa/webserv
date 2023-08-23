@@ -5,14 +5,21 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-// TODO: this method is using for testing, should be removed later
-/* Server should be initialized using the config file, but we dont have it ready yet */
-ServerManager::ServerManager()
-	: _status(STOPED)
+ServerManager::ServerManager(const IConf *conf)
+	: _conf(conf)
+	, _status(STOPED)
 {
-	this->_virtualServers.push_back(Server(1234, 4321));
-	this->_virtualServers.push_back(Server(1235, 5321));
-	this->_virtualServers.push_back(Server(1236, 6321));
+	// this->_virtualServers.push_back(Server(1234, 4321));
+	// this->_virtualServers.push_back(Server(1235, 5321));
+	// this->_virtualServers.push_back(Server(1236, 6321));
+
+	std::list<const IServerConf *> servers = conf->getServers();
+	std::list<const IServerConf *>::iterator it = servers.begin();
+	std::list<const IServerConf *>::iterator end = servers.end();
+	for (; it != end; it++)
+	{
+		this->_virtualServers.push_back(Server(*it));
+	}
 
 	// Set the pollSize after virtualServers setup
 	this->_pollSize = this->getTotalListeners();
@@ -65,7 +72,7 @@ void ServerManager::setup()
 	{
 		it->bindSockets();
 		it->listenSockets();
-		std::vector<int> fds = it->getListeners();
+		std::vector<int> fds = it->getSockets();
 		std::vector<int>::iterator it_fds = fds.begin();
 		std::vector<int>::iterator end_fds = fds.end();
 		for (; it_fds != end_fds; i++, it_fds++)
@@ -140,7 +147,7 @@ int ServerManager::getTotalListeners(void) const
 	std::vector<Server>::const_iterator it = this->_virtualServers.begin();
 	std::vector<Server>::const_iterator end = this->_virtualServers.end();
 	for (; it != end; it++)
-		pollSize += it->getListenersSize();
+		pollSize += it->getSocketListSize();
 	return pollSize;
 }
 
