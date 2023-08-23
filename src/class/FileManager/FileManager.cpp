@@ -44,6 +44,13 @@ std::ostream &operator<<(std::ostream &o, FileManager const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+bool FileManager::isOpen(const std::fstream &fs)
+{
+	if (!fs.is_open() || fs.bad() || fs.fail())
+		return false;
+	return true;
+}
+
 void FileManager::_setPath(const std::string &path)
 {
 	this->_path = path;
@@ -83,7 +90,6 @@ bool FileManager::isDirectory(const std::string &path)
 {
 	try
 	{
-
 		if (path.empty() || path == "")
 			throw FileManager::FileManagerException();
 		struct stat statbuf;

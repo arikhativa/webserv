@@ -15,4 +15,10 @@
 
 #include <iostream>
 
+#include <Conf/Conf.hpp>
+#include <FileManager/FileManager.hpp>
+#include <builder/builder.hpp>
+#include <lexer/lexer.hpp>
+#include <parser/parser.hpp>
+
 #endif /* MAIN_H */
