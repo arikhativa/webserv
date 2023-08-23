@@ -5,9 +5,9 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Socket::Socket(IP ip, Port port)
-	: _ip(ip)
-	, _port(port)
+Socket::Socket(const IListen *listen)
+	: _ip(listen->getAddress().get())
+	, _port(listen->getPort().get())
 	, _binded(false)
 	, _fd(-1)
 	, _domain(AF_INET)

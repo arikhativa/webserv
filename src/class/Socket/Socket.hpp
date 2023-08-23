@@ -2,6 +2,7 @@
 #ifndef SOCKET_HPP
 #define SOCKET_HPP
 
+#include "ServerConf/ServerConf.hpp"
 #include <arpa/inet.h>
 #include <cstring>
 #include <iostream>
@@ -23,7 +24,7 @@
 class Socket
 {
   public:
-	explicit Socket(IP ip, Port port);
+	explicit Socket(const IListen *);
 	Socket(Socket const &src);
 	~Socket();
 
