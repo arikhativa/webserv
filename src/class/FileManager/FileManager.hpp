@@ -33,6 +33,7 @@ class FileManager
 	static size_t getFileSize(const std::string &path);
 	static bool isFileExists(const std::string &path);
 	static bool isDirectory(const std::string &path);
+	static bool isOpen(const std::fstream &fs);
 	class FileManagerException : public std::exception
 	{
 		virtual const char *what() const throw();
