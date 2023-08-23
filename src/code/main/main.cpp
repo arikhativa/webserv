@@ -36,7 +36,7 @@ static const IConf *createConf(const std::string &path)
 {
 	const IConf *conf;
 	std::fstream fs(path.c_str());
-	if (!fs.is_open() || fs.bad() || fs.fail())
+	if (!FileManager::isOpen(fs))
 	{
 		std::cerr << "Error: failed to open file: " << path << std::endl;
 		return NULL;
