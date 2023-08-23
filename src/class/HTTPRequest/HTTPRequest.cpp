@@ -15,6 +15,7 @@ HTTPRequest::HTTPRequest(const Server virtualServer, int clientFd)
 	, _virtualServer(virtualServer)
 	, _clientFd(clientFd)
 	, _response("\0")
+	, _basicRequest("")
 {
 }
 
@@ -42,7 +43,7 @@ HTTPRequest::~HTTPRequest()
 
 std::ostream &operator<<(std::ostream &o, HTTPRequest const &i)
 {
-	o << "HTTPRequest[" << i.getRawRequest() << "]";
+	o << "HTTPRequest[" << i.getBasicRequest() << "]";
 	return o;
 }
 
@@ -50,16 +51,9 @@ std::ostream &operator<<(std::ostream &o, HTTPRequest const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-HTTPRequest::type HTTPRequest::getRequestType()
+BasicHTTPRequest::Type HTTPRequest::getRequestType()
 {
-	if (!this->_rawRequest.compare(0, HTTPRequest::GET_STRING.size(), GET_STRING))
-		return (GET);
-	if (!this->_rawRequest.compare(0, HTTPRequest::POST_STRING.size(), POST_STRING))
-		return (POST);
-	if (!this->_rawRequest.compare(0, HTTPRequest::DELETE_STRING.size(), DELETE_STRING))
-		return (DELETE);
-	else
-		return (UNKNOWN);
+	return this->_basicRequest.getType();
 }
 
 void HTTPRequest::recvRequest(void)
@@ -73,7 +67,7 @@ void HTTPRequest::recvRequest(void)
 		this->_attempts++;
 		throw RecievingRequestError();
 	}
-	this->_rawRequest = std::string(tmpRaw);
+	this->_basicRequest = BasicHTTPRequest(std::string(tmpRaw));
 }
 
 void HTTPRequest::sendResponse(void)
@@ -91,17 +85,17 @@ void HTTPRequest::handleRequest(void)
 {
 	switch (getRequestType())
 	{
-	case HTTPRequest::GET:
-		this->_response = HTTPRequestHandler::GET(this->_virtualServer, this->_rawRequest);
+	case BasicHTTPRequest::GET:
+		this->_response = HTTPRequestHandler::GET(this->_virtualServer, this->_basicRequest);
 		break;
-	case HTTPRequest::POST:
-		this->_response = HTTPRequestHandler::POST(this->_virtualServer, this->_rawRequest);
+	case BasicHTTPRequest::POST:
+		this->_response = HTTPRequestHandler::POST(this->_virtualServer, this->_basicRequest);
 		break;
-	case HTTPRequest::DELETE:
-		this->_response = HTTPRequestHandler::DELETE(this->_virtualServer, this->_rawRequest);
+	case BasicHTTPRequest::DELETE:
+		this->_response = HTTPRequestHandler::DELETE(this->_virtualServer, this->_basicRequest);
 		break;
 	default: // Uknown request
-		this->_response = HTTPRequestHandler::UNKNOWN(this->_virtualServer, this->_rawRequest);
+		this->_response = HTTPRequestHandler::UNKNOWN(this->_virtualServer, this->_basicRequest);
 		break;
 	}
 }
@@ -115,9 +109,9 @@ void HTTPRequest::terminate(void)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-std::string HTTPRequest::getRawRequest(void) const
+BasicHTTPRequest HTTPRequest::getBasicRequest(void) const
 {
-	return this->_rawRequest;
+	return this->_basicRequest;
 }
 
 std::string HTTPRequest::getResponse(void) const
@@ -135,9 +129,9 @@ int HTTPRequest::getAttempts(void) const
 	return this->_attempts;
 }
 
-void HTTPRequest::setRawRequest(std::string request)
+void HTTPRequest::setBasicRequest(BasicHTTPRequest request)
 {
-	this->_rawRequest = request;
+	this->_basicRequest = request;
 }
 
 void HTTPRequest::setResponse(std::string response)

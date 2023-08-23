@@ -2,6 +2,7 @@
 #ifndef H_T_T_P_REQUEST_HPP
 #define H_T_T_P_REQUEST_HPP
 
+#include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 #include <Server/Server.hpp>
 #include <iostream>
@@ -18,13 +19,6 @@
 class HTTPRequest
 {
   private:
-	enum type
-	{
-		GET,
-		POST,
-		DELETE,
-		UNKNOWN
-	};
 	static const std::string GET_STRING;
 	static const std::string POST_STRING;
 	static const std::string DELETE_STRING;
@@ -34,16 +28,16 @@ class HTTPRequest
 	explicit HTTPRequest(const Server virtualServer, int client_fd);
 	~HTTPRequest();
 
-	std::string getRawRequest(void) const;
+	BasicHTTPRequest getBasicRequest(void) const;
 	std::string getResponse(void) const;
 	int getClientFd(void) const;
 	int getAttempts(void) const;
 
-	void setRawRequest(std::string request);
+	void setBasicRequest(BasicHTTPRequest request);
 	void setResponse(std::string response);
 	void setClientFd(int fd);
 
-	type getRequestType(void);
+	BasicHTTPRequest::Type getRequestType(void);
 	void recvRequest(void);
 	void sendResponse(void);
 	void handleRequest(void);
@@ -66,8 +60,8 @@ class HTTPRequest
 	const Server _virtualServer;
 	const int _clientFd;
 
-	std::string _rawRequest;
 	std::string _response;
+	BasicHTTPRequest _basicRequest;
 };
 
 std::ostream &operator<<(std::ostream &o, HTTPRequest const &i);
