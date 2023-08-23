@@ -4,43 +4,50 @@
 
 TEST(Socket, CreateDestroy)
 {
-	IP ip("127.0.0.1");
-	Port port(1234);
-	Socket *obj = new Socket(ip, port);
+	Listen *listenobj;
+	listenobj->setAddress("127.0.0.1");
+	listenobj->setPort("443");
+	Socket *obj = new Socket(listenobj);
+
 	delete obj;
 }
 
 TEST(Socket, Accessor)
 {
-	IP ip("127.0.0.1");
-	Port port(1234);
-	Socket obj1(ip, port);
-	EXPECT_NE(-1, obj1.getFd());
-	EXPECT_EQ(htons(1234), htons(obj1.getPort().get()));
-	EXPECT_EQ(inet_addr("127.0.0.1"), inet_addr(obj1.getIp().get().c_str()));
+	Listen *listenobj;
+	listenobj->setAddress("127.0.0.1");
+	listenobj->setPort("443");
+	Socket obj = Socket(listenobj);
+	EXPECT_NE(-1, obj.getFd());
+	EXPECT_EQ(htons(1234), htons(obj.getPort().get()));
+	EXPECT_EQ(inet_addr("127.0.0.1"), inet_addr(obj.getIp().get().c_str()));
 }
 
 TEST(Socket, SocketCreationFailed)
 {
-	IP ip("127.0.0.1");
-	Port port(1234);
-	EXPECT_NO_THROW(Socket obj1(ip, port));
+	Listen *listenobj;
+	listenobj->setAddress("127.0.0.1");
+	listenobj->setPort("443");
+	Socket obj = Socket(listenobj);
+	EXPECT_NO_THROW(Socket obj1(obj));
 }
 
 TEST(Socket, SocketListeningFailed)
 {
-	IP ip("127.0.0.1");
-	Port port(1234);
-	Socket obj1(ip, port);
-	EXPECT_NO_THROW(obj1.bind());
+	Listen *listenobj;
+	listenobj->setAddress("127.0.0.1");
+	listenobj->setPort("443");
+	Socket obj = Socket(listenobj);
+	EXPECT_NO_THROW(obj.bind());
 }
 
 TEST(Socket, SocketBindingFailed)
 {
-	IP ip("127.0.0.1");
-	Port port(1234);
-	Socket obj1(ip, port);
-	EXPECT_THROW(obj1.listen(), Socket::SocketNotBinded);
-	EXPECT_NO_THROW(obj1.bind());
-	EXPECT_NO_THROW(obj1.listen());
+	Listen *listenobj;
+	listenobj->setAddress("127.0.0.1");
+	listenobj->setPort("443");
+	Socket obj = Socket(listenobj);
+	EXPECT_THROW(obj.listen(), Socket::SocketNotBinded);
+	EXPECT_NO_THROW(obj.bind());
+	EXPECT_NO_THROW(obj.listen());
 }
