@@ -20,7 +20,7 @@
 class Server
 {
   public:
-	explicit Server(ServerConf conf);
+	explicit Server(const IServerConf *conf);
 	~Server(void);
 
 	class AcceptingConnectionFailed : public std::exception
@@ -41,7 +41,7 @@ class Server
 
   private:
 	std::vector<Socket> _sockets;
-	const ServerConf _conf;
+	const IServerConf *_conf;
 };
 
 #ifdef TEST_ON
