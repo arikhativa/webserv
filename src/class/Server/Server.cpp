@@ -5,12 +5,12 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Server::Server(ServerConf conf)
+Server::Server(const IServerConf *conf)
 	: _conf(conf)
 {
-	std::list<const IListen *> tmpListeners = this->_conf.getListen();
-	std::list<const IListen *>::iterator it;
-	std::list<const IListen *>::iterator end;
+	std::list<const IListen *> tmpListeners = this->_conf->getListen();
+	std::list<const IListen *>::iterator it = tmpListeners.begin();
+	std::list<const IListen *>::iterator end = tmpListeners.end();
 	for (; it != end; it++)
 	{
 		this->_sockets.push_back(Socket(*it));
