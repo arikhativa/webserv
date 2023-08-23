@@ -46,6 +46,7 @@ static const IConf *createConf(const std::string &path)
 	if (!parser::validate(list))
 	{
 		std::cerr << "Error: bad syntax in config file: " << path << std::endl;
+		fs.close();
 		return NULL;
 	}
 
@@ -57,6 +58,7 @@ static const IConf *createConf(const std::string &path)
 	catch (const std::exception &e)
 	{
 		std::cerr << "Error: invalid config file: " << path << ": " << e.what() << std::endl;
+		fs.close();
 		return NULL;
 	}
 	fs.close();
