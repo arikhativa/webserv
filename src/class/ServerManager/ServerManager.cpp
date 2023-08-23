@@ -9,10 +9,6 @@ ServerManager::ServerManager(const IConf *conf)
 	: _conf(conf)
 	, _status(STOPED)
 {
-	// this->_virtualServers.push_back(Server(1234, 4321));
-	// this->_virtualServers.push_back(Server(1235, 5321));
-	// this->_virtualServers.push_back(Server(1236, 6321));
-
 	std::list<const IServerConf *> servers = conf->getServers();
 	std::list<const IServerConf *>::iterator it = servers.begin();
 	std::list<const IServerConf *>::iterator end = servers.end();
@@ -25,11 +21,6 @@ ServerManager::ServerManager(const IConf *conf)
 	this->_pollSize = this->getTotalListeners();
 	this->_poll = new struct pollfd[this->_pollSize];
 }
-
-// ServerManager::ServerManager(Config config)
-// 	: _value(i)
-// {
-// }
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
