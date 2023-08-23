@@ -5,17 +5,17 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-// TODO: this method is using for testing, should be removed later
-Server::Server(int port0, int port1)
+Server::Server(ServerConf conf)
+	: _conf(conf)
 {
-	this->_listener.push_back(Socket(IP("127.0.0.1"), Port(port0)));
-	this->_listener.push_back(Socket(IP("127.0.0.1"), Port(port1)));
+	std::list<const IListen *> tmpListeners = this->_conf.getListen();
+	std::list<const IListen *>::iterator it;
+	std::list<const IListen *>::iterator end;
+	for (; it != end; it++)
+	{
+		this->_sockets.push_back(Socket(*it));
+	}
 }
-
-// Server::Server(serverName, rootPath, listen, errorPage, return, clientMaxBody, location);
-// {
-
-// }
 
 const char *Server::AcceptingConnectionFailed::what() const throw()
 {
@@ -50,24 +50,24 @@ int Server::acceptConnection(int fd)
 
 void Server::closeSockets(void)
 {
-	std::vector<Socket>::iterator it = this->_listener.begin();
-	std::vector<Socket>::iterator end = this->_listener.end();
+	std::vector<Socket>::iterator it = this->_sockets.begin();
+	std::vector<Socket>::iterator end = this->_sockets.end();
 	for (; it != end; it++)
 		it->close();
 }
 
 void Server::bindSockets()
 {
-	std::vector<Socket>::iterator it = this->_listener.begin();
-	std::vector<Socket>::iterator end = this->_listener.end();
+	std::vector<Socket>::iterator it = this->_sockets.begin();
+	std::vector<Socket>::iterator end = this->_sockets.end();
 	for (; it != end; it++)
 		it->bind();
 }
 
 void Server::listenSockets()
 {
-	std::vector<Socket>::iterator it = this->_listener.begin();
-	std::vector<Socket>::iterator end = this->_listener.end();
+	std::vector<Socket>::iterator it = this->_sockets.begin();
+	std::vector<Socket>::iterator end = this->_sockets.end();
 	for (; it != end; it++)
 		it->listen();
 }
@@ -76,20 +76,20 @@ void Server::listenSockets()
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-const std::vector<int> Server::getListeners(void) const
+const std::vector<int> Server::getSockets(void) const
 {
 	std::vector<int> fds;
 
-	std::vector<Socket>::const_iterator it = this->_listener.begin();
-	std::vector<Socket>::const_iterator end = this->_listener.end();
+	std::vector<Socket>::const_iterator it = this->_sockets.begin();
+	std::vector<Socket>::const_iterator end = this->_sockets.end();
 	for (; it != end; it++)
 		fds.push_back(it->getFd());
 	return fds;
 }
 
-int Server::getListenersSize(void) const
+int Server::getSocketListSize(void) const
 {
-	return this->_listener.size();
+	return this->_sockets.size();
 }
 
 /* ************************************************************************** */

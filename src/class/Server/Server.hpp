@@ -2,6 +2,7 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include "ServerConf/ServerConf.hpp"
 #include "Socket/Socket.hpp"
 #include <cstring>
 #include <fcntl.h>
@@ -19,9 +20,7 @@
 class Server
 {
   public:
-	// TODO: this method is using for testing, should be removed later
-	explicit Server(int port0, int port1);
-	// explicit Server(serverName, rootPath, listen, errorPage, return, clientMaxBody, location);
+	explicit Server(ServerConf conf);
 	~Server(void);
 
 	class AcceptingConnectionFailed : public std::exception
@@ -32,21 +31,17 @@ class Server
 
 	void bindSockets(void);
 	void listenSockets(void);
-	const std::vector<int> getListeners(void) const;
-	int getListenersSize(void) const;
+	const std::vector<int> getSockets(void) const;
+	int getSocketListSize(void) const;
 	void closeSockets(void);
 
 	static int acceptConnection(int socketIndex);
 
+	const ServerConf getConf(void) const;
+
   private:
-	std::vector<Socket> _listener;
-	// _serverName;
-	// _rootPath;
-	// _listen;
-	// _errorPage
-	// _return;
-	// _cientMaxBody;
-	// _location
+	std::vector<Socket> _sockets;
+	const ServerConf _conf;
 };
 
 #ifdef TEST_ON
