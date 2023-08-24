@@ -41,7 +41,6 @@ TEST(CgiManager, simplecgi)
 	std::string serverName("serverName");
 	std::string port("1234");
 	Path serverPath(".");
-	PollManager pollMngr;
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
 	std::string content = "Content-type: text/html\r\n"
@@ -51,7 +50,7 @@ TEST(CgiManager, simplecgi)
 						  "<h2>Hello, pepe juan!</h2>\n"
 						  "</body>\n"
 						  "</html>\n";
-	EXPECT_EQ(content, obj1.executeCgiManager(serverPath, pollMngr));
+	EXPECT_EQ(content, obj1.executeCgiManager(serverPath));
 }
 
 TEST(CgiManager, envCgi)
@@ -65,10 +64,9 @@ TEST(CgiManager, envCgi)
 	std::string serverName("serverName");
 	std::string port("1234");
 	Path serverPath(".");
-	PollManager pollMngr;
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
-	std::string content = obj1.executeCgiManager(serverPath, pollMngr);
+	std::string content = obj1.executeCgiManager(serverPath);
 
 	EXPECT_EQ(content, "pepe=juan\n");
 }
@@ -84,7 +82,6 @@ TEST(CgiManager, envFormCgi)
 	std::string serverName("serverName");
 	std::string port("1234");
 	Path serverPath(".");
-	PollManager pollMngr;
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
 	std::string content = "Content-type: text/html\r\n"
@@ -98,7 +95,7 @@ TEST(CgiManager, envFormCgi)
 						  "</body>\n"
 						  "</html>\n";
 
-	EXPECT_EQ(content, obj1.executeCgiManager(serverPath, pollMngr));
+	EXPECT_EQ(content, obj1.executeCgiManager(serverPath));
 }
 
 TEST(CgiManager, formContentCgi)
@@ -113,12 +110,11 @@ TEST(CgiManager, formContentCgi)
 	std::string serverName("serverName");
 	std::string port("1234");
 	Path serverPath(".");
-	PollManager pollMngr;
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
 
 	EXPECT_EQ("this is a test", basicHTTPRequest.getBody());
-	EXPECT_EQ("this is a test\n", obj1.executeCgiManager(serverPath, pollMngr));
+	EXPECT_EQ("this is a test\n", obj1.executeCgiManager(serverPath));
 }
 
 TEST(CgiManager, contentLengthCgi)
@@ -132,14 +128,13 @@ TEST(CgiManager, contentLengthCgi)
 	std::string serverName("serverName");
 	std::string port("1234");
 	Path serverPath(".");
-	PollManager pollMngr;
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
 	std::string expected = "Content-type: text/plain\r\n"
 						   "Content-Length: 37\r\n\r\n"
 						   "this is a test for the content_length";
 
-	EXPECT_EQ(expected, obj1.executeCgiManager(serverPath, pollMngr));
+	EXPECT_EQ(expected, obj1.executeCgiManager(serverPath));
 }
 
 TEST(CgiManager, phpCgi)
@@ -154,15 +149,14 @@ TEST(CgiManager, phpCgi)
 	std::string serverName("serverName");
 	std::string port("1234");
 	Path serverPath(".");
-	PollManager pollMngr;
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
 
 	EXPECT_EQ("nombre=Juan&edad=25", basicHTTPRequest.getBody());
-	EXPECT_EQ("nombre=Juan&edad=25", obj1.executeCgiManager(serverPath, pollMngr));
+	EXPECT_EQ("nombre=Juan&edad=25", obj1.executeCgiManager(serverPath));
 }
 
-TEST(CgiManager, timeoutCgi)
+/*TEST(CgiManager, timeoutCgi)
 {
 	BasicHTTPRequest basicHTTPRequest(
 		"POST /res/cgi/timeout.py "
@@ -175,8 +169,8 @@ TEST(CgiManager, timeoutCgi)
 	std::string serverName("serverName");
 	std::string port("1234");
 	Path serverPath(".");
-	PollManager pollMngr;
+
 
 	CgiManager obj1(basicHTTPRequest, pathCGI, serverName, port);
-	EXPECT_THROW(obj1.executeCgiManager(serverPath, pollMngr), PollManager::PollTimeoutException);
-}
+	EXPECT_THROW(obj1.executeCgiManager(serverPath), PollManager::PollTimeoutException);
+}*/

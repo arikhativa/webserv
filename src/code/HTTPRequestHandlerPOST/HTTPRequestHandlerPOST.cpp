@@ -1,6 +1,5 @@
 #include <HTTPRequestHandlerPOST/HTTPRequestHandlerPOST.hpp>
 
-
 bool httprequesthandlerPOST::isFileExists(const std::string &path)
 {
 	return (FileManager::isFileExists(path));
@@ -29,8 +28,8 @@ std::string httprequesthandlerPOST::getContentFilePost(std::string body)
 	return (content);
 }
 
-std::string httprequesthandlerPOST::getFileContent(const std::string &path, Server server, BasicHTTPRequest basicRequest,
-												   ResponseHeader &response)
+std::string httprequesthandlerPOST::getFileContent(const std::string &path, Server server,
+												   BasicHTTPRequest basicRequest, ResponseHeader &response)
 {
 	//! temporal
 	std::map<std::string, std::string> cgi; //=server.get....();
@@ -52,11 +51,9 @@ std::string httprequesthandlerPOST::getFileContent(const std::string &path, Serv
 			CgiManager obj1(basicRequest, pathCGI, serverName, port);
 
 			//! TODO: dont use pollmanager
-			PollManager pollMngr;
 			Path serverPath(".");
-			return (obj1.executeCgiManager(serverPath, pollMngr));
+			return (obj1.executeCgiManager(serverPath));
 		}
-			
 	}
 	std::string content = FileManager::getFileContent(path);
 	if (path.find(".") != std::string::npos)

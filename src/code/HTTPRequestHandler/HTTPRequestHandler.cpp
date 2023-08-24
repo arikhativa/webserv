@@ -11,8 +11,7 @@ std::string HTTPRequestHandler::get::GET(Server server, BasicHTTPRequest basicRe
 {
 	try
 	{
-		std::string path = "/home/rufo/Desktop/42/"; //! temporal, server.getPath();
-		
+		std::string path = "/"; //= server.getConf().getRoot()->get();
 		std::string file = basicRequest.getPath();
 		std::string url = path + basicRequest.getPath();
 		if (httprequesthandlerGET::isDirectory(url))
@@ -36,7 +35,7 @@ std::string HTTPRequestHandler::get::GET(Server server, BasicHTTPRequest basicRe
 			return (response.getResponse());
 		}
 	}
-	catch(const BasicHTTPRequest::Incomplete &e)
+	catch (const BasicHTTPRequest::Incomplete &e)
 	{
 		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), temporalErrorPages());
 		return (errorResponse.getResponse());
@@ -57,10 +56,7 @@ std::string HTTPRequestHandler::post::POST(Server server, BasicHTTPRequest basic
 {
 	try
 	{
-		std::string path = "/home/rufo/Desktop/42/"; //! temporal, server.getPath();
-		
-		(void)server;
-		
+		std::string path = "/"; //= server.getConf().getRoot()->get();
 		std::string file = basicRequest.getPath();
 		std::string url = path + basicRequest.getPath();
 		if (!httprequesthandlerPOST::isFileExists(path + file))
@@ -86,7 +82,7 @@ std::string HTTPRequestHandler::post::POST(Server server, BasicHTTPRequest basic
 		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::GATEWAY_TIMEOUT), temporalErrorPages());
 		return (errorResponse.getResponse());
 	}*/
-	catch(const BasicHTTPRequest::Incomplete &e)
+	catch (const BasicHTTPRequest::Incomplete &e)
 	{
 		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), temporalErrorPages());
 		return (errorResponse.getResponse());
@@ -112,9 +108,8 @@ std::string HTTPRequestHandler::delete_::DELETE(Server server, BasicHTTPRequest 
 {
 	try
 	{
-		std::string path = "/home/rufo/Desktop/42/"; //! temporal, server.getPath();
 		(void)server;
-		
+		std::string path = "/"; //= server.getConf().getRoot()->get();
 		std::string file = basicRequest.getPath();
 		if (!httprequesthandlerDELETE::isFileExists(path + file) || httprequesthandlerDELETE::isDirectory(path + file))
 		{
@@ -125,7 +120,7 @@ std::string HTTPRequestHandler::delete_::DELETE(Server server, BasicHTTPRequest 
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), temporalErrorPages());
 		return (response.getResponse());
 	}
-	catch(const BasicHTTPRequest::Incomplete &e)
+	catch (const BasicHTTPRequest::Incomplete &e)
 	{
 		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), temporalErrorPages());
 		return (errorResponse.getResponse());
@@ -142,12 +137,11 @@ std::string HTTPRequestHandler::delete_::DELETE(Server server, BasicHTTPRequest 
 	}
 }
 
-std::string HTTPRequestHandler::unknown::UNKNOWN(Server server, BasicHTTPRequest basicRequest)
+std::string HTTPRequestHandler::unknown::UNKNOWN(Server server)
 {
 	try
 	{
 		(void)server;
-		(void)basicRequest;
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::METHOD_NOT_ALLOWED), temporalErrorPages());
 		//! TODO temporal, must use the server config
 		response.setConnection("GET, POST, DELETE");

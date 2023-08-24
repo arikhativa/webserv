@@ -95,7 +95,7 @@ void HTTPRequest::handleRequest(void)
 		this->_response = HTTPRequestHandler::delete_::DELETE(this->_virtualServer, this->_basicRequest);
 		break;
 	default: // Uknown request
-		this->_response = HTTPRequestHandler::unknown::UNKNOWN(this->_virtualServer, this->_basicRequest);
+		this->_response = HTTPRequestHandler::unknown::UNKNOWN(this->_virtualServer);
 		break;
 	}
 }

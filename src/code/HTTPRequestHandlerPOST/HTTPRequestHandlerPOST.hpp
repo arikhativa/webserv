@@ -8,11 +8,11 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 
-#include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
-#include <ResponseHeader/ResponseHeader.hpp>
-#include <FileManager/FileManager.hpp>
 #include <CgiManager/CgiManager.hpp>
+#include <FileManager/FileManager.hpp>
+#include <HTTPRequestHandler/HTTPRequestHandler.hpp>
+#include <ResponseHeader/ResponseHeader.hpp>
 #include <Server/Server.hpp>
 
 namespace httprequesthandlerPOST
@@ -22,7 +22,8 @@ namespace httprequesthandlerPOST
 	std::string getBody(std::string request);
 	std::string getContentFilePost(std::string body);
 	std::string getQueryCGIArgs(std::string request);
-	std::string getFileContent(const std::string &path, Server server, BasicHTTPRequest request, ResponseHeader &response);
+	std::string getFileContent(const std::string &path, Server server, BasicHTTPRequest request,
+							   ResponseHeader &response);
 	std::string getCGI(const std::string &path, Server server, BasicHTTPRequest request, ResponseHeader &response);
 	std::string createpipe(char **ch_env, char **argv, std::string bodyRequest);
 	char **setEnv(std::string bodyRequest, const std::string &path, std::string request, Server server);
