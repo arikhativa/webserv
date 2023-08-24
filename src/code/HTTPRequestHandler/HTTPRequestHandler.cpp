@@ -11,6 +11,7 @@ std::string HTTPRequestHandler::get::GET(Server server, BasicHTTPRequest basicRe
 {
 	try
 	{
+		basicRequest.parseRaw();
 		std::string path = "/"; //= server.getConf().getRoot()->get();
 		std::string file = basicRequest.getPath();
 		std::string url = path + basicRequest.getPath();
@@ -56,6 +57,7 @@ std::string HTTPRequestHandler::post::POST(Server server, BasicHTTPRequest basic
 {
 	try
 	{
+		basicRequest.parseRaw();
 		std::string path = "/"; //= server.getConf().getRoot()->get();
 		std::string file = basicRequest.getPath();
 		std::string url = path + basicRequest.getPath();
@@ -108,6 +110,7 @@ std::string HTTPRequestHandler::delete_::DELETE(Server server, BasicHTTPRequest 
 {
 	try
 	{
+		basicRequest.parseRaw();
 		(void)server;
 		std::string path = "/"; //= server.getConf().getRoot()->get();
 		std::string file = basicRequest.getPath();
