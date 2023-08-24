@@ -31,7 +31,7 @@ std::string httprequesthandlerGET::getFileContent(const std::string &path, Serve
 			Path pathCGI(cgi[ext]);
 			CgiManager obj1(basicRequest, pathCGI, serverName, port);
 
-			Path serverPath(".");
+			Path serverPath("./res/exampleServer");
 			return (obj1.executeCgiManager(serverPath));
 		}
 	}

@@ -51,7 +51,7 @@ std::string httprequesthandlerPOST::getFileContent(const std::string &path, Serv
 			CgiManager obj1(basicRequest, pathCGI, serverName, port);
 
 			//! TODO: dont use pollmanager
-			Path serverPath(".");
+			Path serverPath("./res/exampleServer");
 			return (obj1.executeCgiManager(serverPath));
 		}
 	}

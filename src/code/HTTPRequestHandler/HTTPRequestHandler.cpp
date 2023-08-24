@@ -12,7 +12,7 @@ std::string HTTPRequestHandler::get::GET(Server server, BasicHTTPRequest basicRe
 	try
 	{
 		basicRequest.parseRaw();
-		std::string path = "/"; //= server.getConf().getRoot()->get();
+		std::string path = "./res/exampleServer"; //= server.getConf().getRoot()->get();
 		std::string file = basicRequest.getPath();
 		std::string url = path + basicRequest.getPath();
 		if (httprequesthandlerGET::isDirectory(url))
@@ -58,15 +58,15 @@ std::string HTTPRequestHandler::post::POST(Server server, BasicHTTPRequest basic
 	try
 	{
 		basicRequest.parseRaw();
-		std::string path = "/"; //= server.getConf().getRoot()->get();
+		std::string path = "./res/exampleServer"; //= server.getConf().getRoot()->get();
 		std::string file = basicRequest.getPath();
 		std::string url = path + basicRequest.getPath();
-		if (!httprequesthandlerPOST::isFileExists(path + file))
+		if (!httprequesthandlerPOST::isFileExists(url))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::NOT_FOUND), temporalErrorPages());
 			return (response.getResponse());
 		}
-		if (httprequesthandlerPOST::isDirectory(path + file))
+		if (httprequesthandlerPOST::isDirectory(url))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), temporalErrorPages());
 			if (file[file.length() - 1] != '/')
@@ -76,7 +76,7 @@ std::string HTTPRequestHandler::post::POST(Server server, BasicHTTPRequest basic
 			return (response.getResponse());
 		}
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), temporalErrorPages());
-		response.setBody(httprequesthandlerPOST::getFileContent(path + file, server, basicRequest, response));
+		response.setBody(httprequesthandlerPOST::getFileContent(url, server, basicRequest, response));
 		return (response.getResponse());
 	}
 	/*catch (const PollManager::PollTimeoutException)
@@ -112,7 +112,7 @@ std::string HTTPRequestHandler::delete_::DELETE(Server server, BasicHTTPRequest 
 	{
 		basicRequest.parseRaw();
 		(void)server;
-		std::string path = "/"; //= server.getConf().getRoot()->get();
+		std::string path = "./res/exampleServer"; //= server.getConf().getRoot()->get();
 		std::string file = basicRequest.getPath();
 		if (!httprequesthandlerDELETE::isFileExists(path + file) || httprequesthandlerDELETE::isDirectory(path + file))
 		{
