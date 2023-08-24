@@ -5,6 +5,12 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
+HTTPResponse::HTTPResponse()
+	: ABaseHTTPCall("")
+	, _stt(500)
+{
+}
+
 HTTPResponse::HTTPResponse(const std::string &raw)
 	: ABaseHTTPCall(raw)
 	, _stt(500)

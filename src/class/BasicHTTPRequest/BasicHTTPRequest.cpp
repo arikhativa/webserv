@@ -5,6 +5,14 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
+BasicHTTPRequest::BasicHTTPRequest()
+	: ABaseHTTPCall("")
+	, _type(BasicHTTPRequest::GET)
+	, _path("")
+	, _query("")
+{
+}
+
 BasicHTTPRequest::BasicHTTPRequest(const std::string &raw_request)
 	: ABaseHTTPCall(raw_request)
 	, _type(BasicHTTPRequest::GET)

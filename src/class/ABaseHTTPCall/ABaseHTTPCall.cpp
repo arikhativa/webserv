@@ -257,6 +257,11 @@ void ABaseHTTPCall::unParse(void)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
+void ABaseHTTPCall::setRaw(const std::string &raw)
+{
+	this->_raw = raw;
+}
+
 bool ABaseHTTPCall::isChunked(void) const
 {
 	std::map<std::string, std::string>::const_iterator it = _headers.find(httpConstants::headers::TRANSFER_ENCODING);
@@ -314,6 +319,15 @@ std::string ABaseHTTPCall::getRawBody(void) const
 	start += 4;
 
 	return _raw.substr(start, _raw.size() - start);
+}
+void ABaseHTTPCall::setStatus(Status s)
+{
+	this->_stt = s;
+}
+
+ABaseHTTPCall::Status ABaseHTTPCall::getStatus(void) const
+{
+	return this->_stt;
 }
 
 /* ************************************************************************** */

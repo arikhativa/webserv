@@ -17,6 +17,14 @@
 class ABaseHTTPCall
 {
   public:
+	enum Status
+	{
+		EMPTY,
+		INCOMPLETE_HEADER,
+		INCOMPLETE_BODY,
+		INVALID,
+		VALID,
+	};
 	enum HTTPVersion
 	{
 		UNKNOWN,
@@ -58,7 +66,10 @@ class ABaseHTTPCall
 	virtual void parseRaw(void) = 0;
 	virtual std::string toString(void) const = 0;
 	virtual void unParse(void);
+
 	void parseBody(void);
+	void setRaw(const std::string &raw);
+	void setStatus(Status s);
 
 	static std::string toStringVersion(HTTPVersion);
 
@@ -69,6 +80,7 @@ class ABaseHTTPCall
 	const std::map<std::string, std::string> &getHeaders(void) const;
 	const std::string &getBody(void) const;
 	std::string getRawBody(void) const;
+	Status getStatus(void) const;
 	bool isChunked(void) const;
 	bool isBody(void) const;
 	void extenedRaw(const std::string &raw);
@@ -83,6 +95,7 @@ class ABaseHTTPCall
 	std::string _raw;
 	std::map<std::string, std::string> _headers;
 	bool _is_valid;
+	Status _stt;
 	HTTPVersion _http_version;
 	std::string _body;
 	std::string _last_extention;
