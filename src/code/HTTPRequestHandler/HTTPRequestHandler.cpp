@@ -18,8 +18,6 @@ std::string HTTPRequestHandler::get::GET(Server server, BasicHTTPRequest basicRe
 		if (httprequesthandlerGET::isDirectory(url))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), temporalErrorPages());
-			if (file[file.length() - 1] != '/')
-				file += "/";
 			response.setContentType(httpConstants::HTML_SUFFIX);
 			response.setBody(httprequesthandlerGET::getDirecoryContent(path, file));
 			return (response.getResponse());

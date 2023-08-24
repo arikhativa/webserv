@@ -69,7 +69,7 @@ TEST_SCRIPT					:= $(addprefix $(SCRIPT_DIR)/, test.sh)
 # flags
 INCLUDE						:= -I$(HEAD_DIR_TEMPLATE) -I$(HEAD_DIR_CLASS) -I$(HEAD_DIR_CODE)
 CC 							:= c++
-CPPFLAGS 					:= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -std=c++98 $(INCLUDE)
+CPPFLAGS 					:= -c -MMD -MP -Wshadow -Wall -Wextra -Werror -g -std=c++98 $(INCLUDE)
 TEST_COMPILE_FLAGS			:= -c -std=c++14 -DTEST_ON=1 $(INCLUDE)
 TEST_LN_FLAGS				:= -std=c++14 -lgmock_main -lgmock -lgtest -lpthread $(INCLUDE)
 
