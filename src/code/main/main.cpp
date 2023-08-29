@@ -77,6 +77,10 @@ int main(int ac, char **av)
 
 	std::cout << *conf << std::endl;
 
+	ServerManager sm(conf);
+	sm.setup();
+	sm.start();
+
 	delete conf;
 	return EXIT_SUCCESS;
 }

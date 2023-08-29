@@ -15,6 +15,7 @@
 #include <vector>
 
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
+#include <HTTPRequest/HTTPRequest.hpp>
 #include <HTTPResponse/HTTPResponse.hpp>
 
 #ifdef TEST_ON
@@ -28,14 +29,13 @@ class Poll
 	struct Param
 	{
 		// general
-		BasicHTTPRequest req;
+		HTTPRequest req;
 		int src_socket;
 		int client_fd;
 
 		// CGI flow
 		int write_pipe;
 		int read_pipe;
-		HTTPResponse cgi_res;
 	};
 
 	enum ret_stt
@@ -45,7 +45,7 @@ class Poll
 		DONE,
 	};
 
-	typedef ret_stt (*t_handler)(Poll &p, int fd, int revents, Param param);
+	typedef ret_stt (*t_handler)(Poll &p, int fd, int revents, Param &param);
 
 	Poll();
 	~Poll();

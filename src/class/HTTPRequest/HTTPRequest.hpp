@@ -18,20 +18,19 @@
 
 class HTTPRequest
 {
-  private:
-	static const std::string GET_STRING;
-	static const std::string POST_STRING;
-	static const std::string DELETE_STRING;
-
   public:
-	static const int MAX_REQUEST_ATTEMPTS;
-	explicit HTTPRequest(const Server virtualServer, int client_fd);
+	static const int MAX_ATTEMPTS;
+	explicit HTTPRequest();
+	explicit HTTPRequest(Server *virtualServer, int client_fd);
 	~HTTPRequest();
 
 	BasicHTTPRequest getBasicRequest(void) const;
 	std::string getResponse(void) const;
 	int getClientFd(void) const;
-	int getAttempts(void) const;
+	int getRequestAttempts(void) const;
+	int getResponseAttempts(void) const;
+	long unsigned int getBytesSent(void) const;
+	Server *getVirtualServer(void) const;
 
 	void setBasicRequest(BasicHTTPRequest request);
 	void setResponse(std::string response);
@@ -56,10 +55,13 @@ class HTTPRequest
 	};
 
   private:
-	int _attempts;
-	const Server _virtualServer;
-	const int _clientFd;
+	Server *_virtualServer;
+	int _clientFd;
 
+	int _requestAttempts;
+	int _responseAttempts;
+	long unsigned int _bytesSent;
+	std::string _rawRequest;
 	std::string _response;
 	BasicHTTPRequest _basicRequest;
 };
