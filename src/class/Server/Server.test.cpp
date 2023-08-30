@@ -47,8 +47,8 @@ TEST(Server, CreateDestroy)
 	Conf conf("file");
 	conf.addDefaultServerIfNeeded();
 
-	std::list<const IServerConf *> servers = conf->getServers();
-	obj = new Server(*(servers.begin()));
+	std::list<const IServerConf *> servers = conf.getServers();
+	Server *obj = new Server(*(servers.begin()));
 	delete obj;
 }
 
@@ -57,8 +57,8 @@ TEST(Server, AcceptingConnectionFailed)
 	Conf conf("file");
 	conf.addDefaultServerIfNeeded();
 
-	std::list<const IServerConf *> servers = conf->getServers();
-	obj = new Server(*(servers.begin()));
+	std::list<const IServerConf *> servers = conf.getServers();
+	Server *obj = new Server(*(servers.begin()));
 	EXPECT_THROW(obj->acceptConnection(-1), Server::AcceptingConnectionFailed);
 	delete obj;
 }
