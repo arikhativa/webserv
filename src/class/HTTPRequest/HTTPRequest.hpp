@@ -31,6 +31,7 @@ class HTTPRequest
 	int getResponseAttempts(void) const;
 	long unsigned int getBytesSent(void) const;
 	Server *getVirtualServer(void) const;
+	Socket *getSocket(void) const;
 
 	void setBasicRequest(BasicHTTPRequest request);
 	void setResponse(std::string response);
@@ -56,6 +57,7 @@ class HTTPRequest
 
   private:
 	Server *_virtualServer;
+	Socket *_socket;
 	int _clientFd;
 
 	int _requestAttempts;
