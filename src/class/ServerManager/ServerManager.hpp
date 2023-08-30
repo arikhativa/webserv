@@ -20,21 +20,21 @@
 
 #define MAX_POLL_SIZE 128
 
-enum status
-{
-	STOPED = 0,
-	RUNNING = 1
-};
-
 class ServerManager
 {
   public:
+	enum status
+	{
+		OK = 0,
+		INVALID_VIRTUAL_SERVERS
+	};
+	
 	ServerManager(const IConf *conf);
 	~ServerManager();
 
 	void start();
 	void terminate();
-	void setup();
+	ServerManager::status setup();
 
   private:
 	Poll _poll;

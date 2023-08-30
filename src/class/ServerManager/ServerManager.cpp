@@ -80,7 +80,7 @@ Poll::ret_stt initSocketsHandler(Poll &p, int fd, int revents, Poll::Param &para
 ServerManager::ServerManager(const IConf *conf)
 	: _poll()
 	, _conf(conf)
-	, _status(STOPED)
+	, _status(ServerManager::OK)
 {
 	std::list<const IServerConf *> servers = conf->getServers();
 	std::list<const IServerConf *>::iterator it = servers.begin();
@@ -108,14 +108,22 @@ ServerManager::~ServerManager()
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void ServerManager::setup()
+ServerManager::status ServerManager::setup()
 {
+	if (this->_virtualServers.empty())
+		return ServerManager::INVALID_VIRTUAL_SERVERS;
 	std::vector<Server>::iterator it = this->_virtualServers.begin();
 	std::vector<Server>::iterator end = this->_virtualServers.end();
 	for (int i = 0; it != end; it++)
 	{
-		it->bindSockets();
-		it->listenSockets();
+		try
+		{
+			it->bindSockets();
+			it->listenSockets();
+		} catch (std::exception &e)
+		{
+			return ServerManager::INVALID_VIRTUAL_SERVERS;
+		}
 		std::vector<int> fds = it->getSockets();
 		std::vector<int>::iterator it_fds = fds.begin();
 		std::vector<int>::iterator end_fds = fds.end();
@@ -125,6 +133,7 @@ void ServerManager::setup()
 			this->_poll.addRead(*it_fds, initSocketsHandler, param);
 		}
 	}
+	return ServerManager::OK;
 }
 
 void ServerManager::start()
@@ -138,7 +147,7 @@ void ServerManager::terminate()
 	std::vector<Server>::iterator end = this->_virtualServers.end();
 	for (; it != end; it++)
 	{
-		it->close();
+		it->closeSockets();
 	}
 }
 
