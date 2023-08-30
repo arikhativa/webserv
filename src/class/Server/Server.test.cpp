@@ -1,7 +1,12 @@
 
 #include <Server/Server.hpp>
 #include <gtest/gtest.h>
+
 #include <Conf/Conf.hpp>
+#include <FileManager/FileManager.hpp>
+#include <builder/builder.hpp>
+#include <lexer/lexer.hpp>
+#include <parser/parser.hpp>
 
 static const IConf *createConf(const std::string &path)
 {
