@@ -46,7 +46,6 @@ std::string httprequesthandlerPOST::getFileContent(const std::string &path, Serv
 			//! TODO: use server settings
 			std::string serverName("serverName");
 			std::string port("1234");
-
 			Path pathCGI(cgi[ext]);
 			CgiManager obj1(basicRequest, pathCGI, serverName, port);
 
