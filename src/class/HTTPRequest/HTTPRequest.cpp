@@ -124,6 +124,11 @@ Server *HTTPRequest::getVirtualServer(void) const
 	return this->_virtualServer;
 }
 
+Socket *HTTPRequest::getSocket(void) const
+{
+	return this->_socket;
+}
+
 BasicHTTPRequest HTTPRequest::getBasicRequest(void) const
 {
 	return this->_basicRequest;
