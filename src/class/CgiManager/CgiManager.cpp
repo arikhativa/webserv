@@ -59,8 +59,10 @@ void CgiManager::_setEnv(void)
 	std::map<std::string, std::string> env;
 	if (_basicHTTPRequest.getHeaders().find(httpConstants::CONTENT_LENGTH) != _basicHTTPRequest.getHeaders().end())
 		env[httpConstants::CONTENT_LENGTH] = _basicHTTPRequest.getHeaders().at(httpConstants::CONTENT_LENGTH);
-	if (_basicHTTPRequest.getHeaders().find(httpConstants::CONTENT_TYPE_FIELD) != _basicHTTPRequest.getHeaders().end())
-		env[httpConstants::CONTENT_TYPE_FIELD] = _basicHTTPRequest.getHeaders().at(httpConstants::CONTENT_TYPE_FIELD);
+	if (_basicHTTPRequest.getHeaders().find(httpConstants::headers::CONTENT_LENGTH) !=
+		_basicHTTPRequest.getHeaders().end())
+		env[httpConstants::headers::CONTENT_LENGTH] =
+			_basicHTTPRequest.getHeaders().at(httpConstants::headers::CONTENT_LENGTH);
 	env[httpConstants::REQUEST_METHOD] = _basicHTTPRequest.getType();
 	env[httpConstants::SCRIPT_FILENAME] = _pathCGI.get();
 	if (_basicHTTPRequest.getQuery().length() > 1)

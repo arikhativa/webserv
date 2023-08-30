@@ -19,7 +19,6 @@ namespace httpConstants
 	const std::string SERVER_FIELD_VALUE("webserv");
 	const std::string DATE_FIELD_KEY("Date: ");
 	const std::string CONTENT_TYPE_FIELD_KEY("Content-Type: ");
-	const std::string CONTENT_TYPE_FIELD("Content-Type");
 	const std::string CONTENT_LENGHT_FIELD_KEY("Content-Length: ");
 	const std::string CONNECTION_FIELD_KEY("Connection: ");
 	const std::string ALLOW_HEADER("Allow: ");
@@ -49,6 +48,7 @@ namespace httpConstants
 		const std::string HOST("Host");
 		const std::string TRANSFER_ENCODING("Transfer-Encoding");
 		const std::string CHUNKED("chunked");
+		const std::string FROM_DATA("multipart/form-data");
 	} // namespace headers
 } // namespace httpConstants
 

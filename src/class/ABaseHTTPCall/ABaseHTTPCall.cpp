@@ -253,6 +253,18 @@ void ABaseHTTPCall::unParse(void)
 	_last_extention.clear();
 }
 
+bool ABaseHTTPCall::isUploadFile(void) const
+{
+	std::map<std::string, std::string>::const_iterator it(
+		this->getHeaders().find(httpConstants::headers::CONTENT_TYPE));
+
+	if (it != this->getHeaders().end())
+	{
+		return it->second.find(httpConstants::headers::FROM_DATA) != std::string::npos;
+	}
+	return false;
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */

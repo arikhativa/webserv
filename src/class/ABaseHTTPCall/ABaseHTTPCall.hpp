@@ -70,6 +70,7 @@ class ABaseHTTPCall
 	const std::string &getBody(void) const;
 	std::string getRawBody(void) const;
 	bool isChunked(void) const;
+	bool isUploadFile(void) const;
 	bool isBody(void) const;
 	void extenedRaw(const std::string &raw);
 
