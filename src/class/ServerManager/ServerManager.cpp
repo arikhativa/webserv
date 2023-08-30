@@ -9,7 +9,6 @@ Poll::ret_stt client_write(Poll &p, int fd, int revents, Poll::Param &param)
 	(void)fd;
 	(void)revents;
 	(void)param;
-	std::cout << "Client Write" << std::endl;
 	try
 	{
 		param.req.sendResponse();
@@ -33,7 +32,6 @@ Poll::ret_stt client_read(Poll &p, int fd, int revents, Poll::Param &param)
 	(void)fd;
 	(void)revents;
 	(void)param;
-	std::cout << "Client Read" << std::endl;
 	if (param.req.getRequestAttempts() >= HTTPRequest::MAX_CHUNK_ATTEMPTS)
 		return Poll::DONE;
 	try
