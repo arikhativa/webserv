@@ -85,12 +85,10 @@ static Poll::ret_stt readFromClient(Poll &p, int fd, int revents, Poll::Param &p
 	{
 		int fake_client_fd = open(file, O_CREAT | O_RDWR, 0644);
 
-		param.req.setRaw(
-			"POST /cgi-bin/test.cgi HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 4\r\nContent-Type: "
+		param.req = HTTPRequest("POST /cgi-bin/test.cgi HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 4\r\nContent-Type: "
 			"application/x-www-form-urlencoded\r\n\r\ntest");
-
-		param.req.parseRaw();
-		param.req.parseBody();
+		param.req.getBasicHTTPRequest().parseRaw();
+		param.req.getBasicHTTPRequest().parseBody();
 
 		param.write_pipe = fake_client_fd;
 		param.read_pipe = fake_client_fd;
