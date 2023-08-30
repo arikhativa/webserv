@@ -65,6 +65,24 @@ const IServerConf *matcher::requestToServer(const IConf *conf, const IListen *so
 	return getDefaultServerByListen(list, socket);
 }
 
+static bool checkMethod(const ILocation *l, const BasicHTTPRequest &req)
+{
+	std::list<std::string> list = l->getMethods();
+	std::list<std::string>::const_iterator it = list.begin();
+
+	while (it != list.end())
+	{
+		if (*it == req.getMethod())
+			return true;
+		++it;
+	}
+	return false;
+}
+
+static bool checkUpload(const ILocation *l, const BasicHTTPRequest &req)
+{
+}
+
 const ILocation *matcher::requestToLocation(const IServerConf *s, const BasicHTTPRequest &req)
 {
 	std::list<const ILocation *> list = s->getLocations();

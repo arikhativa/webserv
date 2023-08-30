@@ -1,25 +1,24 @@
 <?php
-header("Transfer-Encoding: chunked");
-header("Content-Encoding: none");
+// Set headers for plain text response
+header("Content-Type: text/plain");
 
-// Send chunk to browser
-function send_chunk($chunk)
-{
-    // The chunk must fill the output buffer or php won't send it
-    $chunk = str_pad($chunk, 4096);
+// $fileName = "/tmp/new_file.txt";
+// $fileContent = "aaa";
 
-    printf("%x\r\n%s\r\n", strlen($chunk), $chunk);
-    flush();
+// // Create the file
+// if (file_put_contents($fileName, $fileContent) !== false) {
+//     echo "File '$fileName' created successfully!";
+// } else {
+//     echo "Failed to create the file '$fileName'.";
+// }
+
+// Print request headers
+foreach (getallheaders() as $name => $value) {
+    echo "$name: $value\n";
 }
+echo "\n";
 
-// Send your content in chunks
-for($i=0; $i<10; $i++)
-{
-    send_chunk("This is Chunk #$i.<br>\r\n");
-    usleep(1000000);
-}
-
-// note that if you send an empty chunk
-// the browser won't display additional output
-echo "0\r\n\r\n";
-flush();
+// Print request body (if present)
+$requestBody = file_get_contents('php://input');
+echo $requestBody;
+?>
