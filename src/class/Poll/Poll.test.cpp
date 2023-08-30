@@ -10,7 +10,7 @@ TEST(Poll, CreateDestroy)
 	delete obj;
 }
 
-static Poll::ret_stt test_handler(Poll &p, int fd, int revents, Poll::Param param)
+static Poll::ret_stt test_handler(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	(void)p;
 	(void)fd;
@@ -37,7 +37,7 @@ TEST(Poll, FreeAll)
 	EXPECT_EQ(ret, -1);
 }
 
-static Poll::ret_stt writeToClient(Poll &p, int fd, int revents, Poll::Param param)
+static Poll::ret_stt writeToClient(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	if (Poll::isWriteEvent(revents))
 	{
@@ -49,7 +49,7 @@ static Poll::ret_stt writeToClient(Poll &p, int fd, int revents, Poll::Param par
 	return Poll::CONTINUE;
 }
 
-static Poll::ret_stt readFromCGI(Poll &p, int fd, int revents, Poll::Param param)
+static Poll::ret_stt readFromCGI(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	if (Poll::isReadEvent(revents))
 	{
@@ -65,7 +65,7 @@ static Poll::ret_stt readFromCGI(Poll &p, int fd, int revents, Poll::Param param
 	return Poll::CONTINUE;
 }
 
-static Poll::ret_stt writeToCGI(Poll &p, int fd, int revents, Poll::Param param)
+static Poll::ret_stt writeToCGI(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	if (Poll::isWriteEvent(revents))
 	{
@@ -78,7 +78,7 @@ static Poll::ret_stt writeToCGI(Poll &p, int fd, int revents, Poll::Param param)
 	return Poll::CONTINUE;
 }
 
-static Poll::ret_stt readFromClient(Poll &p, int fd, int revents, Poll::Param param)
+static Poll::ret_stt readFromClient(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	if (Poll::isReadEvent(revents))
 	{
