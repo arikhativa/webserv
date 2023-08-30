@@ -45,7 +45,6 @@ TEST(Server, CreateDestroy)
 	std::list<const IServerConf *> servers = conf->getServers();
 	obj = new Server(*(servers.begin()));
 	delete obj;
-	delete conf;
 }
 
 TEST(Server, AcceptingConnectionFailed)
@@ -57,13 +56,4 @@ TEST(Server, AcceptingConnectionFailed)
 	obj = new Server(*(servers.begin()));
 	EXPECT_THROW(obj->acceptConnection(-1), Server::AcceptingConnectionFailed);
 	delete obj;
-	delete conf;
-}
-
-TEST(Server, Accessor)
-{
-}
-
-TEST(Server, Canonical)
-{
 }
