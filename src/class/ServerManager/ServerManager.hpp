@@ -5,6 +5,7 @@
 #include <Conf/Conf.hpp>
 #include <HTTPRequest/HTTPRequest.hpp>
 #include <IConf/IConf.hpp>
+#include <Poll/Poll.hpp>
 #include <Server/Server.hpp>
 #include <iostream>
 #include <map>
@@ -36,14 +37,10 @@ class ServerManager
 	void setup();
 
   private:
+	Poll _poll;
 	const IConf *_conf;
 	enum status _status;
 	std::vector<Server> _virtualServers;
-	std::vector<HTTPRequest *> _pendingRequests;
-
-	int _pollSize;
-	struct pollfd *_poll;
-	std::map<struct pollfd *, Server *> _pollServer;
 
 	int getTotalListeners(void) const;
 };
