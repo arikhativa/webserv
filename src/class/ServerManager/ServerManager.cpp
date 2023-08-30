@@ -114,7 +114,7 @@ ServerManager::status ServerManager::setup()
 		return ServerManager::INVALID_VIRTUAL_SERVERS;
 	std::vector<Server>::iterator it = this->_virtualServers.begin();
 	std::vector<Server>::iterator end = this->_virtualServers.end();
-	for (int i = 0; it != end; it++)
+	for (; it != end; it++)
 	{
 		try
 		{
@@ -128,7 +128,7 @@ ServerManager::status ServerManager::setup()
 		std::vector<int> fds = it->getSockets();
 		std::vector<int>::iterator it_fds = fds.begin();
 		std::vector<int>::iterator end_fds = fds.end();
-		for (; it_fds != end_fds; i++, it_fds++)
+		for (; it_fds != end_fds; it_fds++)
 		{
 			Poll::Param param = {HTTPRequest(&(*it), -1), -1, -1, -1, -1};
 			this->_poll.addRead(*it_fds, initSocketsHandler, param);
