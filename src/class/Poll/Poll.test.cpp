@@ -41,7 +41,8 @@ static Poll::ret_stt writeToClient(Poll &p, int fd, int revents, Poll::Param &pa
 {
 	if (Poll::isWriteEvent(revents))
 	{
-		// send(fd, param.cgi_res.toString().c_str(), param.cgi_res.toString().size(), 0);
+		// send(fd, param.cgi_
+		// res.toString().c_str(), param.cgi_res.toString().size(), 0);
 		p.exitLoop();
 		return Poll::DONE;
 	}
@@ -54,9 +55,9 @@ static Poll::ret_stt readFromCGI(Poll &p, int fd, int revents, Poll::Param &para
 	if (Poll::isReadEvent(revents))
 	{
 		// read(param.read_pipe, buff, sizeof(buff));
-		param.cgi_res.setRaw("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 4\r\n\r\ntest");
-		param.cgi_res.parseRaw();
-		param.cgi_res.parseBody();
+		// param.cgi_res.setRaw("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 4\r\n\r\ntest");
+		// param.cgi_res.parseRaw();
+		// param.cgi_res.parseBody();
 
 		p.addWrite(param.client_fd, writeToClient, param);
 		return Poll::DONE;
@@ -102,7 +103,7 @@ static Poll::ret_stt readFromClient(Poll &p, int fd, int revents, Poll::Param &p
 	return Poll::CONTINUE;
 }
 
-static Poll::ret_stt newClient(Poll &p, int fd, int revents, Poll::Param _)
+static Poll::ret_stt newClient(Poll &p, int fd, int revents, Poll::Param &_)
 {
 	(void)_;
 
