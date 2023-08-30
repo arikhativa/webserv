@@ -132,6 +132,16 @@ void ServerManager::start()
 	this->_poll.loop();
 }
 
+void ServerManager::terminate()
+{
+	std::vector<Server>::iterator it = this->_virtualServers.begin();
+	std::vector<Server>::iterator end = this->_virtualServers.end();
+	for (; it != end; it++)
+	{
+		it->close();
+	}
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
