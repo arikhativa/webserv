@@ -12,8 +12,8 @@ void HTTPRequestHandler::GET(HTTPRequest &request)
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 			response.setContentType(httpConstants::HTML_SUFFIX);
-			response.setBody(httprequesthandlerGET::getDirecoryContent(request.getPathServerDirectory(),
-																	   Path(requestRecived.getPath())));
+			response.setBody(FileManager::getDirectoryPreview(request.getPathServerDirectory().get(),
+															  Path(requestRecived.getPath()).get()));
 			return (request.setResponse(response.getResponse()));
 		}
 		else if (httprequesthandlerGET::isFileExists(url.get()))
