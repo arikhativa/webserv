@@ -28,7 +28,7 @@ class ServerManager
 		OK = 0,
 		INVALID_VIRTUAL_SERVERS
 	};
-	
+
 	ServerManager(const IConf *conf);
 	~ServerManager();
 

@@ -14,12 +14,12 @@ Poll::ret_stt client_write(Poll &p, int fd, int revents, Poll::Param &param)
 	{
 		param.req.sendResponse();
 	}
-	catch(const std::exception& e)
+	catch (const std::exception &e)
 	{
 		std::cerr << e.what() << '\n';
 		return Poll::DONE;
 	}
-	
+
 	if (param.req.getBytesSent() < param.req.getResponse().size() ||
 		param.req.getResponseAttempts() >= HTTPRequest::MAX_CHUNK_ATTEMPTS)
 		return Poll::CONTINUE;
@@ -120,7 +120,8 @@ ServerManager::status ServerManager::setup()
 		{
 			it->bindSockets();
 			it->listenSockets();
-		} catch (std::exception &e)
+		}
+		catch (std::exception &e)
 		{
 			return ServerManager::INVALID_VIRTUAL_SERVERS;
 		}
