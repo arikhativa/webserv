@@ -1,19 +1,17 @@
 #include <HTTPRequest/HTTPRequest.hpp>
 
-const std::string HTTPRequest::GET_STRING("GET ");
-const std::string HTTPRequest::POST_STRING("POST ");
-const std::string HTTPRequest::DELETE_STRING("DELETE ");
-
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-const int HTTPRequest::MAX_REQUEST_ATTEMPTS = 10;
+const int HTTPRequest::MAX_CHUNK_ATTEMPTS = 5;
 
-HTTPRequest::HTTPRequest(const Server virtualServer, int clientFd)
-	: _attempts(0)
-	, _virtualServer(virtualServer)
+HTTPRequest::HTTPRequest(Server *virtualServer, int clientFd)
+	: _virtualServer(virtualServer)
 	, _clientFd(clientFd)
+	, _requestAttempts(0)
+	, _responseAttempts(0)
+	, _bytesSent(0)
 	, _response("\0")
 	, _basicRequest("")
 {
@@ -51,20 +49,16 @@ std::ostream &operator<<(std::ostream &o, HTTPRequest const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-BasicHTTPRequest::Type HTTPRequest::getRequestType()
-{
-	return this->_basicRequest.getType();
-}
-
 void HTTPRequest::recvRequest(void)
 {
 	int tmpRecvLen;
 	char tmpRaw[4096];
 
 	tmpRecvLen = recv(this->_clientFd, tmpRaw, sizeof(tmpRaw), MSG_DONTWAIT);
+	this->_requestAttempts++;
+	this->_rawRequest += tmpRaw;
 	if (tmpRecvLen <= -1)
 	{
-		this->_attempts++;
 		throw RecievingRequestError();
 	}
 	this->_basicRequest = BasicHTTPRequest(std::string(tmpRaw));
@@ -74,28 +68,29 @@ void HTTPRequest::sendResponse(void)
 {
 	int sendStatus;
 	sendStatus = send(this->_clientFd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
+	this->_responseAttempts++;
 	if (sendStatus <= -1)
 	{
-		this->_attempts++;
 		throw SendingResponseError();
 	}
+	this->_bytesSent += sendStatus;
 }
 
 void HTTPRequest::handleRequest(void)
 {
-	switch (getRequestType())
+	switch (this->_basicRequest.getType())
 	{
 	case BasicHTTPRequest::GET:
-		this->_response = HTTPRequestHandler::GET(this->_virtualServer, this->_basicRequest);
+		HTTPRequestHandler::GET(*this);
 		break;
 	case BasicHTTPRequest::POST:
-		this->_response = HTTPRequestHandler::POST(this->_virtualServer, this->_basicRequest);
+		HTTPRequestHandler::POST(*this);
 		break;
 	case BasicHTTPRequest::DELETE:
-		this->_response = HTTPRequestHandler::DELETE(this->_virtualServer, this->_basicRequest);
+		HTTPRequestHandler::DELETE(*this);
 		break;
 	default: // Uknown request
-		this->_response = HTTPRequestHandler::UNKNOWN(this->_virtualServer, this->_basicRequest);
+		HTTPRequestHandler::UNKNOWN(*this);
 		break;
 	}
 }
@@ -108,6 +103,26 @@ void HTTPRequest::terminate(void)
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+int HTTPRequest::getRequestAttempts(void) const
+{
+	return this->_requestAttempts;
+}
+
+int HTTPRequest::getResponseAttempts(void) const
+{
+	return this->_responseAttempts;
+}
+
+long unsigned int HTTPRequest::getBytesSent(void) const
+{
+	return this->_bytesSent;
+}
+
+Server *HTTPRequest::getVirtualServer(void) const
+{
+	return this->_virtualServer;
+}
 
 BasicHTTPRequest HTTPRequest::getBasicRequest(void) const
 {
@@ -124,11 +139,6 @@ int HTTPRequest::getClientFd(void) const
 	return this->_clientFd;
 }
 
-int HTTPRequest::getAttempts(void) const
-{
-	return this->_attempts;
-}
-
 void HTTPRequest::setBasicRequest(BasicHTTPRequest request)
 {
 	this->_basicRequest = request;
@@ -137,6 +147,11 @@ void HTTPRequest::setBasicRequest(BasicHTTPRequest request)
 void HTTPRequest::setResponse(std::string response)
 {
 	this->_response = response;
+}
+
+void HTTPRequest::setClientFd(int fd)
+{
+	this->_clientFd = fd;
 }
 
 /* ************************************************************************** */

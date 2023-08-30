@@ -1,30 +1,27 @@
 
+#include <HTTPRequest/HTTPRequest.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 
-std::string HTTPRequestHandler::GET(Server server, BasicHTTPRequest basicRequest)
+void HTTPRequestHandler::GET(HTTPRequest &request)
 {
-	(void)basicRequest;
-	(void)server;
-	return std::string("You sent a GET request:\n");
+	(void)request;
+	request.setResponse("HTTP/1.1 200 OK\r\n\r\nYOU SENT A GET REQUEST");
 }
 
-std::string HTTPRequestHandler::POST(Server server, BasicHTTPRequest basicRequest)
+void HTTPRequestHandler::POST(HTTPRequest &request)
 {
-	(void)basicRequest;
-	(void)server;
-	return std::string("You sent a POST request:\n");
+	(void)request;
+	request.setResponse("HTTP/1.1 200 OK\r\n\r\nYOU SENT A POST REQUEST");
 }
 
-std::string HTTPRequestHandler::DELETE(Server server, BasicHTTPRequest basicRequest)
+void HTTPRequestHandler::DELETE(HTTPRequest &request)
 {
-	(void)basicRequest;
-	(void)server;
-	return std::string("You sent a DELETE request:\n");
+	(void)request;
+	request.setResponse("HTTP/1.1 200 OK\r\n\r\nYOU SENT A DELETE REQUEST");
 }
 
-std::string HTTPRequestHandler::UNKNOWN(Server server, BasicHTTPRequest basicRequest)
+void HTTPRequestHandler::UNKNOWN(HTTPRequest &request)
 {
-	(void)basicRequest;
-	(void)server;
-	return std::string("You sent an UNKNOWN request:\n");
+	(void)request;
+	request.setResponse("HTTP/1.1 200 OK\r\n\r\nYOU SENT A UNKNOWN REQUEST");
 }
