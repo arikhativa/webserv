@@ -32,12 +32,12 @@ class Server
 	void bindSockets(void);
 	void listenSockets(void);
 	const std::vector<int> getSockets(void) const;
-	int getSocketListSize(void) const;
+	size_t getSocketListSize(void) const;
 	void closeSockets(void);
 
 	static int acceptConnection(int socketIndex);
 
-	const ServerConf getConf(void) const;
+	const IServerConf *getConf(void) const;
 
   private:
 	std::vector<Socket> _sockets;

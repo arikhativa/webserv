@@ -87,9 +87,14 @@ const std::vector<int> Server::getSockets(void) const
 	return fds;
 }
 
-int Server::getSocketListSize(void) const
+size_t Server::getSocketListSize(void) const
 {
 	return this->_sockets.size();
+}
+
+const IServerConf *Server::getConf(void) const
+{
+	return this->_conf;
 }
 
 /* ************************************************************************** */
