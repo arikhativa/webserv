@@ -19,6 +19,7 @@ namespace httprequesthandlerPOST
 	bool isFileExists(const std::string &path);
 	bool isDirectory(const std::string &path);
 	std::string getFileContent(const std::string &path, ResponseHeader &response);
+	std::string getDirecoryContent(const Path &path, const Path &name);
 } // namespace httprequesthandlerPOST
 
 #endif

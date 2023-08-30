@@ -61,8 +61,8 @@ void HTTPRequestHandler::POST(HTTPRequest &request)
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 			response.setContentType(httpConstants::HTML_SUFFIX);
-			response.setBody(FileManager::getDirectoryPreview(request.getPathServerDirectory().get(),
-															  Path(requestRecived.getPath()).get()));
+			response.setBody(httprequesthandlerPOST::getDirecoryContent(request.getPathServerDirectory(),
+																		Path(requestRecived.getPath())));
 			return (request.setResponse(response.getResponse()));
 		}
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());

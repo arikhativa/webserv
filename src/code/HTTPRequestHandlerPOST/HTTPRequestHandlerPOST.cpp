@@ -17,3 +17,8 @@ std::string httprequesthandlerPOST::getFileContent(const std::string &path, Resp
 		response.setContentType(path.substr(path.find_last_of(".")));
 	return (content);
 }
+
+std::string httprequesthandlerPOST::getDirecoryContent(const Path &path, const Path &name)
+{
+	return (FileManager::getDirectoryPreview(path.get(), name.get()));
+}
