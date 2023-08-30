@@ -21,8 +21,3 @@ std::string httprequesthandlerGET::getDirecoryContent(const Path &path, const Pa
 {
 	return (FileManager::getDirectoryPreview(path.get(), name.get()));
 }
-
-const char *httprequesthandlerGET::cgiGETException::what() const throw()
-{
-	return "Error In cgi";
-}
