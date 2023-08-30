@@ -7,12 +7,14 @@
 #include <iostream>
 #include <string>
 
+class HTTPRequest;
+
 namespace HTTPRequestHandler
 {
-	std::string GET(Server server, BasicHTTPRequest basicRequest);
-	std::string POST(Server server, BasicHTTPRequest basicRequest);
-	std::string DELETE(Server server, BasicHTTPRequest basicRequest);
-	std::string UNKNOWN(Server server, BasicHTTPRequest basicRequest);
+	void GET(HTTPRequest &request);
+	void POST(HTTPRequest &request);
+	void DELETE(HTTPRequest &request);
+	void UNKNOWN(HTTPRequest &request);
 }; // namespace HTTPRequestHandler
 
 #endif /* H_T_T_P_REQUEST_HANDLER_HPP */
