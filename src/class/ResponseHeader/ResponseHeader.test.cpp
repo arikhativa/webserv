@@ -4,7 +4,7 @@
 
 TEST(ResponseHeader, CreateDestroy)
 {
-	std::list<const ErrorPage *> error_pages;
+	std::list<const IErrorPage *> error_pages;
 	ErrorPage default_page("404", "res/404.html");
 	error_pages.push_back(&default_page);
 	HTTPStatusCode code(502);
@@ -14,7 +14,7 @@ TEST(ResponseHeader, CreateDestroy)
 
 TEST(ResponseHeader, Create)
 {
-	std::list<const ErrorPage *> error_pages;
+	std::list<const IErrorPage *> error_pages;
 	ErrorPage default_page("200", "res/200.html");
 	error_pages.push_back(&default_page);
 	HTTPStatusCode code(404);
@@ -24,7 +24,7 @@ TEST(ResponseHeader, Create)
 
 TEST(ResponseHeader, StatusMessage)
 {
-	std::list<const ErrorPage *> error_pages;
+	std::list<const IErrorPage *> error_pages;
 	ErrorPage default_page("404", "res/404.html");
 	error_pages.push_back(&default_page);
 	HTTPStatusCode code(300);
@@ -37,7 +37,7 @@ TEST(ResponseHeader, StatusMessage)
 
 TEST(ResponseHeader, InvalidStatusCodeException)
 {
-	std::list<const ErrorPage *> error_pages;
+	std::list<const IErrorPage *> error_pages;
 	ErrorPage default_page("404", "res/404.html");
 	error_pages.push_back(&default_page);
 	HTTPStatusCode code(200);
@@ -47,7 +47,7 @@ TEST(ResponseHeader, InvalidStatusCodeException)
 
 TEST(ResponseHeader, ContentType)
 {
-	std::list<const ErrorPage *> error_pages;
+	std::list<const IErrorPage *> error_pages;
 	HTTPStatusCode code(404);
 	ErrorPage default_page("200", "res/200.html");
 	error_pages.push_back(&default_page);
@@ -58,7 +58,7 @@ TEST(ResponseHeader, ContentType)
 
 TEST(ResponseHeader, ConnectionClose)
 {
-	std::list<const ErrorPage *> error_pages;
+	std::list<const IErrorPage *> error_pages;
 	HTTPStatusCode code(503);
 	ErrorPage default_page("404", "res/404.html");
 	error_pages.push_back(&default_page);
@@ -70,7 +70,7 @@ TEST(ResponseHeader, ConnectionClose)
 TEST(ResponseHeader, ConnectionOpen)
 {
 	HTTPStatusCode code(200);
-	std::list<const ErrorPage *> error_pages;
+	std::list<const IErrorPage *> error_pages;
 	ErrorPage default_page("404", "res/404.html");
 	error_pages.push_back(&default_page);
 	ResponseHeader obj(code, error_pages);
@@ -81,7 +81,7 @@ TEST(ResponseHeader, ConnectionOpen)
 TEST(ResponseHeader, Default_error_page)
 {
 
-	std::list<const ErrorPage *> error_pages;
+	std::list<const IErrorPage *> error_pages;
 	HTTPStatusCode code(404);
 	ErrorPage default_page("400", "res/400.html");
 	ErrorPage default_page2("404", "res/404.html");
@@ -105,7 +105,7 @@ TEST(ResponseHeader, Default_error_page)
 TEST(ResponseHeader, Empty_error_page)
 {
 
-	std::list<const ErrorPage *> error_pages;
+	std::list<const IErrorPage *> error_pages;
 	HTTPStatusCode code(404);
 
 	ResponseHeader obj(code, error_pages);
@@ -122,9 +122,11 @@ TEST(ResponseHeader, Empty_error_page)
 
 TEST(ResponseHeader, error_page_not_found)
 {
-	std::list<const ErrorPage *> error_pages;
+	HTTPStatusCode code(404);
+
+	std::list<const IErrorPage *> error_pages;
 	ErrorPage default_page("404", "res/40.html");
 	error_pages.push_back(&default_page);
-	HTTPStatusCode code(404);
+
 	EXPECT_THROW(ResponseHeader obj(code, error_pages), ResponseHeader::InvalidDefaultPage);
 }

@@ -5,7 +5,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-ResponseHeader::ResponseHeader(HTTPStatusCode code, std::list<const ErrorPage *> error_pages)
+ResponseHeader::ResponseHeader(HTTPStatusCode code, std::list<const IErrorPage *> error_pages)
 {
 	_defaultConstructor();
 	setStatusCode(code);
@@ -85,9 +85,9 @@ void ResponseHeader::_defaultConstructor()
 	setConnection(httpConstants::CONNECTION_ALIVE);
 }
 
-void ResponseHeader::_setErrorPageIfNeeded(HTTPStatusCode code, std::list<const ErrorPage *> error_pages)
+void ResponseHeader::_setErrorPageIfNeeded(HTTPStatusCode code, std::list<const IErrorPage *> error_pages)
 {
-	std::list<const ErrorPage *>::iterator it = error_pages.begin();
+	std::list<const IErrorPage *>::iterator it = error_pages.begin();
 	while (it != error_pages.end())
 	{
 		if ((*it)->getStatus().get() == code.get())

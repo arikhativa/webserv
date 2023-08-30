@@ -97,4 +97,9 @@ const IServerConf *Server::getConf(void) const
 	return this->_conf;
 }
 
+std::list<const IErrorPage *> Server::getErrorPages(void) const
+{
+	return this->_conf->getErrorPages();
+}
+
 /* ************************************************************************** */

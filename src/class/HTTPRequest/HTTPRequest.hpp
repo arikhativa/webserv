@@ -32,6 +32,8 @@ class HTTPRequest
 	long unsigned int getBytesSent(void) const;
 	Server *getVirtualServer(void) const;
 	Socket *getSocket(void) const;
+	Path getPathServerDirectory(void) const;
+	std::list<const IErrorPage *> getErrorPages(void) const;
 
 	void setBasicRequest(BasicHTTPRequest request);
 	void setResponse(std::string response);

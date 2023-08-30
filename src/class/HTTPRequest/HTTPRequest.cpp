@@ -144,6 +144,17 @@ int HTTPRequest::getClientFd(void) const
 	return this->_clientFd;
 }
 
+Path HTTPRequest::getPathServerDirectory(void) const
+{
+	Path serverPath(this->_virtualServer->getConf()->getRoot()->get());
+	return (serverPath);
+}
+
+std::list<const IErrorPage *> HTTPRequest::getErrorPages(void) const
+{
+	return this->_virtualServer->getErrorPages();
+}
+
 void HTTPRequest::setBasicRequest(BasicHTTPRequest request)
 {
 	this->_basicRequest = request;
