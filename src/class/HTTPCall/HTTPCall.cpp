@@ -5,6 +5,7 @@
 */
 
 const int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
+const int HTTPCall::RECV_BUFFER_SIZE = 4096;
 
 HTTPCall::HTTPCall(Server *virtualServer, int clientFd)
 	: _virtualServer(virtualServer)
@@ -12,7 +13,7 @@ HTTPCall::HTTPCall(Server *virtualServer, int clientFd)
 	, _requestAttempts(0)
 	, _responseAttempts(0)
 	, _bytesSent(0)
-	, _response("\0")
+	, _response("")
 	, _basicRequest("")
 {
 }
@@ -52,7 +53,7 @@ std::ostream &operator<<(std::ostream &o, HTTPCall const &i)
 void HTTPCall::recvRequest(void)
 {
 	int tmpRecvLen;
-	char tmpRaw[4096];
+	char tmpRaw[HTTPCall::RECV_BUFFER_SIZE];
 
 	tmpRecvLen = recv(this->_clientFd, tmpRaw, sizeof(tmpRaw), MSG_DONTWAIT);
 	this->_requestAttempts++;
@@ -119,7 +120,7 @@ long unsigned int HTTPCall::getBytesSent(void) const
 	return this->_bytesSent;
 }
 
-Server *HTTPCall::getVirtualServer(void) const
+const Server * HTTPCall::getVirtualServer(void) const
 {
 	return this->_virtualServer;
 }
@@ -144,12 +145,12 @@ int HTTPCall::getClientFd(void) const
 	return this->_clientFd;
 }
 
-void HTTPCall::setBasicRequest(BasicHTTPRequest request)
+void HTTPCall::setBasicRequest(const BasicHTTPRequest &request)
 {
 	this->_basicRequest = request;
 }
 
-void HTTPCall::setResponse(std::string response)
+void HTTPCall::setResponse(const std::string &response)
 {
 	this->_response = response;
 }
