@@ -16,13 +16,13 @@
 #define protected public
 #endif
 
-class HTTPRequest
+class HTTPCall
 {
   public:
 	static const int MAX_CHUNK_ATTEMPTS;
-	explicit HTTPRequest();
-	explicit HTTPRequest(Server *virtualServer, int client_fd);
-	~HTTPRequest();
+	explicit HTTPCall();
+	explicit HTTPCall(Server *virtualServer, int client_fd);
+	~HTTPCall();
 
 	BasicHTTPRequest getBasicRequest(void) const;
 	std::string getResponse(void) const;
@@ -68,7 +68,7 @@ class HTTPRequest
 	BasicHTTPRequest _basicRequest;
 };
 
-std::ostream &operator<<(std::ostream &o, HTTPRequest const &i);
+std::ostream &operator<<(std::ostream &o, HTTPCall const &i);
 
 #ifdef TEST_ON
 #undef private

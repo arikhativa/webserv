@@ -1,12 +1,12 @@
-#include <HTTPRequest/HTTPRequest.hpp>
+#include <HTTPCall/HTTPCall.hpp>
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-const int HTTPRequest::MAX_CHUNK_ATTEMPTS = 5;
+const int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
 
-HTTPRequest::HTTPRequest(Server *virtualServer, int clientFd)
+HTTPCall::HTTPCall(Server *virtualServer, int clientFd)
 	: _virtualServer(virtualServer)
 	, _clientFd(clientFd)
 	, _requestAttempts(0)
@@ -17,12 +17,12 @@ HTTPRequest::HTTPRequest(Server *virtualServer, int clientFd)
 {
 }
 
-const char *HTTPRequest::SendingResponseError::what() const throw()
+const char *HTTPCall::SendingResponseError::what() const throw()
 {
 	return "Couldn't send response: send() failed";
 }
 
-const char *HTTPRequest::RecievingRequestError::what() const throw()
+const char *HTTPCall::RecievingRequestError::what() const throw()
 {
 	return "Didn't recieve request: recv() failed";
 }
@@ -31,7 +31,7 @@ const char *HTTPRequest::RecievingRequestError::what() const throw()
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
-HTTPRequest::~HTTPRequest()
+HTTPCall::~HTTPCall()
 {
 }
 
@@ -39,7 +39,7 @@ HTTPRequest::~HTTPRequest()
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-std::ostream &operator<<(std::ostream &o, HTTPRequest const &i)
+std::ostream &operator<<(std::ostream &o, HTTPCall const &i)
 {
 	o << "HTTPRequest[" << i.getBasicRequest() << "]";
 	return o;
@@ -49,7 +49,7 @@ std::ostream &operator<<(std::ostream &o, HTTPRequest const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void HTTPRequest::recvRequest(void)
+void HTTPCall::recvRequest(void)
 {
 	int tmpRecvLen;
 	char tmpRaw[4096];
@@ -64,7 +64,7 @@ void HTTPRequest::recvRequest(void)
 	this->_basicRequest = BasicHTTPRequest(std::string(tmpRaw));
 }
 
-void HTTPRequest::sendResponse(void)
+void HTTPCall::sendResponse(void)
 {
 	int sendStatus;
 	sendStatus = send(this->_clientFd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
@@ -76,7 +76,7 @@ void HTTPRequest::sendResponse(void)
 	this->_bytesSent += sendStatus;
 }
 
-void HTTPRequest::handleRequest(void)
+void HTTPCall::handleRequest(void)
 {
 	switch (this->_basicRequest.getType())
 	{
@@ -95,7 +95,7 @@ void HTTPRequest::handleRequest(void)
 	}
 }
 
-void HTTPRequest::terminate(void)
+void HTTPCall::terminate(void)
 {
 	close(this->_clientFd);
 }
@@ -104,57 +104,57 @@ void HTTPRequest::terminate(void)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-int HTTPRequest::getRequestAttempts(void) const
+int HTTPCall::getRequestAttempts(void) const
 {
 	return this->_requestAttempts;
 }
 
-int HTTPRequest::getResponseAttempts(void) const
+int HTTPCall::getResponseAttempts(void) const
 {
 	return this->_responseAttempts;
 }
 
-long unsigned int HTTPRequest::getBytesSent(void) const
+long unsigned int HTTPCall::getBytesSent(void) const
 {
 	return this->_bytesSent;
 }
 
-Server *HTTPRequest::getVirtualServer(void) const
+Server *HTTPCall::getVirtualServer(void) const
 {
 	return this->_virtualServer;
 }
 
-Socket *HTTPRequest::getSocket(void) const
+Socket *HTTPCall::getSocket(void) const
 {
 	return this->_socket;
 }
 
-BasicHTTPRequest HTTPRequest::getBasicRequest(void) const
+BasicHTTPRequest HTTPCall::getBasicRequest(void) const
 {
 	return this->_basicRequest;
 }
 
-std::string HTTPRequest::getResponse(void) const
+std::string HTTPCall::getResponse(void) const
 {
 	return this->_response;
 }
 
-int HTTPRequest::getClientFd(void) const
+int HTTPCall::getClientFd(void) const
 {
 	return this->_clientFd;
 }
 
-void HTTPRequest::setBasicRequest(BasicHTTPRequest request)
+void HTTPCall::setBasicRequest(BasicHTTPRequest request)
 {
 	this->_basicRequest = request;
 }
 
-void HTTPRequest::setResponse(std::string response)
+void HTTPCall::setResponse(std::string response)
 {
 	this->_response = response;
 }
 
-void HTTPRequest::setClientFd(int fd)
+void HTTPCall::setClientFd(int fd)
 {
 	this->_clientFd = fd;
 }
