@@ -13,6 +13,7 @@ Location::Location()
 	, _allowed_methods(NULL)
 	, _return(NULL)
 	, _root(NULL)
+	, _cgi()
 {
 }
 
@@ -79,6 +80,12 @@ std::ostream &operator<<(std::ostream &o, Location const &i)
 			  << "\"_root\": \"" << ptr->get() << "\"";
 	}
 
+	{
+		if (i.getCGIConf().isSet())
+			o << ", "
+			  << "\"_cgi\": " << i.getCGIConf();
+	}
+
 	o << "}";
 	return o;
 }
@@ -115,6 +122,11 @@ void Location::setDefaultSettingIfNeeded(void)
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+const CGIConf &Location::getCGIConf(void) const
+{
+	return _cgi;
+}
 
 const IPath &Location::getPath(void) const
 {
@@ -257,6 +269,14 @@ void Location::setRoot(const std::string &root)
 	if (!root.size())
 		throw InvalidLocationException(Token::Keyword::ROOT + " can't be empty");
 	_root = new Path(root);
+}
+
+void Location::setCGI(const std::string &ext, const std::string &path)
+{
+	if (_cgi.isSet())
+		throw InvalidLocationException(Token::Keyword::CGI + " is already set");
+	_cgi.setExtension(ext);
+	_cgi.setPath(path);
 }
 
 /* ************************************************************************** */

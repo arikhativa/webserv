@@ -7,6 +7,7 @@
 #include <string>
 
 #include <AllowedMethods/AllowedMethods.hpp>
+#include <CGIConf/CGIConf.hpp>
 #include <ErrorPage/ErrorPage.hpp>
 #include <IErrorPage/IErrorPage.hpp>
 #include <ILocation/ILocation.hpp>
@@ -40,6 +41,7 @@ class Location : public ILocation
 	virtual const std::list<std::string> &getIndexFiles(void) const;
 	virtual std::list<const IErrorPage *> getErrorPages(void) const;
 	virtual const IPath *getRoot(void) const;
+	virtual const CGIConf &getCGIConf(void) const;
 
 	void setPath(const std::string &path);
 	void setAutoIndex(const std::string &auto_index);
@@ -50,6 +52,7 @@ class Location : public ILocation
 	void setIndexFiles(const std::list<std::string> &index_files);
 	void addErrorPage(const std::string &status, const std::string &path);
 	void setRoot(const std::string &root);
+	void setCGI(const std::string &ext, const std::string &path);
 
 	class InvalidLocationException : public std::exception
 	{
@@ -72,6 +75,7 @@ class Location : public ILocation
 	std::list<std::string> _index_files;
 	std::list<ErrorPage> _error_pages;
 	Path *_root;
+	CGIConf _cgi;
 };
 
 std::ostream &operator<<(std::ostream &o, const Location &i);
