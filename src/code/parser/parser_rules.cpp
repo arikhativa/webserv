@@ -22,6 +22,7 @@ static std::map<std::string, parser::t_rule> initRules(void)
 	map[Token::Keyword::AUTO_INDEX] = &parser::rule::autoIndex;
 	map[Token::Keyword::ALLOW_METHODS] = &parser::rule::allowMethods;
 	map[Token::Keyword::UPLOAD] = &parser::rule::upload;
+	map[Token::Keyword::CGI] = &parser::rule::cgi;
 
 	return map;
 }
@@ -243,6 +244,11 @@ bool parser::rule::autoIndex(std::list<Token>::const_iterator it, const std::lis
 bool parser::rule::upload(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
 {
 	return genericOnOffRule(it, end);
+}
+
+bool parser::rule::cgi(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+{
+	return genericTwoWordRule(it, end);
 }
 
 bool parser::rule::blockStart(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
