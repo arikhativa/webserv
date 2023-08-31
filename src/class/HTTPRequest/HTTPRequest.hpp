@@ -34,6 +34,9 @@ class HTTPRequest
 	Socket *getSocket(void) const;
 	Path getPathServerDirectory(void) const;
 	std::list<const IErrorPage *> getErrorPages(void) const;
+	std::list<const ILocation *>::const_iterator searchMatchLocation(void) const;
+	bool isAutoIndexOn(void) const;
+	bool canUpload(void) const;
 
 	void setBasicRequest(BasicHTTPRequest request);
 	void setResponse(std::string response);

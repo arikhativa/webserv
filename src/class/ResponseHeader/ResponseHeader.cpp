@@ -78,6 +78,8 @@ void ResponseHeader::_defaultConstructor()
 	_header[CONTENT_LENGHT].name = httpConstants::CONTENT_LENGHT_FIELD_KEY;
 	_header[CONTENT_LENGHT].value = "";
 	_header[CONNECTION].name = httpConstants::CONNECTION_FIELD_KEY;
+	_header[LOCATION].value = "";
+	_header[LOCATION].name = "";
 	_header[BODY].name = httpConstants::FIELD_BREAK;
 	_header[BODY].value = "";
 	setContentType(httpConstants::TXT_SUFFIX);

@@ -8,7 +8,7 @@ void HTTPRequestHandler::GET(HTTPRequest &request)
 		BasicHTTPRequest requestRecived = request.getBasicRequest();
 		requestRecived.parseRaw();
 		Path url(request.getPathServerDirectory().get() + requestRecived.getPath());
-		if (httprequesthandlerGET::isDirectory(url.get()))
+		if (httprequesthandlerGET::isDirectory(url.get()) && request.isAutoIndexOn())
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 			response.setContentType(httpConstants::HTML_SUFFIX);
