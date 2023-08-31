@@ -41,6 +41,7 @@ int main()
 	}
 
 	// Data to send
+	// const char *data = "GET /vid.php HTTP/1.1\r\nHost: localhost\r\n\r\n";
 	const char *data = "GET /chunked.php HTTP/1.1\r\nHost: localhost\r\n\r\n";
 	// const char *data = "GET /index.php HTTP/1.1\r\nHost: localhost\r\n\r\n";
 	size_t data_len = strlen(data);
@@ -55,7 +56,7 @@ int main()
 	}
 
 	struct timeval timeout;
-	timeout.tv_sec = 1;
+	timeout.tv_sec = 1000000000;
 	timeout.tv_usec = 0;
 	if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) == -1)
 	{
@@ -64,24 +65,33 @@ int main()
 	}
 
 	// Receive response from the socket
-	char buffer[1024];
-	ssize_t bytes_received = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
-	if (bytes_received == -1)
+	ssize_t bytes_received = 1;
+	while (bytes_received)
 	{
-		if (errno == EAGAIN || errno == EWOULDBLOCK)
+		char buffer[1024];
+		bytes_received = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
+		if (bytes_received == -1)
 		{
-			std::cout << "Receive timed out." << std::endl;
+			if (errno == EAGAIN || errno == EWOULDBLOCK)
+			{
+				std::cout << "Receive timed out." << std::endl;
+			}
+			else
+			{
+				perror("recv");
+			}
+			close(sockfd);
+			return 1;
 		}
-		else
-		{
-			perror("recv");
-		}
-		close(sockfd);
-		return 1;
-	}
 
-	buffer[bytes_received] = '\0'; // Null-terminate the received data
-	std::cout << buffer << std::endl;
+		buffer[bytes_received] = '\0'; // Null-terminate the received data
+		std::cout << buffer << std::endl;
+		std::string end(buffer);
+		if (end.find("0\r\n\r\n") != std::string::npos)
+		{
+			break;
+		}
+	}
 
 	// Close the socket
 	close(sockfd);

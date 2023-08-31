@@ -11,6 +11,39 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+
+std::string generateChunkedBody(const std::string &filePath)
+{
+	std::ifstream inputFile(filePath, std::ios::binary);
+	if (!inputFile)
+	{
+		std::cerr << "Failed to open file: " << filePath << std::endl;
+		return "";
+	}
+
+	std::stringstream chunkedBody;
+	char buffer[4096];
+	while (!inputFile.eof())
+	{
+		inputFile.read(buffer, sizeof(buffer));
+		std::streamsize bytesRead = inputFile.gcount();
+		if (bytesRead > 0)
+		{
+			chunkedBody << std::hex << bytesRead << "\r\n";
+			chunkedBody.write(buffer, bytesRead);
+			chunkedBody << "\r\n";
+		}
+	}
+
+	chunkedBody << "0\r\n\r\n"; // Final chunk
+
+	return chunkedBody.str();
+}
+
 int main()
 {
 	// Create a socket
@@ -41,13 +74,15 @@ int main()
 	}
 
 	// Data to send
-	const char *data =
-		// "POST /index.php HTTP/1.1\r\nHost: localhost:80\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nhello\r\n";
-		"POST /index.php HTTP/1.1\r\nHost: localhost:80\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n";
-	size_t data_len = strlen(data);
+	std::string data("POST /index.php HTTP/1.1\r\nHost: localhost:80\r\nContent-Type: "
+					 "multipart/form-data; charset=utf-8; boundary=1234\r\nTransfer-Encoding: chunked\r\n\r\n");
+
+	data += generateChunkedBody("test.txt");
+
+	size_t data_len = strlen(data.c_str());
 
 	// Send data over the socket
-	ssize_t bytes_sent = send(sockfd, data, data_len, 0);
+	ssize_t bytes_sent = send(sockfd, data.c_str(), data_len, 0);
 	if (bytes_sent == -1)
 	{
 		perror("send");
