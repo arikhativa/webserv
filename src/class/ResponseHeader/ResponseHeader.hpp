@@ -40,6 +40,7 @@ class ResponseHeader
 		CONNECTION_TYPE,
 		CONTENT_LENGHT,
 		CONNECTION,
+		LOCATION,
 		BODY,
 	};
 	struct Field
