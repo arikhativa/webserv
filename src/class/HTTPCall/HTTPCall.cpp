@@ -56,24 +56,23 @@ void HTTPCall::recvRequest(void)
 	char tmpRaw[HTTPCall::RECV_BUFFER_SIZE];
 
 	tmpRecvLen = recv(this->_client_fd, tmpRaw, sizeof(tmpRaw), MSG_DONTWAIT);
-	this->_request_attempts++;
-	this->_basic_request.extenedRaw(tmpRaw);
 	if (tmpRecvLen <= -1)
 	{
 		throw RecievingRequestError();
 	}
-	this->_basic_request = BasicHTTPRequest(std::string(tmpRaw));
+	this->_request_attempts++;
+	this->_basic_request.extenedRaw(tmpRaw);
 }
 
 void HTTPCall::sendResponse(void)
 {
 	int sendStatus;
 	sendStatus = send(this->_client_fd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
-	this->_response_attempts++;
 	if (sendStatus <= -1)
 	{
 		throw SendingResponseError();
 	}
+	this->_response_attempts++;
 	this->_bytes_sent += sendStatus;
 }
 
