@@ -63,7 +63,6 @@ class HTTPCall
 	int _requestAttempts;
 	int _responseAttempts;
 	long unsigned int _bytesSent;
-	std::string _rawRequest;
 	std::string _response;
 	BasicHTTPRequest _basicRequest;
 };

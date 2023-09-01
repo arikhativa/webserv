@@ -57,7 +57,7 @@ void HTTPCall::recvRequest(void)
 
 	tmpRecvLen = recv(this->_clientFd, tmpRaw, sizeof(tmpRaw), MSG_DONTWAIT);
 	this->_requestAttempts++;
-	this->_rawRequest += tmpRaw;
+	this->_basicRequest.extenedRaw(tmpRaw);
 	if (tmpRecvLen <= -1)
 	{
 		throw RecievingRequestError();
