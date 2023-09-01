@@ -3,7 +3,7 @@
 #define SERVER_MANAGER_HPP
 
 #include <Conf/Conf.hpp>
-#include <HTTPRequest/HTTPRequest.hpp>
+#include <HTTPCall/HTTPCall.hpp>
 #include <IConf/IConf.hpp>
 #include <Poll/Poll.hpp>
 #include <Server/Server.hpp>

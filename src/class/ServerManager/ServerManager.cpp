@@ -20,7 +20,7 @@ Poll::ret_stt client_write(Poll &p, int fd, int revents, Poll::Param &param)
 	}
 
 	if (param.req.getBytesSent() < param.req.getResponse().size() ||
-		param.req.getResponseAttempts() >= HTTPRequest::MAX_CHUNK_ATTEMPTS)
+		param.req.getResponseAttempts() >= HTTPCall::MAX_CHUNK_ATTEMPTS)
 		return Poll::CONTINUE;
 	param.req.terminate();
 	return Poll::DONE;
@@ -32,7 +32,7 @@ Poll::ret_stt client_read(Poll &p, int fd, int revents, Poll::Param &param)
 	(void)fd;
 	(void)revents;
 	(void)param;
-	if (param.req.getRequestAttempts() >= HTTPRequest::MAX_CHUNK_ATTEMPTS)
+	if (param.req.getRequestAttempts() >= HTTPCall::MAX_CHUNK_ATTEMPTS)
 		return Poll::DONE;
 	try
 	{
@@ -49,7 +49,7 @@ Poll::ret_stt client_read(Poll &p, int fd, int revents, Poll::Param &param)
 		std::cerr << "Request is invalid [" << e.what() << "]\n";
 		return Poll::DONE;
 	}
-	catch (HTTPRequest::RecievingRequestError &e)
+	catch (HTTPCall::RecievingRequestError &e)
 	{
 		std::cerr << "Request recv error [" << e.what() << "]\n";
 		return Poll::DONE;
@@ -66,7 +66,7 @@ Poll::ret_stt initSocketsHandler(Poll &p, int fd, int revents, Poll::Param &para
 	(void)revents;
 	(void)param;
 	int client_fd = Server::acceptConnection(fd);
-	Poll::Param new_param = {HTTPRequest(param.req.getVirtualServer(), client_fd), -1, client_fd, -1, -1};
+	Poll::Param new_param = {HTTPCall(param.req.getVirtualServer(), client_fd), -1, client_fd, -1, -1};
 	p.addRead(client_fd, client_read, new_param);
 	return Poll::CONTINUE;
 }
@@ -128,7 +128,7 @@ ServerManager::status ServerManager::setup()
 		std::vector<int>::iterator end_fds = fds.end();
 		for (; it_fds != end_fds; it_fds++)
 		{
-			Poll::Param param = {HTTPRequest(&(*it), -1), -1, -1, -1, -1};
+			Poll::Param param = {HTTPCall(&(*it), -1), -1, -1, -1, -1};
 			this->_poll.addRead(*it_fds, initSocketsHandler, param);
 		}
 	}
