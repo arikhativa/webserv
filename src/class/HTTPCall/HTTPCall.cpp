@@ -8,13 +8,13 @@ const unsigned int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
 const unsigned int HTTPCall::RECV_BUFFER_SIZE = 4096;
 
 HTTPCall::HTTPCall(Server *virtualServer, int clientFd)
-	: _virtualServer(virtualServer)
-	, _clientFd(clientFd)
-	, _requestAttempts(0)
-	, _responseAttempts(0)
-	, _bytesSent(0)
+	: _virtual_server(virtualServer)
+	, _client_fd(clientFd)
+	, _request_attempts(0)
+	, _response_attempts(0)
+	, _bytes_sent(0)
 	, _response("")
-	, _basicRequest("")
+	, _basic_request("")
 {
 }
 
@@ -55,31 +55,31 @@ void HTTPCall::recvRequest(void)
 	int tmpRecvLen;
 	char tmpRaw[HTTPCall::RECV_BUFFER_SIZE];
 
-	tmpRecvLen = recv(this->_clientFd, tmpRaw, sizeof(tmpRaw), MSG_DONTWAIT);
-	this->_requestAttempts++;
-	this->_basicRequest.extenedRaw(tmpRaw);
+	tmpRecvLen = recv(this->_client_fd, tmpRaw, sizeof(tmpRaw), MSG_DONTWAIT);
+	this->_request_attempts++;
+	this->_basic_request.extenedRaw(tmpRaw);
 	if (tmpRecvLen <= -1)
 	{
 		throw RecievingRequestError();
 	}
-	this->_basicRequest = BasicHTTPRequest(std::string(tmpRaw));
+	this->_basic_request = BasicHTTPRequest(std::string(tmpRaw));
 }
 
 void HTTPCall::sendResponse(void)
 {
 	int sendStatus;
-	sendStatus = send(this->_clientFd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
-	this->_responseAttempts++;
+	sendStatus = send(this->_client_fd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
+	this->_response_attempts++;
 	if (sendStatus <= -1)
 	{
 		throw SendingResponseError();
 	}
-	this->_bytesSent += sendStatus;
+	this->_bytes_sent += sendStatus;
 }
 
 void HTTPCall::handleRequest(void)
 {
-	switch (this->_basicRequest.getType())
+	switch (this->_basic_request.getType())
 	{
 	case BasicHTTPRequest::GET:
 		HTTPRequestHandler::GET(*this);
@@ -98,7 +98,7 @@ void HTTPCall::handleRequest(void)
 
 void HTTPCall::terminate(void)
 {
-	close(this->_clientFd);
+	close(this->_client_fd);
 }
 
 /*
@@ -107,22 +107,22 @@ void HTTPCall::terminate(void)
 
 int HTTPCall::getRequestAttempts(void) const
 {
-	return this->_requestAttempts;
+	return this->_request_attempts;
 }
 
 int HTTPCall::getResponseAttempts(void) const
 {
-	return this->_responseAttempts;
+	return this->_response_attempts;
 }
 
 long unsigned int HTTPCall::getBytesSent(void) const
 {
-	return this->_bytesSent;
+	return this->_bytes_sent;
 }
 
-const Server * HTTPCall::getVirtualServer(void) const
+const Server *HTTPCall::getVirtualServer(void) const
 {
-	return this->_virtualServer;
+	return this->_virtual_server;
 }
 
 Socket *HTTPCall::getSocket(void) const
@@ -132,7 +132,7 @@ Socket *HTTPCall::getSocket(void) const
 
 BasicHTTPRequest HTTPCall::getBasicRequest(void) const
 {
-	return this->_basicRequest;
+	return this->_basic_request;
 }
 
 std::string HTTPCall::getResponse(void) const
@@ -142,12 +142,12 @@ std::string HTTPCall::getResponse(void) const
 
 int HTTPCall::getClientFd(void) const
 {
-	return this->_clientFd;
+	return this->_client_fd;
 }
 
 void HTTPCall::setBasicRequest(const BasicHTTPRequest &request)
 {
-	this->_basicRequest = request;
+	this->_basic_request = request;
 }
 
 void HTTPCall::setResponse(const std::string &response)
@@ -157,7 +157,7 @@ void HTTPCall::setResponse(const std::string &response)
 
 void HTTPCall::setClientFd(int fd)
 {
-	this->_clientFd = fd;
+	this->_client_fd = fd;
 }
 
 /* ************************************************************************** */
