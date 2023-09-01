@@ -56,15 +56,15 @@ class HTTPCall
 	};
 
   private:
-	const Server *const _virtualServer;
+	const Server *const _virtual_server;
 	Socket *_socket;
-	int _clientFd;
+	int _client_fd;
 
-	int _requestAttempts;
-	int _responseAttempts;
-	long unsigned int _bytesSent;
+	int _request_attempts;
+	int _response_attempts;
+	long unsigned int _bytes_sent;
 	std::string _response;
-	BasicHTTPRequest _basicRequest;
+	BasicHTTPRequest _basic_request;
 };
 
 std::ostream &operator<<(std::ostream &o, HTTPCall const &i);
