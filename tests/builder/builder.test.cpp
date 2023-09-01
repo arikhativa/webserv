@@ -154,6 +154,9 @@ TEST(builder, FullFile)
 			++l_it;
 			EXPECT_EQ("3.htm", *l_it);
 		}
+		EXPECT_EQ(true, (*it)->getCGIConf().isSet());
+		EXPECT_EQ(".py", (*it)->getCGIConf().getExtension());
+		EXPECT_EQ("/usr/bin/python3", (*it)->getCGIConf().getPath().get());
 
 		++it;
 		EXPECT_EQ("/loc2", (*it)->getPath().get());
@@ -166,6 +169,7 @@ TEST(builder, FullFile)
 		EXPECT_EQ(555, (*it)->getMaxBodySize());
 		EXPECT_EQ(false, (*it)->isAutoIndexOn());
 		EXPECT_EQ(true, (*it)->canUpload());
+		EXPECT_EQ(false, (*it)->getCGIConf().isSet());
 	}
 
 	delete conf;

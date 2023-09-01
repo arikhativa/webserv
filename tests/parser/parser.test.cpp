@@ -60,3 +60,19 @@ TEST(parser, BadFile5)
 
 	ASSERT_EQ(false, parser::validate(list));
 }
+
+TEST(parser, CGIConf)
+{
+	std::fstream fs("res/tests/parser/parser_cgi.conf");
+	std::list<Token> list = lexer::tokenize(fs);
+
+	ASSERT_EQ(true, parser::validate(list));
+}
+
+TEST(parser, BadCGIConf)
+{
+	std::fstream fs("res/tests/parser/parser_bad_cgi.conf");
+	std::list<Token> list = lexer::tokenize(fs);
+
+	ASSERT_EQ(false, parser::validate(list));
+}
