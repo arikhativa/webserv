@@ -169,3 +169,26 @@ TEST(Location, setDefaultSettingIfNeeded)
 	EXPECT_EQ(NULL, obj.getReturn());
 	EXPECT_EQ(0, obj.getErrorPages().size());
 }
+
+TEST(Location, CGIConf)
+{
+	Location obj;
+
+	EXPECT_FALSE(obj.getCGIConf().isSet());
+
+	obj.setCGI(".php", "/usr/bin/php-cgi");
+
+	EXPECT_EQ(".php", obj.getCGIConf().getExtension());
+	EXPECT_EQ("/usr/bin/php-cgi", obj.getCGIConf().getPath().get());
+}
+
+TEST(Location, ExceptionCGIConf)
+{
+	Location obj;
+
+	EXPECT_FALSE(obj.getCGIConf().isSet());
+
+	EXPECT_THROW(obj.setCGI(".invalid", "/usr/bin/php-cgi"), CGIConf::InvalidExtension);
+	obj.setCGI(".php", "/usr/bin/php-cgi");
+	EXPECT_THROW(obj.setCGI(".php", "/usr/bin/php-cgi"), Location::InvalidLocationException);
+}
