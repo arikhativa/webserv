@@ -76,7 +76,7 @@ void Server::listenSockets()
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-//Hacer que estot devuelva los sockets y no los file descriptors
+// Hacer que estot devuelva los sockets y no los file descriptors
 const std::vector<int> Server::getSockets(void) const
 {
 	std::vector<int> fds;
