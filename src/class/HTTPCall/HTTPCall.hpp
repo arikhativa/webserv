@@ -56,7 +56,7 @@ class HTTPCall
 	};
 
   private:
-	const Server *const _virtual_server;
+	const Server *_virtual_server;
 	Socket *_socket;
 	int _client_fd;
 
