@@ -56,7 +56,7 @@ void HTTPCall::recvRequest(void)
 	char tmpRaw[HTTPCall::RECV_BUFFER_SIZE];
 
 	tmpRecvLen = recv(this->_client_fd, tmpRaw, sizeof(tmpRaw), MSG_DONTWAIT);
-	if (tmpRecvLen <= -1)
+	if (tmpRecvLen <= 0)
 	{
 		throw RecievingRequestError();
 	}
