@@ -7,7 +7,7 @@
 const unsigned int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
 const unsigned int HTTPCall::RECV_BUFFER_SIZE = 4096;
 
-HTTPCall::HTTPCall(Server *virtualServer, int clientFd)
+HTTPCall::HTTPCall(const Server *virtualServer, int clientFd)
 	: _virtual_server(virtualServer)
 	, _client_fd(clientFd)
 	, _request_attempts(0)

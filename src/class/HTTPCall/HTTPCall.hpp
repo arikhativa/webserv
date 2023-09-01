@@ -21,7 +21,7 @@ class HTTPCall
   public:
 	static const unsigned int MAX_CHUNK_ATTEMPTS;
 	static const unsigned int RECV_BUFFER_SIZE;
-	explicit HTTPCall(Server *virtualServer, int client_fd);
+	explicit HTTPCall(const Server *virtualServer, int client_fd);
 	~HTTPCall();
 
 	BasicHTTPRequest getBasicRequest(void) const;
