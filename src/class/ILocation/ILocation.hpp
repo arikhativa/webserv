@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 
+#include <CGIConf/CGIConf.hpp>
 #include <IAllowedMethods/IAllowedMethods.hpp>
 #include <IErrorPage/IErrorPage.hpp>
 #include <IPath/IPath.hpp>
@@ -28,6 +29,7 @@ class ILocation
 	virtual bool isAutoIndexOn(void) const = 0;
 	virtual bool canUpload(void) const = 0;
 	virtual const IPath *getRoot(void) const = 0;
+	virtual const CGIConf &getCGIConf(void) const = 0;
 };
 
 std::ostream &operator<<(std::ostream &o, const ILocation &i);

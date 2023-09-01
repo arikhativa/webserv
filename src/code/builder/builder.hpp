@@ -52,6 +52,7 @@ namespace builder
 		void indexFiles(Location &location, std::list<Token>::const_iterator it);
 		void errorPage(Location &location, std::list<Token>::const_iterator it);
 		void root(Location &location, std::list<Token>::const_iterator it);
+		void cgi(Location &location, std::list<Token>::const_iterator it);
 
 	} // namespace location
 
