@@ -4,8 +4,8 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-const unsigned int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
-const unsigned int HTTPCall::RECV_BUFFER_SIZE = 4096;
+const int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
+const int HTTPCall::RECV_BUFFER_SIZE = 4096;
 
 HTTPCall::HTTPCall(const Server *virtualServer, int clientFd)
 	: _virtual_server(virtualServer)
