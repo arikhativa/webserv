@@ -35,6 +35,7 @@ namespace parser
 		bool allowMethods(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end);
 		bool autoIndex(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end);
 		bool upload(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end);
+		bool cgi(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end);
 
 		// keywords
 		bool blockStart(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end);

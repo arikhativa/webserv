@@ -13,6 +13,7 @@ static std::map<std::string, builder::location::t_rule> initRules(void)
 	map[Token::Keyword::INDEX] = &builder::location::indexFiles;
 	map[Token::Keyword::ERROR_PAGE] = &builder::location::errorPage;
 	map[Token::Keyword::ROOT] = &builder::location::root;
+	map[Token::Keyword::CGI] = &builder::location::cgi;
 	return map;
 }
 
@@ -98,4 +99,13 @@ void builder::location::root(Location &location, std::list<Token>::const_iterato
 {
 	++it;
 	location.setRoot(it->getValue());
+}
+
+void builder::location::cgi(Location &location, std::list<Token>::const_iterator it)
+{
+	++it;
+	std::list<Token>::const_iterator tmp = it;
+
+	++tmp;
+	location.setCGI(it->getValue(), tmp->getValue());
 }
