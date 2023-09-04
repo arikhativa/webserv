@@ -154,6 +154,51 @@ int HTTPCall::getClientFd(void) const
 	return this->_client_fd;
 }
 
+Path HTTPCall::getPathServerDirectory(void) const
+{
+	Path serverPath(this->_virtual_server->getConf()->getRoot()->get());
+	return (serverPath);
+}
+
+std::list<const IErrorPage *> HTTPCall::getErrorPages(void) const
+{
+	return this->_virtual_server->getErrorPages();
+}
+
+std::list<const ILocation *>::const_iterator HTTPCall::searchMatchLocation(void) const
+{
+	std::list<const ILocation *>::const_iterator tmp = this->_virtual_server->getConf()->getLocations().end();
+	std::list<const ILocation *> locations = this->_virtual_server->getConf()->getLocations();
+	for (std::list<const ILocation *>::const_iterator it = locations.begin(); it != locations.end(); it++)
+	{
+		if ((this->_basic_request.getPath().find((*it)->getPath().get()) == 0) ||
+			(this->_basic_request.getPath() == "" && (*it)->getPath().get() == "/"))
+		{
+			if (it == locations.begin())
+				tmp = it;
+			else if ((*it)->getPath().get().length() > (*tmp)->getPath().get().length())
+				tmp = it;
+		}
+	}
+	return (tmp);
+}
+
+bool HTTPCall::isAutoIndexOn(void) const
+{
+	std::list<const ILocation *>::const_iterator tmp = searchMatchLocation();
+	if (tmp != this->_virtual_server->getConf()->getLocations().end())
+		return (*tmp)->isAutoIndexOn();
+	return (false);
+}
+
+bool HTTPCall::canUpload(void) const
+{
+	std::list<const ILocation *>::const_iterator tmp = searchMatchLocation();
+	if (tmp != this->_virtual_server->getConf()->getLocations().end())
+		return (*tmp)->canUpload();
+	return (false);
+}
+
 void HTTPCall::setBasicRequest(const BasicHTTPRequest &request)
 {
 	this->_basic_request = request;
