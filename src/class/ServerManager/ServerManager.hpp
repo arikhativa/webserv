@@ -3,7 +3,7 @@
 #define SERVER_MANAGER_HPP
 
 #include <Conf/Conf.hpp>
-#include <HTTPRequest/HTTPRequest.hpp>
+#include <HTTPCall/HTTPCall.hpp>
 #include <IConf/IConf.hpp>
 #include <Poll/Poll.hpp>
 #include <Server/Server.hpp>
@@ -40,9 +40,14 @@ class ServerManager
 	Poll _poll;
 	const IConf *_conf;
 	enum status _status;
-	std::vector<Server> _virtualServers;
+	std::vector<Server> _virtual_servers;
 
 	int getTotalListeners(void) const;
+
+  public:
+	static Poll::ret_stt clientWrite(Poll &p, int fd, int revents, Poll::Param &param);
+	static Poll::ret_stt clientRead(Poll &p, int fd, int revents, Poll::Param &param);
+	static Poll::ret_stt initSocketsHandler(Poll &p, int fd, int revents, Poll::Param &param);
 };
 
 #ifdef TEST_ON
