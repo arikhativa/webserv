@@ -49,7 +49,19 @@ class HTTPCall
 		virtual const char *what() const throw();
 	};
 
+	class SendingResponseEmpty : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
 	class RecievingRequestError : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
+	class RecievingRequestEmpty : public std::exception
 	{
 	  public:
 		virtual const char *what() const throw();

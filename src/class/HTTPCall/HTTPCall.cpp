@@ -7,9 +7,9 @@
 const int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
 const int HTTPCall::RECV_BUFFER_SIZE = 4096;
 
-HTTPCall::HTTPCall(const Server *virtualServer, int clientFd)
-	: _virtual_server(virtualServer)
-	, _client_fd(clientFd)
+HTTPCall::HTTPCall(const Server *virtual_server, int client_fd)
+	: _virtual_server(virtual_server)
+	, _client_fd(client_fd)
 	, _request_attempts(0)
 	, _response_attempts(0)
 	, _bytes_sent(0)
@@ -52,28 +52,28 @@ std::ostream &operator<<(std::ostream &o, HTTPCall const &i)
 
 void HTTPCall::recvRequest(void)
 {
-	int tmpRecvLen;
-	char tmpRaw[HTTPCall::RECV_BUFFER_SIZE];
+	int tmp_recv_len;
+	char tmp_raw[HTTPCall::RECV_BUFFER_SIZE];
 
-	tmpRecvLen = recv(this->_client_fd, tmpRaw, sizeof(tmpRaw), MSG_DONTWAIT);
-	if (tmpRecvLen <= 0)
-	{
+	tmp_recv_len = recv(this->_client_fd, tmp_raw, sizeof(tmp_raw), MSG_DONTWAIT);
+	if (tmp_recv_len <= -1)
 		throw RecievingRequestError();
-	}
+	if (tmp_recv_len == 0)
+		throw RecievingRequestEmpty();
 	this->_request_attempts++;
-	this->_basic_request.extenedRaw(tmpRaw);
+	this->_basic_request.extenedRaw(tmp_raw);
 }
 
 void HTTPCall::sendResponse(void)
 {
-	int sendStatus;
-	sendStatus = send(this->_client_fd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
-	if (sendStatus <= -1)
-	{
+	int send_status;
+	send_status = send(this->_client_fd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
+	if (send_status <= -1)
 		throw SendingResponseError();
-	}
+	if (send_status == 0)
+		throw SendingResponseEmpty();
 	this->_response_attempts++;
-	this->_bytes_sent += sendStatus;
+	this->_bytes_sent += send_status;
 }
 
 void HTTPCall::handleRequest(void)
