@@ -63,9 +63,10 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 	(void)fd;
 	(void)revents;
 	(void)param;
+	int client_fd;
 	try
 	{
-		int client_fd = Server::acceptConnection(fd);
+		client_fd = Server::acceptConnection(fd);
 	}
 	catch (Server::AcceptingConnectionFailed &e)
 	{
