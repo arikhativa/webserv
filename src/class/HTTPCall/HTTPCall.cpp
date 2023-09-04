@@ -28,6 +28,16 @@ const char *HTTPCall::RecievingRequestError::what() const throw()
 	return "Didn't recieve request: recv() failed";
 }
 
+const char *HTTPCall::SendingResponseEmpty::what() const throw()
+{
+	return "Didn't send response: send() return was 0";
+}
+
+const char *HTTPCall::RecievingRequestEmpty::what() const throw()
+{
+	return "Didn't recieve request: recv() return was 0";
+}
+
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
