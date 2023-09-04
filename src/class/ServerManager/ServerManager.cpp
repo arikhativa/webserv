@@ -63,7 +63,15 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 	(void)fd;
 	(void)revents;
 	(void)param;
-	int client_fd = Server::acceptConnection(fd);
+	try
+	{
+		int client_fd = Server::acceptConnection(fd);
+	}
+	catch (Server::AcceptingConnectionFailed &e)
+	{
+		std::cerr << "Acepting connection failed [" << e.what() << "]\n";
+		return Poll::CONTINUE;
+	}
 	Poll::Param new_param = {HTTPCall(param.req.getVirtualServer(), client_fd), -1, client_fd, -1, -1};
 	p.addRead(client_fd, ServerManager::clientRead, new_param);
 	return Poll::CONTINUE;
@@ -119,6 +127,7 @@ ServerManager::status ServerManager::setup()
 		}
 		catch (std::exception &e)
 		{
+			this->terminate();
 			return ServerManager::INVALID_VIRTUAL_SERVERS;
 		}
 		std::vector<int> fds = it->getSockets();
