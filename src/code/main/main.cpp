@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alopez-g <alopez-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 10:25:39 by yrabby            #+#    #+#             */
-/*   Updated: 2023/06/28 13:30:37 by yrabby           ###   ########.fr       */
+/*   Updated: 2023/08/30 10:15:28 by alopez-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,11 @@ int main(int ac, char **av)
 		return EXIT_FAILURE;
 
 	std::cout << *conf << std::endl;
+
+	ServerManager sm(conf);
+	sm.setup();
+	sm.start();
+	sm.terminate();
 
 	delete conf;
 	return EXIT_SUCCESS;

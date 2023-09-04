@@ -80,7 +80,7 @@ void HTTPCall::sendResponse(void)
 	send_status = send(this->_client_fd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
 	if (send_status <= -1)
 		throw SendingResponseError();
-	if (send_status -= 0)
+	if (send_status == 0)
 		throw SendingResponseEmpty();
 	this->_response_attempts++;
 	this->_bytes_sent += send_status;

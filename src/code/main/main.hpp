@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alopez-g <alopez-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 10:26:19 by yrabby            #+#    #+#             */
-/*   Updated: 2023/06/28 11:50:26 by yrabby           ###   ########.fr       */
+/*   Updated: 2023/08/30 10:13:25 by alopez-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 #include <Conf/Conf.hpp>
 #include <FileManager/FileManager.hpp>
+#include <ServerManager/ServerManager.hpp>
 #include <builder/builder.hpp>
 #include <lexer/lexer.hpp>
 #include <parser/parser.hpp>
