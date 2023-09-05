@@ -73,7 +73,8 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		std::cerr << "Acepting connection failed [" << e.what() << "]\n";
 		return Poll::CONTINUE;
 	}
-	Poll::Param new_param = {HTTPCall(param.req.getVirtualServer(), client_fd), -1, client_fd, -1, -1};
+	Poll::Param new_param = {HTTPCall(param.req.getVirtualServer(), param.req.getSocket(), client_fd), -1, client_fd,
+							 -1, -1};
 	p.addRead(client_fd, ServerManager::clientRead, new_param);
 	return Poll::CONTINUE;
 }
@@ -131,12 +132,17 @@ ServerManager::status ServerManager::setup()
 			this->terminate();
 			return ServerManager::INVALID_VIRTUAL_SERVERS;
 		}
-		std::vector<int> fds = it->getSockets();
+		std::vector<int> fds = it->getSocketsFd();
+		const std::vector<Socket> sock = it->getSockets();
+
 		std::vector<int>::iterator it_fds = fds.begin();
 		std::vector<int>::iterator end_fds = fds.end();
-		for (; it_fds != end_fds; it_fds++)
+
+		std::vector<Socket>::const_iterator it_sock = sock.begin();
+		std::vector<Socket>::const_iterator end_sock = sock.end();
+		for (; it_fds != end_fds && it_sock != end_sock; it_fds++, it_sock++)
 		{
-			Poll::Param param = {HTTPCall(&(*it), -1), -1, -1, -1, -1};
+			Poll::Param param = {HTTPCall(&(*it), &(*it_sock), -1), -1, -1, -1, -1};
 			this->_poll.addRead(*it_fds, ServerManager::initSocketsHandler, param);
 		}
 	}

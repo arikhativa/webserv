@@ -21,7 +21,7 @@ class HTTPCall
   public:
 	static const int MAX_CHUNK_ATTEMPTS;
 	static const int RECV_BUFFER_SIZE;
-	explicit HTTPCall(const Server *virtualServer, int client_fd);
+	explicit HTTPCall(const Server *virtualServer, const Socket *socket, int client_fd);
 	~HTTPCall();
 
 	BasicHTTPRequest getBasicRequest(void) const;
@@ -31,7 +31,7 @@ class HTTPCall
 	int getResponseAttempts(void) const;
 	long unsigned int getBytesSent(void) const;
 	const Server *getVirtualServer(void) const;
-	Socket *getSocket(void) const;
+	const Socket *getSocket(void) const;
 
 	void setBasicRequest(const BasicHTTPRequest &request);
 	void setResponse(const std::string &response);
@@ -69,7 +69,7 @@ class HTTPCall
 
   private:
 	const Server *_virtual_server;
-	Socket *_socket;
+	const Socket *_socket;
 	int _client_fd;
 
 	int _request_attempts;

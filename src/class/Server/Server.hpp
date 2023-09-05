@@ -31,7 +31,8 @@ class Server
 
 	void bindSockets(void);
 	void listenSockets(void);
-	const std::vector<int> getSockets(void) const;
+	const std::vector<int> getSocketsFd(void) const;
+	const std::vector<Socket> &getSockets(void) const;
 	size_t getSocketListSize(void) const;
 	void closeSockets(void);
 
