@@ -6,18 +6,17 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 {
 	try
 	{
-		BasicHTTPRequest requestRecived = request.getBasicRequest();
-		requestRecived.parseRaw();
-		Path url(request.getPathServerDirectory().get() + requestRecived.getPath());
-		if (httprequesthandlerGET::isDirectory(url.get()) && request.isAutoIndexOn())
+		request.getBasicRequest().parseRaw();
+		Path url(request.getPathServerDirectory().get() + request.getBasicRequest().getPath());
+		if (httprequesthandlerGET::isDirectoryListing(url, request))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 			response.setContentType(httpConstants::HTML_SUFFIX);
 			response.setBody(httprequesthandlerGET::getDirecoryContent(request.getPathServerDirectory(),
-																	   Path(requestRecived.getPath())));
+																	   Path(request.getBasicRequest().getPath())));
 			return (request.setResponse(response.getResponse()));
 		}
-		else if (httprequesthandlerGET::isFileExists(url.get()))
+		else if (FileManager::isFileExists(url.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 			response.setBody(httprequesthandlerGET::getFileContent(url.get(), response));
@@ -28,11 +27,6 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::NOT_FOUND), request.getErrorPages());
 			return (request.setResponse(response.getResponse()));
 		}
-	}
-	catch (const BasicHTTPRequest::Incomplete &e)
-	{
-		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), request.getErrorPages());
-		return (request.setResponse(errorResponse.getResponse()));
 	}
 	catch (const BasicHTTPRequest::Invalid &e)
 	{
