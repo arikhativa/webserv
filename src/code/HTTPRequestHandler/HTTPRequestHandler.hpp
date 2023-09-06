@@ -3,9 +3,9 @@
 #define H_T_T_P_REQUEST_HANDLER_HPP
 
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
+#include <HTTPRequestHandlerDELETE/HTTPRequestHandlerDELETE.hpp>
 #include <HTTPRequestHandlerGET/HTTPRequestHandlerGET.hpp>
 #include <HTTPRequestHandlerPOST/HTTPRequestHandlerPOST.hpp>
-#include <HTTPRequestHandlerDELETE/HTTPRequestHandlerDELETE.hpp>
 #include <Server/Server.hpp>
 
 #include <iostream>
