@@ -15,7 +15,7 @@
 #include <vector>
 
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
-#include <HTTPRequest/HTTPRequest.hpp>
+#include <HTTPCall/HTTPCall.hpp>
 #include <HTTPResponse/HTTPResponse.hpp>
 
 #ifdef TEST_ON
@@ -29,7 +29,7 @@ class Poll
 	struct Param
 	{
 		// general
-		HTTPRequest req;
+		HTTPCall req;
 		int src_socket;
 		int client_fd;
 

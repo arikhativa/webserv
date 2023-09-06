@@ -1,7 +1,8 @@
 
+#include <HTTPCall/HTTPCall.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 
-void HTTPRequestHandler::GET(HTTPRequest &request)
+void HTTPRequestHandler::GET(HTTPCall &request)
 {
 	try
 	{
@@ -45,7 +46,7 @@ void HTTPRequestHandler::GET(HTTPRequest &request)
 	}
 }
 
-void HTTPRequestHandler::POST(HTTPRequest &request)
+void HTTPRequestHandler::POST(HTTPCall &request)
 {
 	try
 	{
@@ -86,13 +87,13 @@ void HTTPRequestHandler::POST(HTTPRequest &request)
 	}
 }
 
-void HTTPRequestHandler::DELETE(HTTPRequest &request)
+void HTTPRequestHandler::DELETE(HTTPCall &request)
 {
 	(void)request;
 	request.setResponse("HTTP/1.1 200 OK\r\n\r\nYOU SENT A DELETE REQUEST");
 }
 
-void HTTPRequestHandler::UNKNOWN(HTTPRequest &request)
+void HTTPRequestHandler::UNKNOWN(HTTPCall &request)
 {
 	(void)request;
 	request.setResponse("HTTP/1.1 200 OK\r\n\r\nYOU SENT A UNKNOWN REQUEST");
