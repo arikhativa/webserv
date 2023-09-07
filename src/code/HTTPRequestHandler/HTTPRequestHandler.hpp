@@ -5,6 +5,7 @@
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <HTTPRequestHandlerGET/HTTPRequestHandlerGET.hpp>
 #include <Server/Server.hpp>
+#include <matcher/matcher.hpp>
 
 #include <iostream>
 #include <string>

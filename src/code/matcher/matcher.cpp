@@ -68,13 +68,48 @@ const IServerConf *matcher::requestToServer(const IConf *conf, const IListen *so
 const ILocation *matcher::requestToLocation(const IServerConf *s, const BasicHTTPRequest &req)
 {
 	std::list<const ILocation *> list = s->getLocations();
+	std::list<const ILocation *>::const_iterator tmp = list.end();
 	std::list<const ILocation *>::const_iterator it = list.begin();
-
 	while (it != list.end())
 	{
-		if ((*it)->getPath().get() == req.getPath())
-			return *it;
-		++it;
+		if ((req.getPath().find((*it)->getPath().get()) == 0) || (req.getPath() == "" && (*it)->getPath().get() == "/"))
+		{
+			if ((tmp == list.end()) || ((*it)->getPath().get().length() > (*tmp)->getPath().get().length()))
+				tmp = it;
+		}
+		it++;
 	}
-	return NULL;
+	if (tmp == list.end())
+		return NULL;
+	return (*tmp);
+}
+
+Path matcher::rootToRequest(const Server *server, const BasicHTTPRequest &req)
+{
+	const ILocation *loc = requestToLocation(server->getConf(), req);
+	if (loc != NULL)
+	{
+		return (Path(loc->getRoot()->get()));
+	}
+	return (Path(server->getConf()->getRoot()->get()));
+}
+
+bool matcher::isAutoIndexOnToRequest(const Server *server, const BasicHTTPRequest &req)
+{
+	const ILocation *loc = requestToLocation(server->getConf(), req);
+	if (loc != NULL)
+	{
+		return (loc->isAutoIndexOn());
+	}
+	return (false);
+}
+
+bool matcher::canUploadToRequest(const Server *server, const BasicHTTPRequest &req)
+{
+	const ILocation *loc = requestToLocation(server->getConf(), req);
+	if (loc != NULL)
+	{
+		return (loc->canUpload());
+	}
+	return (false);
 }
