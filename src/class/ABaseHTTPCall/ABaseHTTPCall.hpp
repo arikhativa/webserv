@@ -76,13 +76,11 @@ class ABaseHTTPCall
   protected:
 	static bool _isKeyRestricted(const std::string &key);
 
-	void _setIsValid(bool state);
 	void _parseHTTPVersion(void);
 	void _parseHeaders(void);
 
 	std::string _raw;
 	std::map<std::string, std::string> _headers;
-	bool _is_valid;
 	HTTPVersion _http_version;
 	std::string _body;
 	std::string _last_extention;
