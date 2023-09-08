@@ -49,7 +49,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		std::cerr << "Request is invalid [" << e.what() << "]\n";
 		return Poll::DONE;
 	}
-	catch (HTTPCall::RecievingRequestError &e)
+	catch (HTTPCall::ReceivingRequestError &e)
 	{
 		std::cerr << "Request recv error [" << e.what() << "]\n";
 		return Poll::DONE;

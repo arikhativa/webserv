@@ -34,7 +34,7 @@ const char *HTTPCall::SendingResponseError::what() const throw()
 	return "Couldn't send response: send() failed";
 }
 
-const char *HTTPCall::RecievingRequestError::what() const throw()
+const char *HTTPCall::ReceivingRequestError::what() const throw()
 {
 	return "Didn't recieve request: recv() failed";
 }
@@ -44,7 +44,7 @@ const char *HTTPCall::SendingResponseEmpty::what() const throw()
 	return "Didn't send response: send() return was 0";
 }
 
-const char *HTTPCall::RecievingRequestEmpty::what() const throw()
+const char *HTTPCall::ReceivingRequestEmpty::what() const throw()
 {
 	return "Didn't recieve request: recv() return was 0";
 }
@@ -78,9 +78,9 @@ void HTTPCall::recvRequest(void)
 
 	tmp_recv_len = recv(this->_client_fd, tmp_raw, sizeof(tmp_raw), MSG_DONTWAIT);
 	if (tmp_recv_len <= -1)
-		throw RecievingRequestError();
+		throw ReceivingRequestError();
 	if (tmp_recv_len == 0)
-		throw RecievingRequestEmpty();
+		throw ReceivingRequestEmpty();
 	this->_request_attempts++;
 	this->_basic_request.extenedRaw(tmp_raw);
 }

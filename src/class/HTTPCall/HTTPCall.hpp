@@ -60,13 +60,13 @@ class HTTPCall
 		virtual const char *what() const throw();
 	};
 
-	class RecievingRequestError : public std::exception
+	class ReceivingRequestError : public std::exception
 	{
 	  public:
 		virtual const char *what() const throw();
 	};
 
-	class RecievingRequestEmpty : public std::exception
+	class ReceivingRequestEmpty : public std::exception
 	{
 	  public:
 		virtual const char *what() const throw();
