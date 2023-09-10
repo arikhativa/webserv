@@ -6,7 +6,8 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 {
 	try
 	{
-		request.parseRawRequest();
+		if (request.getBasicRequest().isBody())
+			request.parseRawRequest();
 		Path url(matcher::rootToRequest(request.getVirtualServer(), request.getBasicRequest()).get() +
 				 request.getBasicRequest().getPath());
 		if (httprequesthandlerGET::isDirectoryListing(url, request))

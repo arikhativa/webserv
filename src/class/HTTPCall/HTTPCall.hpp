@@ -36,20 +36,18 @@ class HTTPCall
 	const Server *getVirtualServer(void) const;
 	Socket *getSocket(void) const;
 	std::list<const IErrorPage *> getErrorPages(void) const;
-
+	void parseRawRequest(void);
 	std::list<const ILocation *>::const_iterator searchMatchLocation(void) const;
 	bool isAutoIndexOn(void) const;
 	bool canUpload(void) const;
 	const IServerConf *getServerConf(void) const;
 	const ILocation *getLocation(void) const;
 
-
 	void setBasicRequest(const BasicHTTPRequest &request);
 	void setResponse(const std::string &response);
 	void setClientFd(int fd);
 	void setServerConf(const IServerConf *server_conf);
 	void setLocation(const ILocation *location);
-
 
 	BasicHTTPRequest::Type getRequestType(void);
 	void recvRequest(void);

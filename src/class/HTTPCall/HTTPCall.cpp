@@ -187,8 +187,8 @@ void HTTPCall::setClientFd(int fd)
 
 void HTTPCall::parseRawRequest(void)
 {
-	this->_basic_request.parseRaw();
-
+	this->_basic_request.parseBody();
+}
 const IServerConf *HTTPCall::getServerConf(void) const
 {
 	return this->_server_conf;
@@ -207,7 +207,6 @@ void HTTPCall::setServerConf(const IServerConf *server_conf)
 void HTTPCall::setLocation(const ILocation *location)
 {
 	this->_location = location;
-
 }
 
 /* ************************************************************************** */
