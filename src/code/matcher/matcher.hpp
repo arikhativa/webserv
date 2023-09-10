@@ -11,8 +11,8 @@
 
 namespace matcher
 {
-	const IServerConf *requestToServer(const IConf *conf, const IListen *socket, const BasicHTTPRequest &req);
-	const ILocation *requestToLocation(const IServerConf *s, const BasicHTTPRequest &req);
+	const IServerConf *requestToServer(const IConf *conf, const IListen *socket, const BasicHTTPRequest &req) throw();
+	const ILocation *requestToLocation(const IServerConf *s, const BasicHTTPRequest &req) throw();
 } // namespace matcher
 
 #endif
