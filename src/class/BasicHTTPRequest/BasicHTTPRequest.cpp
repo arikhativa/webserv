@@ -90,9 +90,6 @@ void BasicHTTPRequest::parseRaw(void)
 	_query = _parseQuery(this->getRawRequest());
 	ABaseHTTPCall::_parseHTTPVersion();
 	ABaseHTTPCall::_parseHeaders();
-	if (isBody())
-		ABaseHTTPCall::parseBody();
-	ABaseHTTPCall::_setIsValid(true);
 }
 
 std::string BasicHTTPRequest::toString(void) const

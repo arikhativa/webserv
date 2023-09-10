@@ -7,6 +7,17 @@
 const int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
 const int HTTPCall::RECV_BUFFER_SIZE = 4096;
 
+HTTPCall::HTTPCall()
+	: _virtual_server(NULL)
+	, _client_fd(-1)
+	, _request_attempts(0)
+	, _response_attempts(0)
+	, _bytes_sent(0)
+	, _response("")
+	, _basic_request("")
+{
+}
+
 HTTPCall::HTTPCall(const Server *virtual_server, int client_fd)
 	: _virtual_server(virtual_server)
 	, _client_fd(client_fd)
@@ -23,7 +34,7 @@ const char *HTTPCall::SendingResponseError::what() const throw()
 	return "Couldn't send response: send() failed";
 }
 
-const char *HTTPCall::RecievingRequestError::what() const throw()
+const char *HTTPCall::ReceivingRequestError::what() const throw()
 {
 	return "Didn't recieve request: recv() failed";
 }
@@ -33,7 +44,7 @@ const char *HTTPCall::SendingResponseEmpty::what() const throw()
 	return "Didn't send response: send() return was 0";
 }
 
-const char *HTTPCall::RecievingRequestEmpty::what() const throw()
+const char *HTTPCall::ReceivingRequestEmpty::what() const throw()
 {
 	return "Didn't recieve request: recv() return was 0";
 }
@@ -67,9 +78,9 @@ void HTTPCall::recvRequest(void)
 
 	tmp_recv_len = recv(this->_client_fd, tmp_raw, sizeof(tmp_raw), MSG_DONTWAIT);
 	if (tmp_recv_len <= -1)
-		throw RecievingRequestError();
+		throw ReceivingRequestError();
 	if (tmp_recv_len == 0)
-		throw RecievingRequestEmpty();
+		throw ReceivingRequestEmpty();
 	this->_request_attempts++;
 	this->_basic_request.extenedRaw(tmp_raw);
 }
@@ -167,6 +178,26 @@ void HTTPCall::setResponse(const std::string &response)
 void HTTPCall::setClientFd(int fd)
 {
 	this->_client_fd = fd;
+}
+
+const IServerConf *HTTPCall::getServerConf(void) const
+{
+	return this->_server_conf;
+}
+
+const ILocation *HTTPCall::getLocation(void) const
+{
+	return this->_location;
+}
+
+void HTTPCall::setServerConf(const IServerConf *server_conf)
+{
+	this->_server_conf = server_conf;
+}
+
+void HTTPCall::setLocation(const ILocation *location)
+{
+	this->_location = location;
 }
 
 /* ************************************************************************** */

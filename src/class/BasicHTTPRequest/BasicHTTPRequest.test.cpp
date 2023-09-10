@@ -55,7 +55,8 @@ TEST(BasicHTTPRequest, Print)
 						 "keep-alive\r\nsec-ch-ua: \r\n\r\n");
 
 	obj.parseRaw();
-
+	if (obj.isBody())
+		obj.parseBody();
 	std::stringstream ss;
 	ss << obj;
 	EXPECT_EQ(res, ss.str());
@@ -76,6 +77,8 @@ TEST(BasicHTTPRequest, parseRaw)
 	BasicHTTPRequest obj("POST / HTTP/1.1\r\nContent-Length: 4\r\n\r\nbody");
 
 	obj.parseRaw();
+	if (obj.isBody())
+		obj.parseBody();
 	EXPECT_STREQ("body", obj.getBody().c_str());
 }
 
@@ -177,6 +180,8 @@ TEST(BasicHTTPRequest, appendReqBadFirstLine)
 	try
 	{
 		obj.parseRaw();
+		if (obj.isBody())
+			obj.parseBody();
 	}
 	catch (const ABaseHTTPCall::Incomplete &e)
 	{

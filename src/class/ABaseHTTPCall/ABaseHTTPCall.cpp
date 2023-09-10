@@ -7,7 +7,6 @@
 
 ABaseHTTPCall::ABaseHTTPCall(const std::string &raw_request)
 	: _raw(raw_request)
-	, _is_valid(false)
 	, _http_version(UNKNOWN)
 	, _body("")
 	, _last_extention("")
@@ -17,7 +16,6 @@ ABaseHTTPCall::ABaseHTTPCall(const std::string &raw_request)
 ABaseHTTPCall::ABaseHTTPCall(const ABaseHTTPCall &src)
 	: _raw(src.getRawRequest())
 	, _headers(src.getHeaders())
-	, _is_valid(src.isValid())
 	, _http_version(src.getHTTPVersion())
 	, _body(src.getBody())
 	, _last_extention(src.getLastExtention())
@@ -70,7 +68,6 @@ ABaseHTTPCall &ABaseHTTPCall::operator=(ABaseHTTPCall const &rhs)
 	{
 		this->_raw = rhs.getRawRequest();
 		this->_headers = rhs.getHeaders();
-		this->_is_valid = rhs.isValid();
 		this->_http_version = rhs.getHTTPVersion();
 		this->_body = rhs.getBody();
 		this->_last_extention = rhs.getLastExtention();
@@ -247,7 +244,6 @@ void ABaseHTTPCall::_parseBodyByChunked(void)
 void ABaseHTTPCall::unParse(void)
 {
 	_headers.clear();
-	_is_valid = false;
 	_http_version = UNKNOWN;
 	_body.clear();
 	_last_extention.clear();
@@ -271,11 +267,6 @@ void ABaseHTTPCall::extenedRaw(const std::string &raw)
 	this->_raw += raw;
 }
 
-void ABaseHTTPCall::_setIsValid(bool state)
-{
-	this->_is_valid = state;
-}
-
 const std::string &ABaseHTTPCall::getLastExtention(void) const
 {
 	return this->_last_extention;
@@ -284,11 +275,6 @@ const std::string &ABaseHTTPCall::getLastExtention(void) const
 const std::string &ABaseHTTPCall::getRawRequest(void) const
 {
 	return this->_raw;
-}
-
-bool ABaseHTTPCall::isValid(void) const
-{
-	return this->_is_valid;
 }
 
 ABaseHTTPCall::HTTPVersion ABaseHTTPCall::getHTTPVersion(void) const
