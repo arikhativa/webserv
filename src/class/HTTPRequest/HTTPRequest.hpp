@@ -37,6 +37,7 @@ class HTTPRequest
 	std::list<const ILocation *>::const_iterator searchMatchLocation(void) const;
 	bool isAutoIndexOn(void) const;
 	bool canUpload(void) const;
+	bool isCgi(void) const;
 
 	void setBasicRequest(BasicHTTPRequest request);
 	void setResponse(std::string response);

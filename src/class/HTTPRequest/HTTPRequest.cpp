@@ -189,6 +189,14 @@ bool HTTPRequest::canUpload(void) const
 	return (false);
 }
 
+bool HTTPRequest::isCgi(void) const
+{
+	/*std::list<const ILocation *>::const_iterator tmp = searchMatchLocation();
+	if (tmp != this->_virtualServer->getConf()->getLocations().end())
+		return (*tmp)->isCgi();*/
+	return (false);
+}
+
 void HTTPRequest::setBasicRequest(BasicHTTPRequest request)
 {
 	this->_basicRequest = request;
