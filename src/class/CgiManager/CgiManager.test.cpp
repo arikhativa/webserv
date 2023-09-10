@@ -37,6 +37,8 @@ TEST(CgiManager, simplecgi)
 		"Mozilla/5.0\r\nAccept: text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
 	basicHTTPRequest.parseRaw();
+	if (basicHTTPRequest.isBody())
+		basicHTTPRequest.parseBody();
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -60,6 +62,8 @@ TEST(CgiManager, envCgi)
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: "
 		"keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
 	basicHTTPRequest.parseRaw();
+	if (basicHTTPRequest.isBody())
+		basicHTTPRequest.parseBody();
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -78,6 +82,8 @@ TEST(CgiManager, envFormCgi)
 									  "text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 									  "deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
 	basicHTTPRequest.parseRaw();
+	if (basicHTTPRequest.isBody())
+		basicHTTPRequest.parseBody();
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -106,6 +112,8 @@ TEST(CgiManager, formContentCgi)
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nthis is a test");
 	basicHTTPRequest.parseRaw();
+	if (basicHTTPRequest.isBody())
+		basicHTTPRequest.parseBody();
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -124,6 +132,8 @@ TEST(CgiManager, contentLengthCgi)
 									  "text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 									  "deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\n");
 	basicHTTPRequest.parseRaw();
+	if (basicHTTPRequest.isBody())
+		basicHTTPRequest.parseBody();
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
@@ -145,6 +155,8 @@ TEST(CgiManager, phpCgi)
 		"text/html\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, "
 		"deflate\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\n\r\nnombre=Juan&edad=25");
 	basicHTTPRequest.parseRaw();
+	if (basicHTTPRequest.isBody())
+		basicHTTPRequest.parseBody();
 	Path pathCGI("/usr/bin/php");
 	std::string serverName("serverName");
 	std::string port("1234");
