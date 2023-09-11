@@ -3,8 +3,8 @@
 #define H_T_T_P_REQUEST_HANDLER_HPP
 
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
-#include <httpRequestHandlerGET/httpRequestHandlerGET.hpp>
 #include <Server/Server.hpp>
+#include <httpRequestHandlerGET/httpRequestHandlerGET.hpp>
 #include <matcher/matcher.hpp>
 
 #include <iostream>
