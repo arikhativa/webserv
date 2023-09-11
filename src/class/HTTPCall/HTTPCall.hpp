@@ -5,6 +5,8 @@
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 #include <Server/Server.hpp>
+#include <matcher/matcher.hpp>
+
 #include <iostream>
 #include <map>
 #include <string>
@@ -33,14 +35,13 @@ class HTTPCall
 	long unsigned int getBytesSent(void) const;
 	const Server *getVirtualServer(void) const;
 	Socket *getSocket(void) const;
-	Path getPathServerDirectory(void) const;
 	std::list<const IErrorPage *> getErrorPages(void) const;
+	void parseRawRequest(void);
 	std::list<const ILocation *>::const_iterator searchMatchLocation(void) const;
 	bool isAutoIndexOn(void) const;
 	bool canUpload(void) const;
 	const IServerConf *getServerConf(void) const;
 	const ILocation *getLocation(void) const;
-
 
 	void setBasicRequest(const BasicHTTPRequest &request);
 	void setResponse(const std::string &response);

@@ -1,21 +1,15 @@
 #include <HTTPRequestHandlerPOST/HTTPRequestHandlerPOST.hpp>
 
-bool httprequesthandlerPOST::isFileExists(const std::string &path)
+bool httprequesthandlerPOST::isDirectoryListing(const Path &path, const HTTPCall &request)
 {
-	return (FileManager::isFileExists(path));
-}
-
-bool httprequesthandlerPOST::isDirectory(const std::string &path)
-{
-	return (FileManager::isDirectory(path));
+	return (FileManager::isDirectory(path.get()) && matcher::isAutoIndexOnToRequest(request));
 }
 
 std::string httprequesthandlerPOST::getFileContent(const std::string &path, ResponseHeader &response)
 {
-	std::string content = FileManager::getFileContent(path);
 	if (path.find(".") != std::string::npos)
 		response.setContentType(path.substr(path.find_last_of(".")));
-	return (content);
+	return (FileManager::getFileContent(path));
 }
 
 std::string httprequesthandlerPOST::getDirecoryContent(const Path &path, const Path &name)

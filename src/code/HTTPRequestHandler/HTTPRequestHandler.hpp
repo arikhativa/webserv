@@ -6,6 +6,7 @@
 #include <HTTPRequestHandlerGET/HTTPRequestHandlerGET.hpp>
 #include <HTTPRequestHandlerPOST/HTTPRequestHandlerPOST.hpp>
 #include <Server/Server.hpp>
+#include <matcher/matcher.hpp>
 
 #include <iostream>
 #include <string>
