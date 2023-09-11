@@ -167,7 +167,9 @@ int HTTPCall::getClientFd(void) const
 
 std::list<const IErrorPage *> HTTPCall::getErrorPages(void) const
 {
-	return this->_server_conf->getErrorPages();
+	if (this->_virtual_server == NULL)
+		return std::list<const IErrorPage *>();
+	return this->_virtual_server->getErrorPages();
 }
 
 void HTTPCall::setBasicRequest(const BasicHTTPRequest &request)
