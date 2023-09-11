@@ -6,20 +6,22 @@
 #include <list>
 
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
+#include <HTTPCall/HTTPCall.hpp>
 #include <IConf/IConf.hpp>
 #include <IServerConf/IServerConf.hpp>
 #include <Location/Location.hpp>
 #include <Path/Path.hpp>
-#include <Server/Server.hpp>
+
+class HTTPCall;
 
 namespace matcher
 {
 
 	const IServerConf *requestToServer(const IConf *conf, const IListen *socket, const BasicHTTPRequest &req) throw();
 	const ILocation *requestToLocation(const IServerConf *s, const BasicHTTPRequest &req) throw();
-	Path rootToRequest(const Server *server, const BasicHTTPRequest &req);
-	bool isAutoIndexOnToRequest(const Server *server, const BasicHTTPRequest &req);
-	bool canUploadToRequest(const Server *server, const BasicHTTPRequest &req);
+	Path rootToRequest(const HTTPCall &call);
+	bool isAutoIndexOnToRequest(const HTTPCall &call);
+	bool canUploadToRequest(const HTTPCall &call);
 
 } // namespace matcher
 

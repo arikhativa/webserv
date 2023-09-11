@@ -8,15 +8,13 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 	{
 		if (request.getBasicRequest().isBody())
 			request.parseRawRequest();
-		Path url(matcher::rootToRequest(request.getVirtualServer(), request.getBasicRequest()).get() +
-				 request.getBasicRequest().getPath());
+		Path url(matcher::rootToRequest(request).get() + request.getBasicRequest().getPath());
 		if (httprequesthandlerGET::isDirectoryListing(url, request))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 			response.setContentType(httpConstants::HTML_SUFFIX);
-			response.setBody(httprequesthandlerGET::getDirecoryContent(
-				matcher::rootToRequest(request.getVirtualServer(), request.getBasicRequest()),
-				Path(request.getBasicRequest().getPath())));
+			response.setBody(httprequesthandlerGET::getDirecoryContent(matcher::rootToRequest(request),
+																	   Path(request.getBasicRequest().getPath())));
 			return (request.setResponse(response.getResponse()));
 		}
 		else if (FileManager::isFileExists(url.get()))
