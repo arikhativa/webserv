@@ -112,3 +112,12 @@ bool matcher::canUploadToRequest(const HTTPCall &call)
 	}
 	return (false);
 }
+
+bool matcher::isCgiToRequest(const HTTPCall &call)
+{
+	if (call.getLocation() != NULL)
+	{
+		return (call.getLocation()->getCGIConf().isSet());
+	}
+	return (false);
+}

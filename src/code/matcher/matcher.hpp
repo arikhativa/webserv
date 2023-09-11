@@ -22,6 +22,7 @@ namespace matcher
 	Path rootToRequest(const HTTPCall &call);
 	bool isAutoIndexOnToRequest(const HTTPCall &call);
 	bool canUploadToRequest(const HTTPCall &call);
+	bool isCgiToRequest(const HTTPCall &call);
 
 } // namespace matcher
 
