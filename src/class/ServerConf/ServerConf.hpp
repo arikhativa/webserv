@@ -38,6 +38,7 @@ class ServerConf : public IServerConf
 	virtual std::list<const IErrorPage *> getErrorPages(void) const;
 	virtual std::list<const IListen *> getListen(void) const;
 	virtual std::list<const ILocation *> getLocations(void) const;
+	virtual const ILocation *getRootLocation(void) const;
 
 	void setDefaultSettingIfNeeded(void);
 
@@ -75,7 +76,6 @@ class ServerConf : public IServerConf
 	std::list<Listen> _listen;
 	std::list<Location> _locations;
 
-	Location *_getRootLocation(void);
 	void _inheritFromServer(Location &l);
 	void _setAllLocations(void);
 };

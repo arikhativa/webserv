@@ -196,9 +196,9 @@ void ServerConf::_setAllLocations(void)
 	}
 }
 
-Location *ServerConf::_getRootLocation(void)
+const ILocation *ServerConf::getRootLocation(void) const
 {
-	std::list<Location>::iterator it = _locations.begin();
+	std::list<Location>::const_iterator it = _locations.begin();
 	while (it != _locations.end())
 	{
 		if (it->getPath().get() == "/")
@@ -221,7 +221,7 @@ void ServerConf::setDefaultSettingIfNeeded(void)
 		_index_files.push_back(DEFAULT_HTML);
 		_index_files.push_back(DEFAULT_HTM);
 	}
-	if (_locations.empty() || _getRootLocation() == NULL)
+	if (_locations.empty() || getRootLocation() == NULL)
 	{
 		Location &l(createGetLocation());
 		l.setPath("/");
