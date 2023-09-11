@@ -163,6 +163,51 @@ std::list<const ILocation *> ServerConf::getLocations(void) const
 ** ----------------------------------- SET -------------------------------------
 */
 
+void ServerConf::_inheritFromServer(Location &l)
+{
+	if (!l.isMaxBodySizeOn() && this->_max_body_size.isOn())
+		l.setMaxBodySize(converter::numToString(this->getMaxBodySize()));
+	if (!l.getReturn() && this->_return)
+		l.setReturn(converter::numToString(this->getReturn()->getStatus().get()), this->getReturn()->getPath().get());
+	if (l.getIndexFiles().empty() && !this->_index_files.empty())
+		l.setIndexFiles(this->getIndexFiles());
+	if (l.getErrorPages().empty() && !this->_error_pages.empty())
+	{
+		std::list<const IErrorPage *> list = this->getErrorPages();
+		std::list<const IErrorPage *>::const_iterator it = list.begin();
+		while (it != list.end())
+		{
+			l.addErrorPage(converter::numToString((*it)->getStatus().get()), (*it)->getPath().get());
+			++it;
+		}
+	}
+	if (l.getRoot() == NULL && this->_root)
+		l.setRoot(this->getRoot()->get());
+}
+
+void ServerConf::_setAllLocations(void)
+{
+	std::list<Location>::iterator it = _locations.begin();
+	while (it != _locations.end())
+	{
+		_inheritFromServer(*it);
+		it->setDefaultSettingIfNeeded();
+		++it;
+	}
+}
+
+Location *ServerConf::_getRootLocation(void)
+{
+	std::list<Location>::iterator it = _locations.begin();
+	while (it != _locations.end())
+	{
+		if (it->getPath().get() == "/")
+			return &(*it);
+		++it;
+	}
+	return NULL;
+}
+
 void ServerConf::setDefaultSettingIfNeeded(void)
 {
 	if (_listen.empty())
@@ -176,6 +221,12 @@ void ServerConf::setDefaultSettingIfNeeded(void)
 		_index_files.push_back(DEFAULT_HTML);
 		_index_files.push_back(DEFAULT_HTM);
 	}
+	if (_locations.empty() || _getRootLocation() == NULL)
+	{
+		Location &l(createGetLocation());
+		l.setPath("/");
+	}
+	_setAllLocations();
 }
 
 void ServerConf::addName(const std::string &name)

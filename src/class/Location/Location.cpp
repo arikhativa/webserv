@@ -161,6 +161,11 @@ std::list<const IErrorPage *> Location::getErrorPages(void) const
 	return ret;
 }
 
+bool Location::isMaxBodySizeOn(void) const
+{
+	return _max_body_size.isOn();
+}
+
 std::size_t Location::getMaxBodySize(void) const
 {
 	if (_max_body_size.isOn())

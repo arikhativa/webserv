@@ -40,6 +40,7 @@ class ServerConf : public IServerConf
 	virtual std::list<const ILocation *> getLocations(void) const;
 
 	void setDefaultSettingIfNeeded(void);
+
 	void addName(const std::string &name);
 	void setMaxBodySize(const std::string &size);
 	void setReturn(const std::string &status, const std::string &path);
@@ -73,6 +74,10 @@ class ServerConf : public IServerConf
 	std::list<ErrorPage> _error_pages;
 	std::list<Listen> _listen;
 	std::list<Location> _locations;
+
+	Location *_getRootLocation(void);
+	void _inheritFromServer(Location &l);
+	void _setAllLocations(void);
 };
 
 std::ostream &operator<<(std::ostream &o, ServerConf const &i);
