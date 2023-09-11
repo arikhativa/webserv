@@ -81,21 +81,21 @@ void HTTPRequestHandler::DELETE(HTTPCall &request)
 {
 	try
 	{
-		BasicHTTPRequest requestRecived = request.getBasicRequest();
-		requestRecived.parseRaw();
-		Path path(request.getPathServerDirectory().get() + requestRecived.getPath());
-		if (!httprequesthandlerDELETE::isFileExists(path.get()) || httprequesthandlerDELETE::isDirectory(path.get()))
+		if (request.getBasicRequest().isBody())
+			request.parseRawRequest();
+		Path url(matcher::rootToRequest(request).get() + request.getBasicRequest().getPath());
+		if (!FileManager::isFileExists(url.get()) || FileManager::isDirectory(url.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::NOT_FOUND), request.getErrorPages());
 			return (request.setResponse(response.getResponse()));
 		}
-		httprequesthandlerDELETE::deleteFile(path.get());
+		httprequesthandlerDELETE::deleteFile(url);
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 		return (request.setResponse(response.getResponse()));
 	}
-	catch (const BasicHTTPRequest::Incomplete &e)
+	catch (const httprequesthandlerDELETE::DeleteFileException &e)
 	{
-		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), request.getErrorPages());
+		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::CONFLICT), request.getErrorPages());
 		return (request.setResponse(errorResponse.getResponse()));
 	}
 	catch (const BasicHTTPRequest::Invalid &e)
