@@ -5,6 +5,7 @@
 #include <ContentTypes/ContentTypes.hpp>
 #include <ErrorPage/ErrorPage.hpp>
 #include <HTTPStatusCode/HTTPStatusCode.hpp>
+#include <IErrorPage/IErrorPage.hpp>
 #include <converter/converter.hpp>
 #include <httpConstants/httpConstants.hpp>
 
@@ -39,6 +40,7 @@ class ResponseHeader
 		CONNECTION_TYPE,
 		CONTENT_LENGHT,
 		CONNECTION,
+		LOCATION,
 		BODY,
 	};
 	struct Field
@@ -46,7 +48,7 @@ class ResponseHeader
 		std::string name;
 		std::string value;
 	};
-	explicit ResponseHeader(HTTPStatusCode code, std::list<const ErrorPage *> error_pages);
+	explicit ResponseHeader(HTTPStatusCode code, std::list<const IErrorPage *> error_pages);
 	ResponseHeader(ResponseHeader const &src);
 	~ResponseHeader();
 	ResponseHeader &operator=(ResponseHeader const &rhs);
@@ -70,7 +72,7 @@ class ResponseHeader
 
   private:
 	void _setContentLength(size_t lenght);
-	void _setErrorPageIfNeeded(HTTPStatusCode code, std::list<const ErrorPage *> error_pages);
+	void _setErrorPageIfNeeded(HTTPStatusCode code, std::list<const IErrorPage *> error_pages);
 	void _defaultConstructor();
 	const std::string _getCurrentDate();
 	bool _isErrorCode(HTTPStatusCode code);

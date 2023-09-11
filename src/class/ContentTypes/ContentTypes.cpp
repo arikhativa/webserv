@@ -122,6 +122,8 @@ static std::map<std::string, std::string> create_map(void)
 	ret[".wmv"] = "video/x-ms-wmv";
 	ret[".avi"] = "video/x-msvideo";
 
+	ret[".py"] = "text/x-python";
+
 	return (ret);
 }
 

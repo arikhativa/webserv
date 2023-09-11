@@ -165,6 +165,11 @@ int HTTPCall::getClientFd(void) const
 	return this->_client_fd;
 }
 
+std::list<const IErrorPage *> HTTPCall::getErrorPages(void) const
+{
+	return this->_virtual_server->getErrorPages();
+}
+
 void HTTPCall::setBasicRequest(const BasicHTTPRequest &request)
 {
 	this->_basic_request = request;
@@ -180,6 +185,10 @@ void HTTPCall::setClientFd(int fd)
 	this->_client_fd = fd;
 }
 
+void HTTPCall::parseRawRequest(void)
+{
+	this->_basic_request.parseBody();
+}
 const IServerConf *HTTPCall::getServerConf(void) const
 {
 	return this->_server_conf;

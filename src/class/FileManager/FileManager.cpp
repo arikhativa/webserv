@@ -164,11 +164,8 @@ std::string FileManager::_setHyperlinks(const std::string &path, std::string rel
 	std::string url = _setUrlForHyperlinks(relative_path + name);
 	if (name.length() > 50)
 		name = name.substr(0, 47) + "..>";
-	int i = 0;
-	if (isDirectory(path) && url[url.length() - 1] != '/')
-		i = -1;
 	content << "<a href=\"" + url + "\">" + name + "</a>";
-	content << std::setw(68 + i - name.length()) << FileManager::getFileDate(path);
+	content << std::setw(68 - name.length()) << FileManager::getFileDate(path);
 	return (content.str());
 }
 
@@ -190,6 +187,8 @@ std::string FileManager::getDirectoryPreview(const std::string &path, std::strin
 		while ((ent = readdir(dir)) != NULL)
 		{
 			std::string path_aux(path + relativePath + ent->d_name);
+			if (ent->d_name[0] == '.' && ent->d_name[1] == '\0')
+				continue;
 			content << _setHyperlinks(path_aux, relativePath, ent->d_name);
 			if (isDirectory(path_aux))
 				content << std::setw(20) << "-";
