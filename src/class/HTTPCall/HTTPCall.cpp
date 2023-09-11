@@ -7,6 +7,17 @@
 const int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
 const int HTTPCall::RECV_BUFFER_SIZE = 4096;
 
+HTTPCall::HTTPCall()
+	: _virtual_server(NULL)
+	, _client_fd(-1)
+	, _request_attempts(0)
+	, _response_attempts(0)
+	, _bytes_sent(0)
+	, _response("")
+	, _basic_request("")
+{
+}
+
 HTTPCall::HTTPCall(const Server *virtual_server, int client_fd)
 	: _virtual_server(virtual_server)
 	, _client_fd(client_fd)
@@ -23,7 +34,7 @@ const char *HTTPCall::SendingResponseError::what() const throw()
 	return "Couldn't send response: send() failed";
 }
 
-const char *HTTPCall::RecievingRequestError::what() const throw()
+const char *HTTPCall::ReceivingRequestError::what() const throw()
 {
 	return "Didn't recieve request: recv() failed";
 }
@@ -33,7 +44,7 @@ const char *HTTPCall::SendingResponseEmpty::what() const throw()
 	return "Didn't send response: send() return was 0";
 }
 
-const char *HTTPCall::RecievingRequestEmpty::what() const throw()
+const char *HTTPCall::ReceivingRequestEmpty::what() const throw()
 {
 	return "Didn't recieve request: recv() return was 0";
 }
@@ -67,9 +78,9 @@ void HTTPCall::recvRequest(void)
 
 	tmp_recv_len = recv(this->_client_fd, tmp_raw, sizeof(tmp_raw), MSG_DONTWAIT);
 	if (tmp_recv_len <= -1)
-		throw RecievingRequestError();
+		throw ReceivingRequestError();
 	if (tmp_recv_len == 0)
-		throw RecievingRequestEmpty();
+		throw ReceivingRequestEmpty();
 	this->_request_attempts++;
 	this->_basic_request.extenedRaw(tmp_raw);
 }
@@ -154,49 +165,9 @@ int HTTPCall::getClientFd(void) const
 	return this->_client_fd;
 }
 
-Path HTTPCall::getPathServerDirectory(void) const
-{
-	Path serverPath(this->_virtual_server->getConf()->getRoot()->get());
-	return (serverPath);
-}
-
 std::list<const IErrorPage *> HTTPCall::getErrorPages(void) const
 {
 	return this->_virtual_server->getErrorPages();
-}
-
-std::list<const ILocation *>::const_iterator HTTPCall::searchMatchLocation(void) const
-{
-	std::list<const ILocation *>::const_iterator tmp = this->_virtual_server->getConf()->getLocations().end();
-	std::list<const ILocation *> locations = this->_virtual_server->getConf()->getLocations();
-	for (std::list<const ILocation *>::const_iterator it = locations.begin(); it != locations.end(); it++)
-	{
-		if ((this->_basic_request.getPath().find((*it)->getPath().get()) == 0) ||
-			(this->_basic_request.getPath() == "" && (*it)->getPath().get() == "/"))
-		{
-			if (it == locations.begin())
-				tmp = it;
-			else if ((*it)->getPath().get().length() > (*tmp)->getPath().get().length())
-				tmp = it;
-		}
-	}
-	return (tmp);
-}
-
-bool HTTPCall::isAutoIndexOn(void) const
-{
-	std::list<const ILocation *>::const_iterator tmp = searchMatchLocation();
-	if (tmp != this->_virtual_server->getConf()->getLocations().end())
-		return (*tmp)->isAutoIndexOn();
-	return (false);
-}
-
-bool HTTPCall::canUpload(void) const
-{
-	std::list<const ILocation *>::const_iterator tmp = searchMatchLocation();
-	if (tmp != this->_virtual_server->getConf()->getLocations().end())
-		return (*tmp)->canUpload();
-	return (false);
 }
 
 void HTTPCall::setBasicRequest(const BasicHTTPRequest &request)
@@ -212,6 +183,30 @@ void HTTPCall::setResponse(const std::string &response)
 void HTTPCall::setClientFd(int fd)
 {
 	this->_client_fd = fd;
+}
+
+void HTTPCall::parseRawRequest(void)
+{
+	this->_basic_request.parseBody();
+}
+const IServerConf *HTTPCall::getServerConf(void) const
+{
+	return this->_server_conf;
+}
+
+const ILocation *HTTPCall::getLocation(void) const
+{
+	return this->_location;
+}
+
+void HTTPCall::setServerConf(const IServerConf *server_conf)
+{
+	this->_server_conf = server_conf;
+}
+
+void HTTPCall::setLocation(const ILocation *location)
+{
+	this->_location = location;
 }
 
 /* ************************************************************************** */
