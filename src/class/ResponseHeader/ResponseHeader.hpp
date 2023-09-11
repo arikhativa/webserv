@@ -38,7 +38,7 @@ class ResponseHeader
 		SERVER,
 		DATE,
 		CONNECTION_TYPE,
-		CONTENT_LENGHT,
+		CONTENT_LENGTH,
 		CONNECTION,
 		LOCATION,
 		BODY,
@@ -71,7 +71,7 @@ class ResponseHeader
 	};
 
   private:
-	void _setContentLength(size_t lenght);
+	void _setContentLength(size_t length);
 	void _setErrorPageIfNeeded(HTTPStatusCode code, std::list<const IErrorPage *> error_pages);
 	void _defaultConstructor();
 	const std::string _getCurrentDate();

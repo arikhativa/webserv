@@ -32,7 +32,6 @@ std::string defaultPager::getPage(HTTPStatusCode::Code code)
 	}
 	catch (const std::exception &e)
 	{
-		std::cerr << "Error: missing default error page for status code: " << code << std::endl;
 		return "";
 	}
 

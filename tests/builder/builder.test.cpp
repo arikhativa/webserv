@@ -99,7 +99,7 @@ TEST(builder, FullFile)
 		EXPECT_EQ(true, (*it)->getAllowedMethods().isAllowed(IAllowedMethods::DELETE));
 		EXPECT_EQ(false, (*it)->getAllowedMethods().isAllowed(IAllowedMethods::POST));
 		EXPECT_EQ(false, (*it)->getAllowedMethods().isAllowed(IAllowedMethods::GET));
-		EXPECT_EQ(0, (*it)->getMaxBodySize());
+		EXPECT_EQ(20, (*it)->getMaxBodySize());
 		EXPECT_EQ(false, (*it)->isAutoIndexOn());
 		EXPECT_EQ(false, (*it)->canUpload());
 	}
