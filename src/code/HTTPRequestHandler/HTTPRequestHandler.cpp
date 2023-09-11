@@ -28,11 +28,6 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 			return (request.setResponse(response.getResponse()));
 		}
 	}
-	catch (const BasicHTTPRequest::Invalid &e)
-	{
-		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), request.getErrorPages());
-		return (request.setResponse(errorResponse.getResponse()));
-	}
 	catch (const std::exception &e)
 	{
 		std::cerr << e.what() << std::endl;
@@ -63,11 +58,6 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 		response.setBody(httprequesthandlerPOST::getFileContent(url.get(), response));
 		return (request.setResponse(response.getResponse()));
-	}
-	catch (const BasicHTTPRequest::Invalid &e)
-	{
-		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), request.getErrorPages());
-		return (request.setResponse(errorResponse.getResponse()));
 	}
 	catch (const std::exception &e)
 	{
