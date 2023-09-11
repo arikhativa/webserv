@@ -1,4 +1,4 @@
-#include <HTTPRequestHandlerDELETE/HTTPRequestHandlerDELETE.hpp>
+#include <httpRequestHandlerDELETE/httpRequestHandlerDELETE.hpp>
 
 void httprequesthandlerDELETE::deleteFile(const Path &path)
 {

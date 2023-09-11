@@ -6,21 +6,20 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 {
 	try
 	{
-		if (request.getBasicRequest().isBody())
-			request.parseRawRequest();
-		Path url(matcher::rootToRequest(request).get() + request.getBasicRequest().getPath());
-		if (httprequesthandlerGET::isDirectoryListing(url, request))
+		const IPath *root(request.getLocation()->getRoot());
+		Path url(root->get() + request.getBasicRequest().getPath());
+		if (httpRequestHandlerGET::isDirectoryListing(url, request))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 			response.setContentType(httpConstants::HTML_SUFFIX);
-			response.setBody(httprequesthandlerGET::getDirecoryContent(matcher::rootToRequest(request),
-																	   Path(request.getBasicRequest().getPath())));
+			response.setBody(
+				httpRequestHandlerGET::getDirectoryContent(root, Path(request.getBasicRequest().getPath())));
 			return (request.setResponse(response.getResponse()));
 		}
 		else if (FileManager::isFileExists(url.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
-			response.setBody(httprequesthandlerGET::getFileContent(url.get(), response));
+			response.setBody(httpRequestHandlerGET::getFileContent(url.get(), response));
 			return (request.setResponse(response.getResponse()));
 		}
 		else
@@ -36,6 +35,7 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 	}
 	catch (const std::exception &e)
 	{
+		std::cerr << e.what() << std::endl;
 		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR), request.getErrorPages());
 		return (request.setResponse(errorResponse.getResponse()));
 	}
@@ -45,9 +45,8 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 {
 	try
 	{
-		if (request.getBasicRequest().isBody())
-			request.parseRawRequest();
-		Path url(matcher::rootToRequest(request).get() + request.getBasicRequest().getPath());
+		const IPath *root(request.getLocation()->getRoot());
+		Path url(root->get() + request.getBasicRequest().getPath());
 		if (!FileManager::isFileExists(url.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::NOT_FOUND), request.getErrorPages());
@@ -57,8 +56,8 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 			response.setContentType(httpConstants::HTML_SUFFIX);
-			response.setBody(httprequesthandlerPOST::getDirecoryContent(matcher::rootToRequest(request),
-																		Path(request.getBasicRequest().getPath())));
+			response.setBody(
+				httprequesthandlerPOST::getDirectoryContent(root, Path(request.getBasicRequest().getPath())));
 			return (request.setResponse(response.getResponse()));
 		}
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
@@ -81,9 +80,8 @@ void HTTPRequestHandler::DELETE(HTTPCall &request)
 {
 	try
 	{
-		if (request.getBasicRequest().isBody())
-			request.parseRawRequest();
-		Path url(matcher::rootToRequest(request).get() + request.getBasicRequest().getPath());
+		const IPath *root(request.getLocation()->getRoot());
+		Path url(root->get() + request.getBasicRequest().getPath());
 		if (!FileManager::isFileExists(url.get()) || FileManager::isDirectory(url.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::NOT_FOUND), request.getErrorPages());
