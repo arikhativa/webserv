@@ -157,4 +157,31 @@ TEST(ServerConf, setDefaultSettingIfNeeded)
 	EXPECT_EQ(ServerConf::DEFAULT_ROOT, obj.getRoot()->get());
 	EXPECT_EQ(ServerConf::DEFAULT_HTML, obj.getIndexFiles().front());
 	EXPECT_EQ(ServerConf::DEFAULT_HTM, obj.getIndexFiles().back());
+
+	std::list<const ILocation *> locations = obj.getLocations();
+	EXPECT_EQ("/", locations.front()->getPath().get());
+	EXPECT_EQ(ServerConf::DEFAULT_ROOT, locations.front()->getRoot()->get());
+}
+
+TEST(ServerConf, _inheritFromServer)
+{
+	ServerConf obj;
+
+	obj.setRoot("/root");
+	obj.setIndexFiles(std::list<std::string>({"index.html", "index.php"}));
+	{
+		Location &l = obj.createGetLocation();
+		l.setPath("/b");
+	}
+
+	obj.setDefaultSettingIfNeeded();
+
+	std::list<const ILocation *> locations = obj.getLocations();
+	EXPECT_EQ("/b", locations.front()->getPath().get());
+	EXPECT_EQ("/root", locations.front()->getRoot()->get());
+	EXPECT_EQ("index.html", locations.front()->getIndexFiles().front());
+
+	EXPECT_EQ("/", locations.back()->getPath().get());
+	EXPECT_EQ("/root", locations.back()->getRoot()->get());
+	EXPECT_EQ("index.php", locations.back()->getIndexFiles().back());
 }

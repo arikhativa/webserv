@@ -75,8 +75,8 @@ void ResponseHeader::_defaultConstructor()
 	_header[DATE].value = _getCurrentDate();
 	_header[CONNECTION_TYPE].name = httpConstants::CONTENT_TYPE_FIELD_KEY;
 	_header[CONNECTION_TYPE].value = "";
-	_header[CONTENT_LENGHT].name = httpConstants::CONTENT_LENGHT_FIELD_KEY;
-	_header[CONTENT_LENGHT].value = "";
+	_header[CONTENT_LENGTH].name = httpConstants::CONTENT_LENGHT_FIELD_KEY;
+	_header[CONTENT_LENGTH].value = "";
 	_header[CONNECTION].name = httpConstants::CONNECTION_FIELD_KEY;
 	_header[LOCATION].value = "";
 	_header[LOCATION].name = "";
@@ -127,9 +127,9 @@ const std::string ResponseHeader::_getCurrentDate(void)
 	return (result);
 }
 
-void ResponseHeader::_setContentLength(size_t lenght)
+void ResponseHeader::_setContentLength(size_t length)
 {
-	this->_header.at(CONTENT_LENGHT).value = converter::numToString(lenght);
+	this->_header.at(CONTENT_LENGTH).value = converter::numToString(length);
 }
 
 bool ResponseHeader::_isErrorCode(HTTPStatusCode code)
@@ -172,11 +172,11 @@ void ResponseHeader::setBody(const std::string &body)
 {
 
 	this->_header[BODY].value = body;
-	int lenght = body.length();
-	if (lenght == 0)
-		_setContentLength(lenght);
+	int length = body.length();
+	if (length == 0)
+		_setContentLength(length);
 	else
-		_setContentLength(lenght + 1);
+		_setContentLength(length + 1);
 	if (this->_header.at(CONNECTION_TYPE).value == "")
 		setContentType(httpConstants::HTML_SUFFIX);
 }
