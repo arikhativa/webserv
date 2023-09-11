@@ -96,12 +96,6 @@ void HTTPRequestHandler::DELETE(HTTPCall &request)
 		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::CONFLICT), request.getErrorPages());
 		return (request.setResponse(errorResponse.getResponse()));
 	}
-	catch (const BasicHTTPRequest::Invalid &e)
-	{
-		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), request.getErrorPages());
-		return (request.setResponse(errorResponse.getResponse()));
-	}
-	catch (const std::exception &e)
 	{
 		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR), request.getErrorPages());
 		return (request.setResponse(errorResponse.getResponse()));
