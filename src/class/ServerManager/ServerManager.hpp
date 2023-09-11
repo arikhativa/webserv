@@ -9,6 +9,7 @@
 #include <Server/Server.hpp>
 #include <iostream>
 #include <map>
+#include <matcher/matcher.hpp>
 #include <string>
 #include <sys/poll.h>
 #include <vector>
