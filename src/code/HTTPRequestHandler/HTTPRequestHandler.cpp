@@ -7,7 +7,6 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 	try
 	{
 		const IPath *root(request.getLocation()->getRoot());
-
 		Path url(root->get() + request.getBasicRequest().getPath());
 		if (httpRequestHandlerGET::isDirectoryListing(url, request))
 		{
@@ -46,9 +45,8 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 {
 	try
 	{
-		if (request.getBasicRequest().isBody())
-			request.parseRawRequest();
-		Path url(matcher::rootToRequest(request).get() + request.getBasicRequest().getPath());
+		const IPath *root(request.getLocation()->getRoot());
+		Path url(root->get() + request.getBasicRequest().getPath());
 		if (!FileManager::isFileExists(url.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::NOT_FOUND), request.getErrorPages());
@@ -58,8 +56,8 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 			response.setContentType(httpConstants::HTML_SUFFIX);
-			response.setBody(httprequesthandlerPOST::getDirecoryContent(matcher::rootToRequest(request),
-																		Path(request.getBasicRequest().getPath())));
+			response.setBody(
+				httprequesthandlerPOST::getDirectoryContent(root, Path(request.getBasicRequest().getPath())));
 			return (request.setResponse(response.getResponse()));
 		}
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
