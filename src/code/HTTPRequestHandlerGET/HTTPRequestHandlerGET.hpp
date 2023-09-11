@@ -10,18 +10,17 @@
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <CgiManager/CgiManager.hpp>
 #include <FileManager/FileManager.hpp>
-#include <HTTPRequest/HTTPRequest.hpp>
+#include <HTTPCall/HTTPCall.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 #include <ResponseHeader/ResponseHeader.hpp>
 #include <Server/Server.hpp>
 
-class HTTPRequest;
+class HTTPCall;
 
 namespace httprequesthandlerGET
 {
-	bool isFileExists(const std::string &path);
-	bool isDirectory(const std::string &path);
-	std::string getFileContent(const std::string &path, ResponseHeader &response, HTTPRequest &request);
+	bool isDirectoryListing(const Path &path, const HTTPCall &request);
+	std::string getFileContent(const std::string &path, ResponseHeader &response);
 	std::string getDirecoryContent(const Path &path, const Path &name);
 } // namespace httprequesthandlerGET
 

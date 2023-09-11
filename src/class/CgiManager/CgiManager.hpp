@@ -5,6 +5,7 @@
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <Path/Path.hpp>
 #include <Pipe/Pipe.hpp>
+#include <Poll/Poll.hpp>
 #include <Tab/Tab.hpp>
 #include <converter/converter.hpp>
 

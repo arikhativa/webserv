@@ -14,10 +14,11 @@
 #include <ResponseHeader/ResponseHeader.hpp>
 #include <Server/Server.hpp>
 
+class HTTPCall;
+
 namespace httprequesthandlerPOST
 {
-	bool isFileExists(const std::string &path);
-	bool isDirectory(const std::string &path);
+	bool isDirectoryListing(const Path &path, const HTTPCall &request);
 	std::string getFileContent(const std::string &path, ResponseHeader &response);
 	std::string getDirecoryContent(const Path &path, const Path &name);
 } // namespace httprequesthandlerPOST

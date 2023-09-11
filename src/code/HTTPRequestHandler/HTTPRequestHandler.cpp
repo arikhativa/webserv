@@ -1,22 +1,23 @@
 
+#include <HTTPCall/HTTPCall.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 
-void HTTPRequestHandler::GET(HTTPRequest &request)
+void HTTPRequestHandler::GET(HTTPCall &request)
 {
 	try
 	{
-		BasicHTTPRequest requestRecived = request.getBasicRequest();
-		requestRecived.parseRaw();
-		Path url(request.getPathServerDirectory().get() + requestRecived.getPath());
-		if (httprequesthandlerGET::isDirectory(url.get()) && request.isAutoIndexOn())
+		if (request.getBasicRequest().isBody())
+			request.parseRawRequest();
+		Path url(matcher::rootToRequest(request).get() + request.getBasicRequest().getPath());
+		if (httprequesthandlerGET::isDirectoryListing(url, request))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 			response.setContentType(httpConstants::HTML_SUFFIX);
-			response.setBody(httprequesthandlerGET::getDirecoryContent(request.getPathServerDirectory(),
-																	   Path(requestRecived.getPath())));
+			response.setBody(httprequesthandlerGET::getDirecoryContent(matcher::rootToRequest(request),
+																	   Path(request.getBasicRequest().getPath())));
 			return (request.setResponse(response.getResponse()));
 		}
-		else if (httprequesthandlerGET::isFileExists(url.get()))
+		else if (FileManager::isFileExists(url.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 			response.setBody(httprequesthandlerGET::getFileContent(url.get(), response, request));
@@ -28,11 +29,6 @@ void HTTPRequestHandler::GET(HTTPRequest &request)
 			return (request.setResponse(response.getResponse()));
 		}
 	}
-	catch (const BasicHTTPRequest::Incomplete &e)
-	{
-		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), request.getErrorPages());
-		return (request.setResponse(errorResponse.getResponse()));
-	}
 	catch (const BasicHTTPRequest::Invalid &e)
 	{
 		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), request.getErrorPages());
@@ -45,35 +41,30 @@ void HTTPRequestHandler::GET(HTTPRequest &request)
 	}
 }
 
-void HTTPRequestHandler::POST(HTTPRequest &request)
+void HTTPRequestHandler::POST(HTTPCall &request)
 {
 	try
 	{
-		BasicHTTPRequest requestRecived = request.getBasicRequest();
-		requestRecived.parseRaw();
-		Path url(request.getPathServerDirectory().get() + requestRecived.getPath());
-		if (!httprequesthandlerPOST::isFileExists(url.get()))
+		if (request.getBasicRequest().isBody())
+			request.parseRawRequest();
+		Path url(matcher::rootToRequest(request).get() + request.getBasicRequest().getPath());
+		if (!FileManager::isFileExists(url.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::NOT_FOUND), request.getErrorPages());
 			return (request.setResponse(response.getResponse()));
 		}
-		if (httprequesthandlerPOST::isDirectory(url.get()))
+		if (httprequesthandlerPOST::isDirectoryListing(url, request))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 			response.setContentType(httpConstants::HTML_SUFFIX);
-			response.setBody(httprequesthandlerPOST::getDirecoryContent(request.getPathServerDirectory(),
-																		Path(requestRecived.getPath())));
+			response.setBody(httprequesthandlerPOST::getDirecoryContent(matcher::rootToRequest(request),
+																		Path(request.getBasicRequest().getPath())));
 			return (request.setResponse(response.getResponse()));
 		}
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
 		response.setBody(httprequesthandlerPOST::getFileContent(url.get(), response));
 		return (request.setResponse(response.getResponse()));
 	}
-	catch (const BasicHTTPRequest::Incomplete &e)
-	{
-		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), request.getErrorPages());
-		return (request.setResponse(errorResponse.getResponse()));
-	}
 	catch (const BasicHTTPRequest::Invalid &e)
 	{
 		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), request.getErrorPages());
@@ -86,7 +77,7 @@ void HTTPRequestHandler::POST(HTTPRequest &request)
 	}
 }
 
-void HTTPRequestHandler::DELETE(HTTPRequest &request)
+void HTTPRequestHandler::DELETE(HTTPCall &request)
 {
 	try
 	{
@@ -119,7 +110,7 @@ void HTTPRequestHandler::DELETE(HTTPRequest &request)
 	}
 }
 
-void HTTPRequestHandler::UNKNOWN(HTTPRequest &request)
+void HTTPRequestHandler::UNKNOWN(HTTPCall &request)
 {
 	(void)request;
 	request.setResponse("HTTP/1.1 200 OK\r\n\r\nYOU SENT A UNKNOWN REQUEST");

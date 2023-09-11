@@ -3,23 +3,23 @@
 #define H_T_T_P_REQUEST_HANDLER_HPP
 
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
-#include <HTTPRequest/HTTPRequest.hpp>
 #include <HTTPRequestHandlerDELETE/HTTPRequestHandlerDELETE.hpp>
 #include <HTTPRequestHandlerGET/HTTPRequestHandlerGET.hpp>
 #include <HTTPRequestHandlerPOST/HTTPRequestHandlerPOST.hpp>
 #include <Server/Server.hpp>
+#include <matcher/matcher.hpp>
 
 #include <iostream>
 #include <string>
 
-class HTTPRequest;
+class HTTPCall;
 
 namespace HTTPRequestHandler
 {
-	void GET(HTTPRequest &request);
-	void POST(HTTPRequest &request);
-	void DELETE(HTTPRequest &request);
-	void UNKNOWN(HTTPRequest &request);
+	void GET(HTTPCall &request);
+	void POST(HTTPCall &request);
+	void DELETE(HTTPCall &request);
+	void UNKNOWN(HTTPCall &request);
 }; // namespace HTTPRequestHandler
 
 #endif /* H_T_T_P_REQUEST_HANDLER_HPP */

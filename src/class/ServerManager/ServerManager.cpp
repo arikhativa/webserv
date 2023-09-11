@@ -1,17 +1,17 @@
 
 #include <ServerManager/ServerManager.hpp>
 
-/* TEST HANDLERS */
+/* HANDLERS */
 
-Poll::ret_stt client_write(Poll &p, int fd, int revents, Poll::Param &param)
+Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	(void)p;
 	(void)fd;
-	(void)revents;
-	(void)param;
+	if (!Poll::isWriteEvent(revents))
+		return Poll::CONTINUE;
 	try
 	{
-		param.req.sendResponse();
+		param.call.sendResponse();
 	}
 	catch (const std::exception &e)
 	{
@@ -19,29 +19,29 @@ Poll::ret_stt client_write(Poll &p, int fd, int revents, Poll::Param &param)
 		return Poll::DONE;
 	}
 
-	if (param.req.getBytesSent() < param.req.getResponse().size() ||
-		param.req.getResponseAttempts() >= HTTPRequest::MAX_CHUNK_ATTEMPTS)
+	if (param.call.getBytesSent() < param.call.getResponse().size())
 		return Poll::CONTINUE;
-	param.req.terminate();
+	param.call.terminate();
 	return Poll::DONE;
 }
 
-Poll::ret_stt client_read(Poll &p, int fd, int revents, Poll::Param &param)
+Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Param &param)
 {
-	(void)p;
 	(void)fd;
-	(void)revents;
-	(void)param;
-	if (param.req.getRequestAttempts() >= HTTPRequest::MAX_CHUNK_ATTEMPTS)
-		return Poll::DONE;
+
+	if (!Poll::isReadEvent(revents))
+		return Poll::CONTINUE;
 	try
 	{
-		param.req.recvRequest();
-		param.req.getBasicRequest().parseRaw();
+		param.call.recvRequest();
+		param.call.getBasicRequest().parseRaw();
+		if (param.call.getBasicRequest().isBody())
+			param.call.getBasicRequest().parseBody();
 	}
 	catch (ABaseHTTPCall::Incomplete &e)
 	{
 		std::cerr << "Request is not finished [" << e.what() << "]\n";
+		param.call.getBasicRequest().unParse();
 		return Poll::CONTINUE;
 	}
 	catch (ABaseHTTPCall::Invalid &e)
@@ -49,25 +49,39 @@ Poll::ret_stt client_read(Poll &p, int fd, int revents, Poll::Param &param)
 		std::cerr << "Request is invalid [" << e.what() << "]\n";
 		return Poll::DONE;
 	}
-	catch (HTTPRequest::RecievingRequestError &e)
+	catch (HTTPCall::ReceivingRequestError &e)
 	{
 		std::cerr << "Request recv error [" << e.what() << "]\n";
 		return Poll::DONE;
 	}
-	param.req.handleRequest();
-	p.addWrite(param.client_fd, client_write, param);
+
+	param.call.setServerConf(matcher::requestToServer(param.conf, param.src_listen, param.call.getBasicRequest()));
+	param.call.setLocation(matcher::requestToLocation(param.call.getServerConf(), param.call.getBasicRequest()));
+
+	param.call.handleRequest();
+	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 	return Poll::DONE;
 }
 
-Poll::ret_stt initSocketsHandler(Poll &p, int fd, int revents, Poll::Param &param)
+Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Poll::Param &param)
 {
-	(void)p;
-	(void)fd;
-	(void)revents;
-	(void)param;
-	int client_fd = Server::acceptConnection(fd);
-	Poll::Param new_param = {HTTPRequest(param.req.getVirtualServer(), client_fd), -1, client_fd, -1, -1};
-	p.addRead(client_fd, client_read, new_param);
+	if (!Poll::isReadEvent(revents))
+		return Poll::CONTINUE;
+
+	int client_fd;
+	try
+	{
+		client_fd = Server::acceptConnection(fd);
+	}
+	catch (Server::AcceptingConnectionFailed &e)
+	{
+		std::cerr << "Acepting connection failed [" << e.what() << "]\n";
+		return Poll::CONTINUE;
+	}
+
+	param.call.setClientFd(client_fd);
+
+	p.addRead(client_fd, ServerManager::clientRead, param);
 	return Poll::CONTINUE;
 }
 
@@ -85,7 +99,7 @@ ServerManager::ServerManager(const IConf *conf)
 	std::list<const IServerConf *>::iterator end = servers.end();
 	for (; it != end; it++)
 	{
-		this->_virtualServers.push_back(Server(*it));
+		this->_virtual_servers.push_back(Server(*it));
 	}
 	this->_poll = Poll();
 }
@@ -108,10 +122,11 @@ ServerManager::~ServerManager()
 
 ServerManager::status ServerManager::setup()
 {
-	if (this->_virtualServers.empty())
+	if (this->_virtual_servers.empty())
 		return ServerManager::INVALID_VIRTUAL_SERVERS;
-	std::vector<Server>::iterator it = this->_virtualServers.begin();
-	std::vector<Server>::iterator end = this->_virtualServers.end();
+
+	std::vector<Server>::iterator it = this->_virtual_servers.begin();
+	std::vector<Server>::iterator end = this->_virtual_servers.end();
 	for (; it != end; it++)
 	{
 		try
@@ -121,15 +136,22 @@ ServerManager::status ServerManager::setup()
 		}
 		catch (std::exception &e)
 		{
+			this->terminate();
 			return ServerManager::INVALID_VIRTUAL_SERVERS;
 		}
 		std::vector<int> fds = it->getSockets();
+		std::list<const IListen *>::iterator listen_iter = it->getConf()->getListen().begin();
 		std::vector<int>::iterator it_fds = fds.begin();
 		std::vector<int>::iterator end_fds = fds.end();
 		for (; it_fds != end_fds; it_fds++)
 		{
-			Poll::Param param = {HTTPRequest(&(*it), -1), -1, -1, -1, -1};
-			this->_poll.addRead(*it_fds, initSocketsHandler, param);
+			Poll::Param p;
+			p.conf = this->_conf;
+			p.src_listen = *listen_iter;
+			p.src_socket = *it_fds;
+			++listen_iter;
+
+			this->_poll.addRead(*it_fds, ServerManager::initSocketsHandler, p);
 		}
 	}
 	return ServerManager::OK;
@@ -142,8 +164,8 @@ void ServerManager::start()
 
 void ServerManager::terminate()
 {
-	std::vector<Server>::iterator it = this->_virtualServers.begin();
-	std::vector<Server>::iterator end = this->_virtualServers.end();
+	std::vector<Server>::iterator it = this->_virtual_servers.begin();
+	std::vector<Server>::iterator end = this->_virtual_servers.end();
 	for (; it != end; it++)
 	{
 		it->closeSockets();

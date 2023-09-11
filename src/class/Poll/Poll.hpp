@@ -15,8 +15,9 @@
 #include <vector>
 
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
-#include <HTTPRequest/HTTPRequest.hpp>
+#include <HTTPCall/HTTPCall.hpp>
 #include <HTTPResponse/HTTPResponse.hpp>
+#include <IConf/IConf.hpp>
 
 #ifdef TEST_ON
 #define private public
@@ -28,10 +29,13 @@ class Poll
   public:
 	struct Param
 	{
-		// general
-		HTTPRequest req;
+		// setup
+		const IConf *conf;
+		const IListen *src_listen;
 		int src_socket;
-		int client_fd;
+
+		// initSocketsHandler
+		HTTPCall call;
 
 		// CGI flow
 		int write_pipe;

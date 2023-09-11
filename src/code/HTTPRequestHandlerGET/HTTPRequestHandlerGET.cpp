@@ -1,13 +1,8 @@
 #include <HTTPRequestHandlerGET/HTTPRequestHandlerGET.hpp>
 
-bool httprequesthandlerGET::isFileExists(const std::string &path)
+bool httprequesthandlerGET::isDirectoryListing(const Path &path, const HTTPCall &request)
 {
-	return (FileManager::isFileExists(path));
-}
-
-bool httprequesthandlerGET::isDirectory(const std::string &path)
-{
-	return (FileManager::isDirectory(path));
+	return (FileManager::isDirectory(path.get()) && matcher::isAutoIndexOnToRequest(request));
 }
 
 std::string httprequesthandlerGET::getFileContent(const std::string &path, ResponseHeader &response,

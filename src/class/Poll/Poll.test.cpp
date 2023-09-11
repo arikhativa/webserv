@@ -85,7 +85,7 @@ static Poll::ret_stt test_handler(Poll &p, int fd, int revents, Poll::Param &par
 // 	{
 // 		int fake_client_fd = open(file, O_CREAT | O_RDWR, 0644);
 
-// 		param.req = HTTPRequest("POST /cgi-bin/test.cgi HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length:
+// 		param.req = HTTPCall("POST /cgi-bin/test.cgi HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length:
 // 4\r\nContent-Type: " 			"application/x-www-form-urlencoded\r\n\r\ntest");
 // param.req.getBasicHTTPRequest().parseRaw(); 		param.req.getBasicHTTPRequest().parseBody();
 

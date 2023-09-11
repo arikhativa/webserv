@@ -5,6 +5,8 @@
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 #include <Server/Server.hpp>
+#include <matcher/matcher.hpp>
+
 #include <iostream>
 #include <map>
 #include <string>
@@ -16,13 +18,14 @@
 #define protected public
 #endif
 
-class HTTPRequest
+class HTTPCall
 {
   public:
 	static const int MAX_CHUNK_ATTEMPTS;
-	explicit HTTPRequest();
-	explicit HTTPRequest(Server *virtualServer, int client_fd);
-	~HTTPRequest();
+	static const int RECV_BUFFER_SIZE;
+	HTTPCall();
+	explicit HTTPCall(const Server *virtualServer, int client_fd);
+	~HTTPCall();
 
 	BasicHTTPRequest getBasicRequest(void) const;
 	std::string getResponse(void) const;
@@ -30,18 +33,21 @@ class HTTPRequest
 	int getRequestAttempts(void) const;
 	int getResponseAttempts(void) const;
 	long unsigned int getBytesSent(void) const;
-	Server *getVirtualServer(void) const;
+	const Server *getVirtualServer(void) const;
 	Socket *getSocket(void) const;
-	Path getPathServerDirectory(void) const;
 	std::list<const IErrorPage *> getErrorPages(void) const;
+	void parseRawRequest(void);
 	std::list<const ILocation *>::const_iterator searchMatchLocation(void) const;
 	bool isAutoIndexOn(void) const;
 	bool canUpload(void) const;
-	bool isCgi(void) const;
+	const IServerConf *getServerConf(void) const;
+	const ILocation *getLocation(void) const;
 
-	void setBasicRequest(BasicHTTPRequest request);
-	void setResponse(std::string response);
+	void setBasicRequest(const BasicHTTPRequest &request);
+	void setResponse(const std::string &response);
 	void setClientFd(int fd);
+	void setServerConf(const IServerConf *server_conf);
+	void setLocation(const ILocation *location);
 
 	BasicHTTPRequest::Type getRequestType(void);
 	void recvRequest(void);
@@ -55,26 +61,39 @@ class HTTPRequest
 		virtual const char *what() const throw();
 	};
 
-	class RecievingRequestError : public std::exception
+	class SendingResponseEmpty : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
+	class ReceivingRequestError : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
+	class ReceivingRequestEmpty : public std::exception
 	{
 	  public:
 		virtual const char *what() const throw();
 	};
 
   private:
-	Server *_virtualServer;
+	const Server *_virtual_server;
 	Socket *_socket;
-	int _clientFd;
+	int _client_fd;
 
-	int _requestAttempts;
-	int _responseAttempts;
-	long unsigned int _bytesSent;
-	std::string _rawRequest;
+	int _request_attempts;
+	int _response_attempts;
+	long unsigned int _bytes_sent;
 	std::string _response;
-	BasicHTTPRequest _basicRequest;
+	BasicHTTPRequest _basic_request;
+	const IServerConf *_server_conf;
+	const ILocation *_location;
 };
 
-std::ostream &operator<<(std::ostream &o, HTTPRequest const &i);
+std::ostream &operator<<(std::ostream &o, HTTPCall const &i);
 
 #ifdef TEST_ON
 #undef private
