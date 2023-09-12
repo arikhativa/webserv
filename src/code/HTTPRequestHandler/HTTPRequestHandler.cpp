@@ -94,6 +94,6 @@ void HTTPRequestHandler::DELETE(HTTPCall &request)
 
 void HTTPRequestHandler::UNKNOWN(HTTPCall &request)
 {
-	(void)request;
-	request.setResponse("HTTP/1.1 200 OK\r\n\r\nYOU SENT A UNKNOWN REQUEST");
+	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::METHOD_NOT_ALLOWED), request.getErrorPages());
+	request.setResponse(response.getResponse());
 }
