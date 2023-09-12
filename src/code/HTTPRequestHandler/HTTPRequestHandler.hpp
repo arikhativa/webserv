@@ -4,6 +4,7 @@
 
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <Server/Server.hpp>
+#include <httpRequestHandlerDELETE/httpRequestHandlerDELETE.hpp>
 #include <httpRequestHandlerGET/httpRequestHandlerGET.hpp>
 #include <httpRequestHandlerPOST/httpRequestHandlerPOST.hpp>
 #include <matcher/matcher.hpp>
