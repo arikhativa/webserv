@@ -28,6 +28,7 @@ class Socket
 	Socket(Socket const &src);
 	~Socket();
 
+	const IListen *getListen(void) const;
 	IP getIp(void) const;
 	Port getPort(void) const;
 	int getFd(void) const;
@@ -61,6 +62,7 @@ class Socket
 	};
 
   private:
+	const IListen *_listen;
 	const IP _ip;
 	const Port _port;
 	bool _binded;

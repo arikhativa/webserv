@@ -35,7 +35,7 @@ class HTTPCall
 	int getResponseAttempts(void) const;
 	long unsigned int getBytesSent(void) const;
 	const Server *getVirtualServer(void) const;
-	Socket *getSocket(void) const;
+	const Socket *getSocket(void) const;
 	std::list<const IErrorPage *> getErrorPages(void) const;
 	void parseRawRequest(void);
 	std::list<const ILocation *>::const_iterator searchMatchLocation(void) const;
