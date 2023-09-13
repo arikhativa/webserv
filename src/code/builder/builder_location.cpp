@@ -92,7 +92,10 @@ void builder::location::indexFiles(Location &location, std::list<Token>::const_i
 void builder::location::errorPage(Location &location, std::list<Token>::const_iterator it)
 {
 	++it;
-	location.addErrorPage(it->getValue(), it->getValue());
+	std::list<Token>::const_iterator next = it;
+
+	++next;
+	location.addErrorPage(it->getValue(), next->getValue());
 }
 
 void builder::location::root(Location &location, std::list<Token>::const_iterator it)

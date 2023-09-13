@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 
+#include <Path/Path.hpp>
 #include <defaultPager/defaultPager.hpp>
 #include <mapPrint/mapPrint.hpp>
 
@@ -21,6 +22,7 @@ class ErrorPageSet
 	~ErrorPageSet();
 
 	void setPage(HTTPStatusCode::Code code, const std::string &page);
+	void setRoot(const Path &root);
 
 	std::string getPage(HTTPStatusCode::Code code) const;
 	const std::map<HTTPStatusCode::Code, std::string> &getPages(void) const;
@@ -28,6 +30,7 @@ class ErrorPageSet
 	ErrorPageSet &operator=(const ErrorPageSet &rhs);
 
   private:
+	Path _root;
 	std::map<HTTPStatusCode::Code, std::string> _pages;
 };
 

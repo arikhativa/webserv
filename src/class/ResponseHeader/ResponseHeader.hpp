@@ -4,6 +4,7 @@
 
 #include <ContentTypes/ContentTypes.hpp>
 #include <ErrorPage/ErrorPage.hpp>
+#include <ErrorPageSet/ErrorPageSet.hpp>
 #include <HTTPStatusCode/HTTPStatusCode.hpp>
 #include <IErrorPage/IErrorPage.hpp>
 #include <converter/converter.hpp>
@@ -48,7 +49,7 @@ class ResponseHeader
 		std::string name;
 		std::string value;
 	};
-	explicit ResponseHeader(HTTPStatusCode code, std::list<const IErrorPage *> error_pages);
+	explicit ResponseHeader(HTTPStatusCode code, const ErrorPageSet &error_page_set);
 	ResponseHeader(ResponseHeader const &src);
 	~ResponseHeader();
 	ResponseHeader &operator=(ResponseHeader const &rhs);
@@ -72,7 +73,7 @@ class ResponseHeader
 
   private:
 	void _setContentLength(size_t length);
-	void _setErrorPageIfNeeded(HTTPStatusCode code, std::list<const IErrorPage *> error_pages);
+	void _setErrorPageIfNeeded(HTTPStatusCode code, const ErrorPageSet &error_page_set);
 	void _defaultConstructor();
 	const std::string _getCurrentDate();
 	bool _isErrorCode(HTTPStatusCode code);

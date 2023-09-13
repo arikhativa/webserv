@@ -5,7 +5,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-ResponseHeader::ResponseHeader(HTTPStatusCode code, std::list<const IErrorPage *> error_pages)
+ResponseHeader::ResponseHeader(HTTPStatusCode code, const ErrorPageSet &error_page_set)
 {
 	_defaultConstructor();
 	setStatusCode(code);
@@ -13,7 +13,7 @@ ResponseHeader::ResponseHeader(HTTPStatusCode code, std::list<const IErrorPage *
 	{
 		setContentType(httpConstants::HTML_SUFFIX);
 		setConnection(httpConstants::CONNECTION_CLOSE);
-		_setErrorPageIfNeeded(code, error_pages);
+		_setErrorPageIfNeeded(code, error_page_set);
 		if (code.get() == HTTPStatusCode::METHOD_NOT_ALLOWED)
 			_header[CONNECTION].name = httpConstants::ALLOW_HEADER;
 	}
@@ -87,19 +87,13 @@ void ResponseHeader::_defaultConstructor()
 	setConnection(httpConstants::CONNECTION_ALIVE);
 }
 
-void ResponseHeader::_setErrorPageIfNeeded(HTTPStatusCode code, std::list<const IErrorPage *> error_pages)
+void ResponseHeader::_setErrorPageIfNeeded(HTTPStatusCode code, const ErrorPageSet &error_page_set)
 {
-	std::list<const IErrorPage *>::iterator it = error_pages.begin();
-	while (it != error_pages.end())
+	std::string path(error_page_set.getPage(code.get()));
+	if (!path.empty())
 	{
-		if ((*it)->getStatus().get() == code.get())
-			break;
-		++it;
-	}
-	if (it != error_pages.end())
-	{
-		std::string path = (*it)->getPath().get();
 		std::ifstream file(path.c_str());
+		std::cout << path << std::endl;
 		if (!file)
 			throw ResponseHeader::InvalidDefaultPage();
 		std::stringstream contentStream;
@@ -117,11 +111,11 @@ const std::string ResponseHeader::_getCurrentDate(void)
 {
 	char buffer[80];
 	std::time_t now;
-	struct std::tm *timeinfo;
+	struct std::tm *time_info;
 	std::string result = "";
 	now = std::time(0);
-	timeinfo = std::gmtime(&now);
-	std::strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", timeinfo);
+	time_info = std::gmtime(&now);
+	std::strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", time_info);
 	result.reserve(80);
 	result = buffer;
 	return (result);

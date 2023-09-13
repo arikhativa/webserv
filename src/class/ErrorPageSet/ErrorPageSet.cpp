@@ -50,9 +50,17 @@ std::ostream &operator<<(std::ostream &o, ErrorPageSet const &i)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
+void ErrorPageSet::setRoot(const Path &root)
+{
+	_root = root;
+}
+
 void ErrorPageSet::setPage(HTTPStatusCode::Code code, const std::string &page)
 {
-	_pages[code] = page;
+	if (page[0] == '/')
+		_pages[code] = _root.get() + page;
+	else
+		_pages[code] = _root.get() + "/" + page;
 }
 
 std::string ErrorPageSet::getPage(HTTPStatusCode::Code code) const
