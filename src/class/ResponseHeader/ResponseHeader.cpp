@@ -93,7 +93,6 @@ void ResponseHeader::_setErrorPageIfNeeded(HTTPStatusCode code, const ErrorPageS
 	if (!path.empty())
 	{
 		std::ifstream file(path.c_str());
-		std::cout << path << std::endl;
 		if (!file)
 			throw ResponseHeader::InvalidDefaultPage();
 		std::stringstream contentStream;
