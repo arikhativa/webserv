@@ -13,7 +13,7 @@ Server::Server(const IServerConf *conf)
 	std::list<const IListen *>::iterator end = tmpListeners.end();
 	for (; it != end; it++)
 	{
-		this->_sockets.push_back(Socket(*it));
+		this->_sockets.push_back(new Socket(*it));
 	}
 }
 
@@ -50,26 +50,29 @@ int Server::acceptConnection(int fd)
 
 void Server::closeSockets(void)
 {
-	std::vector<Socket>::iterator it = this->_sockets.begin();
-	std::vector<Socket>::iterator end = this->_sockets.end();
+	std::vector<Socket *>::iterator it = this->_sockets.begin();
+	std::vector<Socket *>::iterator end = this->_sockets.end();
 	for (; it != end; it++)
-		it->close();
+	{
+		(*it)->close();
+		delete *it;
+	}
 }
 
 void Server::bindSockets()
 {
-	std::vector<Socket>::iterator it = this->_sockets.begin();
-	std::vector<Socket>::iterator end = this->_sockets.end();
+	std::vector<Socket *>::iterator it = this->_sockets.begin();
+	std::vector<Socket *>::iterator end = this->_sockets.end();
 	for (; it != end; it++)
-		it->bind();
+		(*it)->bind();
 }
 
 void Server::listenSockets()
 {
-	std::vector<Socket>::iterator it = this->_sockets.begin();
-	std::vector<Socket>::iterator end = this->_sockets.end();
+	std::vector<Socket *>::iterator it = this->_sockets.begin();
+	std::vector<Socket *>::iterator end = this->_sockets.end();
 	for (; it != end; it++)
-		it->listen();
+		(*it)->listen();
 }
 
 /*
@@ -77,15 +80,20 @@ void Server::listenSockets()
 */
 
 // Hacer que estot devuelva los sockets y no los file descriptors
-const std::vector<int> Server::getSockets(void) const
+const std::vector<int> Server::getSocketsFd(void) const
 {
 	std::vector<int> fds;
 
-	std::vector<Socket>::const_iterator it = this->_sockets.begin();
-	std::vector<Socket>::const_iterator end = this->_sockets.end();
+	std::vector<Socket *>::const_iterator it = this->_sockets.begin();
+	std::vector<Socket *>::const_iterator end = this->_sockets.end();
 	for (; it != end; it++)
-		fds.push_back(it->getFd());
+		fds.push_back((*it)->getFd());
 	return fds;
+}
+
+const std::vector<Socket *> &Server::getSockets(void) const
+{
+	return this->_sockets;
 }
 
 size_t Server::getSocketListSize(void) const
@@ -101,6 +109,11 @@ const IServerConf *Server::getConf(void) const
 std::list<const IErrorPage *> Server::getErrorPages(void) const
 {
 	return this->_conf->getErrorPages();
+}
+
+std::string Server::getName(void) const
+{
+	return this->_conf->getNames().front();
 }
 
 /* ************************************************************************** */

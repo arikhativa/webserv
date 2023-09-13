@@ -6,7 +6,8 @@
 */
 
 Socket::Socket(const IListen *listen)
-	: _ip(listen->getAddress().get())
+	: _listen(listen)
+	, _ip(listen->getAddress().get())
 	, _port(listen->getPort().get())
 	, _binded(false)
 	, _fd(-1)
@@ -31,7 +32,8 @@ Socket::Socket(const IListen *listen)
 }
 
 Socket::Socket(Socket const &src)
-	: _ip(src._ip)
+	: _listen(src._listen)
+	, _ip(src._ip)
 	, _port(src._port)
 	, _binded(src._binded)
 	, _fd(src._fd)
@@ -111,6 +113,11 @@ void Socket::close(void)
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+const IListen *Socket::getListen(void) const
+{
+	return this->_listen;
+}
 
 IP Socket::getIp(void) const
 {

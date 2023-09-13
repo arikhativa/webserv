@@ -31,7 +31,8 @@ class Server
 
 	void bindSockets(void);
 	void listenSockets(void);
-	const std::vector<int> getSockets(void) const;
+	const std::vector<int> getSocketsFd(void) const;
+	const std::vector<Socket *> &getSockets(void) const;
 	size_t getSocketListSize(void) const;
 	void closeSockets(void);
 	std::string getName(void) const;
@@ -42,7 +43,7 @@ class Server
 	const IServerConf *getConf(void) const;
 
   private:
-	std::vector<Socket> _sockets;
+	std::vector<Socket *> _sockets;
 	const IServerConf *_conf;
 };
 
