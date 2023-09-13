@@ -6,6 +6,7 @@
 
 namespace httpConstants
 {
+	const std::string EMPTY_STRING("");
 	const std::string CARRIAGE_RETURN("\r");
 	const std::string NEW_LINE("\n");
 	const std::string FIELD_BREAK("\r\n");

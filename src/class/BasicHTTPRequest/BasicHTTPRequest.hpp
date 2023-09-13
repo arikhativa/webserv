@@ -41,6 +41,7 @@ class BasicHTTPRequest : public ABaseHTTPCall
 	Type getType(void) const;
 	const std::string &getPath(void) const;
 	const std::string &getQuery(void) const;
+	std::string getExtension(void) const;
 
 	static std::string toStringType(BasicHTTPRequest::Type t);
 
