@@ -9,6 +9,7 @@
 #include <AllowedMethods/AllowedMethods.hpp>
 #include <CGIConf/CGIConf.hpp>
 #include <ErrorPage/ErrorPage.hpp>
+#include <ErrorPageSet/ErrorPageSet.hpp>
 #include <IErrorPage/IErrorPage.hpp>
 #include <ILocation/ILocation.hpp>
 #include <IReturn/IReturn.hpp>
@@ -42,6 +43,7 @@ class Location : public ILocation
 	virtual std::list<const IErrorPage *> getErrorPages(void) const;
 	virtual const IPath *getRoot(void) const;
 	virtual const CGIConf &getCGIConf(void) const;
+	virtual const ErrorPageSet &getErrorPageSet(void) const;
 
 	bool isMaxBodySizeOn(void) const;
 
@@ -78,6 +80,9 @@ class Location : public ILocation
 	std::list<ErrorPage> _error_pages;
 	Path *_root;
 	CGIConf _cgi;
+	ErrorPageSet _error_pages_set;
+
+	void _initErrorPageSet(void);
 };
 
 std::ostream &operator<<(std::ostream &o, const Location &i);
