@@ -51,7 +51,6 @@ void builder::server::location(ServerConf &server, std::list<Token>::const_itera
 			f(location, it);
 		++it;
 	}
-	location.setDefaultSettingIfNeeded();
 }
 
 void builder::server::serverName(ServerConf &server, std::list<Token>::const_iterator it)

@@ -19,10 +19,6 @@ namespace matcher
 
 	const IServerConf *requestToServer(const IConf *conf, const IListen *socket, const BasicHTTPRequest &req) throw();
 	const ILocation *requestToLocation(const IServerConf *s, const BasicHTTPRequest &req) throw();
-	Path rootToRequest(const HTTPCall &call);
-	bool isAutoIndexOnToRequest(const HTTPCall &call);
-	bool canUploadToRequest(const HTTPCall &call);
-	bool isCgiToRequest(const HTTPCall &call);
 
 } // namespace matcher
 

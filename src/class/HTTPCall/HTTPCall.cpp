@@ -140,17 +140,17 @@ long unsigned int HTTPCall::getBytesSent(void) const
 	return this->_bytes_sent;
 }
 
-const Server *HTTPCall::getVirtualServer(void) const
-{
-	return this->_virtual_server;
-}
-
 Socket *HTTPCall::getSocket(void) const
 {
 	return this->_socket;
 }
 
-BasicHTTPRequest HTTPCall::getBasicRequest(void) const
+BasicHTTPRequest &HTTPCall::getBasicRequest(void)
+{
+	return this->_basic_request;
+}
+
+const BasicHTTPRequest &HTTPCall::getBasicRequest(void) const
 {
 	return this->_basic_request;
 }

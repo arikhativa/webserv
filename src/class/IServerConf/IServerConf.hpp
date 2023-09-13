@@ -34,6 +34,7 @@ class IServerConf
 	virtual std::list<const IErrorPage *> getErrorPages(void) const = 0;
 	virtual std::list<const IListen *> getListen(void) const = 0;
 	virtual std::list<const ILocation *> getLocations(void) const = 0;
+	virtual const ILocation *getRootLocation(void) const = 0;
 };
 
 std::ostream &operator<<(std::ostream &o, const IServerConf &i);

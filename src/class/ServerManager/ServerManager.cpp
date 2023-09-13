@@ -75,7 +75,7 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 	}
 	catch (Server::AcceptingConnectionFailed &e)
 	{
-		std::cerr << "Acepting connection failed [" << e.what() << "]\n";
+		std::cerr << "Accepting connection failed [" << e.what() << "]\n";
 		return Poll::CONTINUE;
 	}
 

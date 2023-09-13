@@ -75,8 +75,6 @@ int main(int ac, char **av)
 	if (!conf)
 		return EXIT_FAILURE;
 
-	std::cout << *conf << std::endl;
-
 	ServerManager sm(conf);
 	sm.setup();
 	sm.start();

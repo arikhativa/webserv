@@ -27,7 +27,9 @@ class HTTPCall
 	explicit HTTPCall(const Server *virtualServer, int client_fd);
 	~HTTPCall();
 
-	BasicHTTPRequest getBasicRequest(void) const;
+	BasicHTTPRequest &getBasicRequest(void);
+	const BasicHTTPRequest &getBasicRequest(void) const;
+
 	std::string getResponse(void) const;
 	int getClientFd(void) const;
 	int getRequestAttempts(void) const;

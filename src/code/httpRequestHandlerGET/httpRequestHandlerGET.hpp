@@ -1,3 +1,4 @@
+
 #ifndef HTTPREQUESTHANDLERGET_HPP
 #define HTTPREQUESTHANDLERGET_HPP
 
@@ -18,11 +19,11 @@
 
 class HTTPCall;
 
-namespace httprequesthandlerGET
+namespace httpRequestHandlerGET
 {
 	bool isDirectoryListing(const Path &path, const HTTPCall &request);
-	std::string getFileContent(const std::string &path, ResponseHeader &response, HTTPCall &request);
-	std::string getDirecoryContent(const Path &path, const Path &name);
-} // namespace httprequesthandlerGET
+	std::string getFileContent(const std::string &path, ResponseHeader &response);
+	std::string getDirectoryContent(const IPath *path, const Path &name);
+} // namespace httpRequestHandlerGET
 
 #endif

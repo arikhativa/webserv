@@ -81,43 +81,6 @@ const ILocation *matcher::requestToLocation(const IServerConf *s, const BasicHTT
 		it++;
 	}
 	if (tmp == list.end())
-		return NULL;
+		return s->getRootLocation();
 	return (*tmp);
-}
-
-Path matcher::rootToRequest(const HTTPCall &call)
-{
-
-	if (call.getLocation() != NULL)
-	{
-		return (Path(call.getLocation()->getRoot()->get()));
-	}
-	return (Path(call.getServerConf()->getRoot()->get()));
-}
-
-bool matcher::isAutoIndexOnToRequest(const HTTPCall &call)
-{
-	if (call.getLocation() != NULL)
-	{
-		return (call.getLocation()->isAutoIndexOn());
-	}
-	return (false);
-}
-
-bool matcher::canUploadToRequest(const HTTPCall &call)
-{
-	if (call.getLocation() != NULL)
-	{
-		return (call.getLocation()->canUpload());
-	}
-	return (false);
-}
-
-bool matcher::isCgiToRequest(const HTTPCall &call)
-{
-	if (call.getLocation() != NULL)
-	{
-		return (call.getLocation()->getCGIConf().isSet());
-	}
-	return (false);
 }

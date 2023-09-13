@@ -20,7 +20,7 @@ namespace httprequesthandlerPOST
 {
 	bool isDirectoryListing(const Path &path, const HTTPCall &request);
 	std::string getFileContent(const std::string &path, ResponseHeader &response);
-	std::string getDirecoryContent(const Path &path, const Path &name);
+	std::string getDirectoryContent(const IPath *path, const Path &name);
 } // namespace httprequesthandlerPOST
 
 #endif

@@ -3,10 +3,10 @@
 #define H_T_T_P_REQUEST_HANDLER_HPP
 
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
-#include <HTTPRequestHandlerDELETE/HTTPRequestHandlerDELETE.hpp>
-#include <HTTPRequestHandlerGET/HTTPRequestHandlerGET.hpp>
-#include <HTTPRequestHandlerPOST/HTTPRequestHandlerPOST.hpp>
 #include <Server/Server.hpp>
+#include <httpRequestHandlerDELETE/httpRequestHandlerDELETE.hpp>
+#include <httpRequestHandlerGET/httpRequestHandlerGET.hpp>
+#include <httpRequestHandlerPOST/httpRequestHandlerPOST.hpp>
 #include <matcher/matcher.hpp>
 
 #include <iostream>
