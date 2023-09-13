@@ -77,7 +77,7 @@ void Server::listenSockets()
 */
 
 // Hacer que estot devuelva los sockets y no los file descriptors
-const std::vector<int> Server::getSockets(void) const
+const std::vector<int> Server::getSocketsFd(void) const
 {
 	std::vector<int> fds;
 
@@ -86,6 +86,11 @@ const std::vector<int> Server::getSockets(void) const
 	for (; it != end; it++)
 		fds.push_back(it->getFd());
 	return fds;
+}
+
+const std::vector<Socket> &Server::getSockets(void) const
+{
+	return this->_sockets;
 }
 
 size_t Server::getSocketListSize(void) const
