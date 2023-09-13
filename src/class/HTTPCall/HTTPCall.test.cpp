@@ -23,14 +23,14 @@
 // 	close(fd[1]);
 // }
 
-// TEST(HTTPCall, RecievingRequestError)
+// TEST(HTTPCall, ReceivingRequestError)
 // {
 // 	int fd[2];
 // 	pipe(fd);
 // 	HTTPCall obj(fd[0]);
-// 	EXPECT_THROW(obj.recvRequest(), HTTPCall::RecievingRequestError);
+// 	EXPECT_THROW(obj.recvRequest(), HTTPCall::ReceivingRequestError);
 // 	HTTPCall obj1(-1);
-// 	EXPECT_THROW(obj.recvRequest(), HTTPCall::RecievingRequestError);
+// 	EXPECT_THROW(obj.recvRequest(), HTTPCall::ReceivingRequestError);
 // 	close(fd[0]);
 // 	close(fd[1]);
 // }

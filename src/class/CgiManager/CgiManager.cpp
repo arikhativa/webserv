@@ -99,24 +99,24 @@ void CgiManager::_childProcess(void)
 	exit(_exit_status);
 }
 
-std::string CgiManager::_parentProcess(PollManager poll)
+std::string CgiManager::_parentProcess(int pid)
 {
 	_pipe.setParent();
-	if (_basicHTTPRequest.isBody() && poll.isAvailable(_pipe.getInput(), POLLOUT))
+	if (_basicHTTPRequest.isBody())
 		_pipe.write(_basicHTTPRequest.getBody());
 	_pipe.closeInput();
-	return (_readCgiOutput(poll));
+	return (_readCgiOutput(pid));
 }
 
-std::string CgiManager::_readCgiOutput(PollManager poll)
+std::string CgiManager::_readCgiOutput(int pid)
 {
 	std::string output = "";
 	size_t bytes_read = 0;
 	char buffer[BUFFER_SIZE];
 	std::size_t pos;
 	int contentLenght;
-	while (poll.isAvailable(_pipe.getOutput(), POLLIN) &&
-		   (bytes_read = read(_pipe.getOutput(), buffer, sizeof(buffer))) > 0)
+	waitpid(pid, NULL, 0);
+	while ((bytes_read = read(_pipe.getOutput(), buffer, sizeof(buffer))) > 0)
 	{
 		output.append(buffer, bytes_read);
 		if ((pos = output.find(httpConstants::CONTENT_LENGHT_FIELD_KEY)) != std::string::npos)
@@ -160,7 +160,7 @@ BasicHTTPRequest CgiManager::getBasicHTTPRequest(void) const
 	return this->_basicHTTPRequest;
 }
 
-const std::string CgiManager::executeCgiManager(const Path &pathServer, PollManager pollManager)
+const std::string CgiManager::executeCgiManager(const Path &pathServer)
 {
 	std::string content = "";
 	_setEnv();
@@ -169,7 +169,7 @@ const std::string CgiManager::executeCgiManager(const Path &pathServer, PollMana
 	if (pid == CHILD)
 		_childProcess();
 	else
-		content = _parentProcess(pollManager);
+		content = _parentProcess(pid);
 	return (content);
 }
 

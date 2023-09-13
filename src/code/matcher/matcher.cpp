@@ -49,7 +49,8 @@ static bool matchByHost(const IServerConf *s, const BasicHTTPRequest &req)
 	return false;
 }
 
-const IServerConf *matcher::requestToServer(const IConf *conf, const IListen *socket, const BasicHTTPRequest &req)
+const IServerConf *matcher::requestToServer(const IConf *conf, const IListen *socket,
+											const BasicHTTPRequest &req) throw()
 {
 	std::list<const IServerConf *> list = conf->getServers();
 	std::list<const IServerConf *>::const_iterator it = list.begin();
@@ -65,16 +66,21 @@ const IServerConf *matcher::requestToServer(const IConf *conf, const IListen *so
 	return getDefaultServerByListen(list, socket);
 }
 
-const ILocation *matcher::requestToLocation(const IServerConf *s, const BasicHTTPRequest &req)
+const ILocation *matcher::requestToLocation(const IServerConf *s, const BasicHTTPRequest &req) throw()
 {
 	std::list<const ILocation *> list = s->getLocations();
+	std::list<const ILocation *>::const_iterator tmp = list.end();
 	std::list<const ILocation *>::const_iterator it = list.begin();
-
 	while (it != list.end())
 	{
-		if ((*it)->getPath().get() == req.getPath())
-			return *it;
-		++it;
+		if ((req.getPath().find((*it)->getPath().get()) == 0))
+		{
+			if ((tmp == list.end()) || ((*it)->getPath().get().length() > (*tmp)->getPath().get().length()))
+				tmp = it;
+		}
+		it++;
 	}
-	return NULL;
+	if (tmp == list.end())
+		return s->getRootLocation();
+	return (*tmp);
 }

@@ -43,6 +43,8 @@ class Location : public ILocation
 	virtual const IPath *getRoot(void) const;
 	virtual const CGIConf &getCGIConf(void) const;
 
+	bool isMaxBodySizeOn(void) const;
+
 	void setPath(const std::string &path);
 	void setAutoIndex(const std::string &auto_index);
 	void setUpload(const std::string &upload);

@@ -35,6 +35,8 @@ class Server
 	const std::vector<Socket> &getSockets(void) const;
 	size_t getSocketListSize(void) const;
 	void closeSockets(void);
+	std::string getName(void) const;
+	std::list<const IErrorPage *> getErrorPages(void) const;
 
 	static int acceptConnection(int socketIndex);
 

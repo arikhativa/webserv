@@ -2,15 +2,14 @@
 #define HTTPREQUESTHANDLERDELETE_HPP
 
 #include <FileManager/FileManager.hpp>
+#include <Path/Path.hpp>
 
 #include <cstdio>
 #include <iostream>
 
 namespace httprequesthandlerDELETE
 {
-	bool isFileExists(const std::string &path);
-	bool isDirectory(const std::string &path);
-	void deleteFile(const std::string &path);
+	void deleteFile(const Path &path);
 	class DeleteFileException : public std::exception
 	{
 	  public:

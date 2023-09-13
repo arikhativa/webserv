@@ -5,6 +5,8 @@
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 #include <Server/Server.hpp>
+#include <matcher/matcher.hpp>
+
 #include <iostream>
 #include <map>
 #include <string>
@@ -24,18 +26,29 @@ class HTTPCall
 	explicit HTTPCall(const Server *virtualServer, const Socket *socket, int client_fd);
 	~HTTPCall();
 
-	BasicHTTPRequest getBasicRequest(void) const;
+	BasicHTTPRequest &getBasicRequest(void);
+	const BasicHTTPRequest &getBasicRequest(void) const;
+
 	std::string getResponse(void) const;
 	int getClientFd(void) const;
 	int getRequestAttempts(void) const;
 	int getResponseAttempts(void) const;
 	long unsigned int getBytesSent(void) const;
 	const Server *getVirtualServer(void) const;
-	const Socket *getSocket(void) const;
+	Socket *getSocket(void) const;
+	std::list<const IErrorPage *> getErrorPages(void) const;
+	void parseRawRequest(void);
+	std::list<const ILocation *>::const_iterator searchMatchLocation(void) const;
+	bool isAutoIndexOn(void) const;
+	bool canUpload(void) const;
+	const IServerConf *getServerConf(void) const;
+	const ILocation *getLocation(void) const;
 
 	void setBasicRequest(const BasicHTTPRequest &request);
 	void setResponse(const std::string &response);
 	void setClientFd(int fd);
+	void setServerConf(const IServerConf *server_conf);
+	void setLocation(const ILocation *location);
 
 	BasicHTTPRequest::Type getRequestType(void);
 	void recvRequest(void);
@@ -55,13 +68,13 @@ class HTTPCall
 		virtual const char *what() const throw();
 	};
 
-	class RecievingRequestError : public std::exception
+	class ReceivingRequestError : public std::exception
 	{
 	  public:
 		virtual const char *what() const throw();
 	};
 
-	class RecievingRequestEmpty : public std::exception
+	class ReceivingRequestEmpty : public std::exception
 	{
 	  public:
 		virtual const char *what() const throw();
@@ -77,6 +90,8 @@ class HTTPCall
 	long unsigned int _bytes_sent;
 	std::string _response;
 	BasicHTTPRequest _basic_request;
+	const IServerConf *_server_conf;
+	const ILocation *_location;
 };
 
 std::ostream &operator<<(std::ostream &o, HTTPCall const &i);
