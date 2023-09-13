@@ -108,7 +108,7 @@ ServerManager::ServerManager(const IConf *conf)
 	std::list<const IServerConf *>::iterator end = servers.end();
 	for (; it != end; it++)
 	{
-		this->_virtual_servers.push_back(Server(*it));
+		this->_virtual_servers.push_back(new Server(*it));
 	}
 	this->_poll = Poll();
 }
@@ -134,30 +134,30 @@ ServerManager::status ServerManager::setup()
 	if (this->_virtual_servers.empty())
 		return ServerManager::INVALID_VIRTUAL_SERVERS;
 
-	std::vector<Server>::iterator it = this->_virtual_servers.begin();
-	std::vector<Server>::iterator end = this->_virtual_servers.end();
+	std::vector<Server *>::iterator it = this->_virtual_servers.begin();
+	std::vector<Server *>::iterator end = this->_virtual_servers.end();
 	for (; it != end; it++)
 	{
 		try
 		{
-			it->bindSockets();
-			it->listenSockets();
+			(*it)->bindSockets();
+			(*it)->listenSockets();
 		}
 		catch (std::exception &e)
 		{
 			this->terminate();
 			return ServerManager::INVALID_VIRTUAL_SERVERS;
 		}
-		std::vector<int> fds = it->getSocketsFd();
-		const std::vector<Socket> sock = it->getSockets();
+		std::vector<int> fds = (*it)->getSocketsFd();
+		const std::vector<Socket *> sock = (*it)->getSockets();
 		std::vector<int>::iterator it_fds = fds.begin();
 		std::vector<int>::iterator end_fds = fds.end();
 
-		std::vector<Socket>::const_iterator it_sock = sock.begin();
-		std::vector<Socket>::const_iterator end_sock = sock.end();
+		std::vector<Socket *>::const_iterator it_sock = sock.begin();
+		std::vector<Socket *>::const_iterator end_sock = sock.end();
 		for (; it_fds != end_fds && it_sock != end_sock; it_fds++, it_sock++)
 		{
-			Poll::Param param = {this->_conf, it_sock->getListen(), *it_fds, HTTPCall(&(*it), &(*it_sock), -1), -1, -1};
+			Poll::Param param = {this->_conf, (*it_sock)->getListen(), *it_fds, HTTPCall(*it, *it_sock, -1), -1, -1};
 			this->_poll.addRead(*it_fds, ServerManager::initSocketsHandler, param);
 		}
 	}
@@ -171,11 +171,12 @@ void ServerManager::start()
 
 void ServerManager::terminate()
 {
-	std::vector<Server>::iterator it = this->_virtual_servers.begin();
-	std::vector<Server>::iterator end = this->_virtual_servers.end();
+	std::vector<Server *>::iterator it = this->_virtual_servers.begin();
+	std::vector<Server *>::iterator end = this->_virtual_servers.end();
 	for (; it != end; it++)
 	{
-		it->closeSockets();
+		(*it)->closeSockets();
+		delete *it;
 	}
 }
 

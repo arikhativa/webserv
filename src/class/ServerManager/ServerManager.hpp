@@ -41,7 +41,7 @@ class ServerManager
 	Poll _poll;
 	const IConf *_conf;
 	enum status _status;
-	std::vector<Server> _virtual_servers;
+	std::vector<Server *> _virtual_servers;
 
 	int getTotalListeners(void) const;
 
