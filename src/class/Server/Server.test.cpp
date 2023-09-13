@@ -49,6 +49,7 @@ TEST(Server, CreateDestroy)
 
 	std::list<const IServerConf *> servers = conf.getServers();
 	Server *obj = new Server(*(servers.begin()));
+	obj->closeSockets();
 	delete obj;
 }
 
@@ -59,6 +60,7 @@ TEST(Server, AcceptingConnectionFailed)
 
 	std::list<const IServerConf *> servers = conf.getServers();
 	Server *obj = new Server(*(servers.begin()));
+	obj->closeSockets();
 	EXPECT_THROW(obj->acceptConnection(-1), Server::AcceptingConnectionFailed);
 	delete obj;
 }
