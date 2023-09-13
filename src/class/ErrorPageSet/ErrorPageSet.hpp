@@ -23,6 +23,7 @@ class ErrorPageSet
 
 	void setPage(HTTPStatusCode::Code code, const std::string &page);
 	void setRoot(const Path &root);
+	void setRoot(const std::string &root);
 
 	std::string getPage(HTTPStatusCode::Code code) const;
 	const std::map<HTTPStatusCode::Code, std::string> &getPages(void) const;

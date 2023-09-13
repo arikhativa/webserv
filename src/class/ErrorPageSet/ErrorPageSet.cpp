@@ -50,6 +50,11 @@ std::ostream &operator<<(std::ostream &o, ErrorPageSet const &i)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
+void ErrorPageSet::setRoot(const std::string &root)
+{
+	_root = Path(root);
+}
+
 void ErrorPageSet::setRoot(const Path &root)
 {
 	_root = root;

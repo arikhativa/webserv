@@ -131,6 +131,8 @@ void Location::setDefaultSettingIfNeeded(void)
 	}
 	if (!_max_body_size.isOn())
 		setMaxBodySize("0");
+	if (!_root)
+		setRoot("/var/www/html");
 	_initErrorPageSet();
 }
 
