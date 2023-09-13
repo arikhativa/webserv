@@ -103,4 +103,9 @@ std::list<const IErrorPage *> Server::getErrorPages(void) const
 	return this->_conf->getErrorPages();
 }
 
+std::string Server::getName(void) const
+{
+	return this->_conf->getNames().front();
+}
+
 /* ************************************************************************** */

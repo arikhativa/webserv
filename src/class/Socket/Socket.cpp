@@ -119,6 +119,7 @@ IP Socket::getIp(void) const
 
 Port Socket::getPort(void) const
 {
+
 	return this->_port;
 }
 

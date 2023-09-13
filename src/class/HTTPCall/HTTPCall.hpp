@@ -31,6 +31,7 @@ class HTTPCall
 	const BasicHTTPRequest &getBasicRequest(void) const;
 
 	std::string getResponse(void) const;
+	std::string getServerName(void) const;
 	int getClientFd(void) const;
 	int getRequestAttempts(void) const;
 	int getResponseAttempts(void) const;

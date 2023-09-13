@@ -19,7 +19,7 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 		else if (FileManager::isFileExists(url.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
-			response.setBody(httpRequestHandlerGET::getFileContent(url.get(), response));
+			response.setBody(httpRequestHandlerGET::getFileContent(url.get(), request, response));
 			return (request.setResponse(response.getResponse()));
 		}
 		else

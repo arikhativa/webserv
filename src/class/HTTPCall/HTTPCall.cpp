@@ -160,6 +160,13 @@ std::string HTTPCall::getResponse(void) const
 	return this->_response;
 }
 
+std::string HTTPCall::getServerName(void) const
+{
+	if (this->_virtual_server == NULL)
+		return "";
+	return this->_virtual_server->getName();
+}
+
 int HTTPCall::getClientFd(void) const
 {
 	return this->_client_fd;
