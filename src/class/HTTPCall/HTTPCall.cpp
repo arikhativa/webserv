@@ -7,19 +7,9 @@
 const int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
 const int HTTPCall::RECV_BUFFER_SIZE = 4096;
 
-HTTPCall::HTTPCall()
-	: _virtual_server(NULL)
-	, _client_fd(-1)
-	, _request_attempts(0)
-	, _response_attempts(0)
-	, _bytes_sent(0)
-	, _response("")
-	, _basic_request("")
-{
-}
-
-HTTPCall::HTTPCall(const Server *virtual_server, int client_fd)
+HTTPCall::HTTPCall(const Server *virtual_server, const Socket *socket, int client_fd)
 	: _virtual_server(virtual_server)
+	, _socket(socket)
 	, _client_fd(client_fd)
 	, _request_attempts(0)
 	, _response_attempts(0)
@@ -140,9 +130,14 @@ long unsigned int HTTPCall::getBytesSent(void) const
 	return this->_bytes_sent;
 }
 
-Socket *HTTPCall::getSocket(void) const
+const Socket *HTTPCall::getSocket(void) const
 {
 	return this->_socket;
+}
+
+const Server *HTTPCall::getVirtualServer(void) const
+{
+	return this->_virtual_server;
 }
 
 BasicHTTPRequest &HTTPCall::getBasicRequest(void)

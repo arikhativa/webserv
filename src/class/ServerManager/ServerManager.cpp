@@ -54,6 +54,10 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		std::cerr << "Request recv error [" << e.what() << "]\n";
 		return Poll::DONE;
 	}
+	catch (HTTPCall::ReceivingRequestEmpty &e)
+	{
+		return Poll::DONE;
+	}
 
 	param.call.setServerConf(matcher::requestToServer(param.conf, param.src_listen, param.call.getBasicRequest()));
 	param.call.setLocation(matcher::requestToLocation(param.call.getServerConf(), param.call.getBasicRequest()));
@@ -78,10 +82,15 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		std::cerr << "Accepting connection failed [" << e.what() << "]\n";
 		return Poll::CONTINUE;
 	}
-
-	param.call.setClientFd(client_fd);
-
-	p.addRead(client_fd, ServerManager::clientRead, param);
+	Poll::Param new_param = {
+		param.conf,
+		param.src_listen,
+		param.src_socket,
+		HTTPCall(param.call.getVirtualServer(), param.call.getSocket(), client_fd),
+		-1,
+		-1,
+	};
+	p.addRead(client_fd, ServerManager::clientRead, new_param);
 	return Poll::CONTINUE;
 }
 
@@ -139,19 +148,17 @@ ServerManager::status ServerManager::setup()
 			this->terminate();
 			return ServerManager::INVALID_VIRTUAL_SERVERS;
 		}
-		std::vector<int> fds = it->getSockets();
-		std::list<const IListen *>::iterator listen_iter = it->getConf()->getListen().begin();
+		std::vector<int> fds = it->getSocketsFd();
+		const std::vector<Socket> sock = it->getSockets();
 		std::vector<int>::iterator it_fds = fds.begin();
 		std::vector<int>::iterator end_fds = fds.end();
-		for (; it_fds != end_fds; it_fds++)
-		{
-			Poll::Param p;
-			p.conf = this->_conf;
-			p.src_listen = *listen_iter;
-			p.src_socket = *it_fds;
-			++listen_iter;
 
-			this->_poll.addRead(*it_fds, ServerManager::initSocketsHandler, p);
+		std::vector<Socket>::const_iterator it_sock = sock.begin();
+		std::vector<Socket>::const_iterator end_sock = sock.end();
+		for (; it_fds != end_fds && it_sock != end_sock; it_fds++, it_sock++)
+		{
+			Poll::Param param = {this->_conf, it_sock->getListen(), *it_fds, HTTPCall(&(*it), &(*it_sock), -1), -1, -1};
+			this->_poll.addRead(*it_fds, ServerManager::initSocketsHandler, param);
 		}
 	}
 	return ServerManager::OK;
