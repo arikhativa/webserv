@@ -47,7 +47,6 @@ class ServerManager
 
   public:
 	static Poll::ret_stt clientWrite(Poll &p, int fd, int revents, Poll::Param &param);
-	static Poll::ret_stt clientEntryPoint(Poll &p, int fd, int revents, Poll::Param &param);
 	static Poll::ret_stt clientRead(Poll &p, int fd, int revents, Poll::Param &param);
 	static Poll::ret_stt initSocketsHandler(Poll &p, int fd, int revents, Poll::Param &param);
 

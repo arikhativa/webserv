@@ -38,7 +38,7 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	waitpid(param.call.getCgi()->getPid(), &_exit_status, 0);
 	while ((bytes_read = read(param.read_pipe, buffer, sizeof(buffer))) > 0)
 	{
-	std::cout << "TEST\n";
+		std::cout << "TEST\n";
 		_output.append(buffer, bytes_read);
 		if ((pos = _output.find(httpConstants::CONTENT_LENGHT_FIELD_KEY)) != std::string::npos)
 		{
@@ -54,7 +54,10 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 			}
 		}
 	}
-	std::cout << "CGI has read:\n" << _output << std::endl;
+	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), param.call.getErrorPages());
+	response.setBody(_output);
+	param.call.setResponse(response.getResponse());
+	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 	return Poll::DONE;
 }
 
@@ -80,7 +83,7 @@ Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Par
 	return Poll::DONE;
 }
 
-Poll::ret_stt ServerManager::clientEntryPoint(Poll &p, int fd, int revents, Poll::Param &param)
+Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	(void)fd;
 
@@ -163,7 +166,7 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		-1,
 		-1,
 	};
-	p.addRead(client_fd, ServerManager::clientEntryPoint, new_param);
+	p.addRead(client_fd, ServerManager::clientRead, new_param);
 	return Poll::CONTINUE;
 }
 
