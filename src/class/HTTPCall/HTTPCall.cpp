@@ -12,6 +12,7 @@ HTTPCall::HTTPCall(const Server *virtual_server, const Socket *socket, int clien
 	, _socket(socket)
 	, _client_fd(client_fd)
 	, _poll(poll)
+	, _cgi(NULL)
 	, _request_attempts(0)
 	, _response_attempts(0)
 	, _bytes_sent(0)
@@ -116,6 +117,11 @@ void HTTPCall::terminate(void)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
+CgiManager *HTTPCall::getCgi(void) const
+{
+	return this->_cgi;
+}
+
 Poll *HTTPCall::getPoll(void) const
 {
 	return this->_poll;
@@ -217,6 +223,11 @@ void HTTPCall::setServerConf(const IServerConf *server_conf)
 void HTTPCall::setLocation(const ILocation *location)
 {
 	this->_location = location;
+}
+
+void HTTPCall::setCgi(CgiManager *cgi)
+{
+	this->_cgi = cgi;
 }
 
 /* ************************************************************************** */

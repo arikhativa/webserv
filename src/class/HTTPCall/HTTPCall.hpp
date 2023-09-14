@@ -32,6 +32,7 @@ class HTTPCall
 	const BasicHTTPRequest &getBasicRequest(void) const;
 
 	Poll *getPoll(void) const;
+	CgiManager *getCgi(void) const;
 	std::string getResponse(void) const;
 	std::string getServerName(void) const;
 	int getClientFd(void) const;
@@ -53,6 +54,7 @@ class HTTPCall
 	void setClientFd(int fd);
 	void setServerConf(const IServerConf *server_conf);
 	void setLocation(const ILocation *location);
+	void setCgi(CgiManager *cgi);
 
 	BasicHTTPRequest::Type getRequestType(void);
 	void recvRequest(void);
@@ -89,6 +91,7 @@ class HTTPCall
 	const Socket *_socket;
 	int _client_fd;
 	Poll *_poll;
+	CgiManager *_cgi;
 
 	int _request_attempts;
 	int _response_attempts;

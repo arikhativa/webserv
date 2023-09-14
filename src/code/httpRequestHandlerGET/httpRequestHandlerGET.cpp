@@ -1,6 +1,6 @@
 #include <httpRequestHandlerGET/httpRequestHandlerGET.hpp>
 
-bool httpRequestHandlerGET::isDirectoryListing(const Path &path, const HTTPCall &request)
+bool httpRequestHandlerGET::isDirectoryListing(const Path &path, HTTPCall &request)
 {
 	const ILocation *l = request.getLocation();
 	if (!l)
@@ -12,8 +12,7 @@ bool httpRequestHandlerGET::isDirectoryListing(const Path &path, const HTTPCall 
 	return (FileManager::isDirectory(path.get()) && request.getLocation()->isAutoIndexOn());
 }
 
-std::string httpRequestHandlerGET::getFileContent(const std::string &path, const HTTPCall &request,
-												  ResponseHeader &response)
+std::string httpRequestHandlerGET::getFileContent(const std::string &path, HTTPCall &request, ResponseHeader &response)
 {
 	if (request.getLocation()->getCGIConf().isSet() &&
 		request.getLocation()->getCGIConf().getExtension() == request.getBasicRequest().getExtension())
@@ -22,8 +21,9 @@ std::string httpRequestHandlerGET::getFileContent(const std::string &path, const
 		std::string serverName = request.getServerName();
 		Port port = request.getSocket()->getPort();
 		const IPath *root(request.getLocation()->getRoot());
-		CgiManager cgi_obj(request.getBasicRequest(), pathCGI, serverName, port.get() + "", request.getPoll());
-		return (cgi_obj.executeCgiManager(Path(root->get())));
+		CgiManager *cgi_obj = new CgiManager(request.getBasicRequest(), pathCGI, serverName, port.get() + "", request.getPoll());
+		request.setCgi(cgi_obj);
+		return (cgi_obj->executeCgiManager(Path(root->get())));
 	}
 	response.setContentType(path.substr(path.find_last_of(".")));
 	return (FileManager::getFileContent(path));

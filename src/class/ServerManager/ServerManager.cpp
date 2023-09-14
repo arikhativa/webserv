@@ -63,6 +63,10 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	param.call.setLocation(matcher::requestToLocation(param.call.getServerConf(), param.call.getBasicRequest()));
 
 	param.call.handleRequest();
+	if (param.call.getCgi())
+		std::cout << "Is CGI" << std::endl;
+	else
+		std::cout << "Is NOT CGI" << std::endl;
 	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 	return Poll::DONE;
 }
