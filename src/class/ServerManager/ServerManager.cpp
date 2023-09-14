@@ -3,6 +3,61 @@
 
 /* HANDLERS */
 
+Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param &param)
+{
+	(void)p;
+	(void)fd;
+	(void)revents;
+	(void)param;
+	// _pipe.setParent();
+	// if (_basicHTTPRequest.isBody())
+	write(param.write_pipe, param.call.getBasicRequest().getBody().c_str(),
+		  param.call.getBasicRequest().getBody().length());
+	// ::write(_inputPipe[OUTPUT], str.c_str(), str.length());
+	// writeToPipe(_basicHTTPRequest.getBody());
+	// _pipe.closeInput();
+	// return (_readCgiOutput(pid));
+	std::cout << "CGI writting" << std::endl;
+	return Poll::DONE;
+}
+
+Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &param)
+{
+	(void)p;
+	(void)fd;
+	(void)revents;
+	(void)param;
+	size_t bytes_read = 0;
+	int BUFFER_SIZE = 1024;
+	char buffer[BUFFER_SIZE];
+	std::size_t pos;
+	int contentLenght;
+	int _exit_status;
+	std::string _output = "";
+
+	waitpid(param.call.getCgi()->getPid(), &_exit_status, 0);
+	while ((bytes_read = read(param.read_pipe, buffer, sizeof(buffer))) > 0)
+	{
+	std::cout << "TEST\n";
+		_output.append(buffer, bytes_read);
+		if ((pos = _output.find(httpConstants::CONTENT_LENGHT_FIELD_KEY)) != std::string::npos)
+		{
+			std::string content_length = _output.substr(pos + httpConstants::CONTENT_LENGHT_FIELD_KEY.length());
+			if ((pos = content_length.find(httpConstants::FIELD_BREAK)) != std::string::npos)
+				contentLenght = converter::stringToInt(content_length.substr(0, pos));
+			pos = _output.find(httpConstants::HEADER_BREAK);
+			if ((pos != std::string::npos) &&
+				_output.substr(pos + httpConstants::HEADER_BREAK.length()).length() >= (size_t)contentLenght)
+			{
+				_output = _output.substr(0, pos + httpConstants::HEADER_BREAK.length() + contentLenght);
+				break;
+			}
+		}
+	}
+	std::cout << "CGI has read:\n" << _output << std::endl;
+	return Poll::DONE;
+}
+
 Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	(void)p;
@@ -25,7 +80,7 @@ Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Par
 	return Poll::DONE;
 }
 
-Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Param &param)
+Poll::ret_stt ServerManager::clientEntryPoint(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	(void)fd;
 
@@ -64,10 +119,24 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 
 	param.call.handleRequest();
 	if (param.call.getCgi())
+	{
 		std::cout << "Is CGI" << std::endl;
+		Poll::Param new_param = {
+			param.conf,
+			param.src_listen,
+			param.src_socket,
+			param.call,
+			param.call.getCgi()->getWriteFd(),
+			param.call.getCgi()->getReadFd(),
+		};
+		p.addWrite(param.call.getCgi()->getWriteFd(), ServerManager::cgiWrite, new_param);
+		p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, new_param);
+	}
 	else
+	{
 		std::cout << "Is NOT CGI" << std::endl;
-	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+	}
 	return Poll::DONE;
 }
 
@@ -94,7 +163,7 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		-1,
 		-1,
 	};
-	p.addRead(client_fd, ServerManager::clientRead, new_param);
+	p.addRead(client_fd, ServerManager::clientEntryPoint, new_param);
 	return Poll::CONTINUE;
 }
 

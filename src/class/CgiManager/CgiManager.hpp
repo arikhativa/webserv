@@ -27,10 +27,15 @@ class CgiManager
 	~CgiManager();
 
 	Path getPathCGI(void) const;
+	const Pipe &getPipe(void) const;
 	const std::string getServerName(void) const;
 	const std::string getPort(void) const;
 	BasicHTTPRequest getBasicHTTPRequest(void) const;
 	void writeToPipe(const std::string &str) const;
+
+	int getWriteFd(void) const;
+	int getReadFd(void) const;
+	int getPid(void) const;
 
 	const std::string executeCgiManager(const Path &pathServer);
 	class CgiManagerException : public std::exception
@@ -47,6 +52,8 @@ class CgiManager
 	Tab _env;
 	Tab _argv;
 	Pipe _pipe;
+	std::string _output;
+	int _pid;
 
 	void _setEnv(void);
 	void _setArgv(const Path &pathServer);
