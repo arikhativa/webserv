@@ -22,7 +22,7 @@ std::string httpRequestHandlerGET::getFileContent(const std::string &path, const
 		std::string serverName = request.getServerName();
 		Port port = request.getSocket()->getPort();
 		const IPath *root(request.getLocation()->getRoot());
-		CgiManager cgi_obj(request.getBasicRequest(), pathCGI, serverName, port.get() + "");
+		CgiManager cgi_obj(request.getBasicRequest(), pathCGI, serverName, port.get() + "", request.getPoll());
 		return (cgi_obj.executeCgiManager(Path(root->get())));
 	}
 	response.setContentType(path.substr(path.find_last_of(".")));

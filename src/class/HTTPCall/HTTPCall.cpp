@@ -7,10 +7,11 @@
 const int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
 const int HTTPCall::RECV_BUFFER_SIZE = 4096;
 
-HTTPCall::HTTPCall(const Server *virtual_server, const Socket *socket, int client_fd)
+HTTPCall::HTTPCall(const Server *virtual_server, const Socket *socket, int client_fd, Poll *poll)
 	: _virtual_server(virtual_server)
 	, _socket(socket)
 	, _client_fd(client_fd)
+	, _poll(poll)
 	, _request_attempts(0)
 	, _response_attempts(0)
 	, _bytes_sent(0)
@@ -114,6 +115,11 @@ void HTTPCall::terminate(void)
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+Poll *HTTPCall::getPoll(void) const
+{
+	return this->_poll;
+}
 
 int HTTPCall::getRequestAttempts(void) const
 {

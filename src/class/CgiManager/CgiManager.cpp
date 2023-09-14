@@ -1,19 +1,44 @@
 
 #include <CgiManager/CgiManager.hpp>
+#include <Poll/Poll.hpp>
 
 const int CgiManager::ERROR(0);
 const int CgiManager::CHILD(0);
 const int CgiManager::BUFFER_SIZE(8192);
 
+namespace cgihandler
+{
+	Poll::ret_stt write(Poll &p, int fd, int revents, Poll::Param &param)
+	{
+		(void)p;
+		(void)fd;
+		(void)revents;
+		(void)param;
+
+		return Poll::DONE;
+	}
+
+	Poll::ret_stt read(Poll &p, int fd, int revents, Poll::Param &param)
+	{
+		(void)p;
+		(void)fd;
+		(void)revents;
+		(void)param;
+
+		return Poll::DONE;
+	}
+}; // namespace cgihandler
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const std::string &serverName,
-					   const std::string &port)
+					   const std::string &port, Poll *poll)
 	: _basicHTTPRequest(basicHTTPRequest)
 	, _pathCGI(pathCGI)
 	, _serverName(serverName)
 	, _port(port)
+	, _poll(poll)
 {
 	_env = Tab();
 	_argv = Tab();
