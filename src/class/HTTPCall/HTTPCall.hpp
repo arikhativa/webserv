@@ -25,13 +25,12 @@ class HTTPCall
   public:
 	static const int MAX_CHUNK_ATTEMPTS;
 	static const int RECV_BUFFER_SIZE;
-	explicit HTTPCall(const Server *virtualServer, const Socket *socket, int client_fd, Poll *poll);
+	explicit HTTPCall(const Server *virtualServer, const Socket *socket, int client_fd);
 	~HTTPCall();
 
 	BasicHTTPRequest &getBasicRequest(void);
 	const BasicHTTPRequest &getBasicRequest(void) const;
 
-	Poll *getPoll(void) const;
 	CgiManager *getCgi(void) const;
 	std::string getResponse(void) const;
 	std::string getServerName(void) const;
@@ -90,7 +89,6 @@ class HTTPCall
 	const Server *_virtual_server;
 	const Socket *_socket;
 	int _client_fd;
-	Poll *_poll;
 	CgiManager *_cgi;
 
 	int _request_attempts;

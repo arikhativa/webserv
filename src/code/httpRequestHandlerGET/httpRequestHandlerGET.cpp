@@ -21,7 +21,7 @@ std::string httpRequestHandlerGET::getFileContent(const std::string &path, HTTPC
 		std::string serverName = request.getServerName();
 		Port port = request.getSocket()->getPort();
 		const IPath *root(request.getLocation()->getRoot());
-		CgiManager *cgi_obj = new CgiManager(request.getBasicRequest(), pathCGI, serverName, port.get() + "", request.getPoll());
+		CgiManager *cgi_obj = new CgiManager(request.getBasicRequest(), pathCGI, serverName, port.get() + "");
 		request.setCgi(cgi_obj);
 		return (cgi_obj->executeCgiManager(Path(root->get())));
 	}

@@ -19,13 +19,11 @@
 #define protected public
 #endif
 
-class Poll;
-
 class CgiManager
 {
   public:
 	explicit CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const std::string &serverName,
-						const std::string &port, Poll *poll);
+						const std::string &port);
 	~CgiManager();
 
 	Path getPathCGI(void) const;
@@ -49,7 +47,6 @@ class CgiManager
 	Tab _env;
 	Tab _argv;
 	Pipe _pipe;
-	Poll *_poll;
 
 	void _setEnv(void);
 	void _setArgv(const Path &pathServer);

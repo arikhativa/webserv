@@ -33,12 +33,11 @@ namespace cgihandler
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const std::string &serverName,
-					   const std::string &port, Poll *poll)
+					   const std::string &port)
 	: _basicHTTPRequest(basicHTTPRequest)
 	, _pathCGI(pathCGI)
 	, _serverName(serverName)
 	, _port(port)
-	, _poll(poll)
 {
 	_env = Tab();
 	_argv = Tab();
