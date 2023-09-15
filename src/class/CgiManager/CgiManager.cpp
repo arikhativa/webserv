@@ -40,6 +40,7 @@ CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pat
 	, _port(port)
 	, _byte_write(0)
 	, _byte_read(0)
+	, _done(false)
 {
 	_env = Tab();
 	_argv = Tab();
@@ -178,11 +179,13 @@ void CgiManager::readToCgi(void)
 				_output.substr(pos + httpConstants::HEADER_BREAK.length()).length() >= (size_t)contentLenght)
 			{
 				_output = _output.substr(0, pos + httpConstants::HEADER_BREAK.length() + contentLenght);
+				this->_done = true;
 				return ;
 			}
 		}
 		throw CgiManagerIncompleteRead();
 	}
+	this->_done = true;
 }
 
 void CgiManager::closePipe(void)
@@ -193,6 +196,16 @@ void CgiManager::closePipe(void)
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+bool CgiManager::getDone(void) const
+{
+	return this->_done;
+}
+
+void CgiManager::setDone(bool flag)
+{
+	this->_done = flag;
+}
 
 std::string CgiManager::getOutput(void) const
 {

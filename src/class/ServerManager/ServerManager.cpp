@@ -89,7 +89,13 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 
 	if (!Poll::isReadEvent(revents))
 		return Poll::CONTINUE;
-	std::cout << "Here\n";
+	if (param.call.getCgi())
+	{
+		if (!param.call.getCgi()->getDone())
+			return Poll::CONTINUE;
+		else
+			return Poll::DONE;
+	}
 	try
 	{
 		param.call.recvRequest();
@@ -107,6 +113,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	catch (ABaseHTTPCall::Invalid &e)
 	{
 		std::cerr << "Request is invalid [" << e.what() << "]\n";
+		std::cout << param.call.getBasicRequest().getRawRequest();
 		return Poll::DONE;
 	}
 	catch (HTTPCall::ReceivingRequestError &e)
@@ -135,6 +142,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 			param.call.getCgi()->getReadFd(),
 		};
 		p.addWrite(param.call.getCgi()->getWriteFd(), ServerManager::cgiWrite, new_param);
+		return Poll::CONTINUE;
 	}
 	else
 	{
@@ -235,6 +243,7 @@ ServerManager::status ServerManager::setup()
 		for (; it_fds != end_fds && it_sock != end_sock; it_fds++, it_sock++)
 		{
 			Poll::Param param = {this->_conf, (*it_sock)->getListen(), *it_fds, HTTPCall(*it, *it_sock, -1), -1, -1};
+			std::cout << "}}}}}}}}}}}}}}}}}}} 1-\n";
 			this->_poll.addRead(*it_fds, ServerManager::initSocketsHandler, param);
 		}
 	}
