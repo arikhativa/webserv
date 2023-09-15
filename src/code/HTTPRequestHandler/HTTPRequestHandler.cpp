@@ -2,23 +2,6 @@
 #include <HTTPCall/HTTPCall.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 
-static Path addIndexToUrlIfNeeded(const HTTPCall &request, const std::string &url)
-{
-	if (FileManager::isFileExists(url))
-		return Path(url);
-
-	std::string index;
-	const std::list<std::string> &list = request.getLocation()->getIndexFiles();
-	for (std::list<std::string>::const_iterator it = list.begin(); it != list.end(); ++it)
-	{
-		index = url + *it;
-		if (FileManager::isFileExists(index))
-			return Path(index);
-	}
-
-	return Path("");
-}
-
 void HTTPRequestHandler::GET(HTTPCall &request)
 {
 	try
@@ -26,11 +9,10 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 		const IPath *root(request.getLocation()->getRoot());
 		Path url(root->get() + request.getBasicRequest().getPath());
 
-		Path file(addIndexToUrlIfNeeded(request, url.get()));
-		if (!file.isEmpty())
+		if (FileManager::isFileExists(url.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getLocation()->getErrorPageSet());
-			response.setBody(httpRequestHandlerGET::getFileContent(file.get(), response));
+			response.setBody(httpRequestHandlerGET::getFileContent(url.get(), response));
 			return (request.setResponse(response.getResponse()));
 		}
 		else if (httpRequestHandlerGET::isDirectoryListing(url, request))
@@ -69,16 +51,16 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 									request.getLocation()->getErrorPageSet());
 			return (request.setResponse(response.getResponse()));
 		}
-		if (httprequesthandlerPOST::isDirectoryListing(url, request))
+		if (httpRequestHandlerPOST::isDirectoryListing(url, request))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getLocation()->getErrorPageSet());
 			response.setContentType(httpConstants::HTML_SUFFIX);
 			response.setBody(
-				httprequesthandlerPOST::getDirectoryContent(root, Path(request.getBasicRequest().getPath())));
+				httpRequestHandlerPOST::getDirectoryContent(root, Path(request.getBasicRequest().getPath())));
 			return (request.setResponse(response.getResponse()));
 		}
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getLocation()->getErrorPageSet());
-		response.setBody(httprequesthandlerPOST::getFileContent(url.get(), response));
+		response.setBody(httpRequestHandlerPOST::getFileContent(url.get(), response));
 		return (request.setResponse(response.getResponse()));
 	}
 	catch (const std::exception &e)

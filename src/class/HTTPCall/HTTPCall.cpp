@@ -61,6 +61,32 @@ std::ostream &operator<<(std::ostream &o, HTTPCall const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+void HTTPCall::_addIndexToUrlIfNeeded(void)
+{
+	BasicHTTPRequest &req(getBasicRequest());
+
+	const std::string &url = req.getPath();
+	if (FileManager::isFileExists(url))
+		return;
+
+	std::string tmp;
+	const std::list<std::string> &list = getLocation()->getIndexFiles();
+	for (std::list<std::string>::const_iterator it = list.begin(); it != list.end(); ++it)
+	{
+		tmp = url + *it;
+		if (FileManager::isFileExists(tmp))
+		{
+			req.setPath(tmp);
+			return;
+		}
+	}
+}
+
+void HTTPCall::finalizeRequest(void)
+{
+	_addIndexToUrlIfNeeded();
+}
+
 void HTTPCall::recvRequest(void)
 {
 	int tmp_recv_len;
@@ -100,7 +126,7 @@ void HTTPCall::handleRequest(void)
 	case BasicHTTPRequest::DELETE:
 		HTTPRequestHandler::DELETE(*this);
 		break;
-	default: // Uknown request
+	default:
 		HTTPRequestHandler::UNKNOWN(*this);
 		break;
 	}

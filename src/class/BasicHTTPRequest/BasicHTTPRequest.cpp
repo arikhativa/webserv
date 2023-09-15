@@ -65,6 +65,11 @@ std::ostream &operator<<(std::ostream &o, BasicHTTPRequest const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+void BasicHTTPRequest::setPath(const std::string &path)
+{
+	this->_path.set(path);
+}
+
 static std::map<BasicHTTPRequest::Type, std::string> initTypeMap(void)
 {
 	std::map<BasicHTTPRequest::Type, std::string> ret;
