@@ -68,7 +68,10 @@ void builder::server::serverName(ServerConf &server, std::list<Token>::const_ite
 void builder::server::root(ServerConf &server, std::list<Token>::const_iterator it)
 {
 	++it;
-	server.setRoot(it->getValue());
+	std::string tmp = it->getValue();
+	if (tmp[tmp.size() - 1] == '/')
+		tmp = tmp.substr(0, tmp.size() - 1);
+	server.setRoot(tmp);
 }
 
 void builder::server::listen(ServerConf &server, std::list<Token>::const_iterator it)
@@ -109,7 +112,10 @@ void builder::server::index(ServerConf &server, std::list<Token>::const_iterator
 	++it;
 	while (it->getType() != Token::SEPARATOR)
 	{
-		list.push_back(it->getValue());
+		std::string tmp = it->getValue();
+		if (tmp[0] == '/')
+			tmp = tmp.substr(1);
+		list.push_back(tmp);
 		++it;
 	}
 	server.setIndexFiles(list);
