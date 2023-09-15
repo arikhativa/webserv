@@ -36,9 +36,27 @@ class CgiManager
 	int getWriteFd(void) const;
 	int getReadFd(void) const;
 	int getPid(void) const;
+	int getBytesWrite(void) const;
+	int getBytesRead(void) const;
+	std::string getOutput(void) const;
+
+	void writeToCgi(void);
+	void readToCgi(void);
 
 	const std::string executeCgiManager(const Path &pathServer);
 	class CgiManagerException : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
+	class CgiManagerIncompleteRead : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
+	class CgiManagerIncompleteWrite : public std::exception
 	{
 	  public:
 		virtual const char *what() const throw();
@@ -54,6 +72,9 @@ class CgiManager
 	Pipe _pipe;
 	std::string _output;
 	int _pid;
+
+	size_t _byte_write;
+	size_t _byte_read;
 
 	void _setEnv(void);
 	void _setArgv(const Path &pathServer);
