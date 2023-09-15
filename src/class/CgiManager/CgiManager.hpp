@@ -42,6 +42,7 @@ class CgiManager
 
 	void writeToCgi(void);
 	void readToCgi(void);
+	void closePipe(void);
 
 	const std::string executeCgiManager(const Path &pathServer);
 	class CgiManagerException : public std::exception

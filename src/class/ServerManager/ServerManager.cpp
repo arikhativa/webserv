@@ -11,6 +11,7 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 	try
 	{
 		param.call.getCgi()->writeToCgi();
+		param.call.getCgi()->closePipe();
 	}
 	catch (CgiManager::CgiManagerException &e)
 	{
@@ -20,7 +21,15 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 	{
 		return Poll::CONTINUE;
 	}
-	p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, param);
+	Poll::Param new_param = {
+		param.conf,
+		param.src_listen,
+		-1,
+		param.call,
+		param.call.getCgi()->getWriteFd(),
+		param.call.getCgi()->getReadFd(),
+	};
+	p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, new_param);
 	return Poll::DONE;
 }
 
@@ -45,7 +54,10 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), param.call.getErrorPages());
 	response.setBody(param.call.getCgi()->getOutput());
 	param.call.setResponse(response.getResponse());
-	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+	Poll::Param new_param = {
+		param.conf, param.src_listen, param.call.getClientFd(), param.call, -1, -1,
+	};
+	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, new_param);
 	return Poll::DONE;
 }
 
@@ -77,6 +89,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 
 	if (!Poll::isReadEvent(revents))
 		return Poll::CONTINUE;
+	std::cout << "Here\n";
 	try
 	{
 		param.call.recvRequest();
@@ -88,6 +101,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	{
 		std::cerr << "Request is not finished [" << e.what() << "]\n";
 		param.call.getBasicRequest().unParse();
+		std::cout << "continue\n";
 		return Poll::CONTINUE;
 	}
 	catch (ABaseHTTPCall::Invalid &e)
@@ -111,11 +125,11 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	param.call.handleRequest();
 	if (param.call.getCgi())
 	{
-		// std::cout << "Is CGI" << std::endl;
+		std::cout << "Is CGI" << std::endl;
 		Poll::Param new_param = {
 			param.conf,
 			param.src_listen,
-			param.src_socket,
+			-1,
 			param.call,
 			param.call.getCgi()->getWriteFd(),
 			param.call.getCgi()->getReadFd(),
@@ -124,7 +138,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	}
 	else
 	{
-		// std::cout << "Is NOT CGI" << std::endl;
+		std::cout << "Is NOT CGI" << std::endl;
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 	}
 	return Poll::DONE;

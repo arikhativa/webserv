@@ -183,48 +183,12 @@ void CgiManager::readToCgi(void)
 		}
 		throw CgiManagerIncompleteRead();
 	}
-	// ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), this->.call.getErrorPages());
-	// response.setBody(_output);
-	// param.call.setResponse(response.getResponse());
 }
 
-// std::string CgiManager::_parentProcess(int pid)
-// {
-// 	_pipe.setParent();
-// 	if (_basicHTTPRequest.isBody())
-// 		writeToPipe(_basicHTTPRequest.getBody());
-// 	// _pipe.closeInput();
-// 	return (_readCgiOutput(pid));
-// }
-
-// std::string CgiManager::_readCgiOutput(int pid)
-// {
-// 	size_t bytes_read = 0;
-// 	char buffer[BUFFER_SIZE];
-// 	std::size_t pos;
-// 	int contentLenght;
-// 	int _exit_status;
-
-// 	waitpid(pid, &_exit_status, 0);
-// 	while ((bytes_read = read(_pipe.getOutput(), buffer, sizeof(buffer))) > 0)
-// 	{
-// 		_output.append(buffer, bytes_read);
-// 		if ((pos = _output.find(httpConstants::CONTENT_LENGHT_FIELD_KEY)) != std::string::npos)
-// 		{
-// 			std::string content_length = _output.substr(pos + httpConstants::CONTENT_LENGHT_FIELD_KEY.length());
-// 			if ((pos = content_length.find(httpConstants::FIELD_BREAK)) != std::string::npos)
-// 				contentLenght = converter::stringToInt(content_length.substr(0, pos));
-// 			pos = _output.find(httpConstants::HEADER_BREAK);
-// 			if ((pos != std::string::npos) &&
-// 				_output.substr(pos + httpConstants::HEADER_BREAK.length()).length() >= (size_t)contentLenght)
-// 			{
-// 				_output = _output.substr(0, pos + httpConstants::HEADER_BREAK.length() + contentLenght);
-// 				break;
-// 			}
-// 		}
-// 	}
-// 	return (_output);
-// }
+void CgiManager::closePipe(void)
+{
+	this->_pipe.closeInput();
+}
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
