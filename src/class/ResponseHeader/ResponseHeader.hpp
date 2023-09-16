@@ -56,6 +56,7 @@ class ResponseHeader
 	void setContentType(const std::string &type);
 	void setConnection(const std::string &connection);
 	void setBody(const std::string &body);
+	void setHeader(const std::string &key, const std::string &value);
 	const std::string getStatusMessage(void);
 	const std::string getContentType(void);
 	const std::string getBody(void);

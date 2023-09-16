@@ -19,11 +19,12 @@ std::string httpRequestHandlerGET::getFileContent(const std::string &path, const
 		request.getLocation()->getCGIConf().getExtension() == request.getBasicRequest().getExtension())
 	{
 		Path pathCGI(request.getLocation()->getCGIConf().getPath());
-		std::string serverName = request.getServerName();
 		Port port = request.getSocket()->getPort();
 		const IPath *root(request.getLocation()->getRoot());
-		CgiManager cgi_obj(request.getBasicRequest(), pathCGI, serverName, port.get() + "");
-		return (cgi_obj.executeCgiManager(Path(root->get())));
+		CgiManager cgi_obj(request.getBasicRequest(), pathCGI, request.getServerName(), port.get() + "");
+		std::string content = cgi_obj.executeCgiManager(Path(root->get()));
+		matcher::cgiToResponse(content, response);
+		return (response.getBody());
 	}
 	response.setContentType(path.substr(path.find_last_of(".")));
 	return (FileManager::getFileContent(path));

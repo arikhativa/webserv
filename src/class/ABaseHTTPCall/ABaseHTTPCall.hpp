@@ -72,10 +72,9 @@ class ABaseHTTPCall
 	bool isChunked(void) const;
 	bool isBody(void) const;
 	void extenedRaw(const std::string &raw);
+	static bool isKeyRestricted(const std::string &key);
 
   protected:
-	static bool _isKeyRestricted(const std::string &key);
-
 	void _parseHTTPVersion(void);
 	void _parseHeaders(void);
 

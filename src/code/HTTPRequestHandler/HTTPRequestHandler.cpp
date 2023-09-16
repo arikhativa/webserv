@@ -56,7 +56,7 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 			return (request.setResponse(response.getResponse()));
 		}
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
-		response.setBody(httprequesthandlerPOST::getFileContent(url.get(), response));
+		response.setBody(httprequesthandlerPOST::getFileContent(url.get(), request, response));
 		return (request.setResponse(response.getResponse()));
 	}
 	catch (const std::exception &e)
