@@ -12,7 +12,7 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 		if (FileManager::isFileExists(url.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getLocation()->getErrorPageSet());
-			response.setBody(httpRequestHandlerGET::getFileContent(url.get(), response));
+			response.setBody(httpRequestHandlerGET::getFileContent(url.get(), request, response));
 			return (request.setResponse(response.getResponse()));
 		}
 		else if (httpRequestHandlerGET::isDirectoryListing(url, request))
@@ -59,8 +59,8 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 				httpRequestHandlerPOST::getDirectoryContent(root, Path(request.getBasicRequest().getPath())));
 			return (request.setResponse(response.getResponse()));
 		}
-		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getErrorPages());
-		response.setBody(httprequesthandlerPOST::getFileContent(url.get(), request, response));
+		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getLocation()->getErrorPageSet());
+		response.setBody(httpRequestHandlerPOST::getFileContent(url.get(), request, response));
 		return (request.setResponse(response.getResponse()));
 	}
 	catch (const std::exception &e)

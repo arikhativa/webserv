@@ -8,11 +8,10 @@ bool httpRequestHandlerPOST::isDirectoryListing(const Path &path, const HTTPCall
 		std::cerr << "Error: no location found" << std::endl;
 		return (false);
 	}
-
 	return (FileManager::isDirectory(path.get()) && request.getLocation()->isAutoIndexOn());
 }
 
-std::string httprequesthandlerPOST::getFileContent(const std::string &path, const HTTPCall &request,
+std::string httpRequestHandlerPOST::getFileContent(const std::string &path, const HTTPCall &request,
 												   ResponseHeader &response)
 {
 	if (request.getLocation()->getCGIConf().isSet() &&
