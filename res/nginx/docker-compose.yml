@@ -12,7 +12,6 @@ services:
         ipv4_address: 172.20.0.5
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./php:/usr/share/nginx/html
       - ./html:/var/www/html
   
   php:
@@ -24,7 +23,7 @@ services:
       frontend:
         ipv4_address: 172.20.0.6
     volumes:
-      - ./php:/var/www/html
+      - ./html:/var/www/html
 
 networks:
   frontend:

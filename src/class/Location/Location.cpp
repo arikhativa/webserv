@@ -102,6 +102,20 @@ std::ostream &operator<<(std::ostream &o, const ILocation &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+void Location::_initErrorPageSet(void)
+{
+	if (!_root)
+		throw InvalidLocationException(Token::Keyword::ROOT + " is not set");
+	_error_pages_set.setRoot(*_root);
+	std::list<ErrorPage>::const_iterator it = _error_pages.begin();
+
+	while (it != _error_pages.end())
+	{
+		_error_pages_set.setPage(it->getStatus().get(), it->getPath().get());
+		++it;
+	}
+}
+
 void Location::setDefaultSettingIfNeeded(void)
 {
 	if (!_auto_index.isOn())
@@ -117,11 +131,19 @@ void Location::setDefaultSettingIfNeeded(void)
 	}
 	if (!_max_body_size.isOn())
 		setMaxBodySize("0");
+	if (!_root)
+		setRoot("/var/www/html");
+	_initErrorPageSet();
 }
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+const ErrorPageSet &Location::getErrorPageSet(void) const
+{
+	return _error_pages_set;
+}
 
 const CGIConf &Location::getCGIConf(void) const
 {

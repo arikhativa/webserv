@@ -160,7 +160,7 @@ void ABaseHTTPCall::_parseHTTPVersion(void)
 		throw ABaseHTTPCall::Invalid("unsupported HTTP version: " + version);
 }
 
-bool ABaseHTTPCall::_isKeyRestricted(const std::string &key)
+bool ABaseHTTPCall::isKeyRestricted(const std::string &key)
 {
 	return (key == httpConstants::headers::HOST || key == httpConstants::headers::DATE ||
 			key == httpConstants::headers::CONTENT_LENGTH);
@@ -188,7 +188,7 @@ void ABaseHTTPCall::_parseHeaders(void)
 
 		colon_pos += 2;
 		std::string value = _raw.substr(colon_pos, end - colon_pos);
-		if (_isKeyRestricted(key) && !_headers[key].empty())
+		if (isKeyRestricted(key) && !_headers[key].empty())
 		{
 			throw ABaseHTTPCall::Invalid("Bad header: duplicate restricted key: " + key);
 		}

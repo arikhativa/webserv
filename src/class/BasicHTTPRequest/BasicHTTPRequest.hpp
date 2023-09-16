@@ -37,6 +37,7 @@ class BasicHTTPRequest : public ABaseHTTPCall
 	virtual void parseRaw(void);
 	virtual std::string toString(void) const;
 	virtual void unParse(void);
+	void setPath(const std::string &path);
 
 	Type getType(void) const;
 	const std::string &getPath(void) const;

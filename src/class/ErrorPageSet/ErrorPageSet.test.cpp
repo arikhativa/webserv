@@ -14,7 +14,7 @@ TEST(ErrorPageSet, Accessor)
 
 	obj.setPage(HTTPStatusCode::Code::OK, "ok.html");
 
-	EXPECT_EQ("ok.html", obj.getPage(HTTPStatusCode::Code::OK));
+	EXPECT_EQ("/ok.html", obj.getPage(HTTPStatusCode::Code::OK));
 }
 
 TEST(ErrorPageSet, Canonical)

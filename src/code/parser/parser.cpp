@@ -27,6 +27,7 @@ static std::map<std::string, bool> initLocationValidKeywords(void)
 	map[Token::Keyword::INDEX] = true;
 	map[Token::Keyword::RETURN] = true;
 	map[Token::Keyword::AUTO_INDEX] = true;
+	map[Token::Keyword::ERROR_PAGE] = true;
 	map[Token::Keyword::UPLOAD] = true;
 	map[Token::Keyword::CGI] = true;
 
@@ -55,6 +56,7 @@ bool parser::isValidLocationKeyword(const std::list<Token>::const_iterator &it)
 	}
 	catch (...)
 	{
+		std::cerr << "Error: invalid keyword: " << it->getValue() << std::endl;
 		return false;
 	}
 }
