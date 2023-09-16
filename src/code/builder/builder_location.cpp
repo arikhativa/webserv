@@ -101,7 +101,10 @@ void builder::location::errorPage(Location &location, std::list<Token>::const_it
 void builder::location::root(Location &location, std::list<Token>::const_iterator it)
 {
 	++it;
-	location.setRoot(it->getValue());
+	std::string tmp = it->getValue();
+	if (tmp[tmp.size() - 1] == '/')
+		tmp = tmp.substr(0, tmp.size() - 1);
+	location.setRoot(tmp);
 }
 
 void builder::location::cgi(Location &location, std::list<Token>::const_iterator it)
