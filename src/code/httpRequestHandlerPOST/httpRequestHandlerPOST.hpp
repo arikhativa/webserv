@@ -16,11 +16,11 @@
 
 class HTTPCall;
 
-namespace httprequesthandlerPOST
+namespace httpRequestHandlerPOST
 {
 	bool isDirectoryListing(const Path &path, const HTTPCall &request);
 	std::string getFileContent(const std::string &path, const HTTPCall &request, ResponseHeader &response);
 	std::string getDirectoryContent(const IPath *path, const Path &name);
-} // namespace httprequesthandlerPOST
+} // namespace httpRequestHandlerPOST
 
 #endif

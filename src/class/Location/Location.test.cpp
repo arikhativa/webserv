@@ -192,3 +192,17 @@ TEST(Location, ExceptionCGIConf)
 	obj.setCGI(".php", "/usr/bin/php-cgi");
 	EXPECT_THROW(obj.setCGI(".php", "/usr/bin/php-cgi"), Location::InvalidLocationException);
 }
+
+TEST(Location, getErrorPageSet)
+{
+	Location obj;
+
+	obj.setRoot("/new");
+	obj.addErrorPage("100", "/100.html");
+	obj.addErrorPage("404", "/new.html");
+	obj.setDefaultSettingIfNeeded();
+	EXPECT_EQ(obj.getErrorPageSet().getPage(HTTPStatusCode::Code::CONTINUE), "/new/100.html");
+	EXPECT_EQ(obj.getErrorPageSet().getPage(HTTPStatusCode::Code::NOT_FOUND), "/new/new.html");
+	EXPECT_EQ(obj.getErrorPageSet().getPage(HTTPStatusCode::Code::METHOD_NOT_ALLOWED),
+			  "res/default_error_pages/405.html");
+}

@@ -32,11 +32,11 @@ TEST(Conf, Print)
 		"{\"_status\": 500, \"_path\": \"/500.html\"}, \"_root\": \"/root\", \"_index_files\": [\"index.html\", "
 		"\"index.php\"], \"_error_pages\": [{\"_status\": 404, \"_path\": \"/404.html\"}, {\"_status\": 505, "
 		"\"_path\": \"/505.html\"}], \"_listen\": [{ \"_address\": \"80.80.80.80\", \"_port\": 1234 }], "
-		"\"_locations\": [{\"_path\": \"/a\", \"_auto_index\": false, \"_upload\": false, \"_max_body_size\": 0, "
+		"\"_locations\": [{\"_path\": \"/a\", \"_auto_index\": false, \"_upload\": false, \"_max_body_size\": 100, "
 		"\"_allowed_methods\": {\"get\": true, \"post\": true, \"delete\": true}, \"_return\": {\"_status\": 500, "
 		"\"_path\": \"/500.html\"}, \"_index_files\": [\"index.html\", \"index.php\"], \"_error_pages\": "
 		"[{\"_status\": 404, \"_path\": \"/404.html\"}, {\"_status\": 505, \"_path\": \"/505.html\"}], \"_root\": "
-		"\"/root\"}, {\"_path\": \"/b\", \"_auto_index\": false, \"_upload\": false, \"_max_body_size\": 0, "
+		"\"/root\"}, {\"_path\": \"/b\", \"_auto_index\": false, \"_upload\": false, \"_max_body_size\": 100, "
 		"\"_allowed_methods\": {\"get\": true, \"post\": true, \"delete\": true}, \"_return\": {\"_status\": 500, "
 		"\"_path\": \"/500.html\"}, \"_index_files\": [\"index.html\", \"index.php\"], \"_error_pages\": "
 		"[{\"_status\": 404, \"_path\": \"/404.html\"}, {\"_status\": 505, \"_path\": \"/505.html\"}], \"_root\": "
@@ -48,11 +48,11 @@ TEST(Conf, Print)
 		"\"/301.html\"}, \"_root\": \"/var/www/html\", \"_index_files\": [\"index.py\", \"index.php\"], "
 		"\"_error_pages\": [{\"_status\": 404, \"_path\": \"/404.html\"}, {\"_status\": 500, \"_path\": "
 		"\"/500.html\"}], \"_listen\": [{ \"_address\": \"127.80.80.111\", \"_port\": 8080 }], \"_locations\": "
-		"[{\"_path\": \"/location22\", \"_auto_index\": false, \"_upload\": false, \"_max_body_size\": 0, "
+		"[{\"_path\": \"/location22\", \"_auto_index\": false, \"_upload\": false, \"_max_body_size\": 20000, "
 		"\"_allowed_methods\": {\"get\": true, \"post\": true, \"delete\": true}, \"_return\": {\"_status\": 301, "
 		"\"_path\": \"/301.html\"}, \"_index_files\": [\"index.py\", \"index.php\"], \"_error_pages\": [{\"_status\": "
 		"404, \"_path\": \"/404.html\"}, {\"_status\": 500, \"_path\": \"/500.html\"}], \"_root\": \"/var/www/html\"}, "
-		"{\"_path\": \"/location1000\", \"_auto_index\": false, \"_upload\": false, \"_max_body_size\": 0, "
+		"{\"_path\": \"/location1000\", \"_auto_index\": false, \"_upload\": false, \"_max_body_size\": 20000, "
 		"\"_allowed_methods\": {\"get\": true, \"post\": true, \"delete\": true}, \"_return\": {\"_status\": 301, "
 		"\"_path\": \"/301.html\"}, \"_index_files\": [\"index.py\", \"index.php\"], \"_error_pages\": [{\"_status\": "
 		"404, \"_path\": \"/404.html\"}, {\"_status\": 500, \"_path\": \"/500.html\"}], \"_root\": \"/var/www/html\"}, "
@@ -78,12 +78,10 @@ TEST(Conf, Print)
 		{
 			Location &l = server.createGetLocation();
 			l.setPath("/a");
-			l.setDefaultSettingIfNeeded();
 		}
 		{
 			Location &l = server.createGetLocation();
 			l.setPath("/b");
-			l.setDefaultSettingIfNeeded();
 		}
 		server.setDefaultSettingIfNeeded();
 	}
@@ -100,12 +98,10 @@ TEST(Conf, Print)
 		{
 			Location &l = server.createGetLocation();
 			l.setPath("/location22");
-			l.setDefaultSettingIfNeeded();
 		}
 		{
 			Location &l = server.createGetLocation();
 			l.setPath("/location1000");
-			l.setDefaultSettingIfNeeded();
 		}
 		server.setDefaultSettingIfNeeded();
 	}

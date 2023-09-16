@@ -1,6 +1,6 @@
 #include <httpRequestHandlerPOST/httpRequestHandlerPOST.hpp>
 
-bool httprequesthandlerPOST::isDirectoryListing(const Path &path, const HTTPCall &request)
+bool httpRequestHandlerPOST::isDirectoryListing(const Path &path, const HTTPCall &request)
 {
 	const ILocation *l = request.getLocation();
 	if (!l)
@@ -31,7 +31,7 @@ std::string httprequesthandlerPOST::getFileContent(const std::string &path, cons
 	return (FileManager::getFileContent(path));
 }
 
-std::string httprequesthandlerPOST::getDirectoryContent(const IPath *path, const Path &name)
+std::string httpRequestHandlerPOST::getDirectoryContent(const IPath *path, const Path &name)
 {
 	return (FileManager::getDirectoryPreview(path->get(), name.get()));
 }

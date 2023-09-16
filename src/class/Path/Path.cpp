@@ -57,6 +57,11 @@ bool Path::isValid(const std::string &path)
 	return !path.empty();
 }
 
+bool Path::isEmpty(void) const
+{
+	return _path.empty();
+}
+
 bool Path::isRelative(void)
 {
 	if (this->_path.empty())

@@ -52,6 +52,7 @@ class HTTPCall
 	void setLocation(const ILocation *location);
 
 	BasicHTTPRequest::Type getRequestType(void);
+	void finalizeRequest(void);
 	void recvRequest(void);
 	void sendResponse(void);
 	void handleRequest(void);
@@ -93,6 +94,8 @@ class HTTPCall
 	BasicHTTPRequest _basic_request;
 	const IServerConf *_server_conf;
 	const ILocation *_location;
+
+	void _addIndexToUrlIfNeeded(void);
 };
 
 std::ostream &operator<<(std::ostream &o, HTTPCall const &i);

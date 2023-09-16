@@ -92,13 +92,19 @@ void builder::location::indexFiles(Location &location, std::list<Token>::const_i
 void builder::location::errorPage(Location &location, std::list<Token>::const_iterator it)
 {
 	++it;
-	location.addErrorPage(it->getValue(), it->getValue());
+	std::list<Token>::const_iterator next = it;
+
+	++next;
+	location.addErrorPage(it->getValue(), next->getValue());
 }
 
 void builder::location::root(Location &location, std::list<Token>::const_iterator it)
 {
 	++it;
-	location.setRoot(it->getValue());
+	std::string tmp = it->getValue();
+	if (tmp[tmp.size() - 1] == '/')
+		tmp = tmp.substr(0, tmp.size() - 1);
+	location.setRoot(tmp);
 }
 
 void builder::location::cgi(Location &location, std::list<Token>::const_iterator it)
