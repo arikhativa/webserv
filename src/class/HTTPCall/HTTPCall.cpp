@@ -26,7 +26,7 @@ const char *HTTPCall::SendingResponseError::what() const throw()
 
 const char *HTTPCall::ReceivingRequestError::what() const throw()
 {
-	return "Didn't recieve request: recv() failed";
+	return "Didn't receive request: recv() failed";
 }
 
 const char *HTTPCall::SendingResponseEmpty::what() const throw()
@@ -36,7 +36,7 @@ const char *HTTPCall::SendingResponseEmpty::what() const throw()
 
 const char *HTTPCall::ReceivingRequestEmpty::what() const throw()
 {
-	return "Didn't recieve request: recv() return was 0";
+	return "Didn't receive request: recv() return was 0";
 }
 
 /*
@@ -61,30 +61,37 @@ std::ostream &operator<<(std::ostream &o, HTTPCall const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void HTTPCall::_addIndexToUrlIfNeeded(void)
+void HTTPCall::_setLocalPath(void)
 {
-	BasicHTTPRequest &req(getBasicRequest());
+	const BasicHTTPRequest &req(getBasicRequest());
+	const IPath *root = getLocation()->getRoot();
 
-	const std::string &url = req.getPath();
-	if (FileManager::isFileExists(url))
-		return;
-
-	std::string tmp;
-	const std::list<std::string> &list = getLocation()->getIndexFiles();
-	for (std::list<std::string>::const_iterator it = list.begin(); it != list.end(); ++it)
+	Path local_path(root->get() + req.getPath());
+	if (FileManager::isFileExists(local_path.get()))
 	{
-		tmp = url + *it;
-		if (FileManager::isFileExists(tmp))
+		_local_path = local_path;
+		return;
+	}
+
+	if (local_path.isDir())
+	{
+		std::string tmp;
+		const std::list<std::string> &list = getLocation()->getIndexFiles();
+		for (std::list<std::string>::const_iterator it = list.begin(); it != list.end(); ++it)
 		{
-			req.setPath(tmp);
-			return;
+			tmp = local_path.get() + *it;
+			if (FileManager::isFileExists(tmp))
+			{
+				_local_path.set(tmp);
+				return;
+			}
 		}
 	}
 }
 
 void HTTPCall::finalizeRequest(void)
 {
-	_addIndexToUrlIfNeeded();
+	_setLocalPath();
 }
 
 void HTTPCall::recvRequest(void)
@@ -220,6 +227,11 @@ const IServerConf *HTTPCall::getServerConf(void) const
 const ILocation *HTTPCall::getLocation(void) const
 {
 	return this->_location;
+}
+
+const Path &HTTPCall::getLocalPath(void) const
+{
+	return this->_local_path;
 }
 
 void HTTPCall::setServerConf(const IServerConf *server_conf)

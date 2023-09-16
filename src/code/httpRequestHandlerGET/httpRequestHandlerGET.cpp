@@ -1,6 +1,6 @@
 #include <httpRequestHandlerGET/httpRequestHandlerGET.hpp>
 
-bool httpRequestHandlerGET::isDirectoryListing(const Path &path, const HTTPCall &request)
+bool httpRequestHandlerGET::isDirectoryListing(const IPath *root, const Path &url, const HTTPCall &request)
 {
 	const ILocation *l = request.getLocation();
 	if (!l)
@@ -9,7 +9,7 @@ bool httpRequestHandlerGET::isDirectoryListing(const Path &path, const HTTPCall 
 		return (false);
 	}
 
-	return (FileManager::isDirectory(path.get()) && request.getLocation()->isAutoIndexOn());
+	return (request.getLocation()->isAutoIndexOn() && FileManager::isDirectory(root->get() + url.get()));
 }
 
 std::string httpRequestHandlerGET::getFileContent(const std::string &path, ResponseHeader &response)

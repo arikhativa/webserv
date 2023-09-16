@@ -6,21 +6,22 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 {
 	try
 	{
-		const IPath *root(request.getLocation()->getRoot());
-		Path url(root->get() + request.getBasicRequest().getPath());
+		const ILocation *l(request.getLocation());
+		const IPath *root(l->getRoot());
+		Path url(request.getBasicRequest().getPath());
+		const Path &local_path(request.getLocalPath());
 
-		if (FileManager::isFileExists(url.get()))
+		if (!local_path.isEmpty() && FileManager::isFileExists(local_path.get()))
 		{
-			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getLocation()->getErrorPageSet());
-			response.setBody(httpRequestHandlerGET::getFileContent(url.get(), response));
+			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), l->getErrorPageSet());
+			response.setBody(httpRequestHandlerGET::getFileContent(local_path.get(), response));
 			return (request.setResponse(response.getResponse()));
 		}
-		else if (httpRequestHandlerGET::isDirectoryListing(url, request))
+		else if (httpRequestHandlerGET::isDirectoryListing(root, url, request))
 		{
-			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getLocation()->getErrorPageSet());
+			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), l->getErrorPageSet());
 			response.setContentType(httpConstants::HTML_SUFFIX);
-			response.setBody(
-				httpRequestHandlerGET::getDirectoryContent(root, Path(request.getBasicRequest().getPath())));
+			response.setBody(httpRequestHandlerGET::getDirectoryContent(root, url));
 			return (request.setResponse(response.getResponse()));
 		}
 		else

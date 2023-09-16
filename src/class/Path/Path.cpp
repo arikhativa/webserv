@@ -62,6 +62,11 @@ bool Path::isEmpty(void) const
 	return _path.empty();
 }
 
+bool Path::isDir(void) const
+{
+	return _path[_path.size() - 1] == '/';
+}
+
 bool Path::isRelative(void)
 {
 	if (this->_path.empty())

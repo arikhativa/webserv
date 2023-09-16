@@ -26,6 +26,7 @@ class Path : public IPath
 	virtual bool isAbsolute(void);
 	virtual const std::string &get(void) const;
 	virtual bool isEmpty(void) const;
+	virtual bool isDir(void) const;
 
 	void set(const std::string &path);
 
