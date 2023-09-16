@@ -52,7 +52,6 @@ class ServerManager
 
 	static Poll::ret_stt cgiWrite(Poll &p, int fd, int revents, Poll::Param &param);
 	static Poll::ret_stt cgiRead(Poll &p, int fd, int revents, Poll::Param &param);
-
 };
 
 #ifdef TEST_ON

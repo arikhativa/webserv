@@ -1,6 +1,6 @@
 #include <httpRequestHandlerPOST/httpRequestHandlerPOST.hpp>
 
-bool httprequesthandlerPOST::isDirectoryListing(const Path &path, HTTPCall &request)
+bool httpRequestHandlerPOST::isDirectoryListing(const Path &path, HTTPCall &request)
 {
 	const ILocation *l = request.getLocation();
 	if (!l)

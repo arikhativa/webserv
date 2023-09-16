@@ -51,8 +51,9 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	{
 		return Poll::CONTINUE;
 	}
-	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), param.call.getErrorPages());
-	response.setBody(param.call.getCgi()->getOutput());
+
+	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), param.call.getLocation()->getErrorPageSet());
+	matcher::cgiToResponse(param.call.getCgi()->getOutput(), response);
 	param.call.setResponse(response.getResponse());
 	Poll::Param new_param = {
 		param.conf, param.src_listen, param.call.getClientFd(), param.call, -1, -1,
@@ -132,7 +133,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	param.call.handleRequest();
 	if (param.call.getCgi())
 	{
-		std::cout << "Is CGI" << std::endl;
+		// std::cout << "Is CGI" << std::endl;
 		Poll::Param new_param = {
 			param.conf,
 			param.src_listen,
@@ -146,7 +147,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	}
 	else
 	{
-		std::cout << "Is NOT CGI" << std::endl;
+		// std::cout << "Is NOT CGI" << std::endl;
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 	}
 	return Poll::DONE;
@@ -243,7 +244,6 @@ ServerManager::status ServerManager::setup()
 		for (; it_fds != end_fds && it_sock != end_sock; it_fds++, it_sock++)
 		{
 			Poll::Param param = {this->_conf, (*it_sock)->getListen(), *it_fds, HTTPCall(*it, *it_sock, -1), -1, -1};
-			std::cout << "}}}}}}}}}}}}}}}}}}} 1-\n";
 			this->_poll.addRead(*it_fds, ServerManager::initSocketsHandler, param);
 		}
 	}

@@ -180,7 +180,7 @@ void CgiManager::readToCgi(void)
 			{
 				_output = _output.substr(0, pos + httpConstants::HEADER_BREAK.length() + contentLenght);
 				this->_done = true;
-				return ;
+				return;
 			}
 		}
 		throw CgiManagerIncompleteRead();
