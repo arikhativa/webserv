@@ -181,7 +181,7 @@ void CgiManager::readToCgi(void)
 		if (bytes_read < BUFFER_SIZE)
 		{
 			this->_done = true;
-			return ;
+			return;
 		}
 		throw CgiManagerIncompleteRead();
 	}
