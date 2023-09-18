@@ -173,3 +173,31 @@ std::string converter::removeQuotesIfNeeded(std::string &str)
 		return str.substr(1, str.length() - 2);
 	return str;
 }
+
+std::string converter::urlDecode(const std::string &url)
+{
+	std::string result;
+	char c;
+	int i = 0;
+
+	while (url[i])
+	{
+		c = url[i];
+		if (c == '%')
+		{
+			if (url[i + 1] && url[i + 2])
+			{
+				result += static_cast<char>(converter::hexStringToSizeT(url.substr(i + 1, 2)));
+				i += 2;
+			}
+			else
+				return url;
+		}
+		else if (c == '+')
+			result += ' ';
+		else
+			result += c;
+		++i;
+	}
+	return result;
+}

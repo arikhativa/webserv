@@ -155,7 +155,7 @@ Path BasicHTTPRequest::_parsePath(const std::string &raw_request)
 		if (end == std::string::npos)
 			throw Incomplete("Missing end of path");
 	}
-	return Path(raw_request.substr(start, end - start));
+	return Path(converter::urlDecode(raw_request.substr(start, end - start)));
 }
 
 std::string BasicHTTPRequest::_parseQuery(const std::string &raw_request)
