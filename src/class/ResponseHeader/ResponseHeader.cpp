@@ -174,6 +174,12 @@ void ResponseHeader::setBody(const std::string &body)
 		setContentType(httpConstants::HTML_SUFFIX);
 }
 
+void ResponseHeader::setLocationHeader(const std::string &value)
+{
+	this->_header[LOCATION].value = value;
+	this->_header[LOCATION].name = httpConstants::headers::LOCATION + httpConstants::SEPARATOR + httpConstants::SPACE;
+}
+
 const std::string ResponseHeader::getStatusMessage()
 {
 	return (this->_header.at(STANDARD).value);
