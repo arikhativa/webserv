@@ -18,6 +18,7 @@ class IPath
 	virtual bool isRelative(void) = 0;
 	virtual bool isAbsolute(void) = 0;
 	virtual bool isEmpty(void) const = 0;
+	virtual bool isDir(void) const = 0;
 };
 
 #ifdef TEST_ON

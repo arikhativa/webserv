@@ -47,6 +47,7 @@ class HTTPCall
 	bool canUpload(void) const;
 	const IServerConf *getServerConf(void) const;
 	const ILocation *getLocation(void) const;
+	const Path &getLocalPath(void) const;
 
 	void setBasicRequest(const BasicHTTPRequest &request);
 	void setResponse(const std::string &response);
@@ -99,8 +100,9 @@ class HTTPCall
 	BasicHTTPRequest _basic_request;
 	const IServerConf *_server_conf;
 	const ILocation *_location;
+	Path _local_path;
 
-	void _addIndexToUrlIfNeeded(void);
+	void _setLocalPath(void);
 };
 
 std::ostream &operator<<(std::ostream &o, HTTPCall const &i);

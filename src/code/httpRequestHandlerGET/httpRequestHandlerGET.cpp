@@ -1,6 +1,6 @@
 #include <httpRequestHandlerGET/httpRequestHandlerGET.hpp>
 
-bool httpRequestHandlerGET::isDirectoryListing(const Path &path, HTTPCall &request)
+bool httpRequestHandlerGET::isDirectoryListing(const IPath *root, const Path &url, const HTTPCall &request)
 {
 	const ILocation *l = request.getLocation();
 	if (!l)
@@ -9,30 +9,13 @@ bool httpRequestHandlerGET::isDirectoryListing(const Path &path, HTTPCall &reque
 		return (false);
 	}
 
-	return (FileManager::isDirectory(path.get()) && request.getLocation()->isAutoIndexOn());
+	return (request.getLocation()->isAutoIndexOn() && FileManager::isDirectory(root->get() + url.get()));
 }
 
-std::string httpRequestHandlerGET::getFileContent(const std::string &path, HTTPCall &request, ResponseHeader &response)
+std::string httpRequestHandlerGET::getFileContent(const std::string &path, ResponseHeader &response)
 {
-	if (request.getLocation()->getCGIConf().isSet() &&
-		request.getLocation()->getCGIConf().getExtension() == request.getBasicRequest().getExtension())
-	{
-		Path pathCGI(request.getLocation()->getCGIConf().getPath());
-		Port port = request.getSocket()->getPort();
-		const IPath *root(request.getLocation()->getRoot());
-		// <<<<<<< HEAD
-		CgiManager *cgi_obj =
-			new CgiManager(request.getBasicRequest(), pathCGI, request.getServerName(), port.get() + "");
-		request.setCgi(cgi_obj);
-		return (cgi_obj->executeCgiManager(Path(root->get())));
-		// =======
-		// 		CgiManager cgi_obj(request.getBasicRequest(), pathCGI, request.getServerName(), port.get() + "");
-		// 		std::string content = cgi_obj.executeCgiManager(Path(root->get()));
-		// 		matcher::cgiToResponse(content, response);
-		// 		return (response.getBody());
-		// >>>>>>> cgi
-	}
-	response.setContentType(path.substr(path.find_last_of(".")));
+	if (path.find(".") != std::string::npos)
+		response.setContentType(path.substr(path.find_last_of(".")));
 	return (FileManager::getFileContent(path));
 }
 

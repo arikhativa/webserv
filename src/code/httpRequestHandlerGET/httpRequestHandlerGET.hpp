@@ -21,8 +21,8 @@ class HTTPCall;
 
 namespace httpRequestHandlerGET
 {
-	bool isDirectoryListing(const Path &path, HTTPCall &request);
-	std::string getFileContent(const std::string &path, HTTPCall &request, ResponseHeader &response);
+	bool isDirectoryListing(const IPath *root, const Path &url, const HTTPCall &request);
+	std::string getFileContent(const std::string &path, ResponseHeader &response);
 	std::string getDirectoryContent(const IPath *path, const Path &name);
 } // namespace httpRequestHandlerGET
 
