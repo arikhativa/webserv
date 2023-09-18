@@ -157,12 +157,7 @@ void CgiManager::readToCgi(void)
 	char buffer[BUFFER_SIZE];
 	std::size_t pos;
 	int contentLenght;
-	int _exit_status;
 
-	int ret = waitpid(this->_pid, &_exit_status, WNOHANG);
-
-	if (!ret || ret == -1 || ret != this->_pid)
-		throw CgiManagerIncompleteRead();
 	bytes_read = read(this->getReadFd(), buffer, sizeof(buffer));
 	if (bytes_read <= -1)
 		throw CgiManagerException();
@@ -182,6 +177,11 @@ void CgiManager::readToCgi(void)
 				this->_done = true;
 				return;
 			}
+		}
+		if (bytes_read < BUFFER_SIZE)
+		{
+			this->_done = true;
+			return ;
 		}
 		throw CgiManagerIncompleteRead();
 	}
