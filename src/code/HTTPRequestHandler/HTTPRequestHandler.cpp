@@ -15,16 +15,16 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 		{
 			if (request.getLocation()->getCGIConf().isSet() &&
 				request.getLocation()->getCGIConf().getExtension() == request.getBasicRequest().getExtension())
-				{
-					Path pathCGI(request.getLocation()->getCGIConf().getPath());
-					Port port = request.getSocket()->getPort();
-					const IPath *root_cgi(request.getLocation()->getRoot());
-					CgiManager *cgi_obj =
-						new CgiManager(request.getBasicRequest(), pathCGI, request.getServerName(), port.get() + "");
-					request.setCgi(cgi_obj);
-					cgi_obj->executeCgiManager(Path(root_cgi->get()));
-					// return ;
-				}
+			{
+				Path pathCGI(request.getLocation()->getCGIConf().getPath());
+				Port port = request.getSocket()->getPort();
+				const IPath *root_cgi(request.getLocation()->getRoot());
+				CgiManager *cgi_obj =
+					new CgiManager(request.getBasicRequest(), pathCGI, request.getServerName(), port.get() + "");
+				request.setCgi(cgi_obj);
+				cgi_obj->executeCgiManager(Path(root_cgi->get()));
+				// return ;
+			}
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), l->getErrorPageSet());
 			response.setBody(httpRequestHandlerGET::getFileContent(local_path.get(), response));
 			return (request.setResponse(response.getResponse()));
