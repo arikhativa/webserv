@@ -22,6 +22,8 @@ Poll::Poll(const Poll &src)
 
 Poll::~Poll()
 {
+	std::pair< int, ret_stt > p;
+	p.second = DONE;
 	size_t i = _fds.size();
 
 	if (!i)
@@ -30,11 +32,15 @@ Poll::~Poll()
 		--i;
 	while (i)
 	{
-		_pop_index(i);
+		p.first = i;
+		_pop_index(p);
 		--i;
 	}
 	if (!i)
-		_pop_index(i);
+	{
+		p.first = i;
+		_pop_index(p);
+	}
 }
 
 /*
@@ -63,7 +69,8 @@ void Poll::exitLoop(void)
 // TODO think of error handling
 void Poll::loop(void)
 {
-	std::vector<int> pop_indexes;
+	std::pair< int, ret_stt > p;
+	std::vector< std::pair< int, ret_stt > > pop_indexes;
 
 	while (_run)
 	{
@@ -75,17 +82,21 @@ void Poll::loop(void)
 			std::cout << "poll() timeout" << std::endl;
 		else if (stt > 0)
 		{
+			// std::cout << "size: " << _fds.size() << std::endl;
+
 			for (size_t i = 0; i < _fds.size(); ++i)
 			{
 				if (_fds[i].revents & POLLOUT || _fds[i].revents & POLLIN)
 				{
 					ret_stt s = _handlers[i](*this, _fds[i].fd, _fds[i].revents, _params[i]);
+					p.first = i;
+					p.second = s;
 					if (DONE == s)
-						pop_indexes.push_back(i);
+						pop_indexes.push_back(p);
 					else if (ERROR == s)
 					{
 						std::cerr << "Error handling fd: " << _fds[i].fd << std::endl;
-						pop_indexes.push_back(i);
+						pop_indexes.push_back(p);
 					}
 				}
 			}
@@ -126,9 +137,9 @@ void Poll::addWrite(int fd, t_handler h, Param p)
 	_params.push_back(p);
 }
 
-void Poll::_pop_index(int fd_index)
+void Poll::_pop_index(std::pair< int, ret_stt > p)
 {
-	int fd_to_close = _fds[fd_index].fd;
+	int fd_to_close = _fds[p.first].fd;
 	int count = 0;
 
 	for (size_t i = 0; i < _fds.size(); ++i)
@@ -136,17 +147,19 @@ void Poll::_pop_index(int fd_index)
 		if (_fds[i].fd == fd_to_close)
 			++count;
 	}
-	if (count == 1)
+	if (count == 1 && (p.second == DONE || p.second == ERROR))
 		close(fd_to_close);
 
-	_fds.erase(_fds.begin() + fd_index);
-	_handlers.erase(_handlers.begin() + fd_index);
-	_params.erase(_params.begin() + fd_index);
+	_fds.erase(_fds.begin() + p.first);
+	_handlers.erase(_handlers.begin() + p.first);
+	_params.erase(_params.begin() + p.first);
 }
 
-void Poll::_pop(std::vector<int> &indexes_to_close)
+void Poll::_pop(std::vector< std::pair< int, ret_stt > > &indexes_to_close)
 {
-	for (std::vector<int>::reverse_iterator it = indexes_to_close.rbegin(); it != indexes_to_close.rend(); ++it)
+	std::vector< std::pair< int, ret_stt > >::reverse_iterator it = indexes_to_close.rbegin();
+
+	for (; it != indexes_to_close.rend(); ++it)
 		_pop_index(*it);
 	indexes_to_close.clear();
 }
