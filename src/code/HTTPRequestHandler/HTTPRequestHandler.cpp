@@ -11,7 +11,8 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 		Path url(request.getBasicRequest().getPath());
 		const Path &local_path(request.getLocalPath());
 
-		if (!local_path.isEmpty() && FileManager::isFileExists(local_path.get()))
+		if (!local_path.isEmpty() && !FileManager::isDirectory(local_path.get()) &&
+			FileManager::isFileExists(local_path.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), l->getErrorPageSet());
 			response.setBody(httpRequestHandlerGET::getFileContent(local_path.get(), response));
@@ -23,6 +24,13 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 			response.setContentType(httpConstants::HTML_SUFFIX);
 			response.setBody(httpRequestHandlerGET::getDirectoryContent(root, url));
 			return (request.setResponse(response.getResponse()));
+		}
+		else if (!local_path.isEmpty() && FileManager::isDirectory(local_path.get()))
+		{
+			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::MOVED_PERMANENTLY), l->getErrorPageSet());
+			response.setLocationHeader(url.get() + "/");
+			request.setResponse(response.getResponse());
+			return;
 		}
 		else
 		{
