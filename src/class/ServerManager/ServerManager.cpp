@@ -162,7 +162,7 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		param.conf,
 		param.src_listen,
 		param.src_socket,
-		HTTPCall(param.call.getVirtualServer(), param.call.getSocket(), client_fd),
+		HTTPCall(param.call.getSocket(), client_fd),
 		-1,
 		-1,
 	};
@@ -233,7 +233,7 @@ ServerManager::status ServerManager::setup()
 		std::vector<Socket *>::const_iterator end_sock = sock.end();
 		for (; it_fds != end_fds && it_sock != end_sock; it_fds++, it_sock++)
 		{
-			Poll::Param param = {this->_conf, (*it_sock)->getListen(), *it_fds, HTTPCall(*it, *it_sock, -1), -1, -1};
+			Poll::Param param = {this->_conf, (*it_sock)->getListen(), *it_fds, HTTPCall(*it_sock, -1), -1, -1};
 			this->_poll.addRead(*it_fds, ServerManager::initSocketsHandler, param);
 		}
 	}
