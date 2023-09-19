@@ -15,21 +15,13 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 	}
 	catch (CgiManager::CgiManagerException &e)
 	{
-		return Poll::CONTINUE;
+		return Poll::DONE;
 	}
 	catch (CgiManager::CgiManagerIncompleteWrite &e)
 	{
 		return Poll::CONTINUE;
 	}
-	Poll::Param new_param = {
-		param.conf,
-		param.src_listen,
-		-1,
-		param.call,
-		param.call.getCgi()->getWriteFd(),
-		param.call.getCgi()->getReadFd(),
-	};
-	p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, new_param);
+	p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, param);
 	return Poll::DONE;
 }
 
@@ -41,7 +33,7 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 		return Poll::CONTINUE;
 	try
 	{
-		param.call.getCgi()->readToCgi();
+		param.call.getCgi()->readFromCgi();
 	}
 	catch (CgiManager::CgiManagerException &e)
 	{
@@ -54,11 +46,9 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 
 	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), param.call.getLocation()->getErrorPageSet());
 	matcher::cgiToResponse(param.call.getCgi()->getOutput(), response);
+	response.setStatusCode(HTTPStatusCode(HTTPStatusCode::OK));
 	param.call.setResponse(response.getResponse());
-	Poll::Param new_param = {
-		param.conf, param.src_listen, param.call.getClientFd(), param.call, -1, -1,
-	};
-	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, new_param);
+	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 	return Poll::DONE;
 }
 

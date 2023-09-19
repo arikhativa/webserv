@@ -6,29 +6,6 @@ const int CgiManager::ERROR(0);
 const int CgiManager::CHILD(0);
 const int CgiManager::BUFFER_SIZE(8192);
 
-namespace cgihandler
-{
-	Poll::ret_stt write(Poll &p, int fd, int revents, Poll::Param &param)
-	{
-		(void)p;
-		(void)fd;
-		(void)revents;
-		(void)param;
-
-		return Poll::DONE;
-	}
-
-	Poll::ret_stt read(Poll &p, int fd, int revents, Poll::Param &param)
-	{
-		(void)p;
-		(void)fd;
-		(void)revents;
-		(void)param;
-
-		return Poll::DONE;
-	}
-}; // namespace cgihandler
-
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -138,9 +115,7 @@ void CgiManager::_childProcess(void)
 
 void CgiManager::writeToCgi(void)
 {
-	// int byte_write = write(this->getWriteFd(), this->_basicHTTPRequest.getBody().c_str(),
-	// 						   this->_basicHTTPRequest.getBody().length());
-	int byte_write = send(this->getWriteFd(), this->_basicHTTPRequest.getBody().c_str(),
+	int byte_write = send(this->getWriteFd(), this->_basicHTTPRequest.getBody().c_str() + this->_byte_write,
 						  this->_basicHTTPRequest.getBody().length(), MSG_DONTWAIT);
 	this->_byte_write += byte_write;
 	if (this->_byte_write >= this->_basicHTTPRequest.getBody().length())
@@ -151,7 +126,7 @@ void CgiManager::writeToCgi(void)
 		throw CgiManager::CgiManagerException();
 }
 
-void CgiManager::readToCgi(void)
+void CgiManager::readFromCgi(void)
 {
 	int bytes_read = 0;
 	char buffer[BUFFER_SIZE];
@@ -262,7 +237,7 @@ int CgiManager::getBytesRead(void) const
 	return this->_byte_read;
 }
 
-const std::string CgiManager::executeCgiManager(const Path &pathServer)
+void CgiManager::executeCgiManager(const Path &pathServer)
 {
 	std::string content = "";
 	_setEnv();
@@ -272,9 +247,6 @@ const std::string CgiManager::executeCgiManager(const Path &pathServer)
 		_childProcess();
 	else
 		_pipe.setParent();
-	// content = _parentProcess(pid);
-	return ("");
-	// return (content);
 }
 
 /* ************************************************************************** */

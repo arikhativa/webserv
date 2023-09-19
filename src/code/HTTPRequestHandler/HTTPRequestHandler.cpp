@@ -14,18 +14,6 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 		if (!local_path.isEmpty() && !FileManager::isDirectory(local_path.get()) &&
 			FileManager::isFileExists(local_path.get()))
 		{
-			if (request.getLocation()->getCGIConf().isSet() &&
-				request.getLocation()->getCGIConf().getExtension() == request.getBasicRequest().getExtension())
-			{
-				Path pathCGI(request.getLocation()->getCGIConf().getPath());
-				Port port = request.getSocket()->getPort();
-				const IPath *root_cgi(request.getLocation()->getRoot());
-				CgiManager *cgi_obj =
-					new CgiManager(request.getBasicRequest(), pathCGI, request.getServerName(), port.get() + "");
-				request.setCgi(cgi_obj);
-				cgi_obj->executeCgiManager(Path(root_cgi->get()));
-				// return ;
-			}
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), l->getErrorPageSet());
 			response.setBody(httpRequestHandlerGET::getFileContent(local_path.get(), response));
 			return (request.setResponse(response.getResponse()));
@@ -81,7 +69,7 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 			return (request.setResponse(response.getResponse()));
 		}
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getLocation()->getErrorPageSet());
-		response.setBody(httpRequestHandlerPOST::getFileContent(url.get(), request, response));
+		response.setBody(httpRequestHandlerPOST::getFileContent(url.get(), response));
 		return (request.setResponse(response.getResponse()));
 	}
 	catch (const std::exception &e)

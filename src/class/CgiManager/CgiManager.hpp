@@ -41,12 +41,12 @@ class CgiManager
 	std::string getOutput(void) const;
 
 	void writeToCgi(void);
-	void readToCgi(void);
+	void readFromCgi(void);
 	void closePipe(void);
 	bool getDone(void) const;
 	void setDone(bool flag);
 
-	const std::string executeCgiManager(const Path &pathServer);
+	void executeCgiManager(const Path &pathServer);
 	class CgiManagerException : public std::exception
 	{
 	  public:
