@@ -10,6 +10,7 @@ BasicHTTPRequest::BasicHTTPRequest(const std::string &raw_request)
 	, _type(BasicHTTPRequest::GET)
 	, _path("")
 	, _query("")
+	, _host("")
 {
 }
 
@@ -18,6 +19,7 @@ BasicHTTPRequest::BasicHTTPRequest(const BasicHTTPRequest &src)
 	, _type(src.getType())
 	, _path(src.getPath())
 	, _query(src.getQuery())
+	, _host(src.getHost())
 {
 }
 
@@ -41,6 +43,7 @@ BasicHTTPRequest &BasicHTTPRequest::operator=(BasicHTTPRequest const &rhs)
 		this->_type = rhs.getType();
 		this->_path = rhs._path;
 		this->_query = rhs.getQuery();
+		this->_host = rhs.getHost();
 	}
 	return *this;
 }
@@ -93,6 +96,7 @@ void BasicHTTPRequest::parseRaw(void)
 	_type = _parseType(this->getRawRequest());
 	_path = _parsePath(this->getRawRequest());
 	_query = _parseQuery(this->getRawRequest());
+	_host = _parseHost(this->getRawRequest());
 	ABaseHTTPCall::_parseHTTPVersion();
 	ABaseHTTPCall::_parseHeaders();
 }
@@ -172,12 +176,26 @@ std::string BasicHTTPRequest::_parseQuery(const std::string &raw_request)
 	return raw_request.substr(query_pos, end - query_pos);
 }
 
+std::string BasicHTTPRequest::_parseHost(const std::string &raw_request)
+{
+	std::size_t start = raw_request.find(httpConstants::HOST_HEADER);
+	std::size_t end = raw_request.find(httpConstants::FIELD_BREAK, start);
+
+	if (start == std::string::npos)
+		throw Invalid("Missing host");
+	if (end == std::string::npos)
+		throw Invalid("Missing end of host");
+	return raw_request.substr(start + httpConstants::HOST_HEADER.length() + 1,
+							  end - start - httpConstants::HOST_HEADER.length());
+}
+
 void BasicHTTPRequest::unParse(void)
 {
 	ABaseHTTPCall::unParse();
 	_type = BasicHTTPRequest::GET;
 	_path = Path();
 	_query = "";
+	_host = "";
 }
 
 /*
@@ -205,5 +223,10 @@ std::string BasicHTTPRequest::getExtension(void) const
 	if (pos == std::string::npos)
 		return (this->getPath());
 	return (this->getPath().substr(pos));
+}
+
+const std::string &BasicHTTPRequest::getHost(void) const
+{
+	return this->_host;
 }
 /* ************************************************************************** */
