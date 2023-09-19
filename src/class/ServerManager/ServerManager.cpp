@@ -15,6 +15,11 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 	}
 	catch (CgiManager::CgiManagerException &e)
 	{
+		std::cerr << "CGI writing error [" << e.what() << "]\n";
+		close(param.call.getCgi()->getReadFd());
+		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR), param.call.getLocation()->getErrorPageSet());
+		param.call.setResponse(response.getResponse());
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE;
 	}
 	catch (CgiManager::CgiManagerIncompleteWrite &e)
@@ -37,13 +42,16 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	}
 	catch (CgiManager::CgiManagerException &e)
 	{
-		return Poll::CONTINUE;
+		std::cerr << "CGI reading error [" << e.what() << "]\n";
+		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR), param.call.getLocation()->getErrorPageSet());
+		param.call.setResponse(response.getResponse());
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+		return Poll::DONE;
 	}
 	catch (CgiManager::CgiManagerIncompleteRead &e)
 	{
 		return Poll::CONTINUE;
 	}
-
 	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), param.call.getLocation()->getErrorPageSet());
 	matcher::cgiToResponse(param.call.getCgi()->getOutput(), response);
 	response.setStatusCode(HTTPStatusCode(HTTPStatusCode::OK));
@@ -64,7 +72,7 @@ Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Par
 	}
 	catch (const std::exception &e)
 	{
-		std::cerr << e.what() << '\n';
+		std::cerr << "Client writing error [" << e.what() << "]\n";
 		return Poll::DONE;
 	}
 
@@ -104,12 +112,17 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	catch (ABaseHTTPCall::Invalid &e)
 	{
 		std::cerr << "Request is invalid [" << e.what() << "]\n";
-		std::cout << param.call.getBasicRequest().getRawRequest();
+		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), param.call.getLocation()->getErrorPageSet());
+		param.call.setResponse(response.getResponse());
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE;
 	}
 	catch (HTTPCall::ReceivingRequestError &e)
 	{
 		std::cerr << "Request recv error [" << e.what() << "]\n";
+		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), param.call.getLocation()->getErrorPageSet());
+		param.call.setResponse(response.getResponse());
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE;
 	}
 	catch (HTTPCall::ReceivingRequestEmpty &e)
