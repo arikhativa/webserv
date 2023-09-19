@@ -11,15 +11,11 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 	try
 	{
 		param.call.getCgi()->writeToCgi();
-		param.call.getCgi()->closePipe();
 	}
 	catch (CgiManager::CgiManagerException &e)
 	{
 		std::cerr << "CGI writing error [" << e.what() << "]\n";
 		close(param.call.getCgi()->getReadFd());
-		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR), param.call.getLocation()->getErrorPageSet());
-		param.call.setResponse(response.getResponse());
-		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE;
 	}
 	catch (CgiManager::CgiManagerIncompleteWrite &e)
@@ -43,9 +39,6 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	catch (CgiManager::CgiManagerException &e)
 	{
 		std::cerr << "CGI reading error [" << e.what() << "]\n";
-		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR), param.call.getLocation()->getErrorPageSet());
-		param.call.setResponse(response.getResponse());
-		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE;
 	}
 	catch (CgiManager::CgiManagerIncompleteRead &e)
@@ -106,23 +99,16 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	{
 		std::cerr << "Request is not finished [" << e.what() << "]\n";
 		param.call.getBasicRequest().unParse();
-		std::cout << "continue\n";
 		return Poll::CONTINUE;
 	}
 	catch (ABaseHTTPCall::Invalid &e)
 	{
 		std::cerr << "Request is invalid [" << e.what() << "]\n";
-		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), param.call.getLocation()->getErrorPageSet());
-		param.call.setResponse(response.getResponse());
-		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE;
 	}
 	catch (HTTPCall::ReceivingRequestError &e)
 	{
 		std::cerr << "Request recv error [" << e.what() << "]\n";
-		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), param.call.getLocation()->getErrorPageSet());
-		param.call.setResponse(response.getResponse());
-		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE;
 	}
 	catch (HTTPCall::ReceivingRequestEmpty &e)
