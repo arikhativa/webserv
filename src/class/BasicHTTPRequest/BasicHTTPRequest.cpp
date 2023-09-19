@@ -181,10 +181,8 @@ std::string BasicHTTPRequest::_parseHost(const std::string &raw_request)
 	std::size_t start = raw_request.find(httpConstants::HOST_HEADER);
 	std::size_t end = raw_request.find(httpConstants::FIELD_BREAK, start);
 
-	if (start == std::string::npos)
-		throw Invalid("Missing host");
-	if (end == std::string::npos)
-		throw Invalid("Missing end of host");
+	if (start == std::string::npos || end == std::string::npos)
+		return "";
 	return raw_request.substr(start + httpConstants::HOST_HEADER.length() + 1,
 							  end - start - httpConstants::HOST_HEADER.length());
 }
