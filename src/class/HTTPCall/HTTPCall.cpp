@@ -207,9 +207,7 @@ std::string HTTPCall::getResponse(void) const
 
 std::string HTTPCall::getServerName(void) const
 {
-	if (this->_virtual_server == NULL)
-		return "";
-	return this->_virtual_server->getName();
+	return this->_basic_request.getHost();
 }
 
 int HTTPCall::getClientFd(void) const
