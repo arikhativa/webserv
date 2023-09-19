@@ -88,6 +88,7 @@ void HTTPCall::_setLocalPath(void)
 			}
 		}
 	}
+	_local_path = local_path;
 }
 
 void HTTPCall::finalizeRequest(void)

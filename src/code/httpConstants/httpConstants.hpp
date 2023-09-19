@@ -49,6 +49,7 @@ namespace httpConstants
 		const std::string CONTENT_TYPE("Content-Type");
 		const std::string HOST("Host");
 		const std::string TRANSFER_ENCODING("Transfer-Encoding");
+		const std::string LOCATION("Location");
 		const std::string CHUNKED("chunked");
 	} // namespace headers
 } // namespace httpConstants

@@ -186,6 +186,11 @@ void ResponseHeader::setHeader(const std::string &key, const std::string &value)
 	}
 	_header.at(BODY).name = key + ": " + value + httpConstants::FIELD_BREAK + _header.at(BODY).name;
 }
+void ResponseHeader::setLocationHeader(const std::string &value)
+{
+	this->_header[LOCATION].value = value;
+	this->_header[LOCATION].name = httpConstants::headers::LOCATION + httpConstants::SEPARATOR + httpConstants::SPACE;
+}
 
 const std::string ResponseHeader::getStatusMessage()
 {
