@@ -103,6 +103,7 @@ void CgiManager::_childProcess(void)
 {
 	int _exit_status;
 	_pipe.setChild();
+	dup2(STDOUT_FILENO, STDERR_FILENO);
 	_exit_status = execve(_argv.toCTable()[0], _argv.toCTable(), _env.toCTable());
 	if (_exit_status < 0)
 		throw CgiManager::CgiManagerException();
