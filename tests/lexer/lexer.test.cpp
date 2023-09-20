@@ -7,7 +7,7 @@
 TEST(lexer, SimpleLine)
 {
 	std::fstream fs("res/tests/lexer/lexer_simple.conf");
-	std::list<Token> list = lexer::tokenize(fs);
+	std::list< Token > list = lexer::tokenize(fs);
 
 	ASSERT_EQ(list.size(), 6);
 	ASSERT_EQ(list.front().getType(), Token::KEYWORD);
@@ -26,7 +26,7 @@ TEST(lexer, SimpleLine)
 TEST(lexer, MultiLine)
 {
 	std::fstream fs("res/tests/lexer/lexer_simple_multi_line.conf");
-	std::list<Token> list = lexer::tokenize(fs);
+	std::list< Token > list = lexer::tokenize(fs);
 
 	ASSERT_EQ(list.size(), 12);
 	ASSERT_EQ(list.front().getType(), Token::KEYWORD);
@@ -57,7 +57,7 @@ TEST(lexer, MultiLine)
 TEST(lexer, FullFile)
 {
 	std::fstream fs("res/tests/lexer/lexer_full_file.conf");
-	std::list<Token> list = lexer::tokenize(fs);
+	std::list< Token > list = lexer::tokenize(fs);
 
 	// server {
 	ASSERT_EQ(list.size(), 59);
