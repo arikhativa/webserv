@@ -11,8 +11,6 @@ const int Pipe::OUTPUT(1);
 
 Pipe::Pipe()
 {
-	if (pipe(_inputPipe) < ERROR || pipe(_outputPipe) < ERROR)
-		throw Pipe::PipeException();
 }
 
 const char *Pipe::PipeException::what() const throw()
@@ -35,6 +33,12 @@ Pipe::~Pipe()
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
+
+void Pipe::initPipe()
+{
+	if (pipe(_inputPipe) < ERROR || pipe(_outputPipe) < ERROR)
+		throw Pipe::PipeException();
+}
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------

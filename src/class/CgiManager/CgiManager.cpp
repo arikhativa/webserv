@@ -221,6 +221,7 @@ int CgiManager::getBytesRead(void) const
 void CgiManager::executeCgiManager(const Path &pathServer)
 {
 	std::string content = "";
+	_pipe.initPipe();
 	_setEnv();
 	_setArgv(pathServer);
 	this->_pid = _createFork();

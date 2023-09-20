@@ -24,6 +24,8 @@ class Pipe
 		virtual const char *what() const throw();
 	};
 
+	void initPipe();
+
 	void setChild(void) const;
 	void setParent(void) const;
 	void write(const std::string &str) const;
