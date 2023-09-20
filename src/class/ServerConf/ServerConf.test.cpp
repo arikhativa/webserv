@@ -16,7 +16,7 @@ TEST(ServerConf, Accessor)
 	obj.setMaxBodySize("100");
 	obj.setReturn("500", "/500.html");
 	obj.setRoot("/root");
-	obj.setIndexFiles(std::list<std::string>({"index.html", "index.php"}));
+	obj.setIndexFiles(std::list< std::string >({"index.html", "index.php"}));
 	obj.addErrorPage("404", "/404.html");
 	obj.addErrorPage("505", "/505.html");
 	obj.addListenByPort("1111");
@@ -45,7 +45,7 @@ TEST(ServerConf, Accessor)
 	EXPECT_EQ("/505.html", obj.getErrorPages().back()->getPath().get());
 	EXPECT_EQ(1111, obj.getListen().front()->getPort().get());
 
-	std::list<const ILocation *> locations = obj.getLocations();
+	std::list< const ILocation * > locations = obj.getLocations();
 	EXPECT_EQ("/a", locations.front()->getPath().get());
 	EXPECT_EQ(true, locations.front()->getAllowedMethods().isAllowed(IAllowedMethods::GET));
 	locations.pop_front();
@@ -81,7 +81,7 @@ TEST(ServerConf, Print)
 	obj.setMaxBodySize("100");
 	obj.setReturn("500", "/500.html");
 	obj.setRoot("/root");
-	obj.setIndexFiles(std::list<std::string>({"index.html", "index.php"}));
+	obj.setIndexFiles(std::list< std::string >({"index.html", "index.php"}));
 	obj.addErrorPage("404", "/404.html");
 	obj.addErrorPage("505", "/505.html");
 	obj.addListenByPort("1111");
@@ -90,8 +90,8 @@ TEST(ServerConf, Print)
 	{
 		Location &l = obj.createGetLocation();
 		l.setPath("/a");
-		l.setIndexFiles(std::list<std::string>({"index.html", "index.php"}));
-		l.setAllowedMethods(std::list<std::string>({"POST", "DELETE"}));
+		l.setIndexFiles(std::list< std::string >({"index.html", "index.php"}));
+		l.setAllowedMethods(std::list< std::string >({"POST", "DELETE"}));
 	}
 	{
 		Location &l = obj.createGetLocation();
@@ -135,9 +135,9 @@ TEST(ServerConf, setIndexFiles)
 {
 	ServerConf obj;
 
-	EXPECT_THROW(obj.setIndexFiles(std::list<std::string>{}), ServerConf::InvalidServerConf);
-	obj.setIndexFiles(std::list<std::string>{"index.html"});
-	EXPECT_THROW(obj.setIndexFiles(std::list<std::string>{"index.html"}), ServerConf::InvalidServerConf);
+	EXPECT_THROW(obj.setIndexFiles(std::list< std::string >{}), ServerConf::InvalidServerConf);
+	obj.setIndexFiles(std::list< std::string >{"index.html"});
+	EXPECT_THROW(obj.setIndexFiles(std::list< std::string >{"index.html"}), ServerConf::InvalidServerConf);
 }
 
 TEST(ServerConf, addErrorPage)
@@ -166,7 +166,7 @@ TEST(ServerConf, setDefaultSettingIfNeeded)
 	EXPECT_EQ(ServerConf::DEFAULT_HTML, obj.getIndexFiles().front());
 	EXPECT_EQ(ServerConf::DEFAULT_HTM, obj.getIndexFiles().back());
 
-	std::list<const ILocation *> locations = obj.getLocations();
+	std::list< const ILocation * > locations = obj.getLocations();
 	EXPECT_EQ("/", locations.front()->getPath().get());
 	EXPECT_EQ(ServerConf::DEFAULT_ROOT, locations.front()->getRoot()->get());
 }
@@ -176,7 +176,7 @@ TEST(ServerConf, _inheritFromServer)
 	ServerConf obj;
 
 	obj.setRoot("/root");
-	obj.setIndexFiles(std::list<std::string>({"index.html", "index.php"}));
+	obj.setIndexFiles(std::list< std::string >({"index.html", "index.php"}));
 	{
 		Location &l = obj.createGetLocation();
 		l.setPath("/b");
@@ -184,7 +184,7 @@ TEST(ServerConf, _inheritFromServer)
 
 	obj.setDefaultSettingIfNeeded();
 
-	std::list<const ILocation *> locations = obj.getLocations();
+	std::list< const ILocation * > locations = obj.getLocations();
 	EXPECT_EQ("/b", locations.front()->getPath().get());
 	EXPECT_EQ("/root", locations.front()->getRoot()->get());
 	EXPECT_EQ("index.html", locations.front()->getIndexFiles().front());

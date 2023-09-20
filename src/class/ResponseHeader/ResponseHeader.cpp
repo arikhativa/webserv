@@ -62,7 +62,7 @@ std::ostream &operator<<(std::ostream &o, ResponseHeader const &i)
 
 void ResponseHeader::_defaultConstructor()
 {
-	for (field_key f = STANDARD; f <= BODY; f = static_cast<field_key>(static_cast<int>(f) + 1))
+	for (field_key f = STANDARD; f <= BODY; f = static_cast< field_key >(static_cast< int >(f) + 1))
 	{
 		Field defaultHeader;
 		_header.insert(std::make_pair(f, defaultHeader));
@@ -133,7 +133,7 @@ bool ResponseHeader::_isErrorCode(HTTPStatusCode code)
 size_t ResponseHeader::_getTotalSize(void) const
 {
 	size_t totalSize = 0;
-	for (field_key f = STANDARD; f <= BODY; f = static_cast<field_key>(static_cast<int>(f) + 1))
+	for (field_key f = STANDARD; f <= BODY; f = static_cast< field_key >(static_cast< int >(f) + 1))
 		totalSize += _header.at(f).name.length() + _header.at(f).value.length() + 10;
 	return (totalSize);
 }
@@ -176,7 +176,7 @@ void ResponseHeader::setBody(const std::string &body)
 
 void ResponseHeader::setHeader(const std::string &key, const std::string &value)
 {
-	for (field_key f = STANDARD; f <= BODY; f = static_cast<field_key>(static_cast<int>(f) + 1))
+	for (field_key f = STANDARD; f <= BODY; f = static_cast< field_key >(static_cast< int >(f) + 1))
 	{
 		if (_header.at(f).name == key)
 		{
@@ -212,7 +212,7 @@ const std::string ResponseHeader::getConnection()
 	return (this->_header.at(CONNECTION).value);
 }
 
-const std::map<ResponseHeader::field_key, ResponseHeader::Field> ResponseHeader::getHeader() const
+const std::map< ResponseHeader::field_key, ResponseHeader::Field > ResponseHeader::getHeader() const
 {
 	return (_header);
 }
@@ -223,7 +223,7 @@ const std::string ResponseHeader::getResponse() const
 	try
 	{
 		res.reserve(_getTotalSize());
-		for (field_key f = STANDARD; f <= BODY; f = static_cast<field_key>(static_cast<int>(f) + 1))
+		for (field_key f = STANDARD; f <= BODY; f = static_cast< field_key >(static_cast< int >(f) + 1))
 		{
 			std::string key = "";
 			if (_header.find(f) != _header.end())

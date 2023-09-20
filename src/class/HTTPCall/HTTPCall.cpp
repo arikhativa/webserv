@@ -76,8 +76,8 @@ void HTTPCall::_setLocalPath(void)
 	if (local_path.isDir())
 	{
 		std::string tmp;
-		const std::list<std::string> &list = getLocation()->getIndexFiles();
-		for (std::list<std::string>::const_iterator it = list.begin(); it != list.end(); ++it)
+		const std::list< std::string > &list = getLocation()->getIndexFiles();
+		for (std::list< std::string >::const_iterator it = list.begin(); it != list.end(); ++it)
 		{
 			tmp = local_path.get() + *it;
 			if (FileManager::isFileExists(tmp))
@@ -209,10 +209,10 @@ int HTTPCall::getClientFd(void) const
 	return this->_client_fd;
 }
 
-std::list<const IErrorPage *> HTTPCall::getErrorPages(void) const
+std::list< const IErrorPage * > HTTPCall::getErrorPages(void) const
 {
 	if (this->_server_conf == NULL)
-		return std::list<const IErrorPage *>();
+		return std::list< const IErrorPage * >();
 	return this->_server_conf->getErrorPages();
 }
 

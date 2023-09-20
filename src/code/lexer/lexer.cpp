@@ -1,7 +1,7 @@
 
 #include <lexer/lexer.hpp>
 
-static void addTokens(std::list<Token> &list, std::string &line)
+static void addTokens(std::list< Token > &list, std::string &line)
 {
 	std::size_t i = 0;
 	std::size_t start = 0;
@@ -26,9 +26,9 @@ static void addTokens(std::list<Token> &list, std::string &line)
 	}
 }
 
-std::list<Token> lexer::tokenize(std::fstream &fs)
+std::list< Token > lexer::tokenize(std::fstream &fs)
 {
-	std::list<Token> list;
+	std::list< Token > list;
 	std::string line;
 
 	while (std::getline(fs, line))

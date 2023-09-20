@@ -83,8 +83,6 @@ void Poll::loop(void)
 			std::cout << "poll() timeout" << std::endl;
 		else if (stt > 0)
 		{
-			// std::cout << "size: " << _fds.size() << std::endl;
-
 			for (size_t i = 0; i < _fds.size(); ++i)
 			{
 				if (_fds[i].revents & POLLOUT || _fds[i].revents & POLLIN)

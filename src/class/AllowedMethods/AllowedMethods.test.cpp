@@ -25,8 +25,8 @@ TEST(AllowedMethods, Accessor)
 
 TEST(AllowedMethods, Canonical)
 {
-	std::list<std::string> m1;
-	std::list<std::string> m2;
+	std::list< std::string > m1;
+	std::list< std::string > m2;
 
 	m1.push_back(AllowedMethods::GET);
 	m2.push_back(AllowedMethods::POST);
@@ -46,7 +46,7 @@ TEST(AllowedMethods, Canonical)
 
 TEST(AllowedMethods, Exception)
 {
-	std::list<std::string> m;
+	std::list< std::string > m;
 
 	m.push_back("HEY");
 	EXPECT_THROW(AllowedMethods obj(m), AllowedMethods::InvalidMethodException);
@@ -54,7 +54,7 @@ TEST(AllowedMethods, Exception)
 
 TEST(AllowedMethods, isAllowed)
 {
-	std::list<std::string> m;
+	std::list< std::string > m;
 
 	m.push_back(AllowedMethods::POST);
 	AllowedMethods obj(m);
@@ -65,7 +65,7 @@ TEST(AllowedMethods, isAllowed)
 
 TEST(AllowedMethods, PrintPost)
 {
-	std::list<std::string> m;
+	std::list< std::string > m;
 
 	m.push_back(AllowedMethods::POST);
 	AllowedMethods obj(m);
@@ -76,7 +76,7 @@ TEST(AllowedMethods, PrintPost)
 
 TEST(AllowedMethods, PrintAll)
 {
-	std::list<std::string> m;
+	std::list< std::string > m;
 
 	m.push_back(AllowedMethods::GET);
 	m.push_back(AllowedMethods::POST);

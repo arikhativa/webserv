@@ -80,7 +80,7 @@ std::string ErrorPageSet::getPage(HTTPStatusCode::Code code) const
 	}
 }
 
-const std::map<HTTPStatusCode::Code, std::string> &ErrorPageSet::getPages(void) const
+const std::map< HTTPStatusCode::Code, std::string > &ErrorPageSet::getPages(void) const
 {
 	return _pages;
 }

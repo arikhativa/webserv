@@ -25,13 +25,13 @@ std::size_t converter::stringToSizeT(const std::string &str)
 	errno = 0;
 
 	long long longValue = std::strtoll(charStr, &endPtr, 10);
-	if (errno == ERANGE || longValue > std::numeric_limits<long long>::max() ||
-		longValue < std::numeric_limits<long long>::min())
+	if (errno == ERANGE || longValue > std::numeric_limits< long long >::max() ||
+		longValue < std::numeric_limits< long long >::min())
 	{
 		throw std::out_of_range("Overflow: " + str);
 	}
 
-	result = static_cast<std::size_t>(longValue);
+	result = static_cast< std::size_t >(longValue);
 	return result;
 }
 
@@ -73,12 +73,13 @@ int converter::stringToInt(const std::string &str)
 	int ret;
 
 	long long longValue = std::strtoll(charStr, &endPtr, 10);
-	if (errno == ERANGE || longValue > std::numeric_limits<int>::max() || longValue < std::numeric_limits<int>::min())
+	if (errno == ERANGE || longValue > std::numeric_limits< int >::max() ||
+		longValue < std::numeric_limits< int >::min())
 	{
 		throw std::out_of_range("Overflow: " + str);
 	}
 
-	ret = static_cast<int>(longValue);
+	ret = static_cast< int >(longValue);
 	return ret;
 }
 
@@ -138,11 +139,11 @@ std::string converter::toNginxStyle(const std::string &input)
 		{
 			if (capitalizeNext)
 			{
-				result += static_cast<char>(std::toupper(c));
+				result += static_cast< char >(std::toupper(c));
 				capitalizeNext = false;
 			}
 			else
-				result += static_cast<char>(std::tolower(c));
+				result += static_cast< char >(std::tolower(c));
 		}
 		else if (c == ' ' || c == '-')
 		{
@@ -156,11 +157,11 @@ std::string converter::toNginxStyle(const std::string &input)
 	return result;
 }
 
-std::string converter::headersToString(std::map<std::string, std::string> map)
+std::string converter::headersToString(std::map< std::string, std::string > map)
 {
 	std::string result;
 
-	for (std::map<std::string, std::string>::iterator it = map.begin(); it != map.end(); ++it)
+	for (std::map< std::string, std::string >::iterator it = map.begin(); it != map.end(); ++it)
 	{
 		result += it->first + ": " + it->second + httpConstants::FIELD_BREAK;
 	}
@@ -187,7 +188,7 @@ std::string converter::urlDecode(const std::string &url)
 		{
 			if (url[i + 1] && url[i + 2])
 			{
-				result += static_cast<char>(converter::hexStringToSizeT(url.substr(i + 1, 2)));
+				result += static_cast< char >(converter::hexStringToSizeT(url.substr(i + 1, 2)));
 				i += 2;
 			}
 			else

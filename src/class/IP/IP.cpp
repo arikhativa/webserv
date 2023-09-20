@@ -54,9 +54,9 @@ std::ostream &operator<<(std::ostream &o, IP const &i)
 ** ------------------------------ STATIC METHODS -------------------------------
 */
 
-static std::vector<int> stringToVector(const std::string &ip)
+static std::vector< int > stringToVector(const std::string &ip)
 {
-	std::vector<int> ipVector(4);
+	std::vector< int > ipVector(4);
 	std::string token;
 	std::size_t end = 0;
 	std::size_t start = 0;
@@ -93,7 +93,7 @@ bool IP::isValid(const std::string &ip)
 	if (ip.find_first_not_of("0123456789.") != std::string::npos)
 		return false;
 
-	std::vector<int> ipVector(stringToVector(ip));
+	std::vector< int > ipVector(stringToVector(ip));
 	for (int i = 0; i < 4; i++)
 	{
 		if (ipVector[i] < 0 || ipVector[i] > 255)

@@ -1,9 +1,9 @@
 
 #include <parser/parser.hpp>
 
-static std::map<std::string, bool> initServerValidKeywords(void)
+static std::map< std::string, bool > initServerValidKeywords(void)
 {
-	std::map<std::string, bool> map;
+	std::map< std::string, bool > map;
 
 	map[Token::Keyword::SERVER_NAME] = true;
 	map[Token::Keyword::ROOT] = true;
@@ -17,9 +17,9 @@ static std::map<std::string, bool> initServerValidKeywords(void)
 	return map;
 }
 
-static std::map<std::string, bool> initLocationValidKeywords(void)
+static std::map< std::string, bool > initLocationValidKeywords(void)
 {
-	std::map<std::string, bool> map;
+	std::map< std::string, bool > map;
 
 	map[Token::Keyword::ALLOW_METHODS] = true;
 	map[Token::Keyword::CLIENT_MAX_BODY_SIZE] = true;
@@ -34,9 +34,9 @@ static std::map<std::string, bool> initLocationValidKeywords(void)
 	return map;
 }
 
-bool parser::isValidServerKeyword(const std::list<Token>::const_iterator &it)
+bool parser::isValidServerKeyword(const std::list< Token >::const_iterator &it)
 {
-	static const std::map<std::string, bool> valid_keywords(initServerValidKeywords());
+	static const std::map< std::string, bool > valid_keywords(initServerValidKeywords());
 	try
 	{
 		return valid_keywords.at(it->getValue());
@@ -47,9 +47,9 @@ bool parser::isValidServerKeyword(const std::list<Token>::const_iterator &it)
 	}
 }
 
-bool parser::isValidLocationKeyword(const std::list<Token>::const_iterator &it)
+bool parser::isValidLocationKeyword(const std::list< Token >::const_iterator &it)
 {
-	static const std::map<std::string, bool> valid_keywords(initLocationValidKeywords());
+	static const std::map< std::string, bool > valid_keywords(initLocationValidKeywords());
 	try
 	{
 		return valid_keywords.at(it->getValue());
@@ -61,10 +61,10 @@ bool parser::isValidLocationKeyword(const std::list<Token>::const_iterator &it)
 	}
 }
 
-bool parser::validate(const std::list<Token> &list)
+bool parser::validate(const std::list< Token > &list)
 {
 	parser::t_rule f;
-	std::list<Token>::const_iterator it = list.begin();
+	std::list< Token >::const_iterator it = list.begin();
 
 	if (list.empty())
 		return false;

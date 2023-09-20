@@ -42,7 +42,7 @@ static const IConf *createConf(const std::string &path)
 		return NULL;
 	}
 
-	std::list<Token> list(lexer::tokenize(fs));
+	std::list< Token > list(lexer::tokenize(fs));
 	if (!parser::validate(list))
 	{
 		std::cerr << "Error: bad syntax in config file: " << path << std::endl;

@@ -73,7 +73,7 @@ std::string HTTPResponse::toString(void) const
 {
 	std::string ret(ABaseHTTPCall::toStringVersion(getHTTPVersion()));
 
-	ret += httpConstants::SPACE + converter::numToString<int>(_stt.get()) + httpConstants::SPACE + _stt.toString() +
+	ret += httpConstants::SPACE + converter::numToString< int >(_stt.get()) + httpConstants::SPACE + _stt.toString() +
 		   httpConstants::FIELD_BREAK;
 
 	ret += converter::headersToString(this->getHeaders()) + this->getBody();

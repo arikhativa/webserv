@@ -40,7 +40,7 @@ std::ostream &operator<<(std::ostream &o, Listen const &i)
 
 std::ostream &operator<<(std::ostream &o, const IListen &i)
 {
-	const Listen &tmp = dynamic_cast<const Listen &>(i);
+	const Listen &tmp = dynamic_cast< const Listen & >(i);
 
 	o << tmp;
 	return o;

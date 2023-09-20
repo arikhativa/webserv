@@ -96,7 +96,7 @@ TEST(BasicHTTPRequest, AppendDupHeaders)
 	if (obj.isBody())
 		obj.parseBody();
 
-	std::map<std::string, std::string> h = obj.getHeaders();
+	std::map< std::string, std::string > h = obj.getHeaders();
 	EXPECT_STREQ("4, 4", h["Asd"].c_str());
 }
 

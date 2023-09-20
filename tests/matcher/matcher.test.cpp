@@ -14,7 +14,7 @@ TEST(matcher, requestToServerWithHost)
 	const char *file_name = "res/tests/matcher/simple.conf";
 
 	std::fstream fs(file_name);
-	std::list<Token> list = lexer::tokenize(fs);
+	std::list< Token > list = lexer::tokenize(fs);
 	if (false == parser::validate(list))
 		EXIT_FAILURE;
 
@@ -38,7 +38,7 @@ TEST(matcher, requestToServerDefault)
 	const char *file_name = "res/tests/matcher/simple.conf";
 
 	std::fstream fs(file_name);
-	std::list<Token> list = lexer::tokenize(fs);
+	std::list< Token > list = lexer::tokenize(fs);
 	if (false == parser::validate(list))
 		EXIT_FAILURE;
 
@@ -62,7 +62,7 @@ TEST(matcher, requestToServerDefaultWithHost)
 	const char *file_name = "res/tests/matcher/simple.conf";
 
 	std::fstream fs(file_name);
-	std::list<Token> list = lexer::tokenize(fs);
+	std::list< Token > list = lexer::tokenize(fs);
 	if (false == parser::validate(list))
 		EXIT_FAILURE;
 
@@ -85,7 +85,7 @@ TEST(matcher, noMatchByListen)
 	const char *file_name = "res/tests/matcher/simple2.conf";
 
 	std::fstream fs(file_name);
-	std::list<Token> list = lexer::tokenize(fs);
+	std::list< Token > list = lexer::tokenize(fs);
 	if (false == parser::validate(list))
 		EXIT_FAILURE;
 
@@ -108,7 +108,7 @@ TEST(matcher, MatchByListenNoHost)
 	const char *file_name = "res/tests/matcher/simple3.conf";
 
 	std::fstream fs(file_name);
-	std::list<Token> list = lexer::tokenize(fs);
+	std::list< Token > list = lexer::tokenize(fs);
 	if (false == parser::validate(list))
 		EXIT_FAILURE;
 
@@ -131,7 +131,7 @@ TEST(matcher, requestToLocation)
 	const char *file_name = "res/tests/matcher/simple4.conf";
 
 	std::fstream fs(file_name);
-	std::list<Token> list = lexer::tokenize(fs);
+	std::list< Token > list = lexer::tokenize(fs);
 	if (false == parser::validate(list))
 		EXIT_FAILURE;
 

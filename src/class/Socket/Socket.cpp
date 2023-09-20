@@ -88,7 +88,7 @@ void Socket::bind(void)
 	int bind_status;
 	if (this->_binded)
 		return;
-	bind_status = ::bind(this->_fd, reinterpret_cast<const sockaddr *>(&this->_sockaddr), sizeof(this->_sockaddr));
+	bind_status = ::bind(this->_fd, reinterpret_cast< const sockaddr * >(&this->_sockaddr), sizeof(this->_sockaddr));
 	if (bind_status <= -1)
 		throw SocketBindingFailed();
 	this->_binded = true;

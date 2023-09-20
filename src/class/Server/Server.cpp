@@ -8,9 +8,9 @@
 Server::Server(const IServerConf *conf)
 	: _conf(conf)
 {
-	std::list<const IListen *> tmpListeners = this->_conf->getListen();
-	std::list<const IListen *>::iterator it = tmpListeners.begin();
-	std::list<const IListen *>::iterator end = tmpListeners.end();
+	std::list< const IListen * > tmpListeners = this->_conf->getListen();
+	std::list< const IListen * >::iterator it = tmpListeners.begin();
+	std::list< const IListen * >::iterator end = tmpListeners.end();
 	for (; it != end; it++)
 	{
 		this->_sockets.push_back(new Socket(*it));
@@ -50,8 +50,8 @@ int Server::acceptConnection(int fd)
 
 void Server::closeSockets(void)
 {
-	std::vector<Socket *>::iterator it = this->_sockets.begin();
-	std::vector<Socket *>::iterator end = this->_sockets.end();
+	std::vector< Socket * >::iterator it = this->_sockets.begin();
+	std::vector< Socket * >::iterator end = this->_sockets.end();
 	for (; it != end; it++)
 	{
 		(*it)->close();
@@ -61,16 +61,16 @@ void Server::closeSockets(void)
 
 void Server::bindSockets()
 {
-	std::vector<Socket *>::iterator it = this->_sockets.begin();
-	std::vector<Socket *>::iterator end = this->_sockets.end();
+	std::vector< Socket * >::iterator it = this->_sockets.begin();
+	std::vector< Socket * >::iterator end = this->_sockets.end();
 	for (; it != end; it++)
 		(*it)->bind();
 }
 
 void Server::listenSockets()
 {
-	std::vector<Socket *>::iterator it = this->_sockets.begin();
-	std::vector<Socket *>::iterator end = this->_sockets.end();
+	std::vector< Socket * >::iterator it = this->_sockets.begin();
+	std::vector< Socket * >::iterator end = this->_sockets.end();
 	for (; it != end; it++)
 		(*it)->listen();
 }
@@ -79,18 +79,19 @@ void Server::listenSockets()
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-const std::vector<int> Server::getSocketsFd(void) const
+// Hacer que estot devuelva los sockets y no los file descriptors
+const std::vector< int > Server::getSocketsFd(void) const
 {
-	std::vector<int> fds;
+	std::vector< int > fds;
 
-	std::vector<Socket *>::const_iterator it = this->_sockets.begin();
-	std::vector<Socket *>::const_iterator end = this->_sockets.end();
+	std::vector< Socket * >::const_iterator it = this->_sockets.begin();
+	std::vector< Socket * >::const_iterator end = this->_sockets.end();
 	for (; it != end; it++)
 		fds.push_back((*it)->getFd());
 	return fds;
 }
 
-const std::vector<Socket *> &Server::getSockets(void) const
+const std::vector< Socket * > &Server::getSockets(void) const
 {
 	return this->_sockets;
 }
@@ -105,7 +106,7 @@ const IServerConf *Server::getConf(void) const
 	return this->_conf;
 }
 
-std::list<const IErrorPage *> Server::getErrorPages(void) const
+std::list< const IErrorPage * > Server::getErrorPages(void) const
 {
 	return this->_conf->getErrorPages();
 }

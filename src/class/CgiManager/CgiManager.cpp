@@ -70,7 +70,7 @@ std::ostream &operator<<(std::ostream &o, CgiManager const &i)
 
 void CgiManager::_setEnv(void)
 {
-	std::map<std::string, std::string> env;
+	std::map< std::string, std::string > env;
 	if (_basicHTTPRequest.getHeaders().find(httpConstants::CONTENT_LENGTH) != _basicHTTPRequest.getHeaders().end())
 		env[httpConstants::CONTENT_LENGTH] = _basicHTTPRequest.getHeaders().at(httpConstants::CONTENT_LENGTH);
 	if (_basicHTTPRequest.getHeaders().find(httpConstants::CONTENT_TYPE_FIELD) != _basicHTTPRequest.getHeaders().end())
@@ -84,7 +84,7 @@ void CgiManager::_setEnv(void)
 	env[httpConstants::SERVER_NAME] = _serverName;
 	env[httpConstants::PATH_INFO] = _basicHTTPRequest.getPath();
 
-	std::map<std::string, std::string>::const_iterator it = env.begin();
+	std::map< std::string, std::string >::const_iterator it = env.begin();
 	for (int i = 0; it != env.end(); it++, i++)
 		_env.add(it->first + "=" + it->second);
 }
