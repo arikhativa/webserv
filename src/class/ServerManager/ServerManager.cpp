@@ -21,6 +21,7 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 	{
 		std::cerr << "CGI writing error [" << e.what() << "]\n";
 		close(param.call.getCgi()->getReadFd());
+		delete param.call.getCgi();
 		return Poll::DONE_CLOSE_FD;
 	}
 	catch (CgiManager::CgiManagerIncompleteWrite &e)
@@ -44,6 +45,7 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	catch (CgiManager::CgiManagerException &e)
 	{
 		std::cerr << "CGI reading error [" << e.what() << "]\n";
+		delete param.call.getCgi();
 		return Poll::DONE_CLOSE_FD;
 	}
 	catch (CgiManager::CgiManagerIncompleteRead &e)
@@ -51,6 +53,7 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 		return Poll::CONTINUE;
 	}
 	param.call.cgiToResponse();
+	delete param.call.getCgi();
 	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 	return Poll::DONE_CLOSE_FD;
 }
