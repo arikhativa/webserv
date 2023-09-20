@@ -43,6 +43,7 @@ class HTTPCall
 	void parseRawRequest(void);
 	std::list< const ILocation * >::const_iterator searchMatchLocation(void) const;
 	bool isAutoIndexOn(void) const;
+	bool isCGI(void) const;
 	bool canUpload(void) const;
 	const IServerConf *getServerConf(void) const;
 	const ILocation *getLocation(void) const;
@@ -61,6 +62,8 @@ class HTTPCall
 	void sendResponse(void);
 	void handleRequest(void);
 	void terminate(void);
+
+	void handleCGI(void);
 
 	class SendingResponseError : public std::exception
 	{

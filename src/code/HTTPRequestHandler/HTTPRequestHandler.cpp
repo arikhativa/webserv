@@ -2,6 +2,16 @@
 #include <HTTPCall/HTTPCall.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 
+void HTTPRequestHandler::GET_CGI(HTTPCall &request)
+{
+	request.handleCGI();
+}
+
+void HTTPRequestHandler::POST_CGI(HTTPCall &request)
+{
+	request.handleCGI();
+}
+
 void HTTPRequestHandler::GET(HTTPCall &request)
 {
 	try

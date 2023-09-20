@@ -17,7 +17,9 @@ class HTTPCall;
 namespace HTTPRequestHandler
 {
 	void GET(HTTPCall &request);
+	void GET_CGI(HTTPCall &request);
 	void POST(HTTPCall &request);
+	void POST_CGI(HTTPCall &request);
 	void DELETE(HTTPCall &request);
 	void UNKNOWN(HTTPCall &request);
 }; // namespace HTTPRequestHandler

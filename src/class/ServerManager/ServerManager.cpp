@@ -113,7 +113,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	param.call.setLocation(matcher::requestToLocation(param.call.getServerConf(), param.call.getBasicRequest()));
 	param.call.finalizeRequest();
 	param.call.handleRequest();
-	if (param.call.getCgi())
+	if (param.call.isCGI())
 	{
 		param.write_pipe = param.call.getCgi()->getWriteFd();
 		param.read_pipe = param.call.getCgi()->getReadFd();
@@ -123,7 +123,6 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	}
 	else
 	{
-		// std::cout << "Is NOT CGI" << std::endl;
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE_CLOSE_FD;
 	}

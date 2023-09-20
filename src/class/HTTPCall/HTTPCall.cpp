@@ -61,6 +61,12 @@ std::ostream &operator<<(std::ostream &o, HTTPCall const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+bool HTTPCall::isCGI(void) const
+{
+	return (this->getLocation()->getCGIConf().isSet() &&
+			this->getLocation()->getCGIConf().getExtension() == this->getBasicRequest().getExtension());
+}
+
 void HTTPCall::_setLocalPath(void)
 {
 	const BasicHTTPRequest &req(getBasicRequest());
@@ -90,19 +96,19 @@ void HTTPCall::_setLocalPath(void)
 	_local_path = local_path;
 }
 
+void HTTPCall::handleCGI(void)
+{
+	Path pathCGI(this->getLocation()->getCGIConf().getPath());
+	Port port = this->getSocket()->getPort();
+	const IPath *root_cgi(this->getLocation()->getRoot());
+	CgiManager *cgi_obj = new CgiManager(this->getBasicRequest(), pathCGI, this->getServerName(), port.get() + "");
+	this->setCgi(cgi_obj);
+	cgi_obj->executeCgiManager(Path(root_cgi->get()));
+}
+
 void HTTPCall::finalizeRequest(void)
 {
 	_setLocalPath();
-	if (this->getLocation()->getCGIConf().isSet() &&
-		this->getLocation()->getCGIConf().getExtension() == this->getBasicRequest().getExtension())
-	{
-		Path pathCGI(this->getLocation()->getCGIConf().getPath());
-		Port port = this->getSocket()->getPort();
-		const IPath *root_cgi(this->getLocation()->getRoot());
-		CgiManager *cgi_obj = new CgiManager(this->getBasicRequest(), pathCGI, this->getServerName(), port.get() + "");
-		this->setCgi(cgi_obj);
-		cgi_obj->executeCgiManager(Path(root_cgi->get()));
-	}
 }
 
 void HTTPCall::recvRequest(void)
@@ -136,10 +142,16 @@ void HTTPCall::handleRequest(void)
 	switch (this->_basic_request.getType())
 	{
 	case BasicHTTPRequest::GET:
-		HTTPRequestHandler::GET(*this);
+		if (this->isCGI())
+			HTTPRequestHandler::GET_CGI(*this);
+		else
+			HTTPRequestHandler::GET(*this);
 		break;
 	case BasicHTTPRequest::POST:
-		HTTPRequestHandler::POST(*this);
+		if (this->isCGI())
+			HTTPRequestHandler::POST_CGI(*this);
+		else
+			HTTPRequestHandler::POST(*this);
 		break;
 	case BasicHTTPRequest::DELETE:
 		HTTPRequestHandler::DELETE(*this);
