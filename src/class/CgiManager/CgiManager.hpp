@@ -43,8 +43,6 @@ class CgiManager
 	void writeToCgi(void);
 	void readFromCgi(void);
 	void closePipe(void);
-	bool getDone(void) const;
-	void setDone(bool flag);
 
 	void executeCgiManager(const Path &pathServer);
 	class CgiManagerException : public std::exception
@@ -78,7 +76,6 @@ class CgiManager
 
 	size_t _byte_write;
 	size_t _byte_read;
-	bool _done;
 
 	void _setEnv(void);
 	void _setArgv(const Path &pathServer);
