@@ -2,14 +2,14 @@
 #include <HTTPCall/HTTPCall.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 
-void HTTPRequestHandler::GET_CGI(HTTPCall &request)
+void HTTPRequestHandler::CGI(HTTPCall &request)
 {
-	request.handleCGI();
-}
-
-void HTTPRequestHandler::POST_CGI(HTTPCall &request)
-{
-	request.handleCGI();
+	Path pathCGI(request.getLocation()->getCGIConf().getPath());
+	Port port = request.getSocket()->getPort();
+	const IPath *root_cgi(request.getLocation()->getRoot());
+	CgiManager *cgi_obj = new CgiManager(request.getBasicRequest(), pathCGI, request.getServerName(), port.get() + "");
+	request.setCgi(cgi_obj);
+	cgi_obj->executeCgiManager(Path(root_cgi->get()));
 }
 
 void HTTPRequestHandler::GET(HTTPCall &request)

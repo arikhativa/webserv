@@ -96,16 +96,6 @@ void HTTPCall::_setLocalPath(void)
 	_local_path = local_path;
 }
 
-void HTTPCall::handleCGI(void)
-{
-	Path pathCGI(this->getLocation()->getCGIConf().getPath());
-	Port port = this->getSocket()->getPort();
-	const IPath *root_cgi(this->getLocation()->getRoot());
-	CgiManager *cgi_obj = new CgiManager(this->getBasicRequest(), pathCGI, this->getServerName(), port.get() + "");
-	this->setCgi(cgi_obj);
-	cgi_obj->executeCgiManager(Path(root_cgi->get()));
-}
-
 void HTTPCall::finalizeRequest(void)
 {
 	_setLocalPath();
@@ -143,13 +133,13 @@ void HTTPCall::handleRequest(void)
 	{
 	case BasicHTTPRequest::GET:
 		if (this->isCGI())
-			HTTPRequestHandler::GET_CGI(*this);
+			HTTPRequestHandler::CGI(*this);
 		else
 			HTTPRequestHandler::GET(*this);
 		break;
 	case BasicHTTPRequest::POST:
 		if (this->isCGI())
-			HTTPRequestHandler::POST_CGI(*this);
+			HTTPRequestHandler::CGI(*this);
 		else
 			HTTPRequestHandler::POST(*this);
 		break;
