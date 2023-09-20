@@ -1,8 +1,8 @@
 #include <ContentTypes/ContentTypes.hpp>
 
-static std::map<std::string, std::string> create_map(void)
+static std::map< std::string, std::string > create_map(void)
 {
-	std::map<std::string, std::string> ret;
+	std::map< std::string, std::string > ret;
 
 	ret[".html"] = "text/html";
 	ret[".htm"] = "text/html";
@@ -127,7 +127,7 @@ static std::map<std::string, std::string> create_map(void)
 	return (ret);
 }
 
-const std::map<std::string, std::string> ContentTypes::_content_types(create_map());
+const std::map< std::string, std::string > ContentTypes::_content_types(create_map());
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------

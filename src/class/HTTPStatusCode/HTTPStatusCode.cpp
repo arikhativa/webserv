@@ -1,9 +1,9 @@
 
 #include <HTTPStatusCode/HTTPStatusCode.hpp>
 
-static std::map<HTTPStatusCode::Code, std::string> initMap(void)
+static std::map< HTTPStatusCode::Code, std::string > initMap(void)
 {
-	std::map<HTTPStatusCode::Code, std::string> map;
+	std::map< HTTPStatusCode::Code, std::string > map;
 
 	// 1xx Informational
 	map[HTTPStatusCode::CONTINUE] = "Continue";
@@ -59,7 +59,7 @@ static std::map<HTTPStatusCode::Code, std::string> initMap(void)
 	return map;
 }
 
-const std::map<HTTPStatusCode::Code, std::string> HTTPStatusCode::_map(initMap());
+const std::map< HTTPStatusCode::Code, std::string > HTTPStatusCode::_map(initMap());
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -71,14 +71,14 @@ HTTPStatusCode::HTTPStatusCode(const std::string &code)
 
 	if (!HTTPStatusCode::isValid(int_code))
 		throw HTTPStatusCode::InvalidStatusCodeException();
-	this->_code = static_cast<HTTPStatusCode::Code>(int_code);
+	this->_code = static_cast< HTTPStatusCode::Code >(int_code);
 }
 
 HTTPStatusCode::HTTPStatusCode(int code)
 {
 	if (!HTTPStatusCode::isValid(code))
 		throw HTTPStatusCode::InvalidStatusCodeException();
-	this->_code = static_cast<HTTPStatusCode::Code>(code);
+	this->_code = static_cast< HTTPStatusCode::Code >(code);
 }
 
 HTTPStatusCode::HTTPStatusCode(HTTPStatusCode::Code code)
@@ -153,14 +153,14 @@ void HTTPStatusCode::set(const std::string &code)
 
 	if (!HTTPStatusCode::isValid(int_code))
 		throw HTTPStatusCode::InvalidStatusCodeException();
-	this->_code = static_cast<HTTPStatusCode::Code>(int_code);
+	this->_code = static_cast< HTTPStatusCode::Code >(int_code);
 }
 
 void HTTPStatusCode::set(int code)
 {
 	if (!HTTPStatusCode::isValid(code))
 		throw HTTPStatusCode::InvalidStatusCodeException();
-	this->_code = static_cast<HTTPStatusCode::Code>(code);
+	this->_code = static_cast< HTTPStatusCode::Code >(code);
 }
 
 HTTPStatusCode::Code HTTPStatusCode::get(void) const

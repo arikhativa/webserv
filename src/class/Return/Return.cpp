@@ -44,7 +44,7 @@ Return &Return::operator=(Return const &rhs)
 
 std::ostream &operator<<(std::ostream &o, const IReturn &i)
 {
-	const Return &tmp = dynamic_cast<const Return &>(i);
+	const Return &tmp = dynamic_cast< const Return & >(i);
 
 	o << tmp;
 	return o;
@@ -52,7 +52,7 @@ std::ostream &operator<<(std::ostream &o, const IReturn &i)
 
 std::ostream &operator<<(std::ostream &o, const Return &i)
 {
-	const BasePairCodePath &tmp = dynamic_cast<const BasePairCodePath &>(i);
+	const BasePairCodePath &tmp = dynamic_cast< const BasePairCodePath & >(i);
 
 	o << tmp;
 	return o;

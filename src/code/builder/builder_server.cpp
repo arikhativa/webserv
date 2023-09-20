@@ -1,9 +1,9 @@
 
 #include <builder/builder.hpp>
 
-static std::map<std::string, builder::server::t_rule> initRules(void)
+static std::map< std::string, builder::server::t_rule > initRules(void)
 {
-	std::map<std::string, builder::server::t_rule> map;
+	std::map< std::string, builder::server::t_rule > map;
 
 	map[Token::Keyword::SERVER_NAME] = &builder::server::serverName;
 	map[Token::Keyword::ROOT] = &builder::server::root;
@@ -17,9 +17,9 @@ static std::map<std::string, builder::server::t_rule> initRules(void)
 	return map;
 }
 
-builder::server::t_rule builder::server::get(std::list<Token>::const_iterator it)
+builder::server::t_rule builder::server::get(std::list< Token >::const_iterator it)
 {
-	static const std::map<std::string, builder::server::t_rule> rules(initRules());
+	static const std::map< std::string, builder::server::t_rule > rules(initRules());
 	try
 	{
 		return rules.at(it->getValue());
@@ -30,7 +30,7 @@ builder::server::t_rule builder::server::get(std::list<Token>::const_iterator it
 	}
 }
 
-void builder::server::location(ServerConf &server, std::list<Token>::const_iterator it)
+void builder::server::location(ServerConf &server, std::list< Token >::const_iterator it)
 {
 	builder::location::t_rule f;
 	Location &location = server.createGetLocation();
@@ -53,7 +53,7 @@ void builder::server::location(ServerConf &server, std::list<Token>::const_itera
 	}
 }
 
-void builder::server::serverName(ServerConf &server, std::list<Token>::const_iterator it)
+void builder::server::serverName(ServerConf &server, std::list< Token >::const_iterator it)
 {
 	++it;
 	while (it->getType() != Token::SEPARATOR)
@@ -65,7 +65,7 @@ void builder::server::serverName(ServerConf &server, std::list<Token>::const_ite
 	}
 }
 
-void builder::server::root(ServerConf &server, std::list<Token>::const_iterator it)
+void builder::server::root(ServerConf &server, std::list< Token >::const_iterator it)
 {
 	++it;
 	std::string tmp = it->getValue();
@@ -74,7 +74,7 @@ void builder::server::root(ServerConf &server, std::list<Token>::const_iterator 
 	server.setRoot(tmp);
 }
 
-void builder::server::listen(ServerConf &server, std::list<Token>::const_iterator it)
+void builder::server::listen(ServerConf &server, std::list< Token >::const_iterator it)
 {
 	++it;
 
@@ -105,9 +105,9 @@ void builder::server::listen(ServerConf &server, std::list<Token>::const_iterato
 	server.addListen(l);
 }
 
-void builder::server::index(ServerConf &server, std::list<Token>::const_iterator it)
+void builder::server::index(ServerConf &server, std::list< Token >::const_iterator it)
 {
-	std::list<std::string> list;
+	std::list< std::string > list;
 
 	++it;
 	while (it->getType() != Token::SEPARATOR)
@@ -121,25 +121,25 @@ void builder::server::index(ServerConf &server, std::list<Token>::const_iterator
 	server.setIndexFiles(list);
 }
 
-void builder::server::errorPage(ServerConf &server, std::list<Token>::const_iterator it)
+void builder::server::errorPage(ServerConf &server, std::list< Token >::const_iterator it)
 {
 	++it;
-	std::list<Token>::const_iterator tmp = it;
+	std::list< Token >::const_iterator tmp = it;
 
 	++tmp;
 	server.addErrorPage(it->getValue(), tmp->getValue());
 }
 
-void builder::server::redirect(ServerConf &server, std::list<Token>::const_iterator it)
+void builder::server::redirect(ServerConf &server, std::list< Token >::const_iterator it)
 {
 	++it;
-	std::list<Token>::const_iterator tmp = it;
+	std::list< Token >::const_iterator tmp = it;
 
 	++tmp;
 	server.setReturn(it->getValue(), tmp->getValue());
 }
 
-void builder::server::clientMaxBodySize(ServerConf &server, std::list<Token>::const_iterator it)
+void builder::server::clientMaxBodySize(ServerConf &server, std::list< Token >::const_iterator it)
 {
 	++it;
 

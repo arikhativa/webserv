@@ -1,9 +1,9 @@
 
 #include <parser/parser.hpp>
 
-static std::map<std::string, parser::t_rule> initRules(void)
+static std::map< std::string, parser::t_rule > initRules(void)
 {
-	std::map<std::string, parser::t_rule> map;
+	std::map< std::string, parser::t_rule > map;
 
 	map[Token::Keyword::SERVER] = &parser::rule::server;
 	map[Token::Keyword::SERVER_NAME] = &parser::rule::serverName;
@@ -27,9 +27,9 @@ static std::map<std::string, parser::t_rule> initRules(void)
 	return map;
 }
 
-parser::t_rule parser::rule::get(std::list<Token>::const_iterator it)
+parser::t_rule parser::rule::get(std::list< Token >::const_iterator it)
 {
-	static const std::map<std::string, parser::t_rule> rules(initRules());
+	static const std::map< std::string, parser::t_rule > rules(initRules());
 	try
 	{
 		return rules.at(it->getValue());
@@ -40,7 +40,7 @@ parser::t_rule parser::rule::get(std::list<Token>::const_iterator it)
 	}
 }
 
-static bool skipBlock(std::list<Token>::const_iterator &it, const std::list<Token>::const_iterator &end)
+static bool skipBlock(std::list< Token >::const_iterator &it, const std::list< Token >::const_iterator &end)
 {
 	int blocks = 1;
 
@@ -61,7 +61,7 @@ static bool skipBlock(std::list<Token>::const_iterator &it, const std::list<Toke
 	return 0 == blocks;
 }
 
-bool parser::rule::server(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::server(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	parser::t_rule f;
 	bool block = false;
@@ -91,7 +91,7 @@ bool parser::rule::server(std::list<Token>::const_iterator it, const std::list<T
 	return block;
 }
 
-bool parser::rule::location(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::location(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	parser::t_rule f;
 	bool block = false;
@@ -132,7 +132,7 @@ bool parser::rule::location(std::list<Token>::const_iterator it, const std::list
 	return block;
 }
 
-static bool genericManyWordRule(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+static bool genericManyWordRule(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	++it;
 	if (it == end)
@@ -146,7 +146,7 @@ static bool genericManyWordRule(std::list<Token>::const_iterator it, const std::
 	return true;
 }
 
-static bool genericTwoWordRule(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+static bool genericTwoWordRule(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	++it;
 	if (it == end)
@@ -166,7 +166,7 @@ static bool genericTwoWordRule(std::list<Token>::const_iterator it, const std::l
 	return true;
 }
 
-static bool genericSingleWordRule(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+static bool genericSingleWordRule(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	++it;
 	if (it == end)
@@ -181,7 +181,7 @@ static bool genericSingleWordRule(std::list<Token>::const_iterator it, const std
 	return true;
 }
 
-static bool genericOnOffRule(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+static bool genericOnOffRule(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	++it;
 	if (it == end)
@@ -196,62 +196,63 @@ static bool genericOnOffRule(std::list<Token>::const_iterator it, const std::lis
 	return true;
 }
 
-bool parser::rule::serverName(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::serverName(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	return genericManyWordRule(it, end);
 }
 
-bool parser::rule::root(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::root(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	return genericSingleWordRule(it, end);
 }
 
-bool parser::rule::listen(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::listen(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	return genericSingleWordRule(it, end);
 }
 
-bool parser::rule::index(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::index(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	return genericManyWordRule(it, end);
 }
 
-bool parser::rule::errorPage(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::errorPage(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	return genericTwoWordRule(it, end);
 }
 
-bool parser::rule::redirect(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::redirect(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	return genericTwoWordRule(it, end);
 }
 
-bool parser::rule::clientMaxBodySize(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::clientMaxBodySize(std::list< Token >::const_iterator it,
+									 const std::list< Token >::const_iterator &end)
 {
 	return genericSingleWordRule(it, end);
 }
 
-bool parser::rule::allowMethods(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::allowMethods(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	return genericManyWordRule(it, end);
 }
 
-bool parser::rule::autoIndex(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::autoIndex(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	return genericOnOffRule(it, end);
 }
 
-bool parser::rule::upload(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::upload(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	return genericOnOffRule(it, end);
 }
 
-bool parser::rule::cgi(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::cgi(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	return genericTwoWordRule(it, end);
 }
 
-bool parser::rule::blockStart(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::blockStart(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	++it;
 	if (it == end)
@@ -261,7 +262,7 @@ bool parser::rule::blockStart(std::list<Token>::const_iterator it, const std::li
 	return false;
 }
 
-bool parser::rule::blockEnd(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::blockEnd(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	++it;
 	if (it == end)
@@ -271,7 +272,7 @@ bool parser::rule::blockEnd(std::list<Token>::const_iterator it, const std::list
 	return false;
 }
 
-bool parser::rule::tilde(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::tilde(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	++it;
 	if (it == end)
@@ -281,7 +282,7 @@ bool parser::rule::tilde(std::list<Token>::const_iterator it, const std::list<To
 	return true;
 }
 
-bool parser::rule::separator(std::list<Token>::const_iterator it, const std::list<Token>::const_iterator &end)
+bool parser::rule::separator(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	++it;
 	if (it == end)

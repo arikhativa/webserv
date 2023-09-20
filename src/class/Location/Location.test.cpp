@@ -16,8 +16,8 @@ TEST(Location, Accessor)
 	ptr->setUpload("on");
 	ptr->setMaxBodySize("100");
 	ptr->setPath("/");
-	ptr->setIndexFiles(std::list<std::string>({"index.html", "index.php"}));
-	ptr->setAllowedMethods(std::list<std::string>({"GET", "DELETE"}));
+	ptr->setIndexFiles(std::list< std::string >({"index.html", "index.php"}));
+	ptr->setAllowedMethods(std::list< std::string >({"GET", "DELETE"}));
 	ptr->setReturn("200", "/index.html");
 	ptr->addErrorPage("404", "/404.html");
 	ptr->addErrorPage("505", "/505.html");
@@ -57,8 +57,8 @@ TEST(Location, Print)
 	obj.setAutoIndex("on");
 	obj.setUpload("on");
 	obj.setMaxBodySize("100");
-	obj.setIndexFiles(std::list<std::string>({"index.html", "index.php"}));
-	obj.setAllowedMethods(std::list<std::string>({"GET", "POST", "DELETE"}));
+	obj.setIndexFiles(std::list< std::string >({"index.html", "index.php"}));
+	obj.setAllowedMethods(std::list< std::string >({"GET", "POST", "DELETE"}));
 	obj.setReturn("200", "/index.html");
 	obj.addErrorPage("404", "/404.html");
 	obj.setRoot("/root");
@@ -99,10 +99,10 @@ TEST(Location, ExceptionAllowedMethods)
 {
 	Location obj;
 
-	EXPECT_THROW(obj.setAllowedMethods(std::list<std::string>()), Location::InvalidLocationException);
-	EXPECT_THROW(obj.setAllowedMethods(std::list<std::string>({"asd"})), AllowedMethods::InvalidMethodException);
-	obj.setAllowedMethods(std::list<std::string>({"POST"}));
-	EXPECT_THROW(obj.setAllowedMethods(std::list<std::string>({"POST"})), Location::InvalidLocationException);
+	EXPECT_THROW(obj.setAllowedMethods(std::list< std::string >()), Location::InvalidLocationException);
+	EXPECT_THROW(obj.setAllowedMethods(std::list< std::string >({"asd"})), AllowedMethods::InvalidMethodException);
+	obj.setAllowedMethods(std::list< std::string >({"POST"}));
+	EXPECT_THROW(obj.setAllowedMethods(std::list< std::string >({"POST"})), Location::InvalidLocationException);
 }
 
 TEST(Location, ExceptionsetReturn)
@@ -119,9 +119,9 @@ TEST(Location, ExceptionIndexFiles)
 {
 	Location obj;
 
-	EXPECT_THROW(obj.setIndexFiles(std::list<std::string>()), Location::InvalidLocationException);
-	obj.setIndexFiles(std::list<std::string>({"index.html"}));
-	EXPECT_THROW(obj.setIndexFiles(std::list<std::string>({"index.html"})), Location::InvalidLocationException);
+	EXPECT_THROW(obj.setIndexFiles(std::list< std::string >()), Location::InvalidLocationException);
+	obj.setIndexFiles(std::list< std::string >({"index.html"}));
+	EXPECT_THROW(obj.setIndexFiles(std::list< std::string >({"index.html"})), Location::InvalidLocationException);
 }
 
 TEST(Location, ExceptionErrorPage)

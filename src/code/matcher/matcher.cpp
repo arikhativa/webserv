@@ -3,9 +3,9 @@
 
 static bool matchByListen(const IServerConf *s, const IListen *socket)
 {
-	std::list<const IServerConf *> ret;
-	std::list<const IListen *> list = s->getListen();
-	std::list<const IListen *>::const_iterator it = list.begin();
+	std::list< const IServerConf * > ret;
+	std::list< const IListen * > list = s->getListen();
+	std::list< const IListen * >::const_iterator it = list.begin();
 
 	const IAddress &addr = socket->getAddress();
 	const IPort &port = socket->getPort();
@@ -19,9 +19,9 @@ static bool matchByListen(const IServerConf *s, const IListen *socket)
 	return false;
 }
 
-static const IServerConf *getDefaultServerByListen(const std::list<const IServerConf *> &list, const IListen *socket)
+static const IServerConf *getDefaultServerByListen(const std::list< const IServerConf * > &list, const IListen *socket)
 {
-	std::list<const IServerConf *>::const_iterator it = list.begin();
+	std::list< const IServerConf * >::const_iterator it = list.begin();
 
 	while (it != list.end())
 	{
@@ -36,9 +36,9 @@ static const IServerConf *getDefaultServerByListen(const std::list<const IServer
 
 static bool matchByHost(const IServerConf *s, const BasicHTTPRequest &req)
 {
-	std::list<std::string> list = s->getNames();
-	std::list<std::string>::const_iterator it = list.begin();
-	std::map<std::string, std::string> headers = req.getHeaders();
+	std::list< std::string > list = s->getNames();
+	std::list< std::string >::const_iterator it = list.begin();
+	std::map< std::string, std::string > headers = req.getHeaders();
 
 	while (it != list.end())
 	{
@@ -52,8 +52,8 @@ static bool matchByHost(const IServerConf *s, const BasicHTTPRequest &req)
 const IServerConf *matcher::requestToServer(const IConf *conf, const IListen *socket,
 											const BasicHTTPRequest &req) throw()
 {
-	std::list<const IServerConf *> list = conf->getServers();
-	std::list<const IServerConf *>::const_iterator it = list.begin();
+	std::list< const IServerConf * > list = conf->getServers();
+	std::list< const IServerConf * >::const_iterator it = list.begin();
 
 	while (it != list.end())
 	{
@@ -68,9 +68,9 @@ const IServerConf *matcher::requestToServer(const IConf *conf, const IListen *so
 
 const ILocation *matcher::requestToLocation(const IServerConf *s, const BasicHTTPRequest &req) throw()
 {
-	std::list<const ILocation *> list = s->getLocations();
-	std::list<const ILocation *>::const_iterator tmp = list.end();
-	std::list<const ILocation *>::const_iterator it = list.begin();
+	std::list< const ILocation * > list = s->getLocations();
+	std::list< const ILocation * >::const_iterator tmp = list.end();
+	std::list< const ILocation * >::const_iterator it = list.begin();
 	while (it != list.end())
 	{
 		if ((req.getPath().find((*it)->getPath().get()) == 0))

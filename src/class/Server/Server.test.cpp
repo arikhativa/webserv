@@ -18,7 +18,7 @@ static const IConf *createConf(const std::string &path)
 		return NULL;
 	}
 
-	std::list<Token> list(lexer::tokenize(fs));
+	std::list< Token > list(lexer::tokenize(fs));
 	if (!parser::validate(list))
 	{
 		std::cerr << "Error: bad syntax in config file: " << path << std::endl;
@@ -47,7 +47,7 @@ TEST(Server, CreateDestroy)
 	Conf conf("file");
 	conf.addDefaultServerIfNeeded();
 
-	std::list<const IServerConf *> servers = conf.getServers();
+	std::list< const IServerConf * > servers = conf.getServers();
 	Server *obj = new Server(*(servers.begin()));
 	obj->closeSockets();
 	delete obj;
@@ -58,7 +58,7 @@ TEST(Server, AcceptingConnectionFailed)
 	Conf conf("file");
 	conf.addDefaultServerIfNeeded();
 
-	std::list<const IServerConf *> servers = conf.getServers();
+	std::list< const IServerConf * > servers = conf.getServers();
 	Server *obj = new Server(*(servers.begin()));
 	obj->closeSockets();
 	EXPECT_THROW(obj->acceptConnection(-1), Server::AcceptingConnectionFailed);

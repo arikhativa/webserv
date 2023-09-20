@@ -92,7 +92,7 @@ std::ostream &operator<<(std::ostream &o, Location const &i)
 
 std::ostream &operator<<(std::ostream &o, const ILocation &i)
 {
-	const Location &tmp = dynamic_cast<const Location &>(i);
+	const Location &tmp = dynamic_cast< const Location & >(i);
 	o << tmp;
 
 	return o;
@@ -107,7 +107,7 @@ void Location::_initErrorPageSet(void)
 	if (!_root)
 		throw InvalidLocationException(Token::Keyword::ROOT + " is not set");
 	_error_pages_set.setRoot(*_root);
-	std::list<ErrorPage>::const_iterator it = _error_pages.begin();
+	std::list< ErrorPage >::const_iterator it = _error_pages.begin();
 
 	while (it != _error_pages.end())
 	{
@@ -155,7 +155,7 @@ const IPath &Location::getPath(void) const
 	return *_path;
 }
 
-const std::list<std::string> &Location::getIndexFiles(void) const
+const std::list< std::string > &Location::getIndexFiles(void) const
 {
 	return _index_files;
 }
@@ -170,12 +170,12 @@ const IReturn *Location::getReturn(void) const
 	return _return;
 }
 
-std::list<const IErrorPage *> Location::getErrorPages(void) const
+std::list< const IErrorPage * > Location::getErrorPages(void) const
 {
-	std::list<const IErrorPage *> ret;
+	std::list< const IErrorPage * > ret;
 	const ErrorPage *tmp;
 
-	for (std::list<ErrorPage>::const_iterator it = _error_pages.begin(); it != _error_pages.end(); ++it)
+	for (std::list< ErrorPage >::const_iterator it = _error_pages.begin(); it != _error_pages.end(); ++it)
 	{
 		tmp = &(*it);
 		ret.push_back(tmp);
@@ -252,13 +252,13 @@ void Location::setReturn(const std::string &status, const std::string &path)
 	_return = new Return(status, path);
 }
 
-void Location::setIndexFiles(const std::list<std::string> &index_files)
+void Location::setIndexFiles(const std::list< std::string > &index_files)
 {
 	if (_index_files.size())
 		throw InvalidLocationException("is already set");
 	if (!index_files.size())
 		throw InvalidLocationException(Token::Keyword::INDEX + " can't be empty");
-	std::list<std::string>::const_iterator it = index_files.begin();
+	std::list< std::string >::const_iterator it = index_files.begin();
 	while (it != index_files.end())
 	{
 		_index_files.push_back(*it);
@@ -266,7 +266,7 @@ void Location::setIndexFiles(const std::list<std::string> &index_files)
 	}
 }
 
-void Location::setAllowedMethods(const std::list<std::string> &allowed_methods)
+void Location::setAllowedMethods(const std::list< std::string > &allowed_methods)
 {
 	if (_allowed_methods)
 		throw InvalidLocationException(Token::Keyword::ALLOW_METHODS + " is already set");
@@ -279,7 +279,7 @@ void Location::addErrorPage(const std::string &status, const std::string &path)
 {
 	ErrorPage page(status, path);
 
-	std::list<ErrorPage>::iterator it = _error_pages.begin();
+	std::list< ErrorPage >::iterator it = _error_pages.begin();
 	while (it != _error_pages.end())
 	{
 		if (it->getStatus().get() == page.getStatus().get())

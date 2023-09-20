@@ -16,12 +16,12 @@ AllowedMethods::AllowedMethods()
 {
 }
 
-AllowedMethods::AllowedMethods(const std::list<std::string> &methods)
+AllowedMethods::AllowedMethods(const std::list< std::string > &methods)
 	: _get(false)
 	, _post(false)
 	, _delete(false)
 {
-	std::list<std::string>::const_iterator it = methods.begin();
+	std::list< std::string >::const_iterator it = methods.begin();
 	while (it != methods.end())
 	{
 		if (*it == AllowedMethods::GET)
@@ -76,7 +76,7 @@ AllowedMethods &AllowedMethods::operator=(AllowedMethods const &rhs)
 
 std::ostream &operator<<(std::ostream &o, IAllowedMethods const &i)
 {
-	const AllowedMethods &tmp = dynamic_cast<const AllowedMethods &>(i);
+	const AllowedMethods &tmp = dynamic_cast< const AllowedMethods & >(i);
 
 	o << tmp;
 	return o;

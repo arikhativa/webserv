@@ -41,7 +41,7 @@ char **Tab::toCTable(void) const
 {
 	char **tab = (char **)calloc(this->_tab.size() + 1, sizeof(char *));
 	int i = 0;
-	for (std::map<int, std::string>::const_iterator it = this->_tab.begin(); it != this->_tab.end(); it++)
+	for (std::map< int, std::string >::const_iterator it = this->_tab.begin(); it != this->_tab.end(); it++)
 	{
 		tab[i] = strdup(it->second.c_str());
 		i++;
