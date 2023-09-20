@@ -16,13 +16,13 @@ Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Par
 	catch (const std::exception &e)
 	{
 		std::cerr << e.what() << '\n';
-		return Poll::DONE;
+		return Poll::DONE_CLOSE_FD;
 	}
 
 	if (param.call.getBytesSent() < param.call.getResponse().size())
 		return Poll::CONTINUE;
 	param.call.terminate();
-	return Poll::DONE;
+	return Poll::DONE_CLOSE_FD;
 }
 
 Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Param &param)
@@ -47,16 +47,16 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	catch (ABaseHTTPCall::Invalid &e)
 	{
 		std::cerr << "Request is invalid [" << e.what() << "]\n";
-		return Poll::DONE;
+		return Poll::DONE_CLOSE_FD;
 	}
 	catch (HTTPCall::ReceivingRequestError &e)
 	{
 		std::cerr << "Request recv error [" << e.what() << "]\n";
-		return Poll::DONE;
+		return Poll::DONE_CLOSE_FD;
 	}
 	catch (HTTPCall::ReceivingRequestEmpty &e)
 	{
-		return Poll::DONE;
+		return Poll::DONE_CLOSE_FD;
 	}
 
 	param.call.setServerConf(matcher::requestToServer(param.conf, param.src_listen, param.call.getBasicRequest()));
@@ -64,7 +64,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	param.call.finalizeRequest();
 	param.call.handleRequest();
 	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
-	return Poll::DONE;
+	return Poll::DONE_CLOSE_FD;
 }
 
 Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Poll::Param &param)
@@ -103,9 +103,9 @@ ServerManager::ServerManager(const IConf *conf)
 	, _conf(conf)
 	, _status(ServerManager::OK)
 {
-	std::list<const IServerConf *> servers = conf->getServers();
-	std::list<const IServerConf *>::iterator it = servers.begin();
-	std::list<const IServerConf *>::iterator end = servers.end();
+	std::list< const IServerConf * > servers = conf->getServers();
+	std::list< const IServerConf * >::iterator it = servers.begin();
+	std::list< const IServerConf * >::iterator end = servers.end();
 	for (; it != end; it++)
 	{
 		this->_virtual_servers.push_back(new Server(*it));
@@ -134,8 +134,8 @@ ServerManager::status ServerManager::setup()
 	if (this->_virtual_servers.empty())
 		return ServerManager::INVALID_VIRTUAL_SERVERS;
 
-	std::vector<Server *>::iterator it = this->_virtual_servers.begin();
-	std::vector<Server *>::iterator end = this->_virtual_servers.end();
+	std::vector< Server * >::iterator it = this->_virtual_servers.begin();
+	std::vector< Server * >::iterator end = this->_virtual_servers.end();
 	for (; it != end; it++)
 	{
 		try
@@ -148,13 +148,13 @@ ServerManager::status ServerManager::setup()
 			this->terminate();
 			return ServerManager::INVALID_VIRTUAL_SERVERS;
 		}
-		std::vector<int> fds = (*it)->getSocketsFd();
-		const std::vector<Socket *> sock = (*it)->getSockets();
-		std::vector<int>::iterator it_fds = fds.begin();
-		std::vector<int>::iterator end_fds = fds.end();
+		std::vector< int > fds = (*it)->getSocketsFd();
+		const std::vector< Socket * > sock = (*it)->getSockets();
+		std::vector< int >::iterator it_fds = fds.begin();
+		std::vector< int >::iterator end_fds = fds.end();
 
-		std::vector<Socket *>::const_iterator it_sock = sock.begin();
-		std::vector<Socket *>::const_iterator end_sock = sock.end();
+		std::vector< Socket * >::const_iterator it_sock = sock.begin();
+		std::vector< Socket * >::const_iterator end_sock = sock.end();
 		for (; it_fds != end_fds && it_sock != end_sock; it_fds++, it_sock++)
 		{
 			Poll::Param param = {this->_conf, (*it_sock)->getListen(), *it_fds, HTTPCall(*it, *it_sock, -1), -1, -1};
@@ -171,8 +171,8 @@ void ServerManager::start()
 
 void ServerManager::terminate()
 {
-	std::vector<Server *>::iterator it = this->_virtual_servers.begin();
-	std::vector<Server *>::iterator end = this->_virtual_servers.end();
+	std::vector< Server * >::iterator it = this->_virtual_servers.begin();
+	std::vector< Server * >::iterator end = this->_virtual_servers.end();
 	for (; it != end; it++)
 	{
 		(*it)->closeSockets();

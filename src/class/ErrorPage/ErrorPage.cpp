@@ -44,7 +44,7 @@ ErrorPage &ErrorPage::operator=(const ErrorPage &rhs)
 
 std::ostream &operator<<(std::ostream &o, const ErrorPage &i)
 {
-	const BasePairCodePath &tmp = dynamic_cast<const BasePairCodePath &>(i);
+	const BasePairCodePath &tmp = dynamic_cast< const BasePairCodePath & >(i);
 
 	o << tmp;
 	return o;
@@ -52,7 +52,7 @@ std::ostream &operator<<(std::ostream &o, const ErrorPage &i)
 
 std::ostream &operator<<(std::ostream &o, const IErrorPage &i)
 {
-	const ErrorPage &tmp = dynamic_cast<const ErrorPage &>(i);
+	const ErrorPage &tmp = dynamic_cast< const ErrorPage & >(i);
 
 	o << tmp;
 	return o;

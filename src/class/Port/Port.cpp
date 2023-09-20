@@ -73,7 +73,7 @@ void Port::set(const std::string &port)
 
 	if (!Port::isValid(p))
 		throw InvalidPortException();
-	this->_port = static_cast<uint16_t>(p);
+	this->_port = static_cast< uint16_t >(p);
 }
 
 void Port::set(uint16_t port)

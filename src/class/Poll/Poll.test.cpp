@@ -16,7 +16,7 @@ static Poll::ret_stt test_handler(Poll &p, int fd, int revents, Poll::Param &par
 	(void)fd;
 	(void)revents;
 	(void)param;
-	return Poll::DONE;
+	return Poll::DONE_CLOSE_FD;
 }
 
 // TEST(Poll, FreeAll)

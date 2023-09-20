@@ -7,7 +7,7 @@ TEST(OnOff, SimpleTest)
 {
 	int i = 5;
 
-	OnOff<int> obj(i, false);
+	OnOff< int > obj(i, false);
 
 	EXPECT_EQ(5, obj.getValue());
 	EXPECT_EQ(false, obj.isOn());

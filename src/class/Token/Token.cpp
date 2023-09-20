@@ -26,9 +26,9 @@ const char Token::CHAR_TILDE('~');
 const char Token::CHAR_BLOCK_START('{');
 const char Token::CHAR_BLOCK_END('}');
 
-static std::map<Token::type, std::string> initTokenName(void)
+static std::map< Token::type, std::string > initTokenName(void)
 {
-	std::map<Token::type, std::string> ret;
+	std::map< Token::type, std::string > ret;
 
 	ret[Token::UNKNOWN] = "UNKNOWN";
 	ret[Token::KEYWORD] = "KEYWORD";
@@ -41,9 +41,9 @@ static std::map<Token::type, std::string> initTokenName(void)
 	return ret;
 }
 
-static std::map<std::string, bool> initKeywords(void)
+static std::map< std::string, bool > initKeywords(void)
 {
-	std::map<std::string, bool> ret;
+	std::map< std::string, bool > ret;
 
 	ret[Token::Keyword::SERVER] = true;
 	ret[Token::Keyword::SERVER_NAME] = true;
@@ -62,9 +62,9 @@ static std::map<std::string, bool> initKeywords(void)
 	return ret;
 }
 
-static std::map<char, bool> initSpecialChar(void)
+static std::map< char, bool > initSpecialChar(void)
 {
-	std::map<char, bool> ret;
+	std::map< char, bool > ret;
 
 	ret[Token::CHAR_SEPARATOR] = true;
 	ret[Token::CHAR_TILDE] = true;
@@ -74,9 +74,9 @@ static std::map<char, bool> initSpecialChar(void)
 	return ret;
 }
 
-const std::map<std::string, bool> Token::_keywords(initKeywords());
-const std::map<Token::type, std::string> Token::_type_name(initTokenName());
-const std::map<char, bool> Token::_special_char(initSpecialChar());
+const std::map< std::string, bool > Token::_keywords(initKeywords());
+const std::map< Token::type, std::string > Token::_type_name(initTokenName());
+const std::map< char, bool > Token::_special_char(initSpecialChar());
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------

@@ -76,7 +76,7 @@ std::ostream &operator<<(std::ostream &o, ServerConf const &i)
 
 std::ostream &operator<<(std::ostream &o, const IServerConf &i)
 {
-	const ServerConf &tmp = dynamic_cast<const ServerConf &>(i);
+	const ServerConf &tmp = dynamic_cast< const ServerConf & >(i);
 	o << tmp;
 
 	return o;
@@ -93,7 +93,7 @@ std::ostream &operator<<(std::ostream &o, const IServerConf &i)
 ** ------------------------------------ GET ------------------------------------
 */
 
-const std::list<std::string> &ServerConf::getNames(void) const
+const std::list< std::string > &ServerConf::getNames(void) const
 {
 	return _name;
 }
@@ -115,17 +115,17 @@ const IPath *ServerConf::getRoot(void) const
 	return _root;
 }
 
-const std::list<std::string> &ServerConf::getIndexFiles(void) const
+const std::list< std::string > &ServerConf::getIndexFiles(void) const
 {
 	return _index_files;
 }
 
-std::list<const IErrorPage *> ServerConf::getErrorPages(void) const
+std::list< const IErrorPage * > ServerConf::getErrorPages(void) const
 {
-	std::list<const IErrorPage *> ret;
+	std::list< const IErrorPage * > ret;
 	const ErrorPage *tmp;
 
-	for (std::list<ErrorPage>::const_iterator it = _error_pages.begin(); it != _error_pages.end(); ++it)
+	for (std::list< ErrorPage >::const_iterator it = _error_pages.begin(); it != _error_pages.end(); ++it)
 	{
 		tmp = &(*it);
 		ret.push_back(tmp);
@@ -133,12 +133,12 @@ std::list<const IErrorPage *> ServerConf::getErrorPages(void) const
 	return ret;
 }
 
-std::list<const IListen *> ServerConf::getListen(void) const
+std::list< const IListen * > ServerConf::getListen(void) const
 {
-	std::list<const IListen *> ret;
+	std::list< const IListen * > ret;
 	const IListen *tmp;
 
-	for (std::list<Listen>::const_iterator it = _listen.begin(); it != _listen.end(); ++it)
+	for (std::list< Listen >::const_iterator it = _listen.begin(); it != _listen.end(); ++it)
 	{
 		tmp = &(*it);
 		ret.push_back(tmp);
@@ -146,12 +146,12 @@ std::list<const IListen *> ServerConf::getListen(void) const
 	return ret;
 }
 
-std::list<const ILocation *> ServerConf::getLocations(void) const
+std::list< const ILocation * > ServerConf::getLocations(void) const
 {
-	std::list<const ILocation *> ret;
+	std::list< const ILocation * > ret;
 	const ILocation *tmp;
 
-	for (std::list<Location>::const_iterator it = _locations.begin(); it != _locations.end(); ++it)
+	for (std::list< Location >::const_iterator it = _locations.begin(); it != _locations.end(); ++it)
 	{
 		tmp = &(*it);
 		ret.push_back(tmp);
@@ -173,8 +173,8 @@ void ServerConf::_inheritFromServer(Location &l)
 		l.setIndexFiles(this->getIndexFiles());
 	if (l.getErrorPages().empty() && !this->_error_pages.empty())
 	{
-		std::list<const IErrorPage *> list = this->getErrorPages();
-		std::list<const IErrorPage *>::const_iterator it = list.begin();
+		std::list< const IErrorPage * > list = this->getErrorPages();
+		std::list< const IErrorPage * >::const_iterator it = list.begin();
 		while (it != list.end())
 		{
 			l.addErrorPage(converter::numToString((*it)->getStatus().get()), (*it)->getPath().get());
@@ -187,7 +187,7 @@ void ServerConf::_inheritFromServer(Location &l)
 
 void ServerConf::_setAllLocations(void)
 {
-	std::list<Location>::iterator it = _locations.begin();
+	std::list< Location >::iterator it = _locations.begin();
 	while (it != _locations.end())
 	{
 		_inheritFromServer(*it);
@@ -198,7 +198,7 @@ void ServerConf::_setAllLocations(void)
 
 const ILocation *ServerConf::getRootLocation(void) const
 {
-	std::list<Location>::const_iterator it = _locations.begin();
+	std::list< Location >::const_iterator it = _locations.begin();
 	while (it != _locations.end())
 	{
 		if (it->getPath().get() == "/")
@@ -258,13 +258,13 @@ void ServerConf::setRoot(const std::string &path)
 	_root = new Path(path);
 }
 
-void ServerConf::setIndexFiles(const std::list<std::string> &index_files)
+void ServerConf::setIndexFiles(const std::list< std::string > &index_files)
 {
 	if (_index_files.size())
 		throw InvalidServerConf(Token::Keyword::INDEX + " is already set");
 	if (!index_files.size())
 		throw InvalidServerConf(Token::Keyword::INDEX + " can't be empty");
-	std::list<std::string>::const_iterator it = index_files.begin();
+	std::list< std::string >::const_iterator it = index_files.begin();
 	while (it != index_files.end())
 	{
 		_index_files.push_back(*it);
@@ -275,7 +275,7 @@ void ServerConf::addErrorPage(const std::string &status, const std::string &path
 {
 	ErrorPage page(status, path);
 
-	std::list<ErrorPage>::iterator it = _error_pages.begin();
+	std::list< ErrorPage >::iterator it = _error_pages.begin();
 	while (it != _error_pages.end())
 	{
 		if (it->getStatus().get() == page.getStatus().get())
@@ -312,7 +312,7 @@ void ServerConf::addListen(const std::string &ip, const std::string &port)
 
 void ServerConf::addListen(const Listen &listen)
 {
-	std::list<Listen>::iterator it = _listen.begin();
+	std::list< Listen >::iterator it = _listen.begin();
 
 	while (it != _listen.end())
 	{

@@ -61,9 +61,9 @@ class Token
 	static const std::string STR_GCI;
 
   private:
-	static const std::map<std::string, bool> _keywords;
-	static const std::map<type, std::string> _type_name;
-	static const std::map<char, bool> _special_char;
+	static const std::map< std::string, bool > _keywords;
+	static const std::map< type, std::string > _type_name;
+	static const std::map< char, bool > _special_char;
 
 	static bool _isKeyword(const std::string &str);
 	static type _initType(const std::string &str);

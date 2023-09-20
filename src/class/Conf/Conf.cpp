@@ -46,7 +46,7 @@ std::ostream &operator<<(std::ostream &o, Conf const &i)
 
 std::ostream &operator<<(std::ostream &o, const IConf &i)
 {
-	const Conf &tmp = dynamic_cast<const Conf &>(i);
+	const Conf &tmp = dynamic_cast< const Conf & >(i);
 
 	o << tmp;
 	return o;
@@ -75,11 +75,11 @@ void Conf::addDefaultServerIfNeeded(void)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-std::list<const IServerConf *> Conf::getServers(void) const
+std::list< const IServerConf * > Conf::getServers(void) const
 {
-	std::list<const IServerConf *> ret;
+	std::list< const IServerConf * > ret;
 
-	for (std::list<ServerConf>::const_iterator it = _servers.begin(); it != _servers.end(); ++it)
+	for (std::list< ServerConf >::const_iterator it = _servers.begin(); it != _servers.end(); ++it)
 		ret.push_back(&(*it));
 	return ret;
 }

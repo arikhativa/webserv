@@ -21,7 +21,7 @@ class AllowedMethods : public IAllowedMethods
 	static const std::string DELETE;
 
 	AllowedMethods();
-	explicit AllowedMethods(const std::list<std::string> &methods);
+	explicit AllowedMethods(const std::list< std::string > &methods);
 	AllowedMethods(AllowedMethods const &src);
 	virtual ~AllowedMethods();
 

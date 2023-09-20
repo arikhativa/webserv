@@ -1,11 +1,11 @@
 
 #include <defaultPager/defaultPager.hpp>
 
-static std::map<HTTPStatusCode::Code, std::string> initPages(void)
+static std::map< HTTPStatusCode::Code, std::string > initPages(void)
 {
 	static const std::string base("res/default_error_pages/");
 
-	std::map<HTTPStatusCode::Code, std::string> ret;
+	std::map< HTTPStatusCode::Code, std::string > ret;
 
 	ret[HTTPStatusCode::BAD_REQUEST] = base + "400.html";
 	ret[HTTPStatusCode::UNAUTHORIZED] = base + "401.html";
@@ -20,7 +20,7 @@ static std::map<HTTPStatusCode::Code, std::string> initPages(void)
 	return ret;
 }
 
-static const std::map<HTTPStatusCode::Code, std::string> _default_pages(initPages());
+static const std::map< HTTPStatusCode::Code, std::string > _default_pages(initPages());
 
 std::string defaultPager::getPage(HTTPStatusCode::Code code)
 {
@@ -38,7 +38,7 @@ std::string defaultPager::getPage(HTTPStatusCode::Code code)
 	return FileManager::getFileContent(key);
 }
 
-const std::map<HTTPStatusCode::Code, std::string> &defaultPager::getPages(void)
+const std::map< HTTPStatusCode::Code, std::string > &defaultPager::getPages(void)
 {
 	return _default_pages;
 }

@@ -70,9 +70,9 @@ void BasicHTTPRequest::setPath(const std::string &path)
 	this->_path.set(path);
 }
 
-static std::map<BasicHTTPRequest::Type, std::string> initTypeMap(void)
+static std::map< BasicHTTPRequest::Type, std::string > initTypeMap(void)
 {
-	std::map<BasicHTTPRequest::Type, std::string> ret;
+	std::map< BasicHTTPRequest::Type, std::string > ret;
 
 	ret[BasicHTTPRequest::GET] = "GET";
 	ret[BasicHTTPRequest::POST] = "POST";
@@ -83,7 +83,7 @@ static std::map<BasicHTTPRequest::Type, std::string> initTypeMap(void)
 
 std::string BasicHTTPRequest::toStringType(BasicHTTPRequest::Type t)
 {
-	static const std::map<BasicHTTPRequest::Type, std::string> m(initTypeMap());
+	static const std::map< BasicHTTPRequest::Type, std::string > m(initTypeMap());
 
 	return m.at(t);
 }

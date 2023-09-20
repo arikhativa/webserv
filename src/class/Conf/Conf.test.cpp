@@ -71,7 +71,7 @@ TEST(Conf, Print)
 		server.setMaxBodySize("100");
 		server.setReturn("500", "/500.html");
 		server.setRoot("/root");
-		server.setIndexFiles(std::list<std::string>({"index.html", "index.php"}));
+		server.setIndexFiles(std::list< std::string >({"index.html", "index.php"}));
 		server.addErrorPage("404", "/404.html");
 		server.addErrorPage("505", "/505.html");
 		server.addListen("80.80.80.80", "1234");
@@ -91,7 +91,7 @@ TEST(Conf, Print)
 		server.addName("google");
 		server.setMaxBodySize("20000");
 		server.setReturn("301", "/301.html");
-		server.setIndexFiles(std::list<std::string>({"index.py", "index.php"}));
+		server.setIndexFiles(std::list< std::string >({"index.py", "index.php"}));
 		server.addErrorPage("404", "/404.html");
 		server.addErrorPage("500", "/500.html");
 		server.addListen("127.80.80.111", "8080");
@@ -122,21 +122,21 @@ TEST(Conf, Default)
 	Conf obj("file");
 	obj.addDefaultServerIfNeeded();
 
-	std::list<const IServerConf *> server = obj.getServers();
+	std::list< const IServerConf * > server = obj.getServers();
 	const IServerConf *s = server.front();
 
 	EXPECT_EQ("", s->getNames().front());
 	EXPECT_EQ(0, s->getMaxBodySize());
 	EXPECT_EQ("/var/www/html", s->getRoot()->get());
 	{
-		std::list<const IListen *> l = s->getListen();
-		std::list<const IListen *>::iterator it = l.begin();
+		std::list< const IListen * > l = s->getListen();
+		std::list< const IListen * >::iterator it = l.begin();
 
 		EXPECT_EQ("0.0.0.0", (*it)->getAddress().get());
 		EXPECT_EQ(80, (*it)->getPort().get());
 	}
 	{
-		const std::list<std::string> &l = s->getIndexFiles();
+		const std::list< std::string > &l = s->getIndexFiles();
 
 		EXPECT_EQ("index.html", l.front());
 		EXPECT_EQ("index.htm", l.back());

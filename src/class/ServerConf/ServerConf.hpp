@@ -30,14 +30,14 @@ class ServerConf : public IServerConf
 	ServerConf();
 	virtual ~ServerConf();
 
-	virtual const std::list<std::string> &getNames(void) const;
+	virtual const std::list< std::string > &getNames(void) const;
 	virtual std::size_t getMaxBodySize(void) const;
 	virtual const IReturn *getReturn(void) const;
 	virtual const IPath *getRoot(void) const;
-	virtual const std::list<std::string> &getIndexFiles(void) const;
-	virtual std::list<const IErrorPage *> getErrorPages(void) const;
-	virtual std::list<const IListen *> getListen(void) const;
-	virtual std::list<const ILocation *> getLocations(void) const;
+	virtual const std::list< std::string > &getIndexFiles(void) const;
+	virtual std::list< const IErrorPage * > getErrorPages(void) const;
+	virtual std::list< const IListen * > getListen(void) const;
+	virtual std::list< const ILocation * > getLocations(void) const;
 	virtual const ILocation *getRootLocation(void) const;
 
 	void setDefaultSettingIfNeeded(void);
@@ -46,7 +46,7 @@ class ServerConf : public IServerConf
 	void setMaxBodySize(const std::string &size);
 	void setReturn(const std::string &status, const std::string &path);
 	void setRoot(const std::string &path);
-	void setIndexFiles(const std::list<std::string> &index_files);
+	void setIndexFiles(const std::list< std::string > &index_files);
 	void addErrorPage(const std::string &status, const std::string &path);
 	void addListenByPort(const std::string &port);
 	void addListenByIP(const std::string &ip);
@@ -67,14 +67,14 @@ class ServerConf : public IServerConf
 	};
 
   private:
-	std::list<std::string> _name;
-	OnOff<std::size_t> _max_body_size;
+	std::list< std::string > _name;
+	OnOff< std::size_t > _max_body_size;
 	Return *_return;
 	Path *_root;
-	std::list<std::string> _index_files;
-	std::list<ErrorPage> _error_pages;
-	std::list<Listen> _listen;
-	std::list<Location> _locations;
+	std::list< std::string > _index_files;
+	std::list< ErrorPage > _error_pages;
+	std::list< Listen > _listen;
+	std::list< Location > _locations;
 
 	void _inheritFromServer(Location &l);
 	void _setAllLocations(void);

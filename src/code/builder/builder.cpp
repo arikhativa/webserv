@@ -1,7 +1,7 @@
 
 #include <builder/builder.hpp>
 
-static void skipBlock(std::list<Token>::const_iterator &it)
+static void skipBlock(std::list< Token >::const_iterator &it)
 {
 	int block = 1;
 
@@ -16,7 +16,7 @@ static void skipBlock(std::list<Token>::const_iterator &it)
 	}
 }
 
-void builder::creatServer(Conf &conf, std::list<Token>::const_iterator it)
+void builder::creatServer(Conf &conf, std::list< Token >::const_iterator it)
 {
 	builder::server::t_rule f;
 	ServerConf &server = conf.createGetServer();
@@ -44,8 +44,8 @@ void builder::creatServer(Conf &conf, std::list<Token>::const_iterator it)
 	server.setDefaultSettingIfNeeded();
 }
 
-void builder::initAllServers(Conf &conf, std::list<Token>::const_iterator &it,
-							 const std::list<Token>::const_iterator &end)
+void builder::initAllServers(Conf &conf, std::list< Token >::const_iterator &it,
+							 const std::list< Token >::const_iterator &end)
 {
 	while (it != end)
 	{
@@ -55,11 +55,11 @@ void builder::initAllServers(Conf &conf, std::list<Token>::const_iterator &it,
 	}
 }
 
-const IConf *builder::createConf(const std::string &file_name, const std::list<Token> &list)
+const IConf *builder::createConf(const std::string &file_name, const std::list< Token > &list)
 {
 	Conf *conf = new Conf(file_name);
 
-	std::list<Token>::const_iterator begin = list.begin();
+	std::list< Token >::const_iterator begin = list.begin();
 
 	initAllServers(*conf, begin, list.end());
 
