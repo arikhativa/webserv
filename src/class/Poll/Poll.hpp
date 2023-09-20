@@ -46,7 +46,8 @@ class Poll
 	{
 		ERROR = -1,
 		CONTINUE,
-		DONE,
+		DONE_CLOSE_FD,
+		DONE_NO_CLOSE_FD,
 	};
 
 	typedef ret_stt (*t_handler)(Poll &p, int fd, int revents, Param &param);
@@ -73,8 +74,8 @@ class Poll
 	std::vector<std::string> _buffers;
 	std::vector<Param> _params;
 
-	void _pop(std::vector<int> &indexes_to_close);
-	void _pop_index(int i);
+	void _pop(std::vector< std::pair< int, ret_stt > > &indexes_to_close);
+	void _pop_index(std::pair< int, ret_stt > p);
 };
 
 #ifdef TEST_ON

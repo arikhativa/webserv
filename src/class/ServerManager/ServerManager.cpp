@@ -16,13 +16,13 @@ Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Par
 	catch (const std::exception &e)
 	{
 		std::cerr << e.what() << '\n';
-		return Poll::DONE;
+		return Poll::DONE_CLOSE_FD;
 	}
 
 	if (param.call.getBytesSent() < param.call.getResponse().size())
 		return Poll::CONTINUE;
 	param.call.terminate();
-	return Poll::DONE;
+	return Poll::DONE_CLOSE_FD;
 }
 
 Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Param &param)
@@ -47,16 +47,16 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	catch (ABaseHTTPCall::Invalid &e)
 	{
 		std::cerr << "Request is invalid [" << e.what() << "]\n";
-		return Poll::DONE;
+		return Poll::DONE_CLOSE_FD;
 	}
 	catch (HTTPCall::ReceivingRequestError &e)
 	{
 		std::cerr << "Request recv error [" << e.what() << "]\n";
-		return Poll::DONE;
+		return Poll::DONE_CLOSE_FD;
 	}
 	catch (HTTPCall::ReceivingRequestEmpty &e)
 	{
-		return Poll::DONE;
+		return Poll::DONE_CLOSE_FD;
 	}
 
 	param.call.setServerConf(matcher::requestToServer(param.conf, param.src_listen, param.call.getBasicRequest()));
@@ -64,7 +64,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	param.call.finalizeRequest();
 	param.call.handleRequest();
 	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
-	return Poll::DONE;
+	return Poll::DONE_CLOSE_FD;
 }
 
 Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Poll::Param &param)
