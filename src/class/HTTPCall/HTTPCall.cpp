@@ -174,7 +174,7 @@ void HTTPCall::cgiToResponse(void)
 	{
 		response.setBody(this->_cgi->getOutput());
 		this->setResponse(response.getResponse());
-		return ;
+		return;
 	}
 
 	std::map< std::string, std::string > _headers;
@@ -206,7 +206,8 @@ void HTTPCall::cgiToResponse(void)
 	{
 		response.setHeader(it->first, it->second);
 	}
-	response.setBody(this->_cgi->getOutput().substr(this->_cgi->getOutput().find(httpConstants::HEADER_BREAK) + httpConstants::HEADER_BREAK.length() + 1));
+	response.setBody(this->_cgi->getOutput().substr(this->_cgi->getOutput().find(httpConstants::HEADER_BREAK) +
+													httpConstants::HEADER_BREAK.length() + 1));
 	this->setResponse(response.getResponse());
 }
 

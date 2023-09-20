@@ -10,6 +10,11 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 		return Poll::CONTINUE;
 	try
 	{
+		if (param.call.getBasicRequest().getType() == BasicHTTPRequest::GET)
+		{
+			p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, param);
+			return Poll::DONE_CLOSE_FD;
+		}
 		param.call.getCgi()->writeToCgi();
 	}
 	catch (CgiManager::CgiManagerException &e)
