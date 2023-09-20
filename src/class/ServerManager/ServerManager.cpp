@@ -45,10 +45,7 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	{
 		return Poll::CONTINUE;
 	}
-	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), param.call.getLocation()->getErrorPageSet());
-	matcher::cgiToResponse(param.call.getCgi()->getOutput(), response);
-	response.setStatusCode(HTTPStatusCode(HTTPStatusCode::OK));
-	param.call.setResponse(response.getResponse());
+	param.call.cgiToResponse();
 	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 	return Poll::DONE_CLOSE_FD;
 }

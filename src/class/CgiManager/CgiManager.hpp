@@ -31,7 +31,6 @@ class CgiManager
 	const std::string getServerName(void) const;
 	const std::string getPort(void) const;
 	BasicHTTPRequest getBasicHTTPRequest(void) const;
-	void writeToPipe(const std::string &str) const;
 
 	int getWriteFd(void) const;
 	int getReadFd(void) const;
@@ -43,6 +42,7 @@ class CgiManager
 	void writeToCgi(void);
 	void readFromCgi(void);
 	void closePipe(void);
+	void writeToPipe(const std::string &str) const;
 
 	void executeCgiManager(const Path &pathServer);
 	class CgiManagerException : public std::exception

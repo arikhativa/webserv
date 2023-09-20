@@ -63,6 +63,8 @@ class HTTPCall
 	void handleRequest(void);
 	void terminate(void);
 
+	void cgiToResponse(void);
+
 	void handleCGI(void);
 
 	class SendingResponseError : public std::exception

@@ -167,6 +167,49 @@ void HTTPCall::terminate(void)
 	close(this->_client_fd);
 }
 
+void HTTPCall::cgiToResponse(void)
+{
+	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), this->getLocation()->getErrorPageSet());
+	if (this->_cgi->getOutput().find(httpConstants::HEADER_BREAK) == std::string::npos)
+	{
+		response.setBody(this->_cgi->getOutput());
+		this->setResponse(response.getResponse());
+		return ;
+	}
+
+	std::map< std::string, std::string > _headers;
+	std::size_t start = 0;
+	std::size_t end = this->_cgi->getOutput().find(httpConstants::FIELD_BREAK, start);
+
+	if (end == std::string::npos)
+		throw ABaseHTTPCall::Incomplete("Bad header: missing end of the first header");
+	while (end != std::string::npos && end <= this->_cgi->getOutput().find(httpConstants::HEADER_BREAK) && start != end)
+	{
+		std::size_t colon_pos = this->_cgi->getOutput().find(":", start);
+		if (colon_pos > end)
+			throw ABaseHTTPCall::Invalid("Bad header: missing colon");
+
+		std::string key = converter::toNginxStyle(this->_cgi->getOutput().substr(start, colon_pos - start));
+
+		colon_pos += 2;
+		std::string value = this->_cgi->getOutput().substr(colon_pos, end - colon_pos);
+		if (ABaseHTTPCall::isKeyRestricted(key) && !_headers[key].empty())
+			throw ABaseHTTPCall::Invalid("Bad header: duplicate restricted key: " + key);
+		if (_headers[key].empty())
+			_headers[key] = value;
+		else
+			_headers[key] += ", " + value;
+		start = end + 2;
+		end = this->_cgi->getOutput().find(httpConstants::FIELD_BREAK, start);
+	}
+	for (std::map< std::string, std::string >::const_iterator it = _headers.begin(); it != _headers.end(); ++it)
+	{
+		response.setHeader(it->first, it->second);
+	}
+	response.setBody(this->_cgi->getOutput().substr(this->_cgi->getOutput().find(httpConstants::HEADER_BREAK) + httpConstants::HEADER_BREAK.length() + 1));
+	this->setResponse(response.getResponse());
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
