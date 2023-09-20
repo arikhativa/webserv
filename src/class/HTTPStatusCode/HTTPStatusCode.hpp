@@ -93,7 +93,7 @@ class HTTPStatusCode
 	void set(const std::string &code);
 
   private:
-	static const std::map<HTTPStatusCode::Code, std::string> _map;
+	static const std::map< HTTPStatusCode::Code, std::string > _map;
 
 	HTTPStatusCode::Code _code;
 };

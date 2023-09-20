@@ -10,7 +10,7 @@
 
 namespace lexer
 {
-	std::list<Token> tokenize(std::fstream &fs);
+	std::list< Token > tokenize(std::fstream &fs);
 }
 
 #endif

@@ -65,7 +65,7 @@ class ResponseHeader
 	const std::string getResponse(void) const;
 	const std::string getConnection(void);
 	size_t _getTotalSize(void) const;
-	const std::map<ResponseHeader::field_key, ResponseHeader::Field> getHeader() const;
+	const std::map< ResponseHeader::field_key, ResponseHeader::Field > getHeader() const;
 
 	class InvalidDefaultPage : public std::exception
 	{
@@ -79,7 +79,7 @@ class ResponseHeader
 	void _defaultConstructor();
 	const std::string _getCurrentDate();
 	bool _isErrorCode(HTTPStatusCode code);
-	std::map<ResponseHeader::field_key, ResponseHeader::Field> _header;
+	std::map< ResponseHeader::field_key, ResponseHeader::Field > _header;
 };
 std::ostream &operator<<(std::ostream &o, ResponseHeader const &i);
 

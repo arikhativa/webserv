@@ -23,7 +23,8 @@ Poll::Poll(const Poll &src)
 Poll::~Poll()
 {
 	std::pair< int, ret_stt > p;
-	p.second = DONE;
+	p.second = DONE_CLOSE_FD;
+
 	size_t i = _fds.size();
 
 	if (!i)
@@ -91,7 +92,7 @@ void Poll::loop(void)
 					ret_stt s = _handlers[i](*this, _fds[i].fd, _fds[i].revents, _params[i]);
 					p.first = i;
 					p.second = s;
-					if (DONE == s)
+					if (DONE_CLOSE_FD == s || DONE_NO_CLOSE_FD == s)
 						pop_indexes.push_back(p);
 					else if (ERROR == s)
 					{
@@ -147,7 +148,7 @@ void Poll::_pop_index(std::pair< int, ret_stt > p)
 		if (_fds[i].fd == fd_to_close)
 			++count;
 	}
-	if (count == 1 && (p.second == DONE || p.second == ERROR))
+	if (count == 1 && (p.second == DONE_CLOSE_FD || p.second == ERROR))
 		close(fd_to_close);
 
 	_fds.erase(_fds.begin() + p.first);
@@ -158,7 +159,6 @@ void Poll::_pop_index(std::pair< int, ret_stt > p)
 void Poll::_pop(std::vector< std::pair< int, ret_stt > > &indexes_to_close)
 {
 	std::vector< std::pair< int, ret_stt > >::reverse_iterator it = indexes_to_close.rbegin();
-
 	for (; it != indexes_to_close.rend(); ++it)
 		_pop_index(*it);
 	indexes_to_close.clear();

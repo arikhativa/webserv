@@ -99,7 +99,7 @@ void HTTPCall::finalizeRequest(void)
 		Path pathCGI(this->getLocation()->getCGIConf().getPath());
 		Port port = this->getSocket()->getPort();
 		const IPath *root_cgi(this->getLocation()->getRoot());
-		CgiManager *cgi_obj = new CgiManager(this->getBasicRequest(), pathCGI, this->getServerName(), port.get() + "");
+		CgiManager *cgi_obj = new CgiManager(this->getBasicRequest(), pathCGI, this->getServerName(), "1234");
 		this->setCgi(cgi_obj);
 		cgi_obj->executeCgiManager(Path(root_cgi->get()));
 	}

@@ -21,7 +21,7 @@ class Conf : public IConf
 	explicit Conf(const std::string &file_name);
 	virtual ~Conf();
 
-	virtual std::list<const IServerConf *> getServers(void) const;
+	virtual std::list< const IServerConf * > getServers(void) const;
 	virtual std::string getFileName(void) const;
 
 	ServerConf &createGetServer(void);
@@ -32,7 +32,7 @@ class Conf : public IConf
 	Conf &operator=(Conf const &rhs);
 
 	Path _file;
-	std::list<ServerConf> _servers;
+	std::list< ServerConf > _servers;
 };
 
 std::ostream &operator<<(std::ostream &o, const Conf &i);

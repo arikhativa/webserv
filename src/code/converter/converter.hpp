@@ -19,7 +19,7 @@ namespace converter
 	size_t hexStringToSizeT(const std::string &hexStr);
 	std::string urlDecode(const std::string &url);
 
-	template <typename T>
+	template < typename T >
 	std::string numToString(T num)
 	{
 		std::ostringstream ss;
@@ -29,7 +29,7 @@ namespace converter
 
 	std::string escapeString(const std::string &input);
 	std::string toNginxStyle(const std::string &input);
-	std::string headersToString(std::map<std::string, std::string> map);
+	std::string headersToString(std::map< std::string, std::string > map);
 	std::string removeQuotesIfNeeded(std::string &str);
 
 } // namespace converter

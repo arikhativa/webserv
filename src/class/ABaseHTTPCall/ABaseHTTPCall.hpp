@@ -66,7 +66,7 @@ class ABaseHTTPCall
 	const std::string &getLastExtention(void) const;
 	bool isValid(void) const;
 	HTTPVersion getHTTPVersion(void) const;
-	const std::map<std::string, std::string> &getHeaders(void) const;
+	const std::map< std::string, std::string > &getHeaders(void) const;
 	const std::string &getBody(void) const;
 	std::string getRawBody(void) const;
 	bool isChunked(void) const;
@@ -79,7 +79,7 @@ class ABaseHTTPCall
 	void _parseHeaders(void);
 
 	std::string _raw;
-	std::map<std::string, std::string> _headers;
+	std::map< std::string, std::string > _headers;
 	HTTPVersion _http_version;
 	std::string _body;
 	std::string _last_extention;

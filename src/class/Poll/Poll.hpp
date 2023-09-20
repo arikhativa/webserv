@@ -46,8 +46,8 @@ class Poll
 	{
 		ERROR = -1,
 		CONTINUE,
-		DONE,
-		NO_CLOSE,
+		DONE_CLOSE_FD,
+		DONE_NO_CLOSE_FD,
 	};
 
 	typedef ret_stt (*t_handler)(Poll &p, int fd, int revents, Param &param);

@@ -9,7 +9,7 @@
 #define protected public
 #endif
 
-template <typename T>
+template < typename T >
 class OnOff
 {
   public:
@@ -39,7 +39,7 @@ class OnOff
 	}
 
   private:
-	std::pair<T, bool> data;
+	std::pair< T, bool > data;
 };
 
 #ifdef TEST_ON

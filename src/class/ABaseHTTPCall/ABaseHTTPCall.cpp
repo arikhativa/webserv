@@ -81,9 +81,9 @@ ABaseHTTPCall &ABaseHTTPCall::operator=(ABaseHTTPCall const &rhs)
 
 bool ABaseHTTPCall::isBody(void) const
 {
-	std::map<std::string, std::string>::const_iterator content_length =
+	std::map< std::string, std::string >::const_iterator content_length =
 		_headers.find(httpConstants::headers::CONTENT_LENGTH);
-	std::map<std::string, std::string>::const_iterator transfer_encoding =
+	std::map< std::string, std::string >::const_iterator transfer_encoding =
 		_headers.find(httpConstants::headers::TRANSFER_ENCODING);
 
 	if (content_length != _headers.end() && content_length->second != "0")
@@ -95,9 +95,9 @@ bool ABaseHTTPCall::isBody(void) const
 	return false;
 }
 
-static std::map<ABaseHTTPCall::HTTPVersion, std::string> initVersionMap(void)
+static std::map< ABaseHTTPCall::HTTPVersion, std::string > initVersionMap(void)
 {
-	std::map<ABaseHTTPCall::HTTPVersion, std::string> ret;
+	std::map< ABaseHTTPCall::HTTPVersion, std::string > ret;
 
 	ret[ABaseHTTPCall::UNKNOWN] = "UNKNOWN";
 	ret[ABaseHTTPCall::HTTP_0_9] = "HTTP/0.9";
@@ -111,7 +111,7 @@ static std::map<ABaseHTTPCall::HTTPVersion, std::string> initVersionMap(void)
 
 std::string ABaseHTTPCall::toStringVersion(ABaseHTTPCall::HTTPVersion v)
 {
-	static const std::map<HTTPVersion, std::string> m(initVersionMap());
+	static const std::map< HTTPVersion, std::string > m(initVersionMap());
 
 	return m.at(v);
 }
@@ -213,7 +213,7 @@ void ABaseHTTPCall::parseBody(void)
 // TODO check with bad content length
 void ABaseHTTPCall::_parseBodyByContentLength(void)
 {
-	std::map<std::string, std::string>::const_iterator it = _headers.find(httpConstants::headers::CONTENT_LENGTH);
+	std::map< std::string, std::string >::const_iterator it = _headers.find(httpConstants::headers::CONTENT_LENGTH);
 	if (it == _headers.end())
 		throw ABaseHTTPCall::Invalid("missing content length");
 
@@ -255,7 +255,7 @@ void ABaseHTTPCall::unParse(void)
 
 bool ABaseHTTPCall::isChunked(void) const
 {
-	std::map<std::string, std::string>::const_iterator it = _headers.find(httpConstants::headers::TRANSFER_ENCODING);
+	std::map< std::string, std::string >::const_iterator it = _headers.find(httpConstants::headers::TRANSFER_ENCODING);
 	if (it == _headers.end())
 		return false;
 	return it->second == httpConstants::headers::CHUNKED;
@@ -282,7 +282,7 @@ ABaseHTTPCall::HTTPVersion ABaseHTTPCall::getHTTPVersion(void) const
 	return this->_http_version;
 }
 
-const std::map<std::string, std::string> &ABaseHTTPCall::getHeaders(void) const
+const std::map< std::string, std::string > &ABaseHTTPCall::getHeaders(void) const
 {
 	return this->_headers;
 }
