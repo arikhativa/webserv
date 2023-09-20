@@ -26,13 +26,13 @@ class ErrorPageSet
 	void setRoot(const std::string &root);
 
 	std::string getPage(HTTPStatusCode::Code code) const;
-	const std::map<HTTPStatusCode::Code, std::string> &getPages(void) const;
+	const std::map< HTTPStatusCode::Code, std::string > &getPages(void) const;
 
 	ErrorPageSet &operator=(const ErrorPageSet &rhs);
 
   private:
 	Path _root;
-	std::map<HTTPStatusCode::Code, std::string> _pages;
+	std::map< HTTPStatusCode::Code, std::string > _pages;
 };
 
 std::ostream &operator<<(std::ostream &o, const ErrorPageSet &i);

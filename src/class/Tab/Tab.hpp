@@ -31,7 +31,7 @@ class Tab
 	void freeTab(char **tab) const;
 
   private:
-	std::map<int, std::string> _tab;
+	std::map< int, std::string > _tab;
 };
 
 std::ostream &operator<<(std::ostream &o, const Tab &i);

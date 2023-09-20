@@ -17,7 +17,7 @@ class IConf
   public:
 	virtual ~IConf(){};
 
-	virtual std::list<const IServerConf *> getServers(void) const = 0;
+	virtual std::list< const IServerConf * > getServers(void) const = 0;
 	virtual std::string getFileName(void) const = 0;
 };
 

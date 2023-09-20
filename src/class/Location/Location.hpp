@@ -39,8 +39,8 @@ class Location : public ILocation
 	virtual std::size_t getMaxBodySize(void) const;
 	virtual const IAllowedMethods &getAllowedMethods(void) const;
 	virtual const IReturn *getReturn(void) const;
-	virtual const std::list<std::string> &getIndexFiles(void) const;
-	virtual std::list<const IErrorPage *> getErrorPages(void) const;
+	virtual const std::list< std::string > &getIndexFiles(void) const;
+	virtual std::list< const IErrorPage * > getErrorPages(void) const;
 	virtual const IPath *getRoot(void) const;
 	virtual const CGIConf &getCGIConf(void) const;
 	virtual const ErrorPageSet &getErrorPageSet(void) const;
@@ -51,9 +51,9 @@ class Location : public ILocation
 	void setAutoIndex(const std::string &auto_index);
 	void setUpload(const std::string &upload);
 	void setMaxBodySize(const std::string &max_body_size);
-	void setAllowedMethods(const std::list<std::string> &allowed_methods);
+	void setAllowedMethods(const std::list< std::string > &allowed_methods);
 	void setReturn(const std::string &status, const std::string &path);
-	void setIndexFiles(const std::list<std::string> &index_files);
+	void setIndexFiles(const std::list< std::string > &index_files);
 	void addErrorPage(const std::string &status, const std::string &path);
 	void setRoot(const std::string &root);
 	void setCGI(const std::string &ext, const std::string &path);
@@ -71,13 +71,13 @@ class Location : public ILocation
 
   private:
 	Path *_path;
-	OnOff<bool> _auto_index;
-	OnOff<bool> _upload;
-	OnOff<std::size_t> _max_body_size;
+	OnOff< bool > _auto_index;
+	OnOff< bool > _upload;
+	OnOff< std::size_t > _max_body_size;
 	AllowedMethods *_allowed_methods;
 	Return *_return;
-	std::list<std::string> _index_files;
-	std::list<ErrorPage> _error_pages;
+	std::list< std::string > _index_files;
+	std::list< ErrorPage > _error_pages;
 	Path *_root;
 	CGIConf _cgi;
 	ErrorPageSet _error_pages_set;

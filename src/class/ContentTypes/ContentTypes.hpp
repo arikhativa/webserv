@@ -28,7 +28,7 @@ class ContentTypes
 	static bool isValid(std::string content_type);
 
   private:
-	static const std::map<std::string, std::string> _content_types;
+	static const std::map< std::string, std::string > _content_types;
 	std::string _content_type;
 };
 
