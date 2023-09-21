@@ -9,17 +9,16 @@ const int CgiManager::BUFFER_SIZE(8192);
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
-CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const std::string &serverName,
-					   const std::string &port)
+CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const Path &local_path,
+					   const std::string &serverName, const std::string &port)
 	: _basicHTTPRequest(basicHTTPRequest)
 	, _pathCGI(pathCGI)
+	, _local_path(local_path)
 	, _serverName(serverName)
 	, _port(port)
 	, _byte_write(0)
 	, _byte_read(0)
 {
-	if (_basicHTTPRequest.isBody())
-		_basicHTTPRequest.parseBody();
 }
 
 const char *CgiManager::CgiManagerException::what() const throw()
@@ -84,10 +83,10 @@ void CgiManager::_setEnv(void)
 		_env.add(it->first + "=" + it->second);
 }
 
-void CgiManager::_setArgv(const Path &pathServer)
+void CgiManager::_setArgv(void)
 {
 	_argv.add(_pathCGI.get());
-	_argv.add(pathServer.get() + _basicHTTPRequest.getPath());
+	_argv.add(_local_path.get());
 }
 
 int CgiManager::_createFork(void)
@@ -218,12 +217,12 @@ int CgiManager::getBytesRead(void) const
 	return this->_byte_read;
 }
 
-void CgiManager::executeCgiManager(const Path &pathServer)
+void CgiManager::executeCgiManager(void)
 {
 	std::string content = "";
 	_pipe.initPipe();
 	_setEnv();
-	_setArgv(pathServer);
+	_setArgv();
 	this->_pid = _createFork();
 	if (this->_pid == CHILD)
 		_childProcess();
