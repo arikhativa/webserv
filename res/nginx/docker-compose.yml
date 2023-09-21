@@ -8,8 +8,7 @@ services:
     ports:
       - 80:80
     networks:
-      frontend:
-        ipv4_address: 172.20.0.5
+      - net
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./html:/var/www/html
@@ -20,13 +19,20 @@ services:
     ports:
       - 9000:9000
     networks:
-      frontend:
-        ipv4_address: 172.20.0.6
+      - net
+    volumes:
+      - ./html:/var/www/html
+
+  py:
+    build: .
+    container_name: py
+    ports:
+      - 9001:9001
+    networks:
+      - net
     volumes:
       - ./html:/var/www/html
 
 networks:
-  frontend:
-    ipam:
-      config:
-        - subnet: 172.20.0.0/24
+  net:
+    driver: bridge
