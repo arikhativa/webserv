@@ -8,7 +8,6 @@ bool httpRequestHandlerPOST::isDirectoryListing(const Path &path, const HTTPCall
 		std::cerr << "Error: no location found" << std::endl;
 		return (false);
 	}
-
 	return (FileManager::isDirectory(path.get()) && request.getLocation()->isAutoIndexOn());
 }
 

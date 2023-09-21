@@ -1,5 +1,6 @@
 
 #include <CgiManager/CgiManager.hpp>
+#include <Poll/Poll.hpp>
 
 const int CgiManager::ERROR(0);
 const int CgiManager::CHILD(0);
@@ -14,11 +15,9 @@ CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pat
 	, _pathCGI(pathCGI)
 	, _serverName(serverName)
 	, _port(port)
+	, _byte_write(0)
+	, _byte_read(0)
 {
-	_env = Tab();
-	_argv = Tab();
-	_pipe = Pipe();
-	_basicHTTPRequest.parseRaw();
 	if (_basicHTTPRequest.isBody())
 		_basicHTTPRequest.parseBody();
 }
@@ -26,6 +25,16 @@ CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pat
 const char *CgiManager::CgiManagerException::what() const throw()
 {
 	return "Error in CgiManager";
+}
+
+const char *CgiManager::CgiManagerIncompleteRead::what() const throw()
+{
+	return "Read is not completed";
+}
+
+const char *CgiManager::CgiManagerIncompleteWrite::what() const throw()
+{
+	return "Write is not completed";
 }
 
 /*
@@ -93,52 +102,81 @@ void CgiManager::_childProcess(void)
 {
 	int _exit_status;
 	_pipe.setChild();
+	dup2(STDOUT_FILENO, STDERR_FILENO);
 	_exit_status = execve(_argv.toCTable()[0], _argv.toCTable(), _env.toCTable());
 	if (_exit_status < 0)
 		throw CgiManager::CgiManagerException();
 	exit(_exit_status);
 }
 
-std::string CgiManager::_parentProcess(int pid)
+void CgiManager::writeToCgi(void)
 {
-	_pipe.setParent();
-	if (_basicHTTPRequest.isBody())
-		_pipe.write(_basicHTTPRequest.getBody());
-	_pipe.closeInput();
-	return (_readCgiOutput(pid));
+	int byte_write = send(this->getWriteFd(), this->_basicHTTPRequest.getBody().c_str() + this->_byte_write,
+						  this->_basicHTTPRequest.getBody().length(), MSG_DONTWAIT);
+	this->_byte_write += byte_write;
+	if (this->_byte_write >= this->_basicHTTPRequest.getBody().length())
+		return;
+	if (byte_write > 0)
+		throw CgiManager::CgiManagerIncompleteWrite();
+	if (byte_write == -1)
+		throw CgiManager::CgiManagerException();
 }
 
-std::string CgiManager::_readCgiOutput(int pid)
+void CgiManager::readFromCgi(void)
 {
-	std::string output = "";
-	size_t bytes_read = 0;
+	int bytes_read = 0;
 	char buffer[BUFFER_SIZE];
 	std::size_t pos;
 	int contentLenght;
-	waitpid(pid, NULL, 0);
-	while ((bytes_read = read(_pipe.getOutput(), buffer, sizeof(buffer))) > 0)
+
+	bytes_read = read(this->getReadFd(), buffer, sizeof(buffer));
+	if (bytes_read <= -1)
+		throw CgiManagerException();
+	if (bytes_read > 0)
 	{
-		output.append(buffer, bytes_read);
-		if ((pos = output.find(httpConstants::CONTENT_LENGHT_FIELD_KEY)) != std::string::npos)
+		_output.append(buffer, bytes_read);
+		if ((pos = _output.find(httpConstants::CONTENT_LENGHT_FIELD_KEY)) != std::string::npos)
 		{
-			std::string content_length = output.substr(pos + httpConstants::CONTENT_LENGHT_FIELD_KEY.length());
+			std::string content_length = _output.substr(pos + httpConstants::CONTENT_LENGHT_FIELD_KEY.length());
 			if ((pos = content_length.find(httpConstants::FIELD_BREAK)) != std::string::npos)
 				contentLenght = converter::stringToInt(content_length.substr(0, pos));
-			pos = output.find(httpConstants::HEADER_BREAK);
+			pos = _output.find(httpConstants::HEADER_BREAK);
 			if ((pos != std::string::npos) &&
-				output.substr(pos + httpConstants::HEADER_BREAK.length()).length() >= (size_t)contentLenght)
+				_output.substr(pos + httpConstants::HEADER_BREAK.length()).length() >= (size_t)contentLenght)
 			{
-				output = output.substr(0, pos + httpConstants::HEADER_BREAK.length() + contentLenght);
-				break;
+				_output = _output.substr(0, pos + httpConstants::HEADER_BREAK.length() + contentLenght);
+				return;
 			}
 		}
+		if (bytes_read < BUFFER_SIZE)
+			return;
+		throw CgiManagerIncompleteRead();
 	}
-	return (output);
+}
+
+void CgiManager::closePipe(void)
+{
+	this->_pipe.closeInput();
 }
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+std::string CgiManager::getOutput(void) const
+{
+	return this->_output;
+}
+
+int CgiManager::getWriteFd(void) const
+{
+	return this->_pipe.getInput();
+}
+
+int CgiManager::getReadFd(void) const
+{
+	return this->_pipe.getOutput();
+}
 
 Path CgiManager::getPathCGI(void) const
 {
@@ -160,17 +198,37 @@ BasicHTTPRequest CgiManager::getBasicHTTPRequest(void) const
 	return this->_basicHTTPRequest;
 }
 
-const std::string CgiManager::executeCgiManager(const Path &pathServer)
+void CgiManager::writeToPipe(const std::string &str) const
+{
+	_pipe.write(str);
+}
+
+int CgiManager::getPid(void) const
+{
+	return this->_pid;
+}
+
+int CgiManager::getBytesWrite(void) const
+{
+	return this->_byte_write;
+}
+
+int CgiManager::getBytesRead(void) const
+{
+	return this->_byte_read;
+}
+
+void CgiManager::executeCgiManager(const Path &pathServer)
 {
 	std::string content = "";
+	_pipe.initPipe();
 	_setEnv();
 	_setArgv(pathServer);
-	int pid = _createFork();
-	if (pid == CHILD)
+	this->_pid = _createFork();
+	if (this->_pid == CHILD)
 		_childProcess();
 	else
-		content = _parentProcess(pid);
-	return (content);
+		_pipe.setParent();
 }
 
 /* ************************************************************************** */

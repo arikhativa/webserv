@@ -3,6 +3,61 @@
 
 /* HANDLERS */
 
+Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param &param)
+{
+	(void)fd;
+	if (!Poll::isWriteEvent(revents))
+		return Poll::CONTINUE;
+	try
+	{
+		if (param.call.getBasicRequest().getType() == BasicHTTPRequest::GET)
+		{
+			p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, param);
+			return Poll::DONE_CLOSE_FD;
+		}
+		param.call.getCgi()->writeToCgi();
+	}
+	catch (CgiManager::CgiManagerException &e)
+	{
+		std::cerr << "CGI writing error [" << e.what() << "]\n";
+		close(param.call.getCgi()->getReadFd());
+		delete param.call.getCgi();
+		return Poll::DONE_CLOSE_FD;
+	}
+	catch (CgiManager::CgiManagerIncompleteWrite &e)
+	{
+		return Poll::CONTINUE;
+	}
+	p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, param);
+	return Poll::DONE_CLOSE_FD;
+}
+
+Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &param)
+{
+	(void)fd;
+
+	if (!Poll::isReadEvent(revents))
+		return Poll::CONTINUE;
+	try
+	{
+		param.call.getCgi()->readFromCgi();
+	}
+	catch (CgiManager::CgiManagerException &e)
+	{
+		std::cerr << "CGI reading error [" << e.what() << "]\n";
+		delete param.call.getCgi();
+		return Poll::DONE_CLOSE_FD;
+	}
+	catch (CgiManager::CgiManagerIncompleteRead &e)
+	{
+		return Poll::CONTINUE;
+	}
+	param.call.cgiToResponse();
+	delete param.call.getCgi();
+	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+	return Poll::DONE_CLOSE_FD;
+}
+
 Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	(void)p;
@@ -63,8 +118,19 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	param.call.setLocation(matcher::requestToLocation(param.call.getServerConf(), param.call.getBasicRequest()));
 	param.call.finalizeRequest();
 	param.call.handleRequest();
-	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
-	return Poll::DONE_CLOSE_FD;
+	if (param.call.isCGI())
+	{
+		param.write_pipe = param.call.getCgi()->getWriteFd();
+		param.read_pipe = param.call.getCgi()->getReadFd();
+
+		p.addWrite(param.call.getCgi()->getWriteFd(), ServerManager::cgiWrite, param);
+		return Poll::DONE_NO_CLOSE_FD;
+	}
+	else
+	{
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+		return Poll::DONE_CLOSE_FD;
+	}
 }
 
 Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Poll::Param &param)
@@ -83,12 +149,7 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		return Poll::CONTINUE;
 	}
 	Poll::Param new_param = {
-		param.conf,
-		param.src_listen,
-		param.src_socket,
-		HTTPCall(param.call.getVirtualServer(), param.call.getSocket(), client_fd),
-		-1,
-		-1,
+		param.conf, param.src_listen, param.src_socket, HTTPCall(param.call.getSocket(), client_fd), -1, -1,
 	};
 	p.addRead(client_fd, ServerManager::clientRead, new_param);
 	return Poll::CONTINUE;
@@ -157,7 +218,7 @@ ServerManager::status ServerManager::setup()
 		std::vector< Socket * >::const_iterator end_sock = sock.end();
 		for (; it_fds != end_fds && it_sock != end_sock; it_fds++, it_sock++)
 		{
-			Poll::Param param = {this->_conf, (*it_sock)->getListen(), *it_fds, HTTPCall(*it, *it_sock, -1), -1, -1};
+			Poll::Param param = {this->_conf, (*it_sock)->getListen(), *it_fds, HTTPCall(*it_sock, -1), -1, -1};
 			this->_poll.addRead(*it_fds, ServerManager::initSocketsHandler, param);
 		}
 	}

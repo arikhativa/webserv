@@ -11,6 +11,7 @@
 #include <IServerConf/IServerConf.hpp>
 #include <Location/Location.hpp>
 #include <Path/Path.hpp>
+#include <ResponseHeader/ResponseHeader.hpp>
 
 class HTTPCall;
 
@@ -19,7 +20,6 @@ namespace matcher
 
 	const IServerConf *requestToServer(const IConf *conf, const IListen *socket, const BasicHTTPRequest &req) throw();
 	const ILocation *requestToLocation(const IServerConf *s, const BasicHTTPRequest &req) throw();
-
 } // namespace matcher
 
 #endif

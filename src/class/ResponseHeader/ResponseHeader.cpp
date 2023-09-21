@@ -174,6 +174,18 @@ void ResponseHeader::setBody(const std::string &body)
 		setContentType(httpConstants::HTML_SUFFIX);
 }
 
+void ResponseHeader::setHeader(const std::string &key, const std::string &value)
+{
+	for (field_key f = STANDARD; f <= BODY; f = static_cast< field_key >(static_cast< int >(f) + 1))
+	{
+		if (_header.at(f).name == key)
+		{
+			_header.at(f).value = value;
+			return;
+		}
+	}
+	_header.at(BODY).name = key + ": " + value + httpConstants::FIELD_BREAK + _header.at(BODY).name;
+}
 void ResponseHeader::setLocationHeader(const std::string &value)
 {
 	this->_header[LOCATION].value = value;

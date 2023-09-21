@@ -6,6 +6,7 @@
 
 namespace httpConstants
 {
+	const std::string EMPTY_STRING("");
 	const std::string CARRIAGE_RETURN("\r");
 	const std::string NEW_LINE("\n");
 	const std::string FIELD_BREAK("\r\n");
@@ -19,6 +20,7 @@ namespace httpConstants
 	const std::string SERVER_FIELD_VALUE("webserv");
 	const std::string DATE_FIELD_KEY("Date: ");
 	const std::string CONTENT_TYPE_FIELD_KEY("Content-Type: ");
+	const std::string HOST_HEADER("Host: ");
 	const std::string CONTENT_TYPE_FIELD("Content-Type");
 	const std::string CONTENT_LENGHT_FIELD_KEY("Content-Length: ");
 	const std::string CONNECTION_FIELD_KEY("Connection: ");

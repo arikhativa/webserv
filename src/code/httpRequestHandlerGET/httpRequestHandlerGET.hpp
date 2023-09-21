@@ -9,11 +9,13 @@
 #include <sys/wait.h>
 
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
+#include <CgiManager/CgiManager.hpp>
 #include <FileManager/FileManager.hpp>
 #include <HTTPCall/HTTPCall.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 #include <ResponseHeader/ResponseHeader.hpp>
 #include <Server/Server.hpp>
+#include <matcher/matcher.hpp>
 
 class HTTPCall;
 

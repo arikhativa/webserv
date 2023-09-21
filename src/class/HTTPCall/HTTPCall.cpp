@@ -7,10 +7,10 @@
 const int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
 const int HTTPCall::RECV_BUFFER_SIZE = 4096;
 
-HTTPCall::HTTPCall(const Server *virtual_server, const Socket *socket, int client_fd)
-	: _virtual_server(virtual_server)
-	, _socket(socket)
+HTTPCall::HTTPCall(const Socket *socket, int client_fd)
+	: _socket(socket)
 	, _client_fd(client_fd)
+	, _cgi(NULL)
 	, _request_attempts(0)
 	, _response_attempts(0)
 	, _bytes_sent(0)
@@ -60,6 +60,12 @@ std::ostream &operator<<(std::ostream &o, HTTPCall const &i)
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
+
+bool HTTPCall::isCGI(void) const
+{
+	return (this->getLocation()->getCGIConf().isSet() &&
+			this->getLocation()->getCGIConf().getExtension() == this->getBasicRequest().getExtension());
+}
 
 void HTTPCall::_setLocalPath(void)
 {
@@ -126,10 +132,16 @@ void HTTPCall::handleRequest(void)
 	switch (this->_basic_request.getType())
 	{
 	case BasicHTTPRequest::GET:
-		HTTPRequestHandler::GET(*this);
+		if (this->isCGI())
+			HTTPRequestHandler::CGI(*this);
+		else
+			HTTPRequestHandler::GET(*this);
 		break;
 	case BasicHTTPRequest::POST:
-		HTTPRequestHandler::POST(*this);
+		if (this->isCGI())
+			HTTPRequestHandler::CGI(*this);
+		else
+			HTTPRequestHandler::POST(*this);
 		break;
 	case BasicHTTPRequest::DELETE:
 		HTTPRequestHandler::DELETE(*this);
@@ -145,9 +157,58 @@ void HTTPCall::terminate(void)
 	close(this->_client_fd);
 }
 
+void HTTPCall::cgiToResponse(void)
+{
+	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), this->getLocation()->getErrorPageSet());
+	if (this->_cgi->getOutput().find(httpConstants::HEADER_BREAK) == std::string::npos)
+	{
+		response.setBody(this->_cgi->getOutput());
+		this->setResponse(response.getResponse());
+		return;
+	}
+
+	std::map< std::string, std::string > _headers;
+	std::size_t start = 0;
+	std::size_t end = this->_cgi->getOutput().find(httpConstants::FIELD_BREAK, start);
+
+	if (end == std::string::npos)
+		throw ABaseHTTPCall::Incomplete("Bad header: missing end of the first header");
+	while (end != std::string::npos && end <= this->_cgi->getOutput().find(httpConstants::HEADER_BREAK) && start != end)
+	{
+		std::size_t colon_pos = this->_cgi->getOutput().find(":", start);
+		if (colon_pos > end)
+			throw ABaseHTTPCall::Invalid("Bad header: missing colon");
+
+		std::string key = converter::toNginxStyle(this->_cgi->getOutput().substr(start, colon_pos - start));
+
+		colon_pos += 2;
+		std::string value = this->_cgi->getOutput().substr(colon_pos, end - colon_pos);
+		if (ABaseHTTPCall::isKeyRestricted(key) && !_headers[key].empty())
+			throw ABaseHTTPCall::Invalid("Bad header: duplicate restricted key: " + key);
+		if (_headers[key].empty())
+			_headers[key] = value;
+		else
+			_headers[key] += ", " + value;
+		start = end + 2;
+		end = this->_cgi->getOutput().find(httpConstants::FIELD_BREAK, start);
+	}
+	for (std::map< std::string, std::string >::const_iterator it = _headers.begin(); it != _headers.end(); ++it)
+	{
+		response.setHeader(it->first, it->second);
+	}
+	response.setBody(this->_cgi->getOutput().substr(this->_cgi->getOutput().find(httpConstants::HEADER_BREAK) +
+													httpConstants::HEADER_BREAK.length() + 1));
+	this->setResponse(response.getResponse());
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+CgiManager *HTTPCall::getCgi(void) const
+{
+	return this->_cgi;
+}
 
 int HTTPCall::getRequestAttempts(void) const
 {
@@ -169,11 +230,6 @@ const Socket *HTTPCall::getSocket(void) const
 	return this->_socket;
 }
 
-const Server *HTTPCall::getVirtualServer(void) const
-{
-	return this->_virtual_server;
-}
-
 BasicHTTPRequest &HTTPCall::getBasicRequest(void)
 {
 	return this->_basic_request;
@@ -189,6 +245,11 @@ std::string HTTPCall::getResponse(void) const
 	return this->_response;
 }
 
+std::string HTTPCall::getClientHostHeader(void) const
+{
+	return this->_basic_request.getHost();
+}
+
 int HTTPCall::getClientFd(void) const
 {
 	return this->_client_fd;
@@ -196,9 +257,9 @@ int HTTPCall::getClientFd(void) const
 
 std::list< const IErrorPage * > HTTPCall::getErrorPages(void) const
 {
-	if (this->_virtual_server == NULL)
+	if (this->_server_conf == NULL)
 		return std::list< const IErrorPage * >();
-	return this->_virtual_server->getErrorPages();
+	return this->_server_conf->getErrorPages();
 }
 
 void HTTPCall::setBasicRequest(const BasicHTTPRequest &request)
@@ -243,6 +304,11 @@ void HTTPCall::setServerConf(const IServerConf *server_conf)
 void HTTPCall::setLocation(const ILocation *location)
 {
 	this->_location = location;
+}
+
+void HTTPCall::setCgi(CgiManager *cgi)
+{
+	this->_cgi = cgi;
 }
 
 /* ************************************************************************** */

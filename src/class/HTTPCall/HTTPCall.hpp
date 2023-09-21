@@ -23,23 +23,25 @@ class HTTPCall
   public:
 	static const int MAX_CHUNK_ATTEMPTS;
 	static const int RECV_BUFFER_SIZE;
-	explicit HTTPCall(const Server *virtualServer, const Socket *socket, int client_fd);
+	explicit HTTPCall(const Socket *socket, int client_fd);
 	~HTTPCall();
 
 	BasicHTTPRequest &getBasicRequest(void);
 	const BasicHTTPRequest &getBasicRequest(void) const;
 
+	CgiManager *getCgi(void) const;
 	std::string getResponse(void) const;
+	std::string getClientHostHeader(void) const;
 	int getClientFd(void) const;
 	int getRequestAttempts(void) const;
 	int getResponseAttempts(void) const;
 	long unsigned int getBytesSent(void) const;
-	const Server *getVirtualServer(void) const;
 	const Socket *getSocket(void) const;
 	std::list< const IErrorPage * > getErrorPages(void) const;
 	void parseRawRequest(void);
 	std::list< const ILocation * >::const_iterator searchMatchLocation(void) const;
 	bool isAutoIndexOn(void) const;
+	bool isCGI(void) const;
 	bool canUpload(void) const;
 	const IServerConf *getServerConf(void) const;
 	const ILocation *getLocation(void) const;
@@ -50,6 +52,7 @@ class HTTPCall
 	void setClientFd(int fd);
 	void setServerConf(const IServerConf *server_conf);
 	void setLocation(const ILocation *location);
+	void setCgi(CgiManager *cgi);
 
 	BasicHTTPRequest::Type getRequestType(void);
 	void finalizeRequest(void);
@@ -57,6 +60,10 @@ class HTTPCall
 	void sendResponse(void);
 	void handleRequest(void);
 	void terminate(void);
+
+	void cgiToResponse(void);
+
+	void handleCGI(void);
 
 	class SendingResponseError : public std::exception
 	{
@@ -83,9 +90,9 @@ class HTTPCall
 	};
 
   private:
-	const Server *_virtual_server;
 	const Socket *_socket;
 	int _client_fd;
+	CgiManager *_cgi;
 
 	int _request_attempts;
 	int _response_attempts;

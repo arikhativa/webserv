@@ -5,7 +5,6 @@
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <Path/Path.hpp>
 #include <Pipe/Pipe.hpp>
-#include <Poll/Poll.hpp>
 #include <Tab/Tab.hpp>
 #include <converter/converter.hpp>
 
@@ -28,12 +27,37 @@ class CgiManager
 	~CgiManager();
 
 	Path getPathCGI(void) const;
+	const Pipe &getPipe(void) const;
 	const std::string getServerName(void) const;
 	const std::string getPort(void) const;
 	BasicHTTPRequest getBasicHTTPRequest(void) const;
 
-	const std::string executeCgiManager(const Path &pathServer);
+	int getWriteFd(void) const;
+	int getReadFd(void) const;
+	int getPid(void) const;
+	int getBytesWrite(void) const;
+	int getBytesRead(void) const;
+	std::string getOutput(void) const;
+
+	void writeToCgi(void);
+	void readFromCgi(void);
+	void closePipe(void);
+	void writeToPipe(const std::string &str) const;
+
+	void executeCgiManager(const Path &pathServer);
 	class CgiManagerException : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
+	class CgiManagerIncompleteRead : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
+	class CgiManagerIncompleteWrite : public std::exception
 	{
 	  public:
 		virtual const char *what() const throw();
@@ -47,6 +71,11 @@ class CgiManager
 	Tab _env;
 	Tab _argv;
 	Pipe _pipe;
+	std::string _output;
+	int _pid;
+
+	size_t _byte_write;
+	size_t _byte_read;
 
 	void _setEnv(void);
 	void _setArgv(const Path &pathServer);
