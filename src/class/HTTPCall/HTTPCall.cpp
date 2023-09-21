@@ -245,7 +245,7 @@ std::string HTTPCall::getResponse(void) const
 	return this->_response;
 }
 
-std::string HTTPCall::getServerName(void) const
+std::string HTTPCall::getClientHostHeader(void) const
 {
 	return this->_basic_request.getHost();
 }

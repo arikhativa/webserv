@@ -18,8 +18,6 @@
 #define protected public
 #endif
 
-class Poll;
-
 class HTTPCall
 {
   public:
@@ -33,7 +31,7 @@ class HTTPCall
 
 	CgiManager *getCgi(void) const;
 	std::string getResponse(void) const;
-	std::string getServerName(void) const;
+	std::string getClientHostHeader(void) const;
 	int getClientFd(void) const;
 	int getRequestAttempts(void) const;
 	int getResponseAttempts(void) const;

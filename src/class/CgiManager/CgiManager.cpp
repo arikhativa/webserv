@@ -18,7 +18,6 @@ CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pat
 	, _byte_write(0)
 	, _byte_read(0)
 {
-	_basicHTTPRequest.parseRaw();
 	if (_basicHTTPRequest.isBody())
 		_basicHTTPRequest.parseBody();
 }
