@@ -61,7 +61,6 @@ std::ostream &operator<<(std::ostream &o, HTTPCall const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-
 std::string HTTPCall::getExtension(void) const
 {
 	std::size_t pos = _local_path.get().find_last_of(".");
@@ -69,7 +68,6 @@ std::string HTTPCall::getExtension(void) const
 		return (_local_path.get());
 	return (_local_path.get().substr(pos));
 }
-
 
 bool HTTPCall::isCGI(void) const
 {
