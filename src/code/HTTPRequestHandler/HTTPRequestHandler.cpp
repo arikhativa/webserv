@@ -6,11 +6,10 @@ void HTTPRequestHandler::CGI(HTTPCall &request)
 {
 	Path pathCGI(request.getLocation()->getCGIConf().getPath());
 	Port port = request.getSocket()->getPort();
-	const IPath *root_cgi(request.getLocation()->getRoot());
-	CgiManager *cgi_obj = new CgiManager(request.getBasicRequest(), pathCGI, request.getClientHostHeader(),
-										 converter::numToString< uint16_t >(port.get()));
+	CgiManager *cgi_obj = new CgiManager(request.getBasicRequest(), pathCGI, request.getLocalPath(),
+										 request.getClientHostHeader(), converter::numToString< uint16_t >(port.get()));
 	request.setCgi(cgi_obj);
-	cgi_obj->executeCgiManager(Path(root_cgi->get()));
+	cgi_obj->executeCgiManager();
 }
 
 void HTTPRequestHandler::GET(HTTPCall &request)

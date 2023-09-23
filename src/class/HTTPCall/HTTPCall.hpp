@@ -46,6 +46,7 @@ class HTTPCall
 	const IServerConf *getServerConf(void) const;
 	const ILocation *getLocation(void) const;
 	const Path &getLocalPath(void) const;
+	std::string getExtension(void) const;
 
 	void setBasicRequest(const BasicHTTPRequest &request);
 	void setResponse(const std::string &response);
