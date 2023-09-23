@@ -104,6 +104,19 @@ void HTTPCall::_setLocalPath(void)
 	_local_path = local_path;
 }
 
+bool HTTPCall::_checkMethod(void)
+{
+	const IAllowedMethods &am(getLocation()->getAllowedMethods());
+	IAllowedMethods::type t = static_cast< IAllowedMethods::type >(getBasicRequest().getType());
+	return am.isAllowed(t);
+}
+
+bool HTTPCall::isRequestAllowed(void)
+{
+	if (!_checkMethod())
+		return false;
+}
+
 void HTTPCall::finalizeRequest(void)
 {
 	_setLocalPath();

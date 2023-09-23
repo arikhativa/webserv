@@ -116,6 +116,13 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 
 	param.call.setServerConf(matcher::requestToServer(param.conf, param.src_listen, param.call.getBasicRequest()));
 	param.call.setLocation(matcher::requestToLocation(param.call.getServerConf(), param.call.getBasicRequest()));
+
+	if (!param.call.isRequestAllowed())
+	{
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+		return Poll::DONE_CLOSE_FD;
+	}
+
 	param.call.finalizeRequest();
 	param.call.handleRequest();
 	if (param.call.isCGI())
