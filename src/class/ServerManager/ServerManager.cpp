@@ -52,7 +52,9 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	{
 		return Poll::CONTINUE;
 	}
+
 	param.call.cgiToResponse();
+	std::cout << "A: " << param.call.getResponse() << std::endl;
 	delete param.call.getCgi();
 	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 	return Poll::DONE_CLOSE_FD;

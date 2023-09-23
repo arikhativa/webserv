@@ -74,11 +74,14 @@ class HTTPStatusCode
 	// object
 	explicit HTTPStatusCode(const std::string &code);
 	explicit HTTPStatusCode(int code);
-	explicit HTTPStatusCode(HTTPStatusCode::Code code);
+	HTTPStatusCode(HTTPStatusCode::Code code);
 	HTTPStatusCode(HTTPStatusCode const &src);
 	~HTTPStatusCode();
 
 	HTTPStatusCode &operator=(HTTPStatusCode const &rhs);
+
+	bool operator==(const HTTPStatusCode &other) const;
+	bool operator!=(const HTTPStatusCode &other) const;
 
 	class InvalidStatusCodeException : public std::exception
 	{

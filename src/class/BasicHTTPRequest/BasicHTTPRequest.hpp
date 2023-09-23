@@ -39,12 +39,12 @@ class BasicHTTPRequest : public ABaseHTTPCall
 	virtual void unParse(void);
 	void setPath(const std::string &path);
 
+	bool isUploadFile(void) const;
 	Type getType(void) const;
 	const std::string &getPath(void) const;
 	const std::string &getQuery(void) const;
 	std::string getHost(void) const;
 
-	static std::string toStringType(BasicHTTPRequest::Type t);
 	static std::string toStringType(BasicHTTPRequest::Type t);
 
   private:
@@ -55,7 +55,6 @@ class BasicHTTPRequest : public ABaseHTTPCall
 	static BasicHTTPRequest::Type _parseType(const std::string &raw_request);
 	static Path _parsePath(const std::string &raw_request);
 	static std::string _parseQuery(const std::string &raw_request);
-	static std::string _parseHost(const std::string &raw_request);
 };
 
 std::ostream &operator<<(std::ostream &o, const BasicHTTPRequest &i);

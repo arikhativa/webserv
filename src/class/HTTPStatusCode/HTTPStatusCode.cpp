@@ -123,6 +123,16 @@ std::ostream &operator<<(std::ostream &o, HTTPStatusCode const &i)
 	return o;
 }
 
+bool HTTPStatusCode::operator==(const HTTPStatusCode &other) const
+{
+	return _code == other._code;
+}
+
+bool HTTPStatusCode::operator!=(const HTTPStatusCode &other) const
+{
+	return _code != other._code;
+}
+
 /*
 ** --------------------------------- METHODS ----------------------------------
 */

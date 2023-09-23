@@ -101,7 +101,9 @@ class HTTPCall
 	Path _local_path;
 
 	void _setLocalPath(void);
-	bool _checkMethod(void);
+	bool _isMethodAllowed(void);
+	bool _isBodySizeAllowed(void);
+	bool _isUploadAllowed(void);
 };
 
 std::ostream &operator<<(std::ostream &o, HTTPCall const &i);
