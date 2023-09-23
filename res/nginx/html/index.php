@@ -1,6 +1,5 @@
 <?php
 header("Content-Type: text/html");
-header("Status: 401");
 
 echo "<!DOCTYPE html>";
 echo "<html>";
