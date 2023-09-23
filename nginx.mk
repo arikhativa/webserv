@@ -1,6 +1,6 @@
 
 nginx:
-	docker-compose -f res/nginx/docker-compose.yml up -d
+	docker-compose -f res/nginx/docker-compose.yml up --build -d
 
 nginx/re:
 	docker-compose -f res/nginx/docker-compose.yml restart
