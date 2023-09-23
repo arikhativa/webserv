@@ -75,10 +75,19 @@ int main(int ac, char **av)
 	if (!conf)
 		return EXIT_FAILURE;
 
-	ServerManager sm(conf);
-	sm.setup();
-	sm.start();
-	sm.terminate();
+	try
+	{
+		ServerManager sm(conf);
+		sm.setup();
+		sm.start();
+		sm.terminate();
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << "Error: " << e.what() << '\n';
+		delete conf;
+		return EXIT_FAILURE;
+	}
 
 	delete conf;
 	return EXIT_SUCCESS;

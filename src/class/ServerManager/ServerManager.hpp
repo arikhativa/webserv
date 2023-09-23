@@ -33,9 +33,15 @@ class ServerManager
 	ServerManager(const IConf *conf);
 	~ServerManager();
 
+	class ServerCreationFailed : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
 	void start();
 	void terminate();
-	ServerManager::status setup();
+	void setup();
 
   private:
 	Poll _poll;

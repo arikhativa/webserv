@@ -13,13 +13,29 @@ Server::Server(const IServerConf *conf)
 	std::list< const IListen * >::iterator end = tmpListeners.end();
 	for (; it != end; it++)
 	{
-		this->_sockets.push_back(new Socket(*it));
+		Socket *new_socket;
+		try
+		{
+			new_socket = new Socket(*it);
+			this->_sockets.push_back(new_socket);
+		}
+		catch (Socket::SocketCreationFailed &e)
+		{
+			delete new_socket;
+			this->closeSockets();
+			throw Server::SocketCreationFailed();
+		}
 	}
 }
 
 const char *Server::AcceptingConnectionFailed::what() const throw()
 {
 	return "Accepting connection failed";
+}
+
+const char *Server::SocketCreationFailed::what() const throw()
+{
+	return "Socket creation failed";
 }
 
 /*

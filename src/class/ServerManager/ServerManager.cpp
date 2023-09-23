@@ -169,9 +169,25 @@ ServerManager::ServerManager(const IConf *conf)
 	std::list< const IServerConf * >::iterator end = servers.end();
 	for (; it != end; it++)
 	{
-		this->_virtual_servers.push_back(new Server(*it));
+		Server *new_server;
+		try
+		{
+			new_server = new Server(*it);
+			this->_virtual_servers.push_back(new_server);
+		}
+		catch (const Server::SocketCreationFailed &e)
+		{
+			delete new_server;
+			this->terminate();
+			throw ServerManager::ServerCreationFailed();
+		}
 	}
 	this->_poll = Poll();
+}
+
+const char *ServerManager::ServerCreationFailed::what() const throw()
+{
+	return "Socket creation failed";
 }
 
 /*
@@ -190,10 +206,10 @@ ServerManager::~ServerManager()
 ** --------------------------------- METHODS ----------------------------------
 */
 
-ServerManager::status ServerManager::setup()
+void ServerManager::setup()
 {
 	if (this->_virtual_servers.empty())
-		return ServerManager::INVALID_VIRTUAL_SERVERS;
+		throw ServerManager::ServerCreationFailed();
 
 	std::vector< Server * >::iterator it = this->_virtual_servers.begin();
 	std::vector< Server * >::iterator end = this->_virtual_servers.end();
@@ -204,10 +220,10 @@ ServerManager::status ServerManager::setup()
 			(*it)->bindSockets();
 			(*it)->listenSockets();
 		}
-		catch (std::exception &e)
+		catch (...)
 		{
 			this->terminate();
-			return ServerManager::INVALID_VIRTUAL_SERVERS;
+			throw;
 		}
 		std::vector< int > fds = (*it)->getSocketsFd();
 		const std::vector< Socket * > sock = (*it)->getSockets();
@@ -222,7 +238,6 @@ ServerManager::status ServerManager::setup()
 			this->_poll.addRead(*it_fds, ServerManager::initSocketsHandler, param);
 		}
 	}
-	return ServerManager::OK;
 }
 
 void ServerManager::start()
