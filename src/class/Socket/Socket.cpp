@@ -79,6 +79,13 @@ std::ostream &operator<<(std::ostream &o, Socket const &i)
 	return o;
 }
 
+bool Socket::operator==(const Socket &src)
+{
+	if (this->_ip.get() == src._ip.get() && this->_port.get() == src._port.get())
+		return true;
+	return false;
+}
+
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
