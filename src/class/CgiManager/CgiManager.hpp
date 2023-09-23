@@ -22,8 +22,8 @@
 class CgiManager
 {
   public:
-	explicit CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const std::string &serverName,
-						const std::string &port);
+	explicit CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const Path &local_path,
+						const std::string &serverName, const std::string &port);
 	~CgiManager();
 
 	Path getPathCGI(void) const;
@@ -44,7 +44,7 @@ class CgiManager
 	void closePipe(void);
 	void writeToPipe(const std::string &str) const;
 
-	void executeCgiManager(const Path &pathServer);
+	void executeCgiManager(void);
 	class CgiManagerException : public std::exception
 	{
 	  public:
@@ -66,6 +66,7 @@ class CgiManager
   private:
 	BasicHTTPRequest _basicHTTPRequest;
 	Path _pathCGI;
+	const Path &_local_path;
 	std::string _serverName;
 	std::string _port;
 	Tab _env;
@@ -78,7 +79,7 @@ class CgiManager
 	size_t _byte_read;
 
 	void _setEnv(void);
-	void _setArgv(const Path &pathServer);
+	void _setArgv(void);
 	static int _createFork(void);
 	void _childProcess(void);
 	std::string _parentProcess(int pid);

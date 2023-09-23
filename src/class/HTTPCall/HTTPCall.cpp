@@ -61,10 +61,18 @@ std::ostream &operator<<(std::ostream &o, HTTPCall const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+std::string HTTPCall::getExtension(void) const
+{
+	std::size_t pos = _local_path.get().find_last_of(".");
+	if (pos == std::string::npos)
+		return (_local_path.get());
+	return (_local_path.get().substr(pos));
+}
+
 bool HTTPCall::isCGI(void) const
 {
 	return (this->getLocation()->getCGIConf().isSet() &&
-			this->getLocation()->getCGIConf().getExtension() == this->getBasicRequest().getExtension());
+			this->getLocation()->getCGIConf().getExtension() == this->getExtension());
 }
 
 void HTTPCall::_setLocalPath(void)

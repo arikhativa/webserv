@@ -199,14 +199,6 @@ const std::string &BasicHTTPRequest::getQuery(void) const
 	return this->_query;
 }
 
-std::string BasicHTTPRequest::getExtension(void) const
-{
-	std::size_t pos = this->getPath().find_last_of(".");
-	if (pos == std::string::npos)
-		return (this->getPath());
-	return (this->getPath().substr(pos));
-}
-
 std::string BasicHTTPRequest::getHost(void) const
 {
 	try
