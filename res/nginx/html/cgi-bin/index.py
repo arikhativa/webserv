@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
+print("Content-Type: text/html\r")  # Set the content type to HTML
+print("\r")  # Print an empty line to signal the end of headers
+print("\r")  # Print an empty line to signal the end of headers
 
-print("Status: 403 Forbidden")
-print("Content-Type: text/html")  # Set the content type to HTML
-print()  # Print an empty line to signal the end of headers
-
-# Generate the HTML content
 print("<html>")
 print("<head>")
 print("<title>Simple CGI Script</title>")
