@@ -64,7 +64,6 @@ class ABaseHTTPCall
 
 	const std::string &getRawRequest(void) const;
 	const std::string &getLastExtention(void) const;
-	bool isValid(void) const;
 	HTTPVersion getHTTPVersion(void) const;
 	const std::map< std::string, std::string > &getHeaders(void) const;
 	const std::string &getBody(void) const;
