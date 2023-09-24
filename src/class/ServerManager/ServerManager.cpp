@@ -54,7 +54,6 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	}
 
 	param.call.cgiToResponse();
-	std::cout << "A: " << param.call.getResponse() << std::endl;
 	delete param.call.getCgi();
 	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 	return Poll::DONE_CLOSE_FD;
@@ -82,6 +81,7 @@ Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Par
 	return Poll::DONE_CLOSE_FD;
 }
 
+// TODO on a invalid http method type like "MOVE" we should return error page (we return nothing)
 Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	(void)fd;

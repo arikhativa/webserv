@@ -1,34 +1,15 @@
 #!/usr/bin/env python3
-import cgi
-import cgitb
-cgitb.enable()
 
-# Print necessary headers
-print("Content-type: application/octet-stream")
-print()
+print("Content-Type: text/html\r")  # Set the content type to HTML
+print("\r")  # Print an empty line to signal the end of headers
+print("\r")  # Print an empty line to signal the end of headers
 
-# Get the uploaded file from the form data
-form = cgi.FieldStorage()["userfile"]
-
-# if "file" in form:
-#     uploaded_file = form["file"]
-
-#     # Set the response header to indicate the file name
-#     # print(f"Content-Disposition: attachment; filename=\"{uploaded_file.filename}\"")
-
-#     # Print a blank line to indicate the end of headers
-#     # print()
-
-#     # Write the file content to the response body
-#     with open(uploaded_file.file.name, "rb") as file:
-#         content = file.read()
-        # print(content)
-
-# else:
-print("Status: 400 Bad Request")
-print("\nContent-type: text/html")
-print("\n")
-print("<html><body>")
-print("<h1>400 Bad Request</h1>")
-print("<p>No file was uploaded.</p>")
-print("</body></html>")
+print("<html>")
+print("<head>")
+print("<title>Simple CGI Script</title>")
+print("</head>")
+print("<body>")
+print("<h1>Hello from CGI Script!</h1>")
+print("<p>This is a simple CGI-generated HTML page.</p>")
+print("</body>")
+print("</html>")

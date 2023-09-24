@@ -108,6 +108,7 @@ bool HTTPCall::_isMethodAllowed(void)
 {
 	const IAllowedMethods &am(getLocation()->getAllowedMethods());
 	IAllowedMethods::type t = static_cast< IAllowedMethods::type >(getBasicRequest().getType());
+
 	return am.isAllowed(t);
 }
 
