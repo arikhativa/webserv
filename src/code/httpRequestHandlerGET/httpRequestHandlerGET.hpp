@@ -14,7 +14,6 @@
 #include <HTTPCall/HTTPCall.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 #include <ResponseHeader/ResponseHeader.hpp>
-#include <Server/Server.hpp>
 #include <matcher/matcher.hpp>
 
 class HTTPCall;

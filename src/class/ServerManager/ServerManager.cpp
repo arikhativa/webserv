@@ -150,9 +150,9 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 	int client_fd;
 	try
 	{
-		client_fd = Server::acceptConnection(fd);
+		client_fd = ServerManager::acceptConnection(fd);
 	}
-	catch (Server::AcceptingConnectionFailed &e)
+	catch (ServerManager::AcceptingConnectionFailed &e)
 	{
 		std::cerr << "Accepting connection failed [" << e.what() << "]\n";
 		return Poll::CONTINUE;
@@ -173,14 +173,18 @@ ServerManager::ServerManager(const IConf *conf)
 	, _conf(conf)
 	, _status(ServerManager::OK)
 {
-	std::list< const IServerConf * > servers = conf->getServers();
-	std::list< const IServerConf * >::iterator it = servers.begin();
-	std::list< const IServerConf * >::iterator end = servers.end();
-	for (; it != end; it++)
-	{
-		this->_virtual_servers.push_back(new Server(*it));
-	}
+	createServerSockets(conf);
 	this->_poll = Poll();
+}
+
+const char *ServerManager::ServerCreationFailed::what() const throw()
+{
+	return "Server creation failed";
+}
+
+const char *ServerManager::AcceptingConnectionFailed::what() const throw()
+{
+	return "Accepting connection failed";
 }
 
 /*
@@ -199,39 +203,59 @@ ServerManager::~ServerManager()
 ** --------------------------------- METHODS ----------------------------------
 */
 
-ServerManager::status ServerManager::setup()
+void ServerManager::createServerSockets(const IConf *conf)
 {
-	if (this->_virtual_servers.empty())
-		return ServerManager::INVALID_VIRTUAL_SERVERS;
+	std::list< const IListen * > listeners;
+	std::list< const IServerConf * > servers = conf->getServers();
+	std::list< const IServerConf * >::iterator it = servers.begin();
+	std::list< const IServerConf * >::iterator end = servers.end();
+	for (; it != end; it++)
+	{
+		std::list< const IListen * > tmpListeners = (*it)->getListen();
+		std::list< const IListen * >::iterator it_l = tmpListeners.begin();
+		std::list< const IListen * >::iterator end_l = tmpListeners.end();
+		for (; it_l != end_l; it_l++)
+		{
+			try
+			{
+				Socket new_socket(*it_l);
+				std::vector< Socket >::iterator old_socket =
+					std::find(this->_sockets.begin(), this->_sockets.end(), new_socket);
+				if (old_socket == this->_sockets.end())
+					this->_sockets.push_back(new_socket);
+			}
+			catch (...)
+			{
+				this->terminate();
+				throw;
+			}
+		}
+	}
+	std::cout << "Listening on " << this->_sockets.size() << " different sockets..." << std::endl;
+}
 
-	std::vector< Server * >::iterator it = this->_virtual_servers.begin();
-	std::vector< Server * >::iterator end = this->_virtual_servers.end();
+void ServerManager::setup()
+{
+	if (this->_sockets.empty())
+		throw ServerManager::ServerCreationFailed();
+
+	std::vector< Socket >::iterator it = this->_sockets.begin();
+	std::vector< Socket >::iterator end = this->_sockets.end();
 	for (; it != end; it++)
 	{
 		try
 		{
-			(*it)->bindSockets();
-			(*it)->listenSockets();
+			it->bind();
+			it->listen();
 		}
-		catch (std::exception &e)
+		catch (...)
 		{
 			this->terminate();
-			return ServerManager::INVALID_VIRTUAL_SERVERS;
+			throw;
 		}
-		std::vector< int > fds = (*it)->getSocketsFd();
-		const std::vector< Socket * > sock = (*it)->getSockets();
-		std::vector< int >::iterator it_fds = fds.begin();
-		std::vector< int >::iterator end_fds = fds.end();
-
-		std::vector< Socket * >::const_iterator it_sock = sock.begin();
-		std::vector< Socket * >::const_iterator end_sock = sock.end();
-		for (; it_fds != end_fds && it_sock != end_sock; it_fds++, it_sock++)
-		{
-			Poll::Param param = {this->_conf, (*it_sock)->getListen(), *it_fds, HTTPCall(*it_sock, -1), -1, -1};
-			this->_poll.addRead(*it_fds, ServerManager::initSocketsHandler, param);
-		}
+		Poll::Param param = {this->_conf, it->getListen(), it->getFd(), HTTPCall(&(*it), -1), -1, -1};
+		this->_poll.addRead(it->getFd(), ServerManager::initSocketsHandler, param);
 	}
-	return ServerManager::OK;
 }
 
 void ServerManager::start()
@@ -241,13 +265,20 @@ void ServerManager::start()
 
 void ServerManager::terminate()
 {
-	std::vector< Server * >::iterator it = this->_virtual_servers.begin();
-	std::vector< Server * >::iterator end = this->_virtual_servers.end();
+	std::vector< Socket >::iterator it = this->_sockets.begin();
+	std::vector< Socket >::iterator end = this->_sockets.end();
 	for (; it != end; it++)
-	{
-		(*it)->closeSockets();
-		delete *it;
-	}
+		it->close();
+}
+
+int ServerManager::acceptConnection(int fd)
+{
+	int tmp_client;
+
+	tmp_client = accept(fd, NULL, NULL);
+	if (tmp_client <= -1)
+		throw ServerManager::AcceptingConnectionFailed();
+	return tmp_client;
 }
 
 /*
