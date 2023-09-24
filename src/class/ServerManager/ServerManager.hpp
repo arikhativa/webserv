@@ -6,7 +6,6 @@
 #include <HTTPCall/HTTPCall.hpp>
 #include <IConf/IConf.hpp>
 #include <Poll/Poll.hpp>
-#include <Server/Server.hpp>
 #include <iostream>
 #include <map>
 #include <matcher/matcher.hpp>
@@ -33,17 +32,30 @@ class ServerManager
 	ServerManager(const IConf *conf);
 	~ServerManager();
 
+	class ServerCreationFailed : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
+	class AcceptingConnectionFailed : public std::exception
+	{
+	  public:
+		virtual const char *what() const throw();
+	};
+
 	void start();
 	void terminate();
-	ServerManager::status setup();
+	void setup();
 
   private:
 	Poll _poll;
 	const IConf *_conf;
 	enum status _status;
-	std::vector< Server * > _virtual_servers;
+	std::vector< Socket > _sockets;
 
-	int getTotalListeners(void) const;
+	void createServerSockets(const IConf *conf);
+	static int acceptConnection(int fd);
 
   public:
 	static Poll::ret_stt clientWrite(Poll &p, int fd, int revents, Poll::Param &param);

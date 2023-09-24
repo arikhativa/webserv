@@ -61,6 +61,8 @@ class Socket
 		virtual const char *what() const throw();
 	};
 
+	bool operator==(const Socket &src);
+
   private:
 	const IListen *_listen;
 	const IP _ip;

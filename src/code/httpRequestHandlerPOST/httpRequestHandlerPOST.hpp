@@ -12,7 +12,6 @@
 #include <FileManager/FileManager.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 #include <ResponseHeader/ResponseHeader.hpp>
-#include <Server/Server.hpp>
 
 class HTTPCall;
 
