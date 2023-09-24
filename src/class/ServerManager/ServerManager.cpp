@@ -58,6 +58,7 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	{
 		return Poll::CONTINUE;
 	}
+
 	param.call.cgiToResponse();
 	delete param.call.getCgi();
 	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
@@ -86,6 +87,7 @@ Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Par
 	return Poll::DONE_CLOSE_FD;
 }
 
+// TODO on a invalid http method type like "MOVE" we should return error page (we return nothing)
 Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	(void)fd;
@@ -128,6 +130,13 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 
 	param.call.setServerConf(matcher::requestToServer(param.conf, param.src_listen, param.call.getBasicRequest()));
 	param.call.setLocation(matcher::requestToLocation(param.call.getServerConf(), param.call.getBasicRequest()));
+
+	if (!param.call.isRequestAllowed())
+	{
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+		return Poll::DONE_CLOSE_FD;
+	}
+
 	param.call.finalizeRequest();
 	param.call.handleRequest();
 	if (param.call.isCGI())

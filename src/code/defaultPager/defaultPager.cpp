@@ -12,6 +12,7 @@ static std::map< HTTPStatusCode::Code, std::string > initPages(void)
 	ret[HTTPStatusCode::FORBIDDEN] = base + "403.html";
 	ret[HTTPStatusCode::NOT_FOUND] = base + "404.html";
 	ret[HTTPStatusCode::METHOD_NOT_ALLOWED] = base + "405.html";
+	ret[HTTPStatusCode::REQUEST_ENTITY_TOO_LARGE] = base + "413.html";
 	ret[HTTPStatusCode::INTERNAL_SERVER_ERROR] = base + "500.html";
 	ret[HTTPStatusCode::BAD_GATEWAY] = base + "502.html";
 	ret[HTTPStatusCode::SERVICE_UNAVAILABLE] = base + "503.html";

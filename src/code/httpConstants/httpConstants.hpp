@@ -52,6 +52,7 @@ namespace httpConstants
 		const std::string TRANSFER_ENCODING("Transfer-Encoding");
 		const std::string LOCATION("Location");
 		const std::string CHUNKED("chunked");
+		const std::string FROM_DATA("multipart/form-data");
 	} // namespace headers
 } // namespace httpConstants
 
