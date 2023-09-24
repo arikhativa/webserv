@@ -128,7 +128,7 @@ void CgiManager::readFromCgi(void)
 	std::size_t pos;
 	int contentLenght;
 
-	bytes_read = read(this->getReadFd(), buffer, sizeof(buffer));
+	bytes_read = recv(this->getReadFd(), buffer, sizeof(buffer), MSG_DONTWAIT);
 	if (bytes_read <= -1)
 		throw CgiManagerException();
 	if (bytes_read > 0)
