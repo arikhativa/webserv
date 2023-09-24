@@ -40,9 +40,7 @@ class HTTPCall
 	std::list< const IErrorPage * > getErrorPages(void) const;
 	void parseRawRequest(void);
 	std::list< const ILocation * >::const_iterator searchMatchLocation(void) const;
-	bool isAutoIndexOn(void) const;
 	bool isCGI(void) const;
-	bool canUpload(void) const;
 	const IServerConf *getServerConf(void) const;
 	const ILocation *getLocation(void) const;
 	const Path &getLocalPath(void) const;
@@ -55,7 +53,7 @@ class HTTPCall
 	void setLocation(const ILocation *location);
 	void setCgi(CgiManager *cgi);
 
-	BasicHTTPRequest::Type getRequestType(void);
+	bool isRequestAllowed(void);
 	void finalizeRequest(void);
 	void recvRequest(void);
 	void sendResponse(void);
@@ -63,8 +61,6 @@ class HTTPCall
 	void terminate(void);
 
 	void cgiToResponse(void);
-
-	void handleCGI(void);
 
 	class SendingResponseError : public std::exception
 	{
@@ -105,6 +101,9 @@ class HTTPCall
 	Path _local_path;
 
 	void _setLocalPath(void);
+	bool _isMethodAllowed(void);
+	bool _isBodySizeAllowed(void);
+	bool _isUploadAllowed(void);
 };
 
 std::ostream &operator<<(std::ostream &o, HTTPCall const &i);

@@ -184,6 +184,18 @@ void BasicHTTPRequest::unParse(void)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
+bool BasicHTTPRequest::isUploadFile(void) const
+{
+	std::map< std::string, std::string >::const_iterator it(
+		this->getHeaders().find(httpConstants::headers::CONTENT_TYPE));
+
+	if (it != this->getHeaders().end())
+	{
+		return it->second.find(httpConstants::headers::FROM_DATA) != std::string::npos;
+	}
+	return false;
+}
+
 BasicHTTPRequest::Type BasicHTTPRequest::getType(void) const
 {
 	return this->_type;

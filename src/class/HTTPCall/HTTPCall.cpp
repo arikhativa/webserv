@@ -104,6 +104,62 @@ void HTTPCall::_setLocalPath(void)
 	_local_path = local_path;
 }
 
+bool HTTPCall::_isMethodAllowed(void)
+{
+	const IAllowedMethods &am(getLocation()->getAllowedMethods());
+	IAllowedMethods::type t = static_cast< IAllowedMethods::type >(getBasicRequest().getType());
+
+	return am.isAllowed(t);
+}
+
+bool HTTPCall::_isBodySizeAllowed(void)
+{
+	size_t max(getLocation()->getMaxBodySize());
+
+	if (!max)
+		return true;
+
+	if (getBasicRequest().isBody())
+		return max >= getBasicRequest().getBody().size();
+	return true;
+}
+
+bool HTTPCall::_isUploadAllowed(void)
+{
+	if (!getLocation()->canUpload())
+	{
+		return !getBasicRequest().isUploadFile();
+	}
+	return true;
+}
+
+bool HTTPCall::isRequestAllowed(void)
+{
+	HTTPStatusCode stt(HTTPStatusCode::ACCEPTED);
+
+	if (!_isMethodAllowed())
+	{
+		stt = HTTPStatusCode::FORBIDDEN;
+	}
+	else if (!_isBodySizeAllowed())
+	{
+		stt = HTTPStatusCode::REQUEST_ENTITY_TOO_LARGE;
+	}
+	else if (!_isUploadAllowed())
+	{
+		stt = HTTPStatusCode::FORBIDDEN;
+	}
+
+	if (stt != HTTPStatusCode::ACCEPTED)
+	{
+		ResponseHeader response(stt, getLocation()->getErrorPageSet());
+		setResponse(response.getResponse());
+		return false;
+	}
+
+	return true;
+}
+
 void HTTPCall::finalizeRequest(void)
 {
 	_setLocalPath();
