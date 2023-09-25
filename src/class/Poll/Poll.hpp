@@ -34,7 +34,7 @@ class Poll
 		Time start_read;
 		const IConf *conf;
 		const IListen *src_listen;
-		int src_socket;
+		const Socket *src_socket;
 
 		// initSocketsHandler
 		HTTPCall call;
