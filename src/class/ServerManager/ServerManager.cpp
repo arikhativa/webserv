@@ -179,9 +179,10 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		return Poll::CONTINUE;
 	}
 
-	param.call = HTTPCall(param.src_socket, client_fd);
-	param.start_read.setToNow();
-	p.addRead(client_fd, ServerManager::clientRead, param);
+	Poll::Param new_param = param;
+	new_param.call = HTTPCall(param.src_socket, client_fd);
+	new_param.start_read.setToNow();
+	p.addRead(client_fd, ServerManager::clientRead, new_param);
 	return Poll::CONTINUE;
 }
 
