@@ -31,6 +31,7 @@ namespace converter
 	std::string toNginxStyle(const std::string &input);
 	std::string headersToString(std::map< std::string, std::string > map);
 	std::string removeQuotesIfNeeded(std::string &str);
+	void mergeSpaces(std::string &str);
 
 } // namespace converter
 

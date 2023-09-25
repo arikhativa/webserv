@@ -18,6 +18,7 @@
 #include <HTTPCall/HTTPCall.hpp>
 #include <HTTPResponse/HTTPResponse.hpp>
 #include <IConf/IConf.hpp>
+#include <Time/Time.hpp>
 
 #ifdef TEST_ON
 #define private public
@@ -30,6 +31,7 @@ class Poll
 	struct Param
 	{
 		// setup
+		Time start_read;
 		const IConf *conf;
 		const IListen *src_listen;
 		int src_socket;
@@ -67,6 +69,7 @@ class Poll
 
   private:
 	static const int _TIMEOUT = 10000;
+	static const int _CALL_TIMEOUT_SEC = 5;
 
 	bool _run;
 	std::vector< pollfd > _fds;
@@ -76,6 +79,7 @@ class Poll
 
 	void _pop(std::vector< std::pair< int, ret_stt > > &indexes_to_close);
 	void _pop_index(std::pair< int, ret_stt > p);
+	void _closeTimeoutCallsIfNeeded(void);
 };
 
 #ifdef TEST_ON

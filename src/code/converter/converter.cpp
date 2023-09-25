@@ -202,3 +202,35 @@ std::string converter::urlDecode(const std::string &url)
 	}
 	return result;
 }
+
+void converter::mergeSpaces(std::string &str)
+{
+	bool inSpace = false;
+	size_t j = 0;
+
+	for (size_t i = 0; i < str.size(); ++i)
+	{
+		if (std::isspace(static_cast< unsigned char >(str[i])))
+		{
+			if (!inSpace)
+			{
+				str[j++] = ' ';
+				inSpace = true;
+			}
+		}
+		else
+		{
+			str[j++] = str[i];
+			inSpace = false;
+		}
+	}
+
+	if (j > 0 && std::isspace(static_cast< unsigned char >(str[j - 1])))
+	{
+		str.resize(j - 1);
+	}
+	else
+	{
+		str.resize(j);
+	}
+}

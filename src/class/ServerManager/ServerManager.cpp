@@ -99,11 +99,18 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	{
 		std::cerr << "Request is not finished [" << e.what() << "]\n";
 		param.call.getBasicRequest().unParse();
+
+		param.start_read.setToNow();
+
 		return Poll::CONTINUE;
 	}
 	catch (ABaseHTTPCall::Invalid &e)
 	{
 		std::cerr << "Request is invalid [" << e.what() << "]\n";
+
+		param.call.setInvalidResponse();
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+
 		return Poll::DONE_CLOSE_FD;
 	}
 	catch (HTTPCall::ReceivingRequestError &e)
@@ -157,10 +164,10 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		std::cerr << "Accepting connection failed [" << e.what() << "]\n";
 		return Poll::CONTINUE;
 	}
-	Poll::Param new_param = {
-		param.conf, param.src_listen, param.src_socket, HTTPCall(param.call.getSocket(), client_fd), -1, -1,
-	};
-	p.addRead(client_fd, ServerManager::clientRead, new_param);
+
+	param.call = HTTPCall(param.call.getSocket(), client_fd);
+
+	p.addRead(client_fd, ServerManager::clientRead, param);
 	return Poll::CONTINUE;
 }
 
@@ -253,7 +260,13 @@ void ServerManager::setup()
 			this->terminate();
 			throw;
 		}
-		Poll::Param param = {this->_conf, it->getListen(), it->getFd(), HTTPCall(&(*it), -1), -1, -1};
+
+		Poll::Param param;
+
+		param.conf = this->_conf;
+		param.src_listen = it->getListen();
+		param.src_socket = it->getFd();
+
 		this->_poll.addRead(it->getFd(), ServerManager::initSocketsHandler, param);
 	}
 }

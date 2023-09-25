@@ -7,6 +7,18 @@
 const int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
 const int HTTPCall::RECV_BUFFER_SIZE = 4096;
 
+HTTPCall::HTTPCall()
+	: _socket(NULL)
+	, _client_fd(-1)
+	, _cgi(NULL)
+	, _request_attempts(0)
+	, _response_attempts(0)
+	, _bytes_sent(0)
+	, _response("")
+	, _basic_request("")
+{
+}
+
 HTTPCall::HTTPCall(const Socket *socket, int client_fd)
 	: _socket(socket)
 	, _client_fd(client_fd)
@@ -131,6 +143,14 @@ bool HTTPCall::_isUploadAllowed(void)
 		return !getBasicRequest().isUploadFile();
 	}
 	return true;
+}
+
+void HTTPCall::setInvalidResponse(void)
+{
+	ErrorPageSet defaultErrorPageSet;
+
+	ResponseHeader response(HTTPStatusCode::BAD_REQUEST, defaultErrorPageSet);
+	setResponse(response.getResponse());
 }
 
 bool HTTPCall::isRequestAllowed(void)

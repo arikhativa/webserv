@@ -23,6 +23,7 @@ class HTTPCall
   public:
 	static const int MAX_CHUNK_ATTEMPTS;
 	static const int RECV_BUFFER_SIZE;
+	HTTPCall();
 	explicit HTTPCall(const Socket *socket, int client_fd);
 	~HTTPCall();
 
@@ -54,6 +55,7 @@ class HTTPCall
 	void setCgi(CgiManager *cgi);
 
 	bool isRequestAllowed(void);
+	void setInvalidResponse(void);
 	void finalizeRequest(void);
 	void recvRequest(void);
 	void sendResponse(void);
