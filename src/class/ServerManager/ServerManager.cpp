@@ -20,6 +20,9 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 	catch (CgiManager::CgiManagerException &e)
 	{
 		std::cerr << "CGI writing error [" << e.what() << "]\n";
+
+		param.call.setInternalServerResponse();
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		close(param.call.getCgi()->getReadFd());
 		delete param.call.getCgi();
 		return Poll::DONE_CLOSE_FD;
@@ -45,6 +48,9 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	catch (CgiManager::CgiManagerException &e)
 	{
 		std::cerr << "CGI reading error [" << e.what() << "]\n";
+
+		param.call.setInternalServerResponse();
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		delete param.call.getCgi();
 		return Poll::DONE_CLOSE_FD;
 	}
@@ -110,12 +116,14 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 
 		param.call.setInvalidResponse();
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
-
 		return Poll::DONE_CLOSE_FD;
 	}
 	catch (HTTPCall::ReceivingRequestError &e)
 	{
 		std::cerr << "Request recv error [" << e.what() << "]\n";
+
+		param.call.setInternalServerResponse();
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE_CLOSE_FD;
 	}
 	catch (HTTPCall::ReceivingRequestEmpty &e)
