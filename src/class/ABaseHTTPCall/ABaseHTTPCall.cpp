@@ -25,6 +25,7 @@ ABaseHTTPCall::ABaseHTTPCall(const ABaseHTTPCall &src)
 ABaseHTTPCall::Incomplete::Incomplete(const std::string &msg)
 	: _msg("Incomplete call: " + msg)
 {
+	converter::mergeSpaces(_msg);
 }
 
 const char *ABaseHTTPCall::Incomplete::what() const throw()
@@ -35,6 +36,7 @@ const char *ABaseHTTPCall::Incomplete::what() const throw()
 ABaseHTTPCall::Invalid::Invalid(const std::string &msg)
 	: _msg("Invalid call: " + msg)
 {
+	converter::mergeSpaces(_msg);
 }
 
 const char *ABaseHTTPCall::Invalid::what() const throw()

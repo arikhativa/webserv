@@ -67,6 +67,25 @@ void Poll::exitLoop(void)
 	_run = false;
 }
 
+void Poll::_closeTimeoutCallsIfNeeded(void)
+{
+	std::pair< int, ret_stt > p;
+	p.second = DONE_CLOSE_FD;
+
+	for (size_t i = 0; i < _fds.size(); ++i)
+	{
+		if (_params[i].start_read.isOn())
+		{
+			if (_params[i].start_read.hasSecondsPassed(_CALL_TIMEOUT_SEC))
+			{
+				std::cout << "Timeout on fd: " << _fds[i].fd << std::endl;
+				p.first = i;
+				_pop_index(p);
+			}
+		}
+	}
+}
+
 // TODO think of error handling
 void Poll::loop(void)
 {
@@ -80,7 +99,10 @@ void Poll::loop(void)
 		if (stt == -1)
 			std::cerr << "poll() failed" << std::endl;
 		else if (stt == 0)
+		{
 			std::cout << "poll() timeout" << std::endl;
+			_closeTimeoutCallsIfNeeded();
+		}
 		else if (stt > 0)
 		{
 			for (size_t i = 0; i < _fds.size(); ++i)
