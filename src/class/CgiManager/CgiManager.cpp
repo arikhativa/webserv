@@ -112,7 +112,7 @@ void CgiManager::writeToCgi(void)
 {
 	fcntl(this->getWriteFd(), F_SETFL, O_NONBLOCK);
 	int byte_write = write(this->getWriteFd(), this->_basicHTTPRequest.getBody().c_str() + this->_byte_write,
-						  this->_basicHTTPRequest.getBody().length());
+						   this->_basicHTTPRequest.getBody().length());
 	this->_byte_write += byte_write;
 	if (this->_byte_write >= this->_basicHTTPRequest.getBody().length())
 		return;
