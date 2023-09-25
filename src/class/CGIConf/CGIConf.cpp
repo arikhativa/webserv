@@ -1,9 +1,6 @@
 
 #include <CGIConf/CGIConf.hpp>
 
-const std::string CGIConf::_PYTHON(".py");
-const std::string CGIConf::_PHP(".php");
-
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -18,11 +15,6 @@ CGIConf::CGIConf(const CGIConf &src)
 	: _extension(src._extension)
 	, _path(src._path)
 {
-}
-
-const char *CGIConf::InvalidExtension::what() const throw()
-{
-	return "Invalid extension";
 }
 
 /*
@@ -57,13 +49,6 @@ std::ostream &operator<<(std::ostream &o, CGIConf const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-bool CGIConf::isValidExtension(const std::string &str)
-{
-	if (str == CGIConf::_PYTHON || str == CGIConf::_PHP)
-		return true;
-	return false;
-}
-
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
@@ -75,8 +60,6 @@ bool CGIConf::isSet(void) const
 
 void CGIConf::setExtension(const std::string &ext)
 {
-	if (!isValidExtension(ext))
-		throw InvalidExtension();
 	this->_extension = ext;
 }
 

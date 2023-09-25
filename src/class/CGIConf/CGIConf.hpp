@@ -27,8 +27,6 @@ class CGIConf
 
 	CGIConf &operator=(const CGIConf &rhs);
 
-	static bool isValidExtension(const std::string &str);
-
 	void setExtension(const std::string &ext);
 	void setPath(const std::string &path);
 
@@ -38,9 +36,6 @@ class CGIConf
 	const Path &getPath(void) const;
 
   private:
-	static const std::string _PYTHON;
-	static const std::string _PHP;
-
 	std::string _extension;
 	Path _path;
 };

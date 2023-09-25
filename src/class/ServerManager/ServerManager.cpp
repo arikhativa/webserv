@@ -73,6 +73,8 @@ Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Par
 		return Poll::CONTINUE;
 	try
 	{
+		std::cout << "clientWrite [" << fd << "]\n";
+
 		param.call.sendResponse();
 	}
 	catch (const std::exception &e)
@@ -80,6 +82,7 @@ Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Par
 		std::cerr << e.what() << '\n';
 		return Poll::DONE_CLOSE_FD;
 	}
+	std::cout << "clientWrite done [" << fd << "]\n";
 
 	if (param.call.getBytesSent() < param.call.getResponse().size())
 		return Poll::CONTINUE;
@@ -95,6 +98,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		return Poll::CONTINUE;
 	try
 	{
+		std::cout << "clientRead [" << fd << "]\n";
 		param.call.recvRequest();
 		param.call.getBasicRequest().parseRaw();
 		if (param.call.getBasicRequest().isBody())
@@ -128,6 +132,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	}
 	catch (HTTPCall::ReceivingRequestEmpty &e)
 	{
+		std::cerr << "Request recv error [" << e.what() << "]\n";
 		param.start_read.reset();
 		return Poll::DONE_CLOSE_FD;
 	}
@@ -176,10 +181,12 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		std::cerr << "Accepting connection failed [" << e.what() << "]\n";
 		return Poll::CONTINUE;
 	}
+	std::cout << "Accept Connection [" << client_fd << "]" << std::endl;
 
-	param.call = HTTPCall(param.src_socket, client_fd);
-	param.start_read.setToNow();
-	p.addRead(client_fd, ServerManager::clientRead, param);
+	Poll::Param new_param = param;
+	new_param.call = HTTPCall(param.src_socket, client_fd);
+	new_param.start_read.setToNow();
+	p.addRead(client_fd, ServerManager::clientRead, new_param);
 	return Poll::CONTINUE;
 }
 
@@ -278,6 +285,8 @@ void ServerManager::setup()
 		param.conf = this->_conf;
 		param.src_listen = it->getListen();
 		param.src_socket = &(*it);
+		param.start_read.reset();
+		std::cout << "Active " << *param.src_socket << std::endl;
 
 		this->_poll.addRead(it->getFd(), ServerManager::initSocketsHandler, param);
 	}

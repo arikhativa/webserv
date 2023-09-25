@@ -100,7 +100,6 @@ void Poll::loop(void)
 			std::cerr << "poll() failed" << std::endl;
 		else if (stt == 0)
 		{
-			std::cout << "poll() timeout" << std::endl;
 			_closeTimeoutCallsIfNeeded();
 		}
 		else if (stt > 0)
