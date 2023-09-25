@@ -179,10 +179,15 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		return Poll::CONTINUE;
 	}
 
-	param.call = HTTPCall(param.src_socket, client_fd);
-	param.start_read.setToNow();
-	param.listening_fd = false;
-	p.addRead(client_fd, ServerManager::clientRead, param);
+	Poll::Param new_param;
+
+	new_param.call = HTTPCall(param.src_socket, client_fd);
+	new_param.start_read.setToNow();
+	new_param.conf = param.conf;
+	new_param.src_listen = param.src_listen;
+	new_param.src_socket = param.src_socket;
+	new_param.listening_fd = false;
+	p.addRead(client_fd, ServerManager::clientRead, new_param);
 	return Poll::CONTINUE;
 }
 
@@ -282,7 +287,6 @@ void ServerManager::setup()
 		param.src_listen = it->getListen();
 		param.src_socket = &(*it);
 		param.listening_fd = true;
-
 		this->_poll.addRead(it->getFd(), ServerManager::initSocketsHandler, param);
 	}
 }
