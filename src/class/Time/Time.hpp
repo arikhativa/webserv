@@ -22,6 +22,7 @@ class Time
 	Time &operator=(const Time &rhs);
 
 	void setToNow(void);
+	void reset(void);
 	void set(int h, int m, int s);
 	int getHours(void) const;
 	int getMinutes(void) const;

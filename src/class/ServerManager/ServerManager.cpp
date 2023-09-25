@@ -87,7 +87,6 @@ Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Par
 	return Poll::DONE_CLOSE_FD;
 }
 
-// TODO on a invalid http method type like "MOVE" we should return error page (we return nothing)
 Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	(void)fd;
@@ -107,7 +106,6 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		param.call.getBasicRequest().unParse();
 
 		param.start_read.setToNow();
-
 		return Poll::CONTINUE;
 	}
 	catch (ABaseHTTPCall::Invalid &e)
@@ -115,6 +113,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		std::cerr << "Request is invalid [" << e.what() << "]\n";
 
 		param.call.setInvalidResponse();
+		param.start_read.reset();
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE_CLOSE_FD;
 	}
@@ -123,11 +122,13 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		std::cerr << "Request recv error [" << e.what() << "]\n";
 
 		param.call.setInternalServerResponse();
+		param.start_read.reset();
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE_CLOSE_FD;
 	}
 	catch (HTTPCall::ReceivingRequestEmpty &e)
 	{
+		param.start_read.reset();
 		return Poll::DONE_CLOSE_FD;
 	}
 
@@ -136,6 +137,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 
 	if (!param.call.isRequestAllowed())
 	{
+		param.start_read.reset();
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE_CLOSE_FD;
 	}
@@ -147,11 +149,13 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		param.write_pipe = param.call.getCgi()->getWriteFd();
 		param.read_pipe = param.call.getCgi()->getReadFd();
 
+		param.start_read.reset();
 		p.addWrite(param.call.getCgi()->getWriteFd(), ServerManager::cgiWrite, param);
 		return Poll::DONE_NO_CLOSE_FD;
 	}
 	else
 	{
+		param.start_read.reset();
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE_CLOSE_FD;
 	}
@@ -173,8 +177,8 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		return Poll::CONTINUE;
 	}
 
-	param.call = HTTPCall(param.call.getSocket(), client_fd);
-
+	param.call = HTTPCall(param.src_socket, client_fd);
+	param.start_read.setToNow();
 	p.addRead(client_fd, ServerManager::clientRead, param);
 	return Poll::CONTINUE;
 }
@@ -273,7 +277,7 @@ void ServerManager::setup()
 
 		param.conf = this->_conf;
 		param.src_listen = it->getListen();
-		param.src_socket = it->getFd();
+		param.src_socket = &(*it);
 
 		this->_poll.addRead(it->getFd(), ServerManager::initSocketsHandler, param);
 	}

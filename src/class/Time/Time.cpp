@@ -84,6 +84,13 @@ void Time::setToNow(void)
 	_seconds = timeInfo->tm_sec;
 }
 
+void Time::reset(void)
+{
+	_hours = 0;
+	_minutes = 0;
+	_seconds = 0;
+}
+
 void Time::set(int h, int m, int s)
 {
 	_hours = h;
