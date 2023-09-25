@@ -20,8 +20,8 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 	catch (CgiManager::CgiManagerException &e)
 	{
 		std::cerr << "CGI writing error [" << e.what() << "]\n";
-		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR), ErrorPageSet());
-		param.call.setResponse(response.getResponse());
+		
+		param.call.setInternalServerResponse();
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		close(param.call.getCgi()->getReadFd());
 		delete param.call.getCgi();
@@ -48,8 +48,8 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	catch (CgiManager::CgiManagerException &e)
 	{
 		std::cerr << "CGI reading error [" << e.what() << "]\n";
-		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR), ErrorPageSet());
-		param.call.setResponse(response.getResponse());
+
+		param.call.setInternalServerResponse();
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		delete param.call.getCgi();
 		return Poll::DONE_CLOSE_FD;
@@ -105,21 +105,24 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	{
 		std::cerr << "Request is not finished [" << e.what() << "]\n";
 		param.call.getBasicRequest().unParse();
+
+		param.start_read.setToNow();
+
 		return Poll::CONTINUE;
 	}
 	catch (ABaseHTTPCall::Invalid &e)
 	{
 		std::cerr << "Request is invalid [" << e.what() << "]\n";
-		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::BAD_REQUEST), ErrorPageSet());
-		param.call.setResponse(response.getResponse());
+
+		param.call.setInvalidResponse();
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE_CLOSE_FD;
 	}
 	catch (HTTPCall::ReceivingRequestError &e)
 	{
 		std::cerr << "Request recv error [" << e.what() << "]\n";
-		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR), ErrorPageSet());
-		param.call.setResponse(response.getResponse());
+		
+		param.call.setInternalServerResponse();
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE_CLOSE_FD;
 	}
@@ -169,10 +172,10 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		std::cerr << "Accepting connection failed [" << e.what() << "]\n";
 		return Poll::CONTINUE;
 	}
-	Poll::Param new_param = {
-		param.conf, param.src_listen, param.src_socket, HTTPCall(param.call.getSocket(), client_fd), -1, -1,
-	};
-	p.addRead(client_fd, ServerManager::clientRead, new_param);
+
+	param.call = HTTPCall(param.call.getSocket(), client_fd);
+
+	p.addRead(client_fd, ServerManager::clientRead, param);
 	return Poll::CONTINUE;
 }
 
@@ -265,7 +268,13 @@ void ServerManager::setup()
 			this->terminate();
 			throw;
 		}
-		Poll::Param param = {this->_conf, it->getListen(), it->getFd(), HTTPCall(&(*it), -1), -1, -1};
+
+		Poll::Param param;
+
+		param.conf = this->_conf;
+		param.src_listen = it->getListen();
+		param.src_socket = it->getFd();
+
 		this->_poll.addRead(it->getFd(), ServerManager::initSocketsHandler, param);
 	}
 }

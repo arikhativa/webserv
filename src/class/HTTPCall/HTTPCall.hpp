@@ -56,6 +56,7 @@ class HTTPCall
 
 	bool isRequestAllowed(void);
 	void setInvalidResponse(void);
+	void setInternalServerResponse(void);
 	void finalizeRequest(void);
 	void recvRequest(void);
 	void sendResponse(void);

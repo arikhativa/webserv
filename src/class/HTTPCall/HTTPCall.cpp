@@ -153,6 +153,14 @@ void HTTPCall::setInvalidResponse(void)
 	setResponse(response.getResponse());
 }
 
+void HTTPCall::setInternalServerResponse(void)
+{
+	ErrorPageSet defaultErrorPageSet;
+
+	ResponseHeader response(HTTPStatusCode::INTERNAL_SERVER_ERROR, defaultErrorPageSet);
+	setResponse(response.getResponse());
+}
+
 bool HTTPCall::isRequestAllowed(void)
 {
 	HTTPStatusCode stt(HTTPStatusCode::ACCEPTED);
