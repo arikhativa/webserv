@@ -74,6 +74,8 @@ void Poll::_closeTimeoutCallsIfNeeded(void)
 
 	for (size_t i = 0; i < _fds.size(); ++i)
 	{
+		if (_params[i].listening_fd)
+			continue;
 		if (_params[i].start_read.isOn())
 		{
 			if (_params[i].start_read.hasSecondsPassed(_CALL_TIMEOUT_SEC))

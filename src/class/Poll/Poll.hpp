@@ -32,6 +32,7 @@ class Poll
 	{
 		// setup
 		Time start_read;
+		bool listening_fd;
 		const IConf *conf;
 		const IListen *src_listen;
 		const Socket *src_socket;

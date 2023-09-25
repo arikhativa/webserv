@@ -181,6 +181,7 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 
 	param.call = HTTPCall(param.src_socket, client_fd);
 	param.start_read.setToNow();
+	param.listening_fd = false;
 	p.addRead(client_fd, ServerManager::clientRead, param);
 	return Poll::CONTINUE;
 }
@@ -280,6 +281,7 @@ void ServerManager::setup()
 		param.conf = this->_conf;
 		param.src_listen = it->getListen();
 		param.src_socket = &(*it);
+		param.listening_fd = true;
 
 		this->_poll.addRead(it->getFd(), ServerManager::initSocketsHandler, param);
 	}
