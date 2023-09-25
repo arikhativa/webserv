@@ -110,8 +110,8 @@ void CgiManager::_childProcess(void)
 
 void CgiManager::writeToCgi(void)
 {
-	int byte_write = send(this->getWriteFd(), this->_basicHTTPRequest.getBody().c_str() + this->_byte_write,
-						  this->_basicHTTPRequest.getBody().length(), MSG_DONTWAIT);
+	int byte_write = write(this->getWriteFd(), this->_basicHTTPRequest.getBody().c_str() + this->_byte_write,
+						   this->_basicHTTPRequest.getBody().length());
 	this->_byte_write += byte_write;
 	if (this->_byte_write >= this->_basicHTTPRequest.getBody().length())
 		return;
@@ -128,7 +128,7 @@ void CgiManager::readFromCgi(void)
 	std::size_t pos;
 	int contentLenght;
 
-	bytes_read = recv(this->getReadFd(), buffer, sizeof(buffer), MSG_DONTWAIT);
+	bytes_read = read(this->getReadFd(), buffer, sizeof(buffer));
 	if (bytes_read <= -1)
 		throw CgiManagerException();
 	if (bytes_read > 0)

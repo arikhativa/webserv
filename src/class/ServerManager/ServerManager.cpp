@@ -31,6 +31,7 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 	{
 		return Poll::CONTINUE;
 	}
+	fcntl(param.call.getCgi()->getReadFd(), F_SETFL, O_NONBLOCK);
 	p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, param);
 	return Poll::DONE_CLOSE_FD;
 }
@@ -150,6 +151,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		param.read_pipe = param.call.getCgi()->getReadFd();
 
 		param.start_read.reset();
+		fcntl(param.call.getCgi()->getWriteFd(), F_SETFL, O_NONBLOCK);
 		p.addWrite(param.call.getCgi()->getWriteFd(), ServerManager::cgiWrite, param);
 		return Poll::DONE_NO_CLOSE_FD;
 	}
