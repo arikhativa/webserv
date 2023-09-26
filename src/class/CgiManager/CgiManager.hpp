@@ -23,7 +23,7 @@ class CgiManager
 {
   public:
 	explicit CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const Path &local_path,
-						const std::string &serverName, const std::string &port);
+						std::string root, const std::string &serverName, const std::string &port);
 	~CgiManager();
 
 	Path getPathCGI(void) const;
@@ -67,6 +67,7 @@ class CgiManager
 	BasicHTTPRequest _basicHTTPRequest;
 	Path _pathCGI;
 	const Path &_local_path;
+	std::string _root;
 	std::string _serverName;
 	std::string _port;
 	Tab _env;

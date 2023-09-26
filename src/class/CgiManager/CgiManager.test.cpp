@@ -10,7 +10,7 @@ TEST(CgiManager, CreateDestroy)
 	Path pathCGI("/usr/bin/python3");
 	std::string serverName("serverName");
 	std::string port("1234");
-	CgiManager *obj = new CgiManager(basicHTTPRequest, pathCGI, Path("/"), serverName, port);
+	CgiManager *obj = new CgiManager(basicHTTPRequest, pathCGI, Path("/"), Path("/"), serverName, port);
 	delete obj;
 }
 
@@ -23,7 +23,7 @@ TEST(CgiManager, Canonical)
 	std::string serverName("serverName");
 	std::string port("1234");
 
-	CgiManager obj1(basicHTTPRequest, pathCGI, Path("/"), serverName, port);
+	CgiManager obj1(basicHTTPRequest, pathCGI, Path("/"), Path("/"), serverName, port);
 
 	EXPECT_EQ(obj1.getServerName(), "serverName");
 	EXPECT_EQ(obj1.getPort(), "1234");

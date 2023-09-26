@@ -5,8 +5,9 @@
 void HTTPRequestHandler::CGI(HTTPCall &request)
 {
 	Path pathCGI(request.getLocation()->getCGIConf().getPath());
+	std::string root(request.getLocation()->getRoot()->get());
 	Port port = request.getSocket()->getPort();
-	CgiManager *cgi_obj = new CgiManager(request.getBasicRequest(), pathCGI, request.getLocalPath(),
+	CgiManager *cgi_obj = new CgiManager(request.getBasicRequest(), pathCGI, request.getLocalPath(), root,
 										 request.getClientHostHeader(), converter::numToString< uint16_t >(port.get()));
 	request.setCgi(cgi_obj);
 	cgi_obj->executeCgiManager();

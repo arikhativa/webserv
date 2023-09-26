@@ -10,10 +10,11 @@ const int CgiManager::BUFFER_SIZE(8192);
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 CgiManager::CgiManager(const BasicHTTPRequest &basicHTTPRequest, const Path &pathCGI, const Path &local_path,
-					   const std::string &serverName, const std::string &port)
+					   std::string root, const std::string &serverName, const std::string &port)
 	: _basicHTTPRequest(basicHTTPRequest)
 	, _pathCGI(pathCGI)
 	, _local_path(local_path)
+	, _root(root)
 	, _serverName(serverName)
 	, _port(port)
 	, _byte_write(0)
@@ -65,22 +66,41 @@ std::ostream &operator<<(std::ostream &o, CgiManager const &i)
 void CgiManager::_setEnv(void)
 {
 	std::map< std::string, std::string > env;
-	if (_basicHTTPRequest.getHeaders().find(httpConstants::CONTENT_LENGTH) != _basicHTTPRequest.getHeaders().end())
-		env[httpConstants::CONTENT_LENGTH] = _basicHTTPRequest.getHeaders().at(httpConstants::CONTENT_LENGTH);
+	if (_basicHTTPRequest.getHeaders().find(httpConstants::headers::CONTENT_LENGTH) !=
+		_basicHTTPRequest.getHeaders().end())
+	{
+		env[httpConstants::CONTENT_LENGTH_UP_CASE] =
+			_basicHTTPRequest.getHeaders().at(httpConstants::headers::CONTENT_LENGTH);
+	}
 	if (_basicHTTPRequest.getHeaders().find(httpConstants::CONTENT_TYPE_FIELD) != _basicHTTPRequest.getHeaders().end())
 		env[httpConstants::CONTENT_TYPE_FIELD] = _basicHTTPRequest.getHeaders().at(httpConstants::CONTENT_TYPE_FIELD);
-	env[httpConstants::REQUEST_METHOD] = _basicHTTPRequest.getType();
+	env[httpConstants::REQUEST_METHOD] = BasicHTTPRequest::toStringType(_basicHTTPRequest.getType());
 	env[httpConstants::SCRIPT_FILENAME] = _pathCGI.get();
 	if (_basicHTTPRequest.getQuery().length() > 1)
 		env[httpConstants::QUERY_STRING] = _basicHTTPRequest.getQuery().substr(1);
-	env[httpConstants::SERVER_PROTOCOL] = _basicHTTPRequest.getHTTPVersion();
+	env[httpConstants::SERVER_PROTOCOL] = ABaseHTTPCall::toStringVersion(_basicHTTPRequest.getHTTPVersion());
 	env[httpConstants::SERVER_PORT] = _port;
 	env[httpConstants::SERVER_NAME] = _serverName;
+
+	std::string tmp(_basicHTTPRequest.getPath());
+	std::string l(_local_path.get());
+	size_t pos = l.find(_root);
+	if (pos != std::string::npos)
+		std::cout << pos << std::endl;
+	if (pos != std::string::npos)
+	{
+		tmp = l.substr(pos + _root.length());
+	}
+
+	env[httpConstants::cgi::SCRIPT_NAME] = tmp;
+	env["SERVER_SOFTWARE"] = "webserv";
 	env[httpConstants::PATH_INFO] = _basicHTTPRequest.getPath();
+	env[httpConstants::cgi::GATEWAY_INTERFACE] = httpConstants::cgi::GATEWAY_INTERFACE_STD;
 
 	std::map< std::string, std::string >::const_iterator it = env.begin();
 	for (int i = 0; it != env.end(); it++, i++)
 		_env.add(it->first + "=" + it->second);
+	// std::cout << "env: " << env << std::endl;
 }
 
 void CgiManager::_setArgv(void)
