@@ -108,7 +108,7 @@ std::string FileManager::getFileNameUpload(const std::string &body)
 	size_t pos = body.find(httpConstants::FILENAME_FIELD_KEY);
 	if (pos == std::string::npos)
 		throw FileManager::FileManagerException();
-	pos += 10;
+	pos += httpConstants::FILENAME_FIELD_KEY.length();
 	size_t pos2 = body.find("\"", pos);
 	if (pos2 == std::string::npos)
 		throw FileManager::FileManagerException();
@@ -117,8 +117,7 @@ std::string FileManager::getFileNameUpload(const std::string &body)
 
 std::string FileManager::getFileContentUpload(const std::string &body)
 {
-	size_t pos = body.find(httpConstants::FILENAME_FIELD_KEY);
-	pos += 10;
+	size_t pos = body.find(httpConstants::FILENAME_FIELD_KEY) + httpConstants::FILENAME_FIELD_KEY.length();
 	size_t pos2 = body.find("\"", pos);
 	std::string content = body.substr(pos2 + 4);
 	pos = content.find(httpConstants::HEADER_BREAK);
