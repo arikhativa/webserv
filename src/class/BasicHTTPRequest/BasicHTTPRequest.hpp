@@ -45,6 +45,7 @@ class BasicHTTPRequest : public ABaseHTTPCall
 	const std::string &getQuery(void) const;
 	std::string getHost(void) const;
 
+	std::string toSimplifiedHTTP(void) const;
 	static std::string toStringType(BasicHTTPRequest::Type t);
 
   private:

@@ -81,6 +81,19 @@ static std::map< BasicHTTPRequest::Type, std::string > initTypeMap(void)
 	return ret;
 }
 
+std::string BasicHTTPRequest::toSimplifiedHTTP(void) const
+{
+	std::string type(BasicHTTPRequest::toStringType(getType()));
+	std::string http_version(ABaseHTTPCall::toStringVersion(getHTTPVersion()));
+
+	std::string ret;
+
+	ret += type + httpConstants::SPACE + this->getPath();
+
+	converter::mergeSpaces(ret);
+	return ret;
+}
+
 std::string BasicHTTPRequest::toStringType(BasicHTTPRequest::Type t)
 {
 	static const std::map< BasicHTTPRequest::Type, std::string > m(initTypeMap());

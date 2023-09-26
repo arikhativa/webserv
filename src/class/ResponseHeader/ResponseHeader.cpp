@@ -144,7 +144,8 @@ size_t ResponseHeader::_getTotalSize(void) const
 
 void ResponseHeader::setStatusCode(HTTPStatusCode code)
 {
-	std::string value = converter::numToString(code.get()) + httpConstants::SPACE + code.toString();
+	std::string value =
+		converter::numToString< int >(static_cast< int >(code.get())) + httpConstants::SPACE + code.toString();
 	this->_header.at(STANDARD).value = value;
 }
 

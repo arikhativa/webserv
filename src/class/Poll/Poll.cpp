@@ -100,7 +100,6 @@ void Poll::loop(void)
 			std::cerr << "poll() failed" << std::endl;
 		else if (stt == 0)
 		{
-			std::cout << "poll() timeout" << std::endl;
 			_closeTimeoutCallsIfNeeded();
 		}
 		else if (stt > 0)
@@ -169,7 +168,11 @@ void Poll::_pop_index(std::pair< int, ret_stt > p)
 			++count;
 	}
 	if (count == 1 && (p.second == DONE_CLOSE_FD || p.second == ERROR))
+	{
+		std::cout << "End connection fd[" << fd_to_close << "]" << std::endl;
+
 		close(fd_to_close);
+	}
 
 	_fds.erase(_fds.begin() + p.first);
 	_handlers.erase(_handlers.begin() + p.first);

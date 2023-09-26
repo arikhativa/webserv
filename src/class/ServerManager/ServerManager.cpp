@@ -19,7 +19,7 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 	}
 	catch (CgiManager::CgiManagerException &e)
 	{
-		std::cerr << "CGI writing error [" << e.what() << "]\n";
+		std::cerr << "CGI writing error [" << e.what() << "]" << std::endl;
 
 		param.call.setInternalServerResponse();
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
@@ -48,7 +48,7 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	}
 	catch (CgiManager::CgiManagerException &e)
 	{
-		std::cerr << "CGI reading error [" << e.what() << "]\n";
+		std::cerr << "CGI reading error [" << e.what() << "]" << std::endl;
 
 		param.call.setInternalServerResponse();
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
@@ -75,6 +75,12 @@ Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Par
 	try
 	{
 		param.call.sendResponse();
+
+		BasicHTTPRequest::Type t = param.call.getBasicRequest().getType();
+
+		std::cout << "fd[" << fd << "] <-- " << BasicHTTPRequest::toStringType(t) << " "
+				  << param.call.getBasicRequest().getPath() << " "
+				  << converter::HTTPResponseSimplified(param.call.getResponse()) << std::endl;
 	}
 	catch (const std::exception &e)
 	{
@@ -100,10 +106,11 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		param.call.getBasicRequest().parseRaw();
 		if (param.call.getBasicRequest().isBody())
 			param.call.getBasicRequest().parseBody();
+		std::cout << "fd[" << fd << "] --> " << param.call << std::endl;
 	}
 	catch (ABaseHTTPCall::Incomplete &e)
 	{
-		std::cerr << "Request is not finished [" << e.what() << "]\n";
+		std::cerr << "Request is not finished [" << e.what() << "]" << std::endl;
 		param.call.getBasicRequest().unParse();
 
 		param.start_read.setToNow();
@@ -111,7 +118,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	}
 	catch (ABaseHTTPCall::Invalid &e)
 	{
-		std::cerr << "Request is invalid [" << e.what() << "]\n";
+		std::cerr << "Request is invalid [" << e.what() << "]" << std::endl;
 
 		param.call.setInvalidResponse();
 		param.start_read.reset();
@@ -120,7 +127,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	}
 	catch (HTTPCall::ReceivingRequestError &e)
 	{
-		std::cerr << "Request recv error [" << e.what() << "]\n";
+		std::cerr << "Request recv error [" << e.what() << "]" << std::endl;
 
 		param.call.setInternalServerResponse();
 		param.start_read.reset();
@@ -129,6 +136,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	}
 	catch (HTTPCall::ReceivingRequestEmpty &e)
 	{
+		std::cerr << "Request recv empty [" << e.what() << "]" << std::endl;
 		param.start_read.reset();
 		return Poll::DONE_CLOSE_FD;
 	}
@@ -175,9 +183,12 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 	}
 	catch (ServerManager::AcceptingConnectionFailed &e)
 	{
-		std::cerr << "Accepting connection failed [" << e.what() << "]\n";
+		std::cerr << "Accepting connection failed [" << e.what() << "]" << std::endl;
 		return Poll::CONTINUE;
 	}
+
+	std::cout << "New connection [" << client_fd << "]"
+			  << " from: " << *param.src_socket << std::endl;
 
 	Poll::Param new_param = param;
 	new_param.call = HTTPCall(param.src_socket, client_fd);

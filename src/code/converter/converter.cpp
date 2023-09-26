@@ -234,3 +234,18 @@ void converter::mergeSpaces(std::string &str)
 		str.resize(j);
 	}
 }
+
+std::string converter::HTTPResponseSimplified(const std::string &http_response)
+{
+	std::string ret;
+	size_t start;
+	size_t end;
+
+	start = http_response.find(" ");
+	if (start == std::string::npos)
+		return "";
+	end = http_response.find("\r");
+	if (start != std::string::npos && end != std::string::npos)
+		ret = http_response.substr(start + 1, end - start - 1);
+	return ret;
+}
