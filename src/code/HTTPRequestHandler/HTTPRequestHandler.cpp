@@ -64,6 +64,12 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 	{
 		const IPath *root(request.getLocation()->getRoot());
 		Path url(root->get() + request.getBasicRequest().getPath());
+		if (httpRequestHandlerPOST::isFileUpload(request))
+		{
+			FileManager::createFile(request.getBasicRequest(), root->get());
+			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());
+			return (request.setResponse(response.getResponse()));
+		}
 		if (!FileManager::isFileExists(url.get()))
 		{
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::NOT_FOUND),
@@ -81,6 +87,18 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getLocation()->getErrorPageSet());
 		response.setBody(httpRequestHandlerPOST::getFileContent(url.get(), response));
 		return (request.setResponse(response.getResponse()));
+	}
+	catch (const httpRequestHandlerPOST::FORBIDDEN &e)
+	{
+		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::FORBIDDEN),
+									 request.getLocation()->getErrorPageSet());
+		return (request.setResponse(errorResponse.getResponse()));
+	}
+	catch (const FileManager::FileManagerException &e)
+	{
+		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::CONFLICT),
+									 request.getLocation()->getErrorPageSet());
+		return (request.setResponse(errorResponse.getResponse()));
 	}
 	catch (const std::exception &e)
 	{

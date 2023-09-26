@@ -9,7 +9,7 @@ ResponseHeader::ResponseHeader(HTTPStatusCode code, const ErrorPageSet &error_pa
 {
 	_defaultConstructor();
 	setStatusCode(code);
-	if (_isErrorCode(code))
+	if (_isErrorCode(code) || code.get() == HTTPStatusCode::CREATED)
 	{
 		setContentType(httpConstants::HTML_SUFFIX);
 		setConnection(httpConstants::CONNECTION_CLOSE);

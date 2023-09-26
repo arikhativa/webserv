@@ -1,5 +1,17 @@
 #include <httpRequestHandlerPOST/httpRequestHandlerPOST.hpp>
 
+const char *httpRequestHandlerPOST::FORBIDDEN::what() const throw()
+{
+	return ("403 Forbidden");
+}
+
+bool endsWith(std::string const &str, std::string const &suffix)
+{
+	if (str.length() < suffix.length())
+		return false;
+	return std::equal(suffix.rbegin(), suffix.rend(), str.rbegin());
+}
+
 bool httpRequestHandlerPOST::isDirectoryListing(const Path &path, const HTTPCall &request)
 {
 	const ILocation *l = request.getLocation();
@@ -9,6 +21,14 @@ bool httpRequestHandlerPOST::isDirectoryListing(const Path &path, const HTTPCall
 		return (false);
 	}
 	return (FileManager::isDirectory(path.get()) && request.getLocation()->isAutoIndexOn());
+}
+
+bool httpRequestHandlerPOST::isFileUpload(const HTTPCall &request)
+{
+	if (!endsWith(request.getBasicRequest().getPath(), request.getLocation()->getUploadPath()->get()))
+		throw httpRequestHandlerPOST::FORBIDDEN();
+	const std::string &content_type(request.getBasicRequest().getHeaders().at(httpConstants::headers::CONTENT_TYPE));
+	return (content_type.find(httpConstants::headers::FROM_DATA) != std::string::npos);
 }
 
 std::string httpRequestHandlerPOST::getFileContent(const std::string &path, ResponseHeader &response)

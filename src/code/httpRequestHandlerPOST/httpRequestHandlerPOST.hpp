@@ -18,8 +18,14 @@ class HTTPCall;
 namespace httpRequestHandlerPOST
 {
 	bool isDirectoryListing(const Path &path, const HTTPCall &request);
+	bool isFileUpload(const HTTPCall &request);
 	std::string getFileContent(const std::string &path, ResponseHeader &response);
 	std::string getDirectoryContent(const IPath *path, const Path &name);
+
+	class FORBIDDEN : public std::exception
+	{
+		virtual const char *what() const throw();
+	};
 } // namespace httpRequestHandlerPOST
 
 #endif
