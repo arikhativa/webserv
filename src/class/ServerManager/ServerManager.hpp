@@ -23,12 +23,6 @@
 class ServerManager
 {
   public:
-	enum status
-	{
-		OK = 0,
-		INVALID_VIRTUAL_SERVERS
-	};
-
 	ServerManager(const IConf *conf);
 	~ServerManager();
 
@@ -51,7 +45,6 @@ class ServerManager
   private:
 	Poll _poll;
 	const IConf *_conf;
-	enum status _status;
 	std::vector< Socket > _sockets;
 
 	void createServerSockets(const IConf *conf);
