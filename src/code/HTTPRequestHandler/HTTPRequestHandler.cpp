@@ -65,6 +65,7 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 		Path url(root->get() + request.getBasicRequest().getPath());
 		if (request.getBasicRequest().isUploadFile())
 		{
+			std::cout << request.getBasicRequest().getRawRequest() << std::endl;
 			FileManager::createFile(request.getBasicRequest(), root->get());
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());
 			request.setResponse(response.getResponse());
