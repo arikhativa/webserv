@@ -25,6 +25,8 @@ bool httpRequestHandlerPOST::isDirectoryListing(const Path &path, const HTTPCall
 
 bool httpRequestHandlerPOST::isFileUpload(const HTTPCall &request)
 {
+	if (request.getLocation()->canUpload() == false)
+		throw httpRequestHandlerPOST::FORBIDDEN();
 	if (!endsWith(request.getBasicRequest().getPath(), request.getLocation()->getUploadPath()->get()))
 		throw httpRequestHandlerPOST::FORBIDDEN();
 	const std::string &content_type(request.getBasicRequest().getHeaders().at(httpConstants::headers::CONTENT_TYPE));
