@@ -14,7 +14,7 @@ BasicHTTPRequest::BasicHTTPRequest(const std::string &raw_request)
 }
 
 BasicHTTPRequest::BasicHTTPRequest(const BasicHTTPRequest &src)
-	: ABaseHTTPCall(src.getRawRequest())
+	: ABaseHTTPCall(src)
 	, _type(src.getType())
 	, _path(src.getPath())
 	, _query(src.getQuery())

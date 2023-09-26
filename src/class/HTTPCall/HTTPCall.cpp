@@ -19,6 +19,21 @@ HTTPCall::HTTPCall()
 {
 }
 
+HTTPCall::HTTPCall(const HTTPCall &src)
+	: _socket(src._socket)
+	, _client_fd(src._client_fd)
+	, _cgi(src._cgi)
+	, _request_attempts(src._request_attempts)
+	, _response_attempts(src._response_attempts)
+	, _bytes_sent(src._bytes_sent)
+	, _response(src._response)
+	, _basic_request(src._basic_request)
+	, _server_conf(src._server_conf)
+	, _location(src._location)
+	, _local_path(src._local_path)
+{
+}
+
 HTTPCall::HTTPCall(const Socket *socket, int client_fd)
 	: _socket(socket)
 	, _client_fd(client_fd)
@@ -62,6 +77,25 @@ HTTPCall::~HTTPCall()
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
 */
+
+HTTPCall HTTPCall::operator=(const HTTPCall &rhs)
+{
+	if (this != &rhs)
+	{
+		this->_socket = rhs._socket;
+		this->_client_fd = rhs._client_fd;
+		this->_cgi = rhs._cgi;
+		this->_request_attempts = rhs._request_attempts;
+		this->_response_attempts = rhs._response_attempts;
+		this->_bytes_sent = rhs._bytes_sent;
+		this->_response = rhs._response;
+		this->_basic_request = rhs._basic_request;
+		this->_server_conf = rhs._server_conf;
+		this->_location = rhs._location;
+		this->_local_path = rhs._local_path;
+	}
+	return *this;
+}
 
 std::ostream &operator<<(std::ostream &o, HTTPCall const &i)
 {
