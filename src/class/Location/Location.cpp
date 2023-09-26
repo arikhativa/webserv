@@ -14,6 +14,7 @@ Location::Location()
 	, _return(NULL)
 	, _root(NULL)
 	, _cgi()
+	, _upload_store(NULL)
 {
 }
 
@@ -45,6 +46,8 @@ Location::~Location()
 		delete _allowed_methods;
 	if (_root)
 		delete _root;
+	if (_upload_store)
+		delete _upload_store;
 }
 
 /*
@@ -214,6 +217,11 @@ const IPath *Location::getRoot(void) const
 	return _root;
 }
 
+const IPath *Location::getUploadPath(void) const
+{
+	return _upload_store;
+}
+
 void Location::setPath(const std::string &path)
 {
 	if (!_path)
@@ -234,6 +242,13 @@ void Location::setUpload(const std::string &upload)
 		throw InvalidLocationException(Token::Keyword::UPLOAD + " is already set");
 	_upload.setValue(converter::onOffStringToBool(upload));
 	_upload.setOn(true);
+}
+
+void Location::setUploadStore(const std::string &upload_store)
+{
+	if (_upload_store)
+		throw InvalidLocationException(Token::Keyword::UPLOAD_STORE + " is already set");
+	_upload_store = new Path(upload_store);
 }
 
 void Location::setMaxBodySize(const std::string &max_body_size)

@@ -7,6 +7,7 @@ static std::map< std::string, builder::location::t_rule > initRules(void)
 
 	map[Token::Keyword::AUTO_INDEX] = &builder::location::autoIndex;
 	map[Token::Keyword::UPLOAD] = &builder::location::upload;
+	map[Token::Keyword::UPLOAD_STORE] = &builder::location::upload_store;
 	map[Token::Keyword::CLIENT_MAX_BODY_SIZE] = &builder::location::maxBodySize;
 	map[Token::Keyword::ALLOW_METHODS] = &builder::location::allowedMethods;
 	map[Token::Keyword::RETURN] = &builder::location::redirect;
@@ -46,6 +47,17 @@ void builder::location::upload(Location &location, std::list< Token >::const_ite
 {
 	++it;
 	location.setUpload(it->getValue());
+}
+
+void builder::location::upload_store(Location &location, std::list< Token >::const_iterator it)
+{
+	++it;
+
+	std::string tmp = it->getValue();
+	if (tmp[tmp.size() - 1] == '/')
+		tmp = tmp.substr(0, tmp.size() - 1);
+
+	location.setUploadStore(tmp);
 }
 
 void builder::location::maxBodySize(Location &location, std::list< Token >::const_iterator it)

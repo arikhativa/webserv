@@ -42,6 +42,7 @@ class Location : public ILocation
 	virtual const std::list< std::string > &getIndexFiles(void) const;
 	virtual std::list< const IErrorPage * > getErrorPages(void) const;
 	virtual const IPath *getRoot(void) const;
+	virtual const IPath *getUploadPath(void) const;
 	virtual const CGIConf &getCGIConf(void) const;
 	virtual const ErrorPageSet &getErrorPageSet(void) const;
 
@@ -57,6 +58,7 @@ class Location : public ILocation
 	void addErrorPage(const std::string &status, const std::string &path);
 	void setRoot(const std::string &root);
 	void setCGI(const std::string &ext, const std::string &path);
+	void setUploadStore(const std::string &upload_store);
 
 	class InvalidLocationException : public std::exception
 	{
@@ -81,6 +83,7 @@ class Location : public ILocation
 	Path *_root;
 	CGIConf _cgi;
 	ErrorPageSet _error_pages_set;
+	Path *_upload_store;
 
 	void _initErrorPageSet(void);
 };

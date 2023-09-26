@@ -30,6 +30,7 @@ class ILocation
 	virtual bool isAutoIndexOn(void) const = 0;
 	virtual bool canUpload(void) const = 0;
 	virtual const IPath *getRoot(void) const = 0;
+	virtual const IPath *getUploadPath(void) const = 0;
 	virtual const CGIConf &getCGIConf(void) const = 0;
 	virtual const ErrorPageSet &getErrorPageSet(void) const = 0;
 };

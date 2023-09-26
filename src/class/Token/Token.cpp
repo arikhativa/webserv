@@ -19,6 +19,7 @@ const std::string Token::Keyword::LOCATION("location");
 const std::string Token::Keyword::ALLOW_METHODS("allow_methods");
 const std::string Token::Keyword::AUTO_INDEX("autoindex");
 const std::string Token::Keyword::UPLOAD("upload");
+const std::string Token::Keyword::UPLOAD_STORE("upload_store");
 const std::string Token::Keyword::CGI("cgi");
 
 const char Token::CHAR_SEPARATOR(';');
@@ -57,6 +58,7 @@ static std::map< std::string, bool > initKeywords(void)
 	ret[Token::Keyword::ALLOW_METHODS] = true;
 	ret[Token::Keyword::AUTO_INDEX] = true;
 	ret[Token::Keyword::UPLOAD] = true;
+	ret[Token::Keyword::UPLOAD_STORE] = true;
 	ret[Token::Keyword::CGI] = true;
 
 	return ret;
