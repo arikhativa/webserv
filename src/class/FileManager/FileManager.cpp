@@ -103,7 +103,7 @@ bool FileManager::isDirectory(const std::string &path)
 	}
 }
 
-std::string getFileNameUpload(const std::string &body)
+std::string FileManager::getFileNameUpload(const std::string &body)
 {
 	size_t pos = body.find(httpConstants::FILENAME_FIELD_KEY);
 	if (pos == std::string::npos)
@@ -115,7 +115,7 @@ std::string getFileNameUpload(const std::string &body)
 	return (body.substr(pos, pos2 - pos));
 }
 
-std::string getFileContentUpload(const std::string &body)
+std::string FileManager::getFileContentUpload(const std::string &body)
 {
 	size_t pos = body.find(httpConstants::FILENAME_FIELD_KEY);
 	pos += 10;
@@ -132,11 +132,11 @@ std::string getFileContentUpload(const std::string &body)
 void FileManager::createFile(const BasicHTTPRequest &request, const std::string &root)
 {
 	FileManager::isDirectory(root + request.getPath());
-	std::string filename = getFileNameUpload(request.getBody());
+	std::string filename = FileManager::getFileNameUpload(request.getBody());
 	if (FileManager::isFileExists(root + request.getPath() + "/" + filename))
 		throw FileManager::FileManagerException();
 	Path path(root + request.getPath() + "/" + filename);
-	std::string content = getFileContentUpload(request.getBody());
+	std::string content = FileManager::getFileContentUpload(request.getBody());
 	std::ofstream file(path.get().c_str());
 	if (!file.is_open())
 		throw FileManager::FileManagerException();

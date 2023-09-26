@@ -37,6 +37,8 @@ class FileManager
 	static bool isDirectory(const std::string &path);
 	static bool isOpen(const std::fstream &fs);
 	static void createFile(const BasicHTTPRequest &request, const std::string &root);
+	static std::string getFileContentUpload(const std::string &body);
+	static std::string getFileNameUpload(const std::string &body);
 	class FileManagerException : public std::exception
 	{
 		virtual const char *what() const throw();
