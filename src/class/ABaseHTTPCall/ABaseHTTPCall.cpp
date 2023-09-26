@@ -227,7 +227,11 @@ void ABaseHTTPCall::_parseBodyByContentLength(void)
 	start += 4;
 	_body = _raw.substr(start, content_length);
 	if (_body.size() != content_length)
+	{
+		std::cout << "content_length: " << content_length << std::endl;
+		std::cout << "_body: " << _body.size() << std::endl;
 		throw ABaseHTTPCall::Incomplete("body is too short");
+	}
 }
 
 void ABaseHTTPCall::_parseBodyByChunked(void)

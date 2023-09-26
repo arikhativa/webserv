@@ -126,7 +126,7 @@ void CgiManager::readFromCgi(void)
 	int bytes_read = 0;
 	char buffer[BUFFER_SIZE];
 	std::size_t pos;
-	int contentLenght;
+	int contentLength;
 
 	bytes_read = read(this->getReadFd(), buffer, sizeof(buffer));
 	if (bytes_read <= -1)
@@ -138,12 +138,12 @@ void CgiManager::readFromCgi(void)
 		{
 			std::string content_length = _output.substr(pos + httpConstants::CONTENT_LENGHT_FIELD_KEY.length());
 			if ((pos = content_length.find(httpConstants::FIELD_BREAK)) != std::string::npos)
-				contentLenght = converter::stringToInt(content_length.substr(0, pos));
+				contentLength = converter::stringToInt(content_length.substr(0, pos));
 			pos = _output.find(httpConstants::HEADER_BREAK);
 			if ((pos != std::string::npos) &&
-				_output.substr(pos + httpConstants::HEADER_BREAK.length()).length() >= (size_t)contentLenght)
+				_output.substr(pos + httpConstants::HEADER_BREAK.length()).length() >= (size_t)contentLength)
 			{
-				_output = _output.substr(0, pos + httpConstants::HEADER_BREAK.length() + contentLenght);
+				_output = _output.substr(0, pos + httpConstants::HEADER_BREAK.length() + contentLength);
 				return;
 			}
 		}

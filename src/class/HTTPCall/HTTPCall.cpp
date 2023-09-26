@@ -234,7 +234,7 @@ void HTTPCall::handleRequest(void)
 		if (this->isCGI())
 			HTTPRequestHandler::CGI(*this);
 		else
-			HTTPRequestHandler::POST(*this);
+			std::cerr << "POST not implemented" << std::endl;
 		break;
 	case BasicHTTPRequest::DELETE:
 		HTTPRequestHandler::DELETE(*this);

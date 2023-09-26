@@ -51,7 +51,7 @@ void HTTPRequestHandler::GET(HTTPCall &request)
 	}
 	catch (const std::exception &e)
 	{
-		std::cerr << e.what() << std::endl;
+		std::cerr << "GET: " << e.what() << std::endl;
 		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR),
 									 request.getLocation()->getErrorPageSet());
 		return (request.setResponse(errorResponse.getResponse()));
@@ -84,6 +84,7 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 	}
 	catch (const std::exception &e)
 	{
+		std::cerr << "POST: " << e.what() << std::endl;
 		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR),
 									 request.getLocation()->getErrorPageSet());
 		return (request.setResponse(errorResponse.getResponse()));

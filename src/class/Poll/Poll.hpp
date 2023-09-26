@@ -42,6 +42,19 @@ class Poll
 		// CGI flow
 		int write_pipe;
 		int read_pipe;
+
+		Param operator=(const Param &p)
+		{
+			std::cout << "A: " << std::endl;
+			this->start_read = p.start_read;
+			this->conf = p.conf;
+			this->src_listen = p.src_listen;
+			this->src_socket = p.src_socket;
+			this->call = p.call;
+			this->write_pipe = p.write_pipe;
+			this->read_pipe = p.read_pipe;
+			return *this;
+		}
 	};
 
 	enum ret_stt

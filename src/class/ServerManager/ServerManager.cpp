@@ -15,6 +15,7 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 			p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, param);
 			return Poll::DONE_CLOSE_FD;
 		}
+		std::cout << "cgiWrite: " << param.call.getBasicRequest().getBody() << std::endl;
 		param.call.getCgi()->writeToCgi();
 	}
 	catch (CgiManager::CgiManagerException &e)
@@ -107,6 +108,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		if (param.call.getBasicRequest().isBody())
 			param.call.getBasicRequest().parseBody();
 		std::cout << "fd[" << fd << "] --> " << param.call << std::endl;
+		std::cout << "fd[" << fd << "] --> " << param.call.getBasicRequest().getBody() << std::endl;
 	}
 	catch (ABaseHTTPCall::Incomplete &e)
 	{
@@ -120,18 +122,22 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	{
 		std::cerr << "Request is invalid [" << e.what() << "]" << std::endl;
 
-		param.call.setInvalidResponse();
 		param.start_read.reset();
-		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+
+		Poll::Param new_param = param;
+		new_param.call.setInvalidResponse();
+		p.addWrite(new_param.call.getClientFd(), ServerManager::clientWrite, new_param);
 		return Poll::DONE_CLOSE_FD;
 	}
 	catch (HTTPCall::ReceivingRequestError &e)
 	{
 		std::cerr << "Request recv error [" << e.what() << "]" << std::endl;
 
-		param.call.setInternalServerResponse();
 		param.start_read.reset();
-		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+
+		Poll::Param new_param = param;
+		new_param.call.setInternalServerResponse();
+		p.addWrite(new_param.call.getClientFd(), ServerManager::clientWrite, new_param);
 		return Poll::DONE_CLOSE_FD;
 	}
 	catch (HTTPCall::ReceivingRequestEmpty &e)
@@ -147,7 +153,9 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	if (!param.call.isRequestAllowed())
 	{
 		param.start_read.reset();
-		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+
+		Poll::Param new_param = param;
+		p.addWrite(new_param.call.getClientFd(), ServerManager::clientWrite, new_param);
 		return Poll::DONE_CLOSE_FD;
 	}
 
@@ -159,14 +167,24 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		param.read_pipe = param.call.getCgi()->getReadFd();
 
 		param.start_read.reset();
-		fcntl(param.call.getCgi()->getWriteFd(), F_SETFL, O_NONBLOCK);
-		p.addWrite(param.call.getCgi()->getWriteFd(), ServerManager::cgiWrite, param);
+
+		Poll::Param new_param;
+		new_param = param;
+		// new_param.call = param.call;
+
+		fcntl(new_param.call.getCgi()->getWriteFd(), F_SETFL, O_NONBLOCK);
+		std::cout << "isCGI param: " << param.call.getBasicRequest().getBody().size() << std::endl;
+		std::cout << "isCGI new: " << new_param.call.getBasicRequest().getBody().size() << std::endl;
+		p.addWrite(new_param.call.getCgi()->getWriteFd(), ServerManager::cgiWrite, new_param);
 		return Poll::DONE_NO_CLOSE_FD;
 	}
 	else
 	{
 		param.start_read.reset();
-		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+
+		Poll::Param new_param = param;
+
+		p.addWrite(new_param.call.getClientFd(), ServerManager::clientWrite, new_param);
 		return Poll::DONE_CLOSE_FD;
 	}
 }

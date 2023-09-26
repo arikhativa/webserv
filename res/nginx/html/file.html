@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>multipart/form-data</title>
+</head>
+<body>
+ 
+	<form action="/file.php" enctype="multipart/form-data" method="post" name="fileinfo">
+		<p>
+		  <label
+			>File to stash:
+			<input type="file" name="file"  />
+		  </label>
+		</p>
+		<p>
+		  <input type="submit" value="Stash the file!" />
+		</p>
+	  </form>
+	  <div id="output"></div>
+	  
+
+
+</body>
+</html>
