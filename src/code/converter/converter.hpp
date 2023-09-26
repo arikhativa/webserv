@@ -32,6 +32,7 @@ namespace converter
 	std::string headersToString(std::map< std::string, std::string > map);
 	std::string removeQuotesIfNeeded(std::string &str);
 	void mergeSpaces(std::string &str);
+	std::string HTTPResponseSimplified(const std::string &http_response);
 
 } // namespace converter
 

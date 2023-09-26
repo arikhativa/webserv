@@ -65,7 +65,8 @@ HTTPCall::~HTTPCall()
 
 std::ostream &operator<<(std::ostream &o, HTTPCall const &i)
 {
-	o << "HTTPCall[" << i.getBasicRequest() << "]";
+	o << i.getBasicRequest().toSimplifiedHTTP();
+
 	return o;
 }
 

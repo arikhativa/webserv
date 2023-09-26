@@ -75,7 +75,7 @@ Socket::~Socket()
 
 std::ostream &operator<<(std::ostream &o, Socket const &i)
 {
-	o << "Socket[" << i.getFd() << "]";
+	o << i.getIp() << ":" << i.getPort().get() << ":[" << i.getFd() << "]";
 	return o;
 }
 
