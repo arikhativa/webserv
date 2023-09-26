@@ -204,7 +204,6 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 ServerManager::ServerManager(const IConf *conf)
 	: _poll()
 	, _conf(conf)
-	, _status(ServerManager::OK)
 {
 	createServerSockets(conf);
 	this->_poll = Poll();
