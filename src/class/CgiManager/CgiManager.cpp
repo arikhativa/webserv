@@ -73,7 +73,7 @@ void CgiManager::_setEnv(void)
 			_basicHTTPRequest.getHeaders().at(httpConstants::headers::CONTENT_LENGTH);
 	}
 	if (_basicHTTPRequest.getHeaders().find(httpConstants::CONTENT_TYPE_FIELD) != _basicHTTPRequest.getHeaders().end())
-		env[httpConstants::CONTENT_TYPE_FIELD] = _basicHTTPRequest.getHeaders().at(httpConstants::CONTENT_TYPE_FIELD);
+		env[httpConstants::cgi::CONTENT_TYPE] = _basicHTTPRequest.getHeaders().at(httpConstants::CONTENT_TYPE_FIELD);
 	env[httpConstants::REQUEST_METHOD] = BasicHTTPRequest::toStringType(_basicHTTPRequest.getType());
 	env[httpConstants::SCRIPT_FILENAME] = _pathCGI.get();
 	if (_basicHTTPRequest.getQuery().length() > 1)
@@ -86,8 +86,6 @@ void CgiManager::_setEnv(void)
 	std::string l(_local_path.get());
 	size_t pos = l.find(_root);
 	if (pos != std::string::npos)
-		std::cout << pos << std::endl;
-	if (pos != std::string::npos)
 	{
 		tmp = l.substr(pos + _root.length());
 	}
@@ -99,8 +97,7 @@ void CgiManager::_setEnv(void)
 
 	std::map< std::string, std::string >::const_iterator it = env.begin();
 	for (int i = 0; it != env.end(); it++, i++)
-		_env.add(it->first + "=" + it->second);
-	// std::cout << "env: " << env << std::endl;
+		_env.add("HTTP_" + it->first + "=" + it->second);
 }
 
 void CgiManager::_setArgv(void)

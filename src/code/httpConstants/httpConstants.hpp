@@ -44,6 +44,7 @@ namespace httpConstants
 
 	namespace cgi
 	{
+		const std::string CONTENT_TYPE("CONTENT_TYPE");
 		const std::string GATEWAY_INTERFACE("GATEWAY_INTERFACE");
 		const std::string GATEWAY_INTERFACE_STD("CGI/1.1");
 		const std::string SCRIPT_NAME("SCRIPT_NAME");
