@@ -208,3 +208,26 @@ TEST(builder, validateNoDupLocations)
 
 	delete conf;
 }
+
+TEST(builder, uploadStore)
+{
+	const char *file_name = "res/tests/builder/upload.conf";
+	std::fstream fs(file_name);
+	std::list< Token > list = lexer::tokenize(fs);
+	if (false == parser::validate(list))
+	{
+		EXIT_FAILURE;
+	}
+
+	const IConf *conf = builder::createConf(file_name, list);
+	std::list< const IServerConf * > servers = conf->getServers();
+	std::list< const IServerConf * >::iterator s_it = servers.begin();
+	std::list< const ILocation * > l = (*s_it)->getLocations();
+	std::list< const ILocation * >::iterator it = l.begin();
+
+	EXPECT_EQ("/upload", (*it)->getPath().get());
+	EXPECT_EQ(true, (*it)->canUpload());
+	EXPECT_EQ("/tmp", (*it)->getUploadPath()->get());
+
+	delete conf;
+}

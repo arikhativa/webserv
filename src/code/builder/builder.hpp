@@ -47,6 +47,7 @@ namespace builder
 		void path(Location &location, std::list< Token >::const_iterator it);
 		void autoIndex(Location &location, std::list< Token >::const_iterator it);
 		void upload(Location &location, std::list< Token >::const_iterator it);
+		void upload_store(Location &location, std::list< Token >::const_iterator it);
 		void maxBodySize(Location &location, std::list< Token >::const_iterator it);
 		void allowedMethods(Location &location, std::list< Token >::const_iterator it);
 		void redirect(Location &location, std::list< Token >::const_iterator it);
