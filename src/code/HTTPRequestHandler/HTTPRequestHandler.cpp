@@ -63,7 +63,7 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 	{
 		const IPath *root(request.getLocation()->getRoot());
 		Path url(root->get() + request.getBasicRequest().getPath());
-		if (httpRequestHandlerPOST::isFileUpload(request))
+		if (request.getBasicRequest().isUploadFile())
 		{
 			FileManager::createFile(request.getBasicRequest(), root->get());
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());

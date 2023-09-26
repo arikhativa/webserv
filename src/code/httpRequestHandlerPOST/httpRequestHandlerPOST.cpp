@@ -23,16 +23,6 @@ bool httpRequestHandlerPOST::isDirectoryListing(const Path &path, const HTTPCall
 	return (FileManager::isDirectory(path.get()) && request.getLocation()->isAutoIndexOn());
 }
 
-bool httpRequestHandlerPOST::isFileUpload(const HTTPCall &request)
-{
-	if (request.getLocation()->canUpload() == false)
-		throw httpRequestHandlerPOST::FORBIDDEN();
-	if (!endsWith(request.getBasicRequest().getPath(), request.getLocation()->getUploadPath()->get()))
-		throw httpRequestHandlerPOST::FORBIDDEN();
-	const std::string &content_type(request.getBasicRequest().getHeaders().at(httpConstants::headers::CONTENT_TYPE));
-	return (content_type.find(httpConstants::headers::FROM_DATA) != std::string::npos);
-}
-
 std::string httpRequestHandlerPOST::getFileContent(const std::string &path, ResponseHeader &response)
 {
 	if (path.find(".") != std::string::npos)
