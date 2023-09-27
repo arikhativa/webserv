@@ -164,12 +164,13 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 
 	param.call.finalizeRequest();
 
-	if (param.call.isCGI() && !param.call.isCGIValid())
-	{
-		param.start_read.reset();
-		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
-		return Poll::DONE_CLOSE_FD;
-	}
+	if (param.call.getLocation()->getCGIConf().isSet())
+		if (!param.call.isCGIValid())
+		{
+			param.start_read.reset();
+			p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+			return Poll::DONE_CLOSE_FD;
+		}
 
 	param.call.handleRequest();
 	if (param.call.isCGI())

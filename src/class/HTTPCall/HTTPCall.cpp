@@ -200,6 +200,16 @@ bool HTTPCall::_isCGIFileExist(void)
 	return true;
 }
 
+bool HTTPCall::_isCGIExtAllowed(void)
+{
+	if (this->getBasicRequest().getType() != BasicHTTPRequest::POST)
+		return true;
+	if (this->getLocation()->getCGIConf().isSet())
+		if (this->getLocation()->getCGIConf().getExtension() != this->getExtension())
+			return false;
+	return true;
+}
+
 bool HTTPCall::isCGIValid(void)
 {
 	HTTPStatusCode stt(HTTPStatusCode::ACCEPTED);
@@ -208,7 +218,8 @@ bool HTTPCall::isCGIValid(void)
 		stt = HTTPStatusCode::BAD_GATEWAY;
 	if (!_isCGIFileExist())
 		stt = HTTPStatusCode::NOT_FOUND;
-
+	if (!_isCGIExtAllowed())
+		stt = HTTPStatusCode::FORBIDDEN;
 	if (stt != HTTPStatusCode::ACCEPTED)
 	{
 		ResponseHeader response(stt, getLocation()->getErrorPageSet());
