@@ -266,7 +266,6 @@ void HTTPCall::recvRequest(void)
 	this->_basic_request.extenedRaw(tmp_raw);
 	this->_bytes_recieved += tmp_recv_len;
 	std::cout << "RECV: " << tmp_recv_len << std::endl;
-	// std::cout << this->getBasicRequest().getRawRequest() << std::endl;
 	if (tmp_recv_len >= HTTPCall::RECV_BUFFER_SIZE)
 		throw ABaseHTTPCall::Incomplete("body is too short");
 }
