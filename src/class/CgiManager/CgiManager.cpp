@@ -65,18 +65,27 @@ std::ostream &operator<<(std::ostream &o, CgiManager const &i)
 void CgiManager::_setEnv(void)
 {
 	std::map< std::string, std::string > env;
-	if (_basicHTTPRequest.getHeaders().find(httpConstants::CONTENT_LENGTH) != _basicHTTPRequest.getHeaders().end())
-		env[httpConstants::CONTENT_LENGTH] = _basicHTTPRequest.getHeaders().at(httpConstants::CONTENT_LENGTH);
-	if (_basicHTTPRequest.getHeaders().find(httpConstants::CONTENT_TYPE_FIELD) != _basicHTTPRequest.getHeaders().end())
-		env[httpConstants::CONTENT_TYPE_FIELD] = _basicHTTPRequest.getHeaders().at(httpConstants::CONTENT_TYPE_FIELD);
-	env[httpConstants::REQUEST_METHOD] = _basicHTTPRequest.getType();
-	env[httpConstants::SCRIPT_FILENAME] = _pathCGI.get();
+
+	std::map< std::string, std::string >::const_iterator cit =
+		_basicHTTPRequest.getHeaders().find(httpConstants::headers::CONTENT_LENGTH);
+
+	if (cit != _basicHTTPRequest.getHeaders().end())
+		env[httpConstants::cgi::CONTENT_LENGTH] = cit->second;
+
+	cit = _basicHTTPRequest.getHeaders().find(httpConstants::headers::CONTENT_TYPE);
+	if (cit != _basicHTTPRequest.getHeaders().end())
+		env[httpConstants::cgi::CONTENT_TYPE] = cit->second;
+
+	env[httpConstants::cgi::REQUEST_METHOD] = BasicHTTPRequest::toStringType(_basicHTTPRequest.getType());
+	env[httpConstants::cgi::SCRIPT_FILENAME] = _pathCGI.get();
 	if (_basicHTTPRequest.getQuery().length() > 1)
-		env[httpConstants::QUERY_STRING] = _basicHTTPRequest.getQuery().substr(1);
-	env[httpConstants::SERVER_PROTOCOL] = _basicHTTPRequest.getHTTPVersion();
-	env[httpConstants::SERVER_PORT] = _port;
-	env[httpConstants::SERVER_NAME] = _serverName;
-	env[httpConstants::PATH_INFO] = _basicHTTPRequest.getPath();
+		env[httpConstants::cgi::QUERY_STRING] = _basicHTTPRequest.getQuery().substr(1);
+	env[httpConstants::cgi::SERVER_PROTOCOL] = ABaseHTTPCall::toStringVersion(_basicHTTPRequest.getHTTPVersion());
+	env[httpConstants::cgi::SERVER_PORT] = _port;
+	env[httpConstants::cgi::SERVER_NAME] = _serverName;
+	env[httpConstants::cgi::PATH_INFO] = _basicHTTPRequest.getPath();
+	env[httpConstants::cgi::SCRIPT_NAME] = _basicHTTPRequest.getPath();
+	env[httpConstants::cgi::SERVER_SOFTWARE] = httpConstants::SERVER_FIELD_VALUE;
 
 	std::map< std::string, std::string >::const_iterator it = env.begin();
 	for (int i = 0; it != env.end(); it++, i++)

@@ -82,8 +82,6 @@ class CgiManager
 	void _setArgv(void);
 	static int _createFork(void);
 	void _childProcess(void);
-	std::string _parentProcess(int pid);
-	std::string _readCgiOutput(int pid);
 
 	static const int ERROR;
 	static const int CHILD;

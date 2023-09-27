@@ -27,20 +27,27 @@ namespace httpConstants
 	const std::string ALLOW_HEADER("Allow: ");
 	const std::string CONNECTION_ALIVE("keep-alive");
 	const std::string CONNECTION_CLOSE("close");
-	const std::string SERVER_NAME("SERVER_NAME");
-	const std::string SERVER_PORT("SERVER_PORT");
-	const std::string SERVER_PROTOCOL("SERVER_PROTOCOL");
-	const std::string QUERY_STRING("QUERY_STRING");
-	const std::string SCRIPT_FILENAME("SCRIPT_FILENAME");
-	const std::string REQUEST_METHOD("REQUEST_METHOD");
 	const std::string CONTENT_TYPE("CONTENT_TYPE");
-	const std::string CONTENT_LENGTH("CONTENT_LENGTH");
 	const std::string UPLOAD_DIR("UPLOAD_DIR");
-	const std::string PATH_INFO("PATH_INFO");
 	const std::string PREVIOUS_DIR("/..");
 	const std::string ACTUAL_DIR("/.");
 	const std::string SEPARATOR(":");
 	const std::string SPACE(" ");
+
+	namespace cgi
+	{
+		const std::string SCRIPT_NAME("SCRIPT_NAME");
+		const std::string SERVER_SOFTWARE("SERVER_SOFTWARE");
+		const std::string PATH_INFO("PATH_INFO");
+		const std::string CONTENT_LENGTH("CONTENT_LENGTH");
+		const std::string CONTENT_TYPE("CONTENT_TYPE");
+		const std::string REQUEST_METHOD("REQUEST_METHOD");
+		const std::string QUERY_STRING("QUERY_STRING");
+		const std::string SERVER_NAME("SERVER_NAME");
+		const std::string SERVER_PORT("SERVER_PORT");
+		const std::string SERVER_PROTOCOL("SERVER_PROTOCOL");
+		const std::string SCRIPT_FILENAME("SCRIPT_FILENAME");
+	} // namespace cgi
 
 	namespace headers
 	{
