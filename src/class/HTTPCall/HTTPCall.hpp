@@ -24,8 +24,11 @@ class HTTPCall
 	static const int MAX_CHUNK_ATTEMPTS;
 	static const int RECV_BUFFER_SIZE;
 	HTTPCall();
+	HTTPCall(const HTTPCall &src);
 	explicit HTTPCall(const Socket *socket, int client_fd);
 	~HTTPCall();
+
+	HTTPCall operator=(const HTTPCall &rhs);
 
 	BasicHTTPRequest &getBasicRequest(void);
 	const BasicHTTPRequest &getBasicRequest(void) const;
@@ -40,7 +43,6 @@ class HTTPCall
 	const Socket *getSocket(void) const;
 	std::list< const IErrorPage * > getErrorPages(void) const;
 	void parseRawRequest(void);
-	std::list< const ILocation * >::const_iterator searchMatchLocation(void) const;
 	bool isCGI(void) const;
 	const IServerConf *getServerConf(void) const;
 	const ILocation *getLocation(void) const;
