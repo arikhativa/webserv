@@ -109,7 +109,6 @@ class HTTPCall
 	void _setLocalPath(void);
 	bool _isMethodAllowed(void);
 	bool _isBodySizeAllowed(void);
-	bool _isUploadAllowed(void);
 	bool _isCGIFileExist(void);
 	bool _isCGIExecExist(void);
 };

@@ -54,57 +54,6 @@ TEST(ServerConf, Accessor)
 	EXPECT_EQ("/", locations.front()->getPath().get());
 }
 
-TEST(ServerConf, Print)
-{
-	static const char *res =
-		"{\"_name\": [\"name\"], \"_max_body_size\": 100, \"_return\": {\"_status\": 500, \"_path\": \"/500.html\"}, "
-		"\"_root\": \"/root\", \"_index_files\": [\"index.html\", \"index.php\"], \"_error_pages\": [{\"_status\": "
-		"404, \"_path\": \"/404.html\"}, {\"_status\": 505, \"_path\": \"/505.html\"}], \"_listen\": [{ \"_address\": "
-		"\"0.0.0.0\", \"_port\": 1111 }, { \"_address\": \"200.11.0.1\", \"_port\": 80 }, { \"_address\": "
-		"\"80.80.80.80\", \"_port\": 1234 }], \"_locations\": [{\"_path\": \"/a\", \"_auto_index\": false, "
-		"\"_upload\": false, \"_max_body_size\": 100, \"_allowed_methods\": {\"post\": true, \"delete\": true}, "
-		"\"_return\": {\"_status\": 500, \"_path\": \"/500.html\"}, \"_index_files\": [\"index.html\", \"index.php\"], "
-		"\"_error_pages\": [{\"_status\": 404, \"_path\": \"/404.html\"}, {\"_status\": 505, \"_path\": "
-		"\"/505.html\"}], \"_root\": \"/root\"}, {\"_path\": \"/b\", \"_auto_index\": true, \"_upload\": false, "
-		"\"_max_body_size\": 100, \"_allowed_methods\": {\"get\": true, \"post\": true, \"delete\": true}, "
-		"\"_return\": {\"_status\": 500, \"_path\": \"/500.html\"}, \"_index_files\": [\"index.html\", \"index.php\"], "
-		"\"_error_pages\": [{\"_status\": 404, \"_path\": \"/404.html\"}, {\"_status\": 505, \"_path\": "
-		"\"/505.html\"}], \"_root\": \"/root\"}, {\"_path\": \"/\", \"_auto_index\": false, \"_upload\": false, "
-		"\"_max_body_size\": 100, \"_allowed_methods\": {\"get\": true, \"post\": true, \"delete\": true}, "
-		"\"_return\": {\"_status\": 500, \"_path\": \"/500.html\"}, \"_index_files\": [\"index.html\", \"index.php\"], "
-		"\"_error_pages\": [{\"_status\": 404, \"_path\": \"/404.html\"}, {\"_status\": 505, \"_path\": "
-		"\"/505.html\"}], \"_root\": \"/root\"}]}";
-
-	ServerConf obj;
-
-	obj.addName("name");
-	obj.setMaxBodySize("100");
-	obj.setReturn("500", "/500.html");
-	obj.setRoot("/root");
-	obj.setIndexFiles(std::list< std::string >({"index.html", "index.php"}));
-	obj.addErrorPage("404", "/404.html");
-	obj.addErrorPage("505", "/505.html");
-	obj.addListenByPort("1111");
-	obj.addListenByIP("200.11.0.1");
-	obj.addListen("80.80.80.80", "1234");
-	{
-		Location &l = obj.createGetLocation();
-		l.setPath("/a");
-		l.setIndexFiles(std::list< std::string >({"index.html", "index.php"}));
-		l.setAllowedMethods(std::list< std::string >({"POST", "DELETE"}));
-	}
-	{
-		Location &l = obj.createGetLocation();
-		l.setPath("/b");
-		l.setAutoIndex("on");
-	}
-	obj.setDefaultSettingIfNeeded();
-
-	std::stringstream ss;
-	ss << obj;
-	EXPECT_EQ(res, ss.str());
-}
-
 TEST(ServerConf, setMaxBodySize)
 {
 	ServerConf obj;

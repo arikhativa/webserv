@@ -28,7 +28,6 @@ static std::map< std::string, bool > initLocationValidKeywords(void)
 	map[Token::Keyword::RETURN] = true;
 	map[Token::Keyword::AUTO_INDEX] = true;
 	map[Token::Keyword::ERROR_PAGE] = true;
-	map[Token::Keyword::UPLOAD] = true;
 	map[Token::Keyword::UPLOAD_STORE] = true;
 	map[Token::Keyword::CGI] = true;
 

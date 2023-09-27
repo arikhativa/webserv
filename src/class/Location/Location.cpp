@@ -61,7 +61,6 @@ std::ostream &operator<<(std::ostream &o, Location const &i)
 	o << "{"
 	  << "\"_path\": \"" << i.getPath().get() << "\", "
 	  << "\"_auto_index\": " << i.isAutoIndexOn() << ", "
-	  << "\"_upload\": " << i.canUpload() << ", "
 	  << "\"_max_body_size\": " << i.getMaxBodySize() << ", "
 	  << "\"_allowed_methods\": " << i.getAllowedMethods() << ", ";
 
@@ -123,8 +122,6 @@ void Location::setDefaultSettingIfNeeded(void)
 {
 	if (!_auto_index.isOn())
 		setAutoIndex("off");
-	if (!_upload.isOn())
-		setUpload("off");
 	if (!_allowed_methods)
 	{
 		_allowed_methods = new AllowedMethods();
@@ -205,19 +202,12 @@ bool Location::isAutoIndexOn(void) const
 	return false;
 }
 
-bool Location::canUpload(void) const
-{
-	if (_upload.isOn())
-		return _upload.getValue();
-	return false;
-}
-
 const IPath *Location::getRoot(void) const
 {
 	return _root;
 }
 
-const IPath *Location::getUploadPath(void) const
+const IPath *Location::getUploadStore(void) const
 {
 	return _upload_store;
 }
@@ -234,14 +224,6 @@ void Location::setAutoIndex(const std::string &auto_index)
 		throw InvalidLocationException(Token::Keyword::AUTO_INDEX + " is already set");
 	_auto_index.setValue(converter::onOffStringToBool(auto_index));
 	_auto_index.setOn(true);
-}
-
-void Location::setUpload(const std::string &upload)
-{
-	if (_upload.isOn())
-		throw InvalidLocationException(Token::Keyword::UPLOAD + " is already set");
-	_upload.setValue(converter::onOffStringToBool(upload));
-	_upload.setOn(true);
 }
 
 void Location::setUploadStore(const std::string &upload_store)
