@@ -302,4 +302,14 @@ std::string ABaseHTTPCall::getRawBody(void) const
 	return _raw.substr(start, _raw.size() - start);
 }
 
+std::string ABaseHTTPCall::getRawHeader(void) const
+{
+	std::size_t start = _raw.find(httpConstants::HEADER_BREAK);
+	if (start == std::string::npos)
+		throw ABaseHTTPCall::Invalid("missing body");
+	start += 4;
+
+	return _raw.substr(0, start);
+}
+
 /* ************************************************************************** */

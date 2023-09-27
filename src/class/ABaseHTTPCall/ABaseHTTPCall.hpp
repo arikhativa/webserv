@@ -68,6 +68,7 @@ class ABaseHTTPCall
 	const std::map< std::string, std::string > &getHeaders(void) const;
 	const std::string &getBody(void) const;
 	std::string getRawBody(void) const;
+	std::string getRawHeader(void) const;
 	bool isChunked(void) const;
 	bool isBody(void) const;
 	void extenedRaw(const std::string &raw);

@@ -162,7 +162,7 @@ bool HTTPCall::_isBodySizeAllowed(void)
 		return true;
 
 	if (getBasicRequest().isBody())
-		return max >= (this->_bytes_recieved - getBasicRequest().getHeaders().size());
+		return max >= (this->_bytes_recieved - getBasicRequest().getRawHeader().size());
 	return true;
 }
 
