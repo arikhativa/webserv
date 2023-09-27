@@ -196,6 +196,43 @@ void HTTPCall::setInternalServerResponse(void)
 	setResponse(response.getResponse());
 }
 
+bool HTTPCall::_isCGIExecExist(void)
+{
+	if (!FileManager::isFileExists(getLocation()->getCGIConf().getPath().get()))
+	{
+		return false;
+	}
+	return true;
+}
+
+bool HTTPCall::_isCGIFileExist(void)
+{
+	if (!FileManager::isFileExists(getLocalPath().get()))
+	{
+		return false;
+	}
+	return true;
+}
+
+bool HTTPCall::isCGIValid(void)
+{
+	HTTPStatusCode stt(HTTPStatusCode::ACCEPTED);
+
+	if (!_isCGIExecExist())
+		stt = HTTPStatusCode::BAD_GATEWAY;
+	if (!_isCGIFileExist())
+		stt = HTTPStatusCode::NOT_FOUND;
+
+	if (stt != HTTPStatusCode::ACCEPTED)
+	{
+		ResponseHeader response(stt, getLocation()->getErrorPageSet());
+		setResponse(response.getResponse());
+		return false;
+	}
+
+	return true;
+}
+
 bool HTTPCall::isRequestAllowed(void)
 {
 	HTTPStatusCode stt(HTTPStatusCode::ACCEPTED);

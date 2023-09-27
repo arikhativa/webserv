@@ -38,10 +38,6 @@ class Poll
 
 		// initSocketsHandler
 		HTTPCall call;
-
-		// CGI flow
-		int write_pipe;
-		int read_pipe;
 	};
 
 	enum ret_stt

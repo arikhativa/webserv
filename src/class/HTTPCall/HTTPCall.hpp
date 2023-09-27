@@ -57,6 +57,7 @@ class HTTPCall
 	void setCgi(CgiManager *cgi);
 
 	bool isRequestAllowed(void);
+	bool isCGIValid(void);
 	void setInvalidResponse(void);
 	void setInternalServerResponse(void);
 	void finalizeRequest(void);
@@ -109,6 +110,8 @@ class HTTPCall
 	bool _isMethodAllowed(void);
 	bool _isBodySizeAllowed(void);
 	bool _isUploadAllowed(void);
+	bool _isCGIFileExist(void);
+	bool _isCGIExecExist(void);
 };
 
 std::ostream &operator<<(std::ostream &o, HTTPCall const &i);
