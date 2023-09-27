@@ -28,9 +28,8 @@ class ILocation
 	virtual std::list< const IErrorPage * > getErrorPages(void) const = 0;
 	virtual std::size_t getMaxBodySize(void) const = 0;
 	virtual bool isAutoIndexOn(void) const = 0;
-	virtual bool canUpload(void) const = 0;
 	virtual const IPath *getRoot(void) const = 0;
-	virtual const IPath *getUploadPath(void) const = 0;
+	virtual const IPath *getUploadStore(void) const = 0;
 	virtual const CGIConf &getCGIConf(void) const = 0;
 	virtual const ErrorPageSet &getErrorPageSet(void) const = 0;
 };

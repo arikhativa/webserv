@@ -34,7 +34,6 @@ class Token
 		static const std::string LOCATION;
 		static const std::string ALLOW_METHODS;
 		static const std::string AUTO_INDEX;
-		static const std::string UPLOAD;
 		static const std::string UPLOAD_STORE;
 		static const std::string CGI;
 	};

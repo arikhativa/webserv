@@ -39,7 +39,7 @@ class BasicHTTPRequest : public ABaseHTTPCall
 	virtual void unParse(void);
 	void setPath(const std::string &path);
 
-	bool isUploadFile(void) const;
+	bool isMultiForm(void) const;
 	Type getType(void) const;
 	const std::string &getPath(void) const;
 	const std::string &getQuery(void) const;

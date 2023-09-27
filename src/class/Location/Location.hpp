@@ -35,14 +35,13 @@ class Location : public ILocation
 
 	virtual const IPath &getPath(void) const;
 	virtual bool isAutoIndexOn(void) const;
-	virtual bool canUpload(void) const;
 	virtual std::size_t getMaxBodySize(void) const;
 	virtual const IAllowedMethods &getAllowedMethods(void) const;
 	virtual const IReturn *getReturn(void) const;
 	virtual const std::list< std::string > &getIndexFiles(void) const;
 	virtual std::list< const IErrorPage * > getErrorPages(void) const;
 	virtual const IPath *getRoot(void) const;
-	virtual const IPath *getUploadPath(void) const;
+	virtual const IPath *getUploadStore(void) const;
 	virtual const CGIConf &getCGIConf(void) const;
 	virtual const ErrorPageSet &getErrorPageSet(void) const;
 
@@ -50,7 +49,6 @@ class Location : public ILocation
 
 	void setPath(const std::string &path);
 	void setAutoIndex(const std::string &auto_index);
-	void setUpload(const std::string &upload);
 	void setMaxBodySize(const std::string &max_body_size);
 	void setAllowedMethods(const std::list< std::string > &allowed_methods);
 	void setReturn(const std::string &status, const std::string &path);

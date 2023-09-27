@@ -101,7 +101,6 @@ TEST(builder, FullFile)
 		EXPECT_EQ(false, (*it)->getAllowedMethods().isAllowed(IAllowedMethods::GET));
 		EXPECT_EQ(20, (*it)->getMaxBodySize());
 		EXPECT_EQ(false, (*it)->isAutoIndexOn());
-		EXPECT_EQ(false, (*it)->canUpload());
 	}
 
 	// server #2
@@ -144,7 +143,6 @@ TEST(builder, FullFile)
 		EXPECT_EQ(false, (*it)->getAllowedMethods().isAllowed(IAllowedMethods::GET));
 		EXPECT_EQ(0, (*it)->getMaxBodySize());
 		EXPECT_EQ(true, (*it)->isAutoIndexOn());
-		EXPECT_EQ(true, (*it)->canUpload());
 		{
 			std::list< std::string > loc_list = (*it)->getIndexFiles();
 			std::list< std::string >::iterator l_it = loc_list.begin();
@@ -168,7 +166,6 @@ TEST(builder, FullFile)
 		EXPECT_EQ(true, (*it)->getAllowedMethods().isAllowed(IAllowedMethods::GET));
 		EXPECT_EQ(555, (*it)->getMaxBodySize());
 		EXPECT_EQ(false, (*it)->isAutoIndexOn());
-		EXPECT_EQ(true, (*it)->canUpload());
 		EXPECT_EQ(false, (*it)->getCGIConf().isSet());
 	}
 
@@ -226,8 +223,7 @@ TEST(builder, uploadStore)
 	std::list< const ILocation * >::iterator it = l.begin();
 
 	EXPECT_EQ("/upload", (*it)->getPath().get());
-	EXPECT_EQ(true, (*it)->canUpload());
-	EXPECT_EQ("/tmp", (*it)->getUploadPath()->get());
+	EXPECT_EQ("/tmp", (*it)->getUploadStore()->get());
 
 	delete conf;
 }
