@@ -78,7 +78,7 @@ Poll::ret_stt ServerManager::clientWrite(Poll &p, int fd, int revents, Poll::Par
 
 		BasicHTTPRequest::Type t = param.call.getBasicRequest().getType();
 
-		std::cout << "fd[" << fd << "] <-- " << BasicHTTPRequest::toStringType(t) << " "
+		std::cout << "[" << fd << "] <-- " << BasicHTTPRequest::toStringType(t) << " "
 				  << param.call.getBasicRequest().getPath() << " "
 				  << converter::HTTPResponseSimplified(param.call.getResponse()) << std::endl;
 	}
@@ -106,7 +106,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		param.call.getBasicRequest().parseRaw();
 		if (param.call.getBasicRequest().isBody())
 			param.call.getBasicRequest().parseBody();
-		std::cout << "fd[" << fd << "] --> " << param.call << std::endl;
+		std::cout << "[" << fd << "] --> " << param.call << std::endl;
 	}
 	catch (ABaseHTTPCall::Incomplete &e)
 	{
@@ -152,12 +152,17 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	}
 
 	param.call.finalizeRequest();
+
+	if (param.call.isCGI() && !param.call.isCGIValid())
+	{
+		param.start_read.reset();
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+		return Poll::DONE_CLOSE_FD;
+	}
+
 	param.call.handleRequest();
 	if (param.call.isCGI())
 	{
-		param.write_pipe = param.call.getCgi()->getWriteFd();
-		param.read_pipe = param.call.getCgi()->getReadFd();
-
 		param.start_read.reset();
 		fcntl(param.call.getCgi()->getWriteFd(), F_SETFL, O_NONBLOCK);
 		p.addWrite(param.call.getCgi()->getWriteFd(), ServerManager::cgiWrite, param);
@@ -187,7 +192,7 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 		return Poll::CONTINUE;
 	}
 
-	std::cout << "New connection [" << client_fd << "]"
+	std::cout << "New connection\t[" << client_fd << "]"
 			  << " from: " << *param.src_socket << std::endl;
 
 	Poll::Param new_param = param;
@@ -263,7 +268,6 @@ void ServerManager::createServerSockets(const IConf *conf)
 			}
 		}
 	}
-	std::cout << "Listening on " << this->_sockets.size() << " different sockets..." << std::endl;
 }
 
 void ServerManager::setup()
