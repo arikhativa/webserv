@@ -64,7 +64,7 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	{
 		param.call.cgiToResponse();
 	}
-	catch(const std::exception& e)
+	catch (const std::exception &e)
 	{
 		std::cerr << "CGI response error [" << e.what() << "]" << std::endl;
 		param.call.setInternalServerResponse();
