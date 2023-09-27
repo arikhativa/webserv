@@ -56,7 +56,7 @@ class HTTPCall
 
 	bool isRequestAllowed(void);
 	bool isCGIValid(void);
-	bool isCGIExtAllowed(void);
+	bool isCGIPostExtAllowed(void);
 	void setInvalidResponse(void);
 	void setInternalServerResponse(void);
 	void finalizeRequest(void);
@@ -109,7 +109,6 @@ class HTTPCall
 	bool _isBodySizeAllowed(void);
 	bool _isCGIFileExist(void);
 	bool _isCGIExecExist(void);
-	bool _isCGIExtAllowed(void);
 };
 
 std::ostream &operator<<(std::ostream &o, HTTPCall const &i);
