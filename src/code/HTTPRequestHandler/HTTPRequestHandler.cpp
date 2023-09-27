@@ -63,10 +63,18 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 	{
 		const IPath *root(request.getLocation()->getRoot());
 		Path url(root->get() + request.getBasicRequest().getPath());
-		if (request.getBasicRequest().isUploadFile())
+		if (request.getLocation()->getUploadStore())
 		{
-			std::cout << request.getBasicRequest().getRawRequest() << std::endl;
-			FileManager::createFile(request.getBasicRequest(), root->get());
+			FileManager::createFile(request.getBasicRequest(), request.getLocation()->getUploadStore()->get());
+			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());
+			request.setResponse(response.getResponse());
+			return;
+		}
+		else
+		{
+			FileManager::createFile(request.getBasicRequest(),
+									root->get() + request.getBasicRequest().getPath().substr(
+													  0, request.getBasicRequest().getPath().find_last_of("/")));
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());
 			request.setResponse(response.getResponse());
 			return;

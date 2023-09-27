@@ -130,12 +130,9 @@ std::string FileManager::getFileContentUpload(const std::string &body)
 
 void FileManager::createFile(const BasicHTTPRequest &request, const std::string &root)
 {
-	FileManager::isDirectory(root + request.getPath());
-	std::string filename = FileManager::getFileNameUpload(request.getBody());
-	if (FileManager::isFileExists(root + request.getPath() + "/" + filename))
-		throw FileManager::FileManagerException();
-	Path path(root + request.getPath() + "/" + filename);
-	std::string content = FileManager::getFileContentUpload(request.getBody());
+	std::string fileName = request.getPath().substr(request.getPath().find_last_of("/"));
+	Path path(root + fileName);
+	std::string content = request.getBody();
 	std::ofstream file(path.get().c_str());
 	if (!file.is_open())
 		throw FileManager::FileManagerException();
