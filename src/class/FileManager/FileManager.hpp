@@ -11,6 +11,8 @@
 #include <string>
 #include <sys/stat.h>
 
+#include <BasicHTTPRequest/BasicHTTPRequest.hpp>
+#include <Path/Path.hpp>
 #include <converter/converter.hpp>
 
 #ifdef TEST_ON
@@ -34,6 +36,7 @@ class FileManager
 	static bool isFileExists(const std::string &path);
 	static bool isDirectory(const std::string &path);
 	static bool isOpen(const std::fstream &fs);
+	static void createFile(const BasicHTTPRequest &request, const std::string &root);
 	class FileManagerException : public std::exception
 	{
 		virtual const char *what() const throw();

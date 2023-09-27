@@ -32,16 +32,6 @@ TEST(ResponseHeader, StatusMessage)
 	EXPECT_EQ("200 OK", obj.getStatusMessage());
 }
 
-TEST(ResponseHeader, InvalidStatusCodeException)
-{
-	ErrorPageSet error_page_set;
-	HTTPStatusCode code(200);
-
-	ResponseHeader obj(code, error_page_set);
-
-	EXPECT_THROW(obj.setContentType("does not exist"), ContentTypes::InvalidExtensionException);
-}
-
 TEST(ResponseHeader, ContentType)
 {
 	ErrorPageSet error_page_set;

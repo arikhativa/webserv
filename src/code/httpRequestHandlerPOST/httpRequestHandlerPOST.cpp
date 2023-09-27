@@ -1,5 +1,10 @@
 #include <httpRequestHandlerPOST/httpRequestHandlerPOST.hpp>
 
+const char *httpRequestHandlerPOST::FORBIDDEN::what() const throw()
+{
+	return ("403 Forbidden");
+}
+
 bool httpRequestHandlerPOST::isDirectoryListing(const Path &path, const HTTPCall &request)
 {
 	const ILocation *l = request.getLocation();
@@ -13,6 +18,7 @@ bool httpRequestHandlerPOST::isDirectoryListing(const Path &path, const HTTPCall
 
 std::string httpRequestHandlerPOST::getFileContent(const std::string &path, ResponseHeader &response)
 {
+
 	if (path.find(".") != std::string::npos)
 		response.setContentType(path.substr(path.find_last_of(".")));
 	return (FileManager::getFileContent(path));
