@@ -13,7 +13,6 @@ TEST(Location, Accessor)
 	Location *ptr = new Location();
 
 	ptr->setAutoIndex("on");
-	ptr->setUpload("on");
 	ptr->setMaxBodySize("100");
 	ptr->setPath("/");
 	ptr->setIndexFiles(std::list< std::string >({"index.html", "index.php"}));
@@ -24,7 +23,6 @@ TEST(Location, Accessor)
 	ptr->setRoot("/root");
 
 	EXPECT_EQ(true, ptr->isAutoIndexOn());
-	EXPECT_EQ(true, ptr->canUpload());
 	EXPECT_EQ(100, ptr->getMaxBodySize());
 	EXPECT_EQ("/", ptr->getPath().get());
 	EXPECT_EQ("index.html", ptr->getIndexFiles().front());
@@ -43,31 +41,6 @@ TEST(Location, Accessor)
 	delete ptr;
 }
 
-TEST(Location, Print)
-{
-	static const char *res =
-		"{\"_path\": \"/path\", \"_auto_index\": true, \"_upload\": true, \"_max_body_size\": 100, "
-		"\"_allowed_methods\": {\"get\": true, \"post\": true, \"delete\": true}, \"_return\": {\"_status\": 200, "
-		"\"_path\": \"/index.html\"}, \"_index_files\": [\"index.html\", \"index.php\"], \"_error_pages\": "
-		"[{\"_status\": 404, \"_path\": \"/404.html\"}], \"_root\": \"/root\"}";
-
-	Location obj;
-
-	obj.setPath("/path");
-	obj.setAutoIndex("on");
-	obj.setUpload("on");
-	obj.setMaxBodySize("100");
-	obj.setIndexFiles(std::list< std::string >({"index.html", "index.php"}));
-	obj.setAllowedMethods(std::list< std::string >({"GET", "POST", "DELETE"}));
-	obj.setReturn("200", "/index.html");
-	obj.addErrorPage("404", "/404.html");
-	obj.setRoot("/root");
-
-	std::stringstream ss;
-	ss << obj;
-	EXPECT_EQ(res, ss.str());
-}
-
 TEST(Location, ExceptionAutoIndex)
 {
 	Location obj;
@@ -75,15 +48,6 @@ TEST(Location, ExceptionAutoIndex)
 	EXPECT_THROW(obj.setAutoIndex("1"), std::invalid_argument);
 	obj.setAutoIndex("on");
 	EXPECT_THROW(obj.setAutoIndex("on"), Location::InvalidLocationException);
-}
-
-TEST(Location, ExceptionUpload)
-{
-	Location obj;
-
-	EXPECT_THROW(obj.setUpload("1"), std::invalid_argument);
-	obj.setUpload("on");
-	EXPECT_THROW(obj.setUpload("on"), Location::InvalidLocationException);
 }
 
 TEST(Location, ExceptionMaxBodySize)
@@ -159,7 +123,6 @@ TEST(Location, setDefaultSettingIfNeeded)
 	obj.setDefaultSettingIfNeeded();
 
 	EXPECT_EQ(false, obj.isAutoIndexOn());
-	EXPECT_EQ(false, obj.canUpload());
 	EXPECT_EQ(0, obj.getMaxBodySize());
 	EXPECT_EQ("/", obj.getPath().get());
 	EXPECT_EQ(0, obj.getIndexFiles().size());

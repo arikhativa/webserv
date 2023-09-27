@@ -60,7 +60,7 @@ TEST(lexer, FullFile)
 	std::list< Token > list = lexer::tokenize(fs);
 
 	// server {
-	ASSERT_EQ(list.size(), 59);
+	ASSERT_EQ(list.size(), 56);
 	ASSERT_EQ(list.front().getType(), Token::KEYWORD);
 	list.pop_front();
 	ASSERT_EQ(list.front().getType(), Token::BLOCK_START);
@@ -181,14 +181,6 @@ TEST(lexer, FullFile)
 	list.pop_front();
 
 	// autoindex on;
-	ASSERT_EQ(list.front().getType(), Token::KEYWORD);
-	list.pop_front();
-	ASSERT_EQ(list.front().getType(), Token::WORD);
-	list.pop_front();
-	ASSERT_EQ(list.front().getType(), Token::SEPARATOR);
-	list.pop_front();
-
-	// upload true;
 	ASSERT_EQ(list.front().getType(), Token::KEYWORD);
 	list.pop_front();
 	ASSERT_EQ(list.front().getType(), Token::WORD);

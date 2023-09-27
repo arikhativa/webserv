@@ -171,15 +171,6 @@ bool HTTPCall::_isBodySizeAllowed(void)
 	return true;
 }
 
-bool HTTPCall::_isUploadAllowed(void)
-{
-	if (!getLocation()->canUpload())
-	{
-		return !getBasicRequest().isUploadFile();
-	}
-	return true;
-}
-
 void HTTPCall::setInvalidResponse(void)
 {
 	ErrorPageSet defaultErrorPageSet;
@@ -238,17 +229,11 @@ bool HTTPCall::isRequestAllowed(void)
 	HTTPStatusCode stt(HTTPStatusCode::ACCEPTED);
 
 	if (!_isMethodAllowed())
-	{
 		stt = HTTPStatusCode::FORBIDDEN;
-	}
 	else if (!_isBodySizeAllowed())
-	{
 		stt = HTTPStatusCode::REQUEST_ENTITY_TOO_LARGE;
-	}
-	else if (!_isUploadAllowed())
-	{
-		stt = HTTPStatusCode::FORBIDDEN;
-	}
+	else if (getBasicRequest().isMultiForm())
+		stt = HTTPStatusCode::UNSUPPORTED_MEDIA_TYPE;
 
 	if (stt != HTTPStatusCode::ACCEPTED)
 	{

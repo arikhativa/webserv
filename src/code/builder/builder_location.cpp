@@ -6,7 +6,6 @@ static std::map< std::string, builder::location::t_rule > initRules(void)
 	std::map< std::string, builder::location::t_rule > map;
 
 	map[Token::Keyword::AUTO_INDEX] = &builder::location::autoIndex;
-	map[Token::Keyword::UPLOAD] = &builder::location::upload;
 	map[Token::Keyword::UPLOAD_STORE] = &builder::location::upload_store;
 	map[Token::Keyword::CLIENT_MAX_BODY_SIZE] = &builder::location::maxBodySize;
 	map[Token::Keyword::ALLOW_METHODS] = &builder::location::allowedMethods;
@@ -41,12 +40,6 @@ void builder::location::autoIndex(Location &location, std::list< Token >::const_
 {
 	++it;
 	location.setAutoIndex(it->getValue());
-}
-
-void builder::location::upload(Location &location, std::list< Token >::const_iterator it)
-{
-	++it;
-	location.setUpload(it->getValue());
 }
 
 void builder::location::upload_store(Location &location, std::list< Token >::const_iterator it)

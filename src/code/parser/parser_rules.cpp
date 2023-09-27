@@ -21,7 +21,6 @@ static std::map< std::string, parser::t_rule > initRules(void)
 	map[Token::Keyword::LOCATION] = &parser::rule::location;
 	map[Token::Keyword::AUTO_INDEX] = &parser::rule::autoIndex;
 	map[Token::Keyword::ALLOW_METHODS] = &parser::rule::allowMethods;
-	map[Token::Keyword::UPLOAD] = &parser::rule::upload;
 	map[Token::Keyword::UPLOAD_STORE] = &parser::rule::upload_store;
 	map[Token::Keyword::CGI] = &parser::rule::cgi;
 
@@ -239,11 +238,6 @@ bool parser::rule::allowMethods(std::list< Token >::const_iterator it, const std
 }
 
 bool parser::rule::autoIndex(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
-{
-	return genericOnOffRule(it, end);
-}
-
-bool parser::rule::upload(std::list< Token >::const_iterator it, const std::list< Token >::const_iterator &end)
 {
 	return genericOnOffRule(it, end);
 }

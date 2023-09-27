@@ -197,7 +197,7 @@ void BasicHTTPRequest::unParse(void)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-bool BasicHTTPRequest::isUploadFile(void) const
+bool BasicHTTPRequest::isMultiForm(void) const
 {
 	std::map< std::string, std::string >::const_iterator it(
 		this->getHeaders().find(httpConstants::headers::CONTENT_TYPE));
