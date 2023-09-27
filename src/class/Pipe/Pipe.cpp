@@ -38,6 +38,8 @@ void Pipe::initPipe()
 {
 	if (pipe(_inputPipe) < ERROR || pipe(_outputPipe) < ERROR)
 		throw Pipe::PipeException();
+	std::cout << "New pipe -->\t[" << _inputPipe[OUTPUT] << "]" << std::endl;
+	std::cout << "New pipe <--\t[" << _outputPipe[INPUT] << "]" << std::endl;
 }
 
 /*

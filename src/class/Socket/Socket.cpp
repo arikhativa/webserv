@@ -109,6 +109,7 @@ void Socket::listen(void)
 	listen_status = ::listen(this->_fd, MAX_SYS_BACKLOG);
 	if (listen_status <= -1)
 		throw SocketListeningFailed();
+	std::cout << "New listen\t[" << this->_fd << "]" << std::endl;
 }
 
 void Socket::close(void)

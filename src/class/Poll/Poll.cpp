@@ -169,7 +169,7 @@ void Poll::_pop_index(std::pair< int, ret_stt > p)
 	}
 	if (count == 1 && (p.second == DONE_CLOSE_FD || p.second == ERROR))
 	{
-		std::cout << "End connection fd[" << fd_to_close << "]" << std::endl;
+		std::cout << "End connection\t[" << fd_to_close << "]" << std::endl;
 
 		close(fd_to_close);
 	}
