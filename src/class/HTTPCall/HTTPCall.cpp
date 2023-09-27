@@ -271,7 +271,10 @@ void HTTPCall::handleRequest(void)
 			HTTPRequestHandler::POST(*this);
 		break;
 	case BasicHTTPRequest::DELETE:
-		HTTPRequestHandler::DELETE(*this);
+		if (this->isCGI())
+			HTTPRequestHandler::CGI(*this);
+		else
+			HTTPRequestHandler::DELETE(*this);
 		break;
 	default:
 		HTTPRequestHandler::UNKNOWN(*this);
