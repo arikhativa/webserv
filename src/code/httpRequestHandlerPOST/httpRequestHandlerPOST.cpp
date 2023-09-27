@@ -5,13 +5,6 @@ const char *httpRequestHandlerPOST::FORBIDDEN::what() const throw()
 	return ("403 Forbidden");
 }
 
-bool endsWith(std::string const &str, std::string const &suffix)
-{
-	if (str.length() < suffix.length())
-		return false;
-	return std::equal(suffix.rbegin(), suffix.rend(), str.rbegin());
-}
-
 bool httpRequestHandlerPOST::isDirectoryListing(const Path &path, const HTTPCall &request)
 {
 	const ILocation *l = request.getLocation();

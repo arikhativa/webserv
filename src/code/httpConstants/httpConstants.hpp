@@ -18,7 +18,6 @@ namespace httpConstants
 	const std::string HTTP_VERSION_PREFIX("HTTP/");
 	const std::string SERVER_FIELD_KEY("Server: ");
 	const std::string SERVER_FIELD_VALUE("webserv");
-	const std::string FILENAME_FIELD_KEY("filename=\"");
 	const std::string DATE_FIELD_KEY("Date: ");
 	const std::string CONTENT_TYPE_FIELD_KEY("Content-Type: ");
 	const std::string HOST_HEADER("Host: ");

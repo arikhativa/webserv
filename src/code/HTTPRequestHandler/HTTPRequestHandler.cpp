@@ -69,27 +69,13 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 									root->get() + request.getLocation()->getUploadStore()->get());
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());
 			request.setResponse(response.getResponse());
-			return;
 		}
-		if (!FileManager::isFileExists(url.get()))
+		else
 		{
-			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::NOT_FOUND),
-									request.getLocation()->getErrorPageSet());
+			FileManager::createFile(request.getBasicRequest(), root->get());
+			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());
 			request.setResponse(response.getResponse());
-			return;
 		}
-		if (httpRequestHandlerPOST::isDirectoryListing(url, request))
-		{
-			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getLocation()->getErrorPageSet());
-			response.setContentType(httpConstants::HTML_SUFFIX);
-			response.setBody(
-				httpRequestHandlerPOST::getDirectoryContent(root, Path(request.getBasicRequest().getPath())));
-			request.setResponse(response.getResponse());
-			return;
-		}
-		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), request.getLocation()->getErrorPageSet());
-		response.setBody(httpRequestHandlerPOST::getFileContent(url.get(), response));
-		request.setResponse(response.getResponse());
 	}
 	catch (const httpRequestHandlerPOST::FORBIDDEN &e)
 	{
