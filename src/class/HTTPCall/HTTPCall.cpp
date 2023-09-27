@@ -162,7 +162,7 @@ bool HTTPCall::_isBodySizeAllowed(void)
 		return true;
 
 	if (getBasicRequest().isBody())
-		return max >= getBasicRequest().getBody().size();
+		return max >= (this->_bytes_recieved - getBasicRequest().getHeaders().size());
 	return true;
 }
 
@@ -227,8 +227,6 @@ bool HTTPCall::isRequestAllowed(void)
 		stt = HTTPStatusCode::FORBIDDEN;
 	else if (!_isBodySizeAllowed())
 		stt = HTTPStatusCode::REQUEST_ENTITY_TOO_LARGE;
-	// else if (getBasicRequest().isMultiForm())
-	// 	stt = HTTPStatusCode::UNSUPPORTED_MEDIA_TYPE;
 	if (stt != HTTPStatusCode::ACCEPTED)
 	{
 		ResponseHeader response(stt, getLocation()->getErrorPageSet());

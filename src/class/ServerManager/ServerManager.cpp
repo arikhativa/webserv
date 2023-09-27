@@ -72,7 +72,6 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 		delete param.call.getCgi();
 		return Poll::DONE_CLOSE_FD;
 	}
-	
 	delete param.call.getCgi();
 	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 	return Poll::DONE_CLOSE_FD;
