@@ -63,7 +63,8 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 	{
 		const IPath *root(request.getLocation()->getRoot());
 		Path url(root->get() + request.getBasicRequest().getPath());
-		if (request.getLocation()->getUploadStore())
+		if (request.getLocation()->getUploadStore() &&
+			url.get().find(request.getLocation()->getUploadStore()->get()) != std::string::npos)
 		{
 			FileManager::createFile(request.getBasicRequest(), request.getLocation()->getUploadStore()->get());
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());
