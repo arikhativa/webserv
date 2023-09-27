@@ -60,7 +60,19 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 		return Poll::CONTINUE;
 	}
 
-	param.call.cgiToResponse();
+	try
+	{
+		param.call.cgiToResponse();
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "CGI response error [" << e.what() << "]" << std::endl;
+		param.call.setInternalServerResponse();
+		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
+		delete param.call.getCgi();
+		return Poll::DONE_CLOSE_FD;
+	}
+	
 	delete param.call.getCgi();
 	p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 	return Poll::DONE_CLOSE_FD;

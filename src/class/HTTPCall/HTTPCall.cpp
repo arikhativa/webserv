@@ -4,15 +4,13 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-const int HTTPCall::MAX_CHUNK_ATTEMPTS = 5;
 const int HTTPCall::RECV_BUFFER_SIZE = 4096;
 
 HTTPCall::HTTPCall()
 	: _socket(NULL)
 	, _client_fd(-1)
 	, _cgi(NULL)
-	, _request_attempts(0)
-	, _response_attempts(0)
+	, _bytes_recieved(0)
 	, _bytes_sent(0)
 	, _response("")
 	, _basic_request("")
@@ -23,8 +21,7 @@ HTTPCall::HTTPCall(const HTTPCall &src)
 	: _socket(src._socket)
 	, _client_fd(src._client_fd)
 	, _cgi(src._cgi)
-	, _request_attempts(src._request_attempts)
-	, _response_attempts(src._response_attempts)
+	, _bytes_recieved(src._bytes_recieved)
 	, _bytes_sent(src._bytes_sent)
 	, _response(src._response)
 	, _basic_request(src._basic_request)
@@ -38,8 +35,7 @@ HTTPCall::HTTPCall(const Socket *socket, int client_fd)
 	: _socket(socket)
 	, _client_fd(client_fd)
 	, _cgi(NULL)
-	, _request_attempts(0)
-	, _response_attempts(0)
+	, _bytes_recieved(0)
 	, _bytes_sent(0)
 	, _response("")
 	, _basic_request("")
@@ -85,8 +81,7 @@ HTTPCall HTTPCall::operator=(const HTTPCall &rhs)
 		this->_socket = rhs._socket;
 		this->_client_fd = rhs._client_fd;
 		this->_cgi = rhs._cgi;
-		this->_request_attempts = rhs._request_attempts;
-		this->_response_attempts = rhs._response_attempts;
+		this->_bytes_recieved = rhs._bytes_recieved;
 		this->_bytes_sent = rhs._bytes_sent;
 		this->_response = rhs._response;
 		this->_basic_request = rhs._basic_request;
@@ -232,9 +227,8 @@ bool HTTPCall::isRequestAllowed(void)
 		stt = HTTPStatusCode::FORBIDDEN;
 	else if (!_isBodySizeAllowed())
 		stt = HTTPStatusCode::REQUEST_ENTITY_TOO_LARGE;
-	else if (getBasicRequest().isMultiForm())
-		stt = HTTPStatusCode::UNSUPPORTED_MEDIA_TYPE;
-
+	// else if (getBasicRequest().isMultiForm())
+	// 	stt = HTTPStatusCode::UNSUPPORTED_MEDIA_TYPE;
 	if (stt != HTTPStatusCode::ACCEPTED)
 	{
 		ResponseHeader response(stt, getLocation()->getErrorPageSet());
@@ -260,8 +254,12 @@ void HTTPCall::recvRequest(void)
 		throw ReceivingRequestError();
 	if (tmp_recv_len == 0)
 		throw ReceivingRequestEmpty();
-	this->_request_attempts++;
 	this->_basic_request.extenedRaw(tmp_raw);
+	this->_bytes_recieved += tmp_recv_len;
+	std::cout << "RECV: " << tmp_recv_len << std::endl;
+	// std::cout << this->getBasicRequest().getRawRequest() << std::endl;
+	if (tmp_recv_len >= HTTPCall::RECV_BUFFER_SIZE)
+		throw ABaseHTTPCall::Incomplete("body is too short");
 }
 
 void HTTPCall::sendResponse(void)
@@ -272,7 +270,6 @@ void HTTPCall::sendResponse(void)
 		throw SendingResponseError();
 	if (send_status == 0)
 		throw SendingResponseEmpty();
-	this->_response_attempts++;
 	this->_bytes_sent += send_status;
 }
 
@@ -362,19 +359,14 @@ CgiManager *HTTPCall::getCgi(void) const
 	return this->_cgi;
 }
 
-int HTTPCall::getRequestAttempts(void) const
-{
-	return this->_request_attempts;
-}
-
-int HTTPCall::getResponseAttempts(void) const
-{
-	return this->_response_attempts;
-}
-
 long unsigned int HTTPCall::getBytesSent(void) const
 {
 	return this->_bytes_sent;
+}
+
+long unsigned int HTTPCall::getBytesRecieved(void) const
+{
+	return this->_bytes_recieved;
 }
 
 const Socket *HTTPCall::getSocket(void) const

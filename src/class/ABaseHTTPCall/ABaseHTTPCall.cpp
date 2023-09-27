@@ -226,8 +226,6 @@ void ABaseHTTPCall::_parseBodyByContentLength(void)
 		throw ABaseHTTPCall::Incomplete("missing body");
 	start += 4;
 	_body = _raw.substr(start, content_length);
-	if (_body.size() != content_length)
-		throw ABaseHTTPCall::Incomplete("body is too short");
 }
 
 void ABaseHTTPCall::_parseBodyByChunked(void)

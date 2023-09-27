@@ -21,7 +21,6 @@
 class HTTPCall
 {
   public:
-	static const int MAX_CHUNK_ATTEMPTS;
 	static const int RECV_BUFFER_SIZE;
 	HTTPCall();
 	HTTPCall(const HTTPCall &src);
@@ -37,9 +36,8 @@ class HTTPCall
 	std::string getResponse(void) const;
 	std::string getClientHostHeader(void) const;
 	int getClientFd(void) const;
-	int getRequestAttempts(void) const;
-	int getResponseAttempts(void) const;
 	long unsigned int getBytesSent(void) const;
+	long unsigned int getBytesRecieved(void) const;
 	const Socket *getSocket(void) const;
 	std::list< const IErrorPage * > getErrorPages(void) const;
 	void parseRawRequest(void);
@@ -97,8 +95,7 @@ class HTTPCall
 	int _client_fd;
 	CgiManager *_cgi;
 
-	int _request_attempts;
-	int _response_attempts;
+	long unsigned int _bytes_recieved;
 	long unsigned int _bytes_sent;
 	std::string _response;
 	BasicHTTPRequest _basic_request;
