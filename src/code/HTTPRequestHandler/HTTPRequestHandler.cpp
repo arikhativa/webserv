@@ -66,7 +66,8 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 		if (request.getLocation()->getUploadStore() &&
 			url.get().find(request.getLocation()->getUploadStore()->get()) != std::string::npos)
 		{
-			FileManager::createFile(request.getBasicRequest(), request.getLocation()->getUploadStore()->get());
+			FileManager::createFile(request.getBasicRequest(),
+									root->get() + request.getLocation()->getUploadStore()->get());
 			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());
 			request.setResponse(response.getResponse());
 			return;
