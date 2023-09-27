@@ -152,7 +152,10 @@ void ResponseHeader::setStatusCode(HTTPStatusCode code)
 void ResponseHeader::setContentType(const std::string &type)
 {
 	if (ContentTypes::isValid(type) == false)
-		throw ContentTypes::InvalidExtensionException();
+	{
+		this->_header.at(CONNECTION_TYPE).value = ContentTypes(httpConstants::TXT_SUFFIX).get();
+		return;
+	}
 	ContentTypes contentType(type);
 	this->_header.at(CONNECTION_TYPE).value = contentType.get();
 }

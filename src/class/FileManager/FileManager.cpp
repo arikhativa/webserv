@@ -133,6 +133,7 @@ void FileManager::createFile(const BasicHTTPRequest &request, const std::string 
 	std::string fileName = request.getPath().substr(request.getPath().find_last_of("/"));
 	Path path(root + fileName);
 	std::string content = request.getBody();
+	std::cout << "path: " << path.get() << std::endl;
 	std::ofstream file(path.get().c_str());
 	if (!file.is_open())
 		throw FileManager::FileManagerException();
