@@ -212,6 +212,19 @@ void ABaseHTTPCall::parseBody(void)
 		_parseBodyByContentLength();
 }
 
+void printVector(const std::vector< char > &vec, int content_length)
+{
+	std::vector< char >::const_iterator it = vec.begin();
+	int i = 0;
+	while (i < content_length && it != vec.end())
+	{
+		std::cout << *it;
+		++it;
+		++i;
+	}
+	std::cout << std::endl;
+}
+
 // TODO check with bad content length
 void ABaseHTTPCall::_parseBodyByContentLength(void)
 {
@@ -224,7 +237,20 @@ void ABaseHTTPCall::_parseBodyByContentLength(void)
 	std::size_t start = _raw.find(httpConstants::HEADER_BREAK);
 	if (start == std::string::npos)
 		throw ABaseHTTPCall::Incomplete("missing body");
+
 	start += 4;
+
+	std::vector< char > tmp;
+	std::vector< char >::iterator it_bin = _bin.begin() + start;
+
+	tmp = _bin;
+	(void)it_bin;
+	(void)tmp;
+	tmp.erase(_bin.begin(), it_bin);
+
+	// std::cout << "tmp: ";
+	// printVector(tmp, (int)content_length);
+
 	_body = _raw.substr(start, content_length);
 	if (_body.size() != content_length)
 		throw ABaseHTTPCall::Incomplete("body is too short");
@@ -267,6 +293,11 @@ void ABaseHTTPCall::extenedRaw(const std::string &raw)
 {
 	this->_last_extention = raw;
 	this->_raw += raw;
+}
+
+void ABaseHTTPCall::extenedRaw(char *buff, int len)
+{
+	_bin.insert(_bin.end(), buff, buff + len);
 }
 
 const std::string &ABaseHTTPCall::getLastExtention(void) const
