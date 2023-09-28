@@ -231,8 +231,7 @@ bool HTTPCall::isCGIPostExtValid(void)
 	if (this->getBasicRequest().getType() == BasicHTTPRequest::POST && this->getLocation()->getCGIConf().isSet() &&
 		(this->getLocation()->getCGIConf().getExtension() != this->getExtension()))
 		{
-			std::cout << "FORBD " << std::endl;
-		stt = HTTPStatusCode::FORBIDDEN;
+			stt = HTTPStatusCode::FORBIDDEN;
 		}
 
 	if (stt != HTTPStatusCode::ACCEPTED)
