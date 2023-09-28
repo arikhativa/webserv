@@ -224,6 +224,26 @@ bool HTTPCall::isCGIValid(void)
 	return true;
 }
 
+bool HTTPCall::isCGIPostExtValid(void)
+{
+	HTTPStatusCode stt(HTTPStatusCode::ACCEPTED);
+
+	if (this->getBasicRequest().getType() == BasicHTTPRequest::POST && this->getLocation()->getCGIConf().isSet() &&
+		(this->getLocation()->getCGIConf().getExtension() != this->getExtension()))
+	{
+		stt = HTTPStatusCode::FORBIDDEN;
+	}
+
+	if (stt != HTTPStatusCode::ACCEPTED)
+	{
+		ResponseHeader response(stt, getLocation()->getErrorPageSet());
+		setResponse(response.getResponse());
+		return false;
+	}
+
+	return true;
+}
+
 bool HTTPCall::isRequestAllowed(void)
 {
 	HTTPStatusCode stt(HTTPStatusCode::ACCEPTED);
