@@ -153,8 +153,9 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 
 	param.call.finalizeRequest();
 
-	if (param.call.isCGI() && !param.call.isCGIValid())
+	if ((param.call.isCGI() && !param.call.isCGIValid()) || !param.call.isCGIPostExtValid())
 	{
+		std::cout << ">?????????????" << std::endl;
 		param.start_read.reset();
 		p.addWrite(param.call.getClientFd(), ServerManager::clientWrite, param);
 		return Poll::DONE_CLOSE_FD;
