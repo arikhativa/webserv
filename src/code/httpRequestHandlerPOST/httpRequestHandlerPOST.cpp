@@ -21,7 +21,7 @@ std::string httpRequestHandlerPOST::getFileContent(const std::string &path, Resp
 
 	if (path.find(".") != std::string::npos)
 		response.setContentType(path.substr(path.find_last_of(".")));
-	return (FileManager::getFileContent(path));
+	return converter::vectorToString(FileManager::getFileContent(path));
 }
 
 std::string httpRequestHandlerPOST::getDirectoryContent(const IPath *path, const Path &name)

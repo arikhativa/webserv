@@ -10,6 +10,7 @@
 #include <sstream>
 #include <string>
 #include <sys/stat.h>
+#include <vector>
 
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <Path/Path.hpp>
@@ -30,7 +31,7 @@ class FileManager
 
 	const std::string getPath(void) const;
 	static std::string getFileDate(const std::string &path);
-	static std::string getFileContent(const std::string &path);
+	static std::vector< char > getFileContent(const std::string &path);
 	static std::string getDirectoryPreview(const std::string &path, std::string relative_path);
 	static size_t getFileSize(const std::string &path);
 	static bool isFileExists(const std::string &path);

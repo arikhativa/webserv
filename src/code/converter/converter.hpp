@@ -8,6 +8,7 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include <httpConstants/httpConstants.hpp>
 
@@ -17,6 +18,7 @@ namespace converter
 	std::size_t stringToSizeT(const std::string &str);
 	bool onOffStringToBool(const std::string &str);
 	size_t hexStringToSizeT(const std::string &hexStr);
+	std::string vectorToString(std::vector< char > vec);
 	std::string urlDecode(const std::string &url);
 
 	template < typename T >

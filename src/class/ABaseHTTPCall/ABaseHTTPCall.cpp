@@ -257,29 +257,16 @@ void ABaseHTTPCall::_parseBodyByContentLength(void)
 
 	start += 4;
 
-	// std::vector< char > endOfHeaderVector(httpConstants::HEADER_BREAK.begin(), httpConstants::HEADER_BREAK.end());
-
-	// ::size_t index = findInVector(_bin, endOfHeaderVector);
-
-	// if (index == std::string::npos)
-	// 	throw ABaseHTTPCall::Incomplete("missing body");
-	// index += 4;
-
 	std::vector< char > tmp;
 	tmp = _bin;
 	tmp.erase(tmp.begin(), tmp.begin() + start);
-	// std::cout << "size: " << tmp.size() << std::endl;
-	// std::cout << "content_length: " << content_length << std::endl;
-
 	if (tmp.size() < content_length)
 		throw ABaseHTTPCall::Incomplete("body is too short");
 	if (tmp.size() > content_length)
 	{
-		std::cout << "erase: " << content_length << std::endl;
+		std::cout << "Note: Client sent more bytes then " << httpConstants::headers::CONTENT_LENGTH << std::endl;
 		tmp.erase(tmp.begin() + content_length, tmp.end());
 	}
-	// std::cout << "tmp: " << std::endl;
-	// printVector(tmp, content_length);
 	_body = tmp;
 }
 

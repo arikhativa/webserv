@@ -7,6 +7,7 @@
 
 #include <FileManager/FileManager.hpp>
 #include <HTTPStatusCode/HTTPStatusCode.hpp>
+#include <converter/converter.hpp>
 
 namespace defaultPager
 {

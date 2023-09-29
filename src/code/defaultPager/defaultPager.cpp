@@ -37,7 +37,7 @@ std::string defaultPager::getPage(HTTPStatusCode::Code code)
 		return "";
 	}
 
-	return FileManager::getFileContent(key);
+	return converter::vectorToString(FileManager::getFileContent(key));
 }
 
 const std::map< HTTPStatusCode::Code, std::string > &defaultPager::getPages(void)
