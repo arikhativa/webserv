@@ -76,7 +76,7 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());
 
 		response.setHeader(httpConstants::headers::CONTENT_TYPE, httpConstants::headers::JSON);
-		std::string json = "{\"name\": \" " + request.getBasicRequest().getPath() + "\"}";
+		std::string json = "{\"name\": \"" + request.getBasicRequest().getPath() + "\"}";
 		response.setBody(json);
 		request.setResponse(response.getResponse());
 	}

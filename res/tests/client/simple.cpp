@@ -34,7 +34,7 @@ int main()
 	// Prepare HTTP request
 	std::string httpRequest = "GET /index.html HTTP/1.1\r\n"
 							  "Host: localhost\r\n"
-							  "\r\n\r\n";
+							  "\r\n";
 
 	// Send HTTP request
 	send(clientSocket, httpRequest.c_str(), httpRequest.size(), 0);

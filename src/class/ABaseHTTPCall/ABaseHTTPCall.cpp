@@ -8,8 +8,6 @@
 ABaseHTTPCall::ABaseHTTPCall(const std::string &raw_request)
 	: _raw(raw_request)
 	, _http_version(UNKNOWN)
-	, _body("")
-	, _last_extention("")
 {
 }
 
@@ -18,7 +16,6 @@ ABaseHTTPCall::ABaseHTTPCall(const ABaseHTTPCall &src)
 	, _headers(src.getHeaders())
 	, _http_version(src.getHTTPVersion())
 	, _body(src.getBody())
-	, _last_extention(src.getLastExtention())
 {
 }
 
@@ -72,7 +69,6 @@ ABaseHTTPCall &ABaseHTTPCall::operator=(ABaseHTTPCall const &rhs)
 		this->_headers = rhs.getHeaders();
 		this->_http_version = rhs.getHTTPVersion();
 		this->_body = rhs.getBody();
-		this->_last_extention = rhs.getLastExtention();
 	}
 	return *this;
 }
@@ -225,6 +221,27 @@ void printVector(const std::vector< char > &vec, int content_length)
 	std::cout << std::endl;
 }
 
+size_t findInVector(const std::vector< char > &buff, const std::vector< char > &find)
+{
+	for (size_t i = 0; i <= buff.size() - find.size(); ++i)
+	{
+		bool found = true;
+		for (size_t j = 0; j < find.size(); ++j)
+		{
+			if (buff[i + j] != find[j])
+			{
+				found = false;
+				break;
+			}
+		}
+		if (found)
+		{
+			return i;
+		}
+	}
+	return std::string::npos; // Not found
+}
+
 // TODO check with bad content length
 void ABaseHTTPCall::_parseBodyByContentLength(void)
 {
@@ -240,22 +257,33 @@ void ABaseHTTPCall::_parseBodyByContentLength(void)
 
 	start += 4;
 
+	// std::vector< char > endOfHeaderVector(httpConstants::HEADER_BREAK.begin(), httpConstants::HEADER_BREAK.end());
+
+	// ::size_t index = findInVector(_bin, endOfHeaderVector);
+
+	// if (index == std::string::npos)
+	// 	throw ABaseHTTPCall::Incomplete("missing body");
+	// index += 4;
+
 	std::vector< char > tmp;
-	std::vector< char >::iterator it_bin = _bin.begin() + start;
-
 	tmp = _bin;
-	(void)it_bin;
-	(void)tmp;
-	tmp.erase(_bin.begin(), it_bin);
+	tmp.erase(tmp.begin(), tmp.begin() + start);
+	// std::cout << "size: " << tmp.size() << std::endl;
+	// std::cout << "content_length: " << content_length << std::endl;
 
-	// std::cout << "tmp: ";
-	// printVector(tmp, (int)content_length);
-
-	_body = _raw.substr(start, content_length);
-	if (_body.size() != content_length)
+	if (tmp.size() < content_length)
 		throw ABaseHTTPCall::Incomplete("body is too short");
+	if (tmp.size() > content_length)
+	{
+		std::cout << "erase: " << content_length << std::endl;
+		tmp.erase(tmp.begin() + content_length, tmp.end());
+	}
+	// std::cout << "tmp: " << std::endl;
+	// printVector(tmp, content_length);
+	_body = tmp;
 }
 
+// TODO chunk does not support binary
 void ABaseHTTPCall::_parseBodyByChunked(void)
 {
 	std::size_t start = _raw.find(httpConstants::HEADER_BREAK);
@@ -263,9 +291,12 @@ void ABaseHTTPCall::_parseBodyByChunked(void)
 		throw ABaseHTTPCall::Incomplete("missing body");
 	start += 4;
 
-	_body = _raw.substr(start, _raw.size() - start);
-	if (_body.find(httpConstants::CHUNKED_END) == std::string::npos)
+	std::string tmp = _raw.substr(start, _raw.size() - start);
+
+	if (tmp.find(httpConstants::CHUNKED_END) == std::string::npos)
 		throw ABaseHTTPCall::Incomplete("body is too short");
+
+	_body.assign(tmp.begin(), tmp.end());
 }
 
 // Note that we don't clear _raw.
@@ -274,7 +305,6 @@ void ABaseHTTPCall::unParse(void)
 	_headers.clear();
 	_http_version = UNKNOWN;
 	_body.clear();
-	_last_extention.clear();
 }
 
 /*
@@ -291,18 +321,12 @@ bool ABaseHTTPCall::isChunked(void) const
 
 void ABaseHTTPCall::extenedRaw(const std::string &raw)
 {
-	this->_last_extention = raw;
 	this->_raw += raw;
 }
 
 void ABaseHTTPCall::extenedRaw(char *buff, int len)
 {
 	_bin.insert(_bin.end(), buff, buff + len);
-}
-
-const std::string &ABaseHTTPCall::getLastExtention(void) const
-{
-	return this->_last_extention;
 }
 
 const std::string &ABaseHTTPCall::getRawRequest(void) const
@@ -320,19 +344,24 @@ const std::map< std::string, std::string > &ABaseHTTPCall::getHeaders(void) cons
 	return this->_headers;
 }
 
-const std::string &ABaseHTTPCall::getBody(void) const
+const std::vector< char > &ABaseHTTPCall::getBody(void) const
 {
 	return this->_body;
 }
 
-std::string ABaseHTTPCall::getRawBody(void) const
+std::string ABaseHTTPCall::getBodyAsString(void) const
 {
-	std::size_t start = _raw.find(httpConstants::HEADER_BREAK);
-	if (start == std::string::npos)
-		throw ABaseHTTPCall::Invalid("missing body");
-	start += 4;
-
-	return _raw.substr(start, _raw.size() - start);
+	return std::string(_body.data(), _body.size());
 }
+
+// std::string ABaseHTTPCall::getRawBody(void) const
+// {
+// 	std::size_t start = _raw.find(httpConstants::HEADER_BREAK);
+// 	if (start == std::string::npos)
+// 		throw ABaseHTTPCall::Invalid("missing body");
+// 	start += 4;
+
+// 	return _raw.substr(start, _raw.size() - start);
+// }
 
 /* ************************************************************************** */

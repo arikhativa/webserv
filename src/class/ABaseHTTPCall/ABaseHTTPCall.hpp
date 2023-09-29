@@ -64,11 +64,11 @@ class ABaseHTTPCall
 	static std::string toStringVersion(HTTPVersion);
 
 	const std::string &getRawRequest(void) const;
-	const std::string &getLastExtention(void) const;
 	HTTPVersion getHTTPVersion(void) const;
 	const std::map< std::string, std::string > &getHeaders(void) const;
-	const std::string &getBody(void) const;
-	std::string getRawBody(void) const;
+	const std::vector< char > &getBody(void) const;
+	std::string getBodyAsString(void) const;
+	// std::string getRawBody(void) const;
 	bool isChunked(void) const;
 	bool isBody(void) const;
 	void extenedRaw(const std::string &raw);
@@ -82,10 +82,9 @@ class ABaseHTTPCall
 	std::string _raw;
 	std::map< std::string, std::string > _headers;
 	HTTPVersion _http_version;
-	std::string _body;
-	std::string _last_extention;
+	// std::string _body;
+	std::vector< char > _body;
 	std::vector< char > _bin;
-	// std::vector< char > _body;
 
   private:
 	void _parseBodyByChunked(void);

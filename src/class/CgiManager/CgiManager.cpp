@@ -119,10 +119,16 @@ void CgiManager::_childProcess(void)
 
 void CgiManager::writeToCgi(void)
 {
-	int byte_write = write(this->getWriteFd(), this->_basicHTTPRequest.getBody().c_str() + this->_byte_write,
-						   this->_basicHTTPRequest.getBody().length());
+	if (_byte_write > _basicHTTPRequest.getBody().size())
+		throw CgiManager::CgiManagerException();
+
+	const char *buff = &(_basicHTTPRequest.getBody()[_byte_write]);
+	::size_t size = _basicHTTPRequest.getBody().size() - _byte_write;
+
+	int byte_write = write(this->getWriteFd(), buff, size);
 	this->_byte_write += byte_write;
-	if (this->_byte_write >= this->_basicHTTPRequest.getBody().length())
+
+	if (this->_byte_write >= this->_basicHTTPRequest.getBody().size())
 		return;
 	if (byte_write > 0)
 		throw CgiManager::CgiManagerIncompleteWrite();

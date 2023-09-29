@@ -55,7 +55,7 @@ std::ostream &operator<<(std::ostream &o, BasicHTTPRequest const &i)
 	  << "\"_query\": \"" << i.getQuery() << "\","
 	  << "\"_http_version\": \"" << http_version << "\","
 	  << "\"_headers\": " << i.getHeaders() << ","
-	  << "\"_body\": \"" << i.getBody() << "\""
+	  << "\"_body\": \"" << i.getBodyAsString() << "\""
 	  << "}";
 
 	return o;
@@ -122,7 +122,7 @@ std::string BasicHTTPRequest::toString(void) const
 	if (!this->getQuery().empty())
 		ret += httpConstants::SPACE + this->getQuery();
 	ret += httpConstants::SPACE + http_version + httpConstants::FIELD_BREAK +
-		   converter::headersToString(this->getHeaders()) + this->getBody();
+		   converter::headersToString(this->getHeaders()) + getBodyAsString();
 
 	return ret;
 }
