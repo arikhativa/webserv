@@ -56,7 +56,7 @@ class HTTPCall
 
 	bool isRequestAllowed(void);
 	bool isCGIValid(void);
-	bool isCGIPostExtAllowed(void);
+	bool isCGIPostExtValid(void);
 	void setInvalidResponse(void);
 	void setInternalServerResponse(void);
 	void finalizeRequest(void);

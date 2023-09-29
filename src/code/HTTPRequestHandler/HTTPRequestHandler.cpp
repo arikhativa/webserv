@@ -63,19 +63,22 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 	{
 		const IPath *root(request.getLocation()->getRoot());
 		Path url(root->get() + request.getBasicRequest().getPath());
+
 		if (request.getLocation()->getUploadStore())
 		{
-			FileManager::createFile(request.getBasicRequest(),
-									root->get() + request.getLocation()->getUploadStore()->get());
-			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());
-			request.setResponse(response.getResponse());
+			FileManager::createFile(request.getBasicRequest(), request.getLocation()->getUploadStore()->get());
 		}
 		else
 		{
 			FileManager::createFile(request.getBasicRequest(), root->get());
-			ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());
-			request.setResponse(response.getResponse());
 		}
+
+		ResponseHeader response(HTTPStatusCode(HTTPStatusCode::CREATED), request.getLocation()->getErrorPageSet());
+
+		response.setHeader(httpConstants::headers::CONTENT_TYPE, httpConstants::headers::JSON);
+		std::string json = "{\"name\": \" " + request.getBasicRequest().getPath() + "\"}";
+		response.setBody(json);
+		request.setResponse(response.getResponse());
 	}
 	catch (const httpRequestHandlerPOST::FORBIDDEN &e)
 	{
@@ -85,7 +88,7 @@ void HTTPRequestHandler::POST(HTTPCall &request)
 	}
 	catch (const FileManager::FileManagerException &e)
 	{
-		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::CONFLICT),
+		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR),
 									 request.getLocation()->getErrorPageSet());
 		request.setResponse(errorResponse.getResponse());
 	}
