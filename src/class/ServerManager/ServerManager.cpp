@@ -12,7 +12,10 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 	{
 		if (param.call.getBasicRequest().getType() == BasicHTTPRequest::GET)
 		{
-			p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, param);
+			Poll::Param new_param = param;
+			new_param.start_read.setToNow();
+			fcntl(param.call.getCgi()->getReadFd(), F_SETFL, O_NONBLOCK);
+			p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, new_param);
 			return Poll::DONE_CLOSE_FD;
 		}
 		param.call.getCgi()->writeToCgi();
@@ -31,16 +34,18 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 	{
 		return Poll::CONTINUE;
 	}
+
+	Poll::Param new_param = param;
+	new_param.start_read.setToNow();
 	fcntl(param.call.getCgi()->getReadFd(), F_SETFL, O_NONBLOCK);
-	p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, param);
+	p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, new_param);
 	return Poll::DONE_CLOSE_FD;
 }
 
 Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &param)
 {
 	(void)fd;
-
-	if (!Poll::isReadEvent(revents))
+	if (!Poll::isReadEvent(revents) && !Poll::isEOFEvent(revents))
 		return Poll::CONTINUE;
 	try
 	{
@@ -57,6 +62,7 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	}
 	catch (CgiManager::CgiManagerIncompleteRead &e)
 	{
+		param.start_read.setToNow();
 		return Poll::CONTINUE;
 	}
 

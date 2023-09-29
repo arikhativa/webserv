@@ -334,44 +334,62 @@ void HTTPCall::terminate(void)
 void HTTPCall::cgiToResponse(void)
 {
 	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), this->getLocation()->getErrorPageSet());
-	if (this->_cgi->getOutput().find(httpConstants::HEADER_BREAK) == std::string::npos)
+
+	const std::string &cgi_output = this->_cgi->getOutput();
+
+	if (cgi_output.find(httpConstants::HEADER_BREAK) == std::string::npos)
 	{
-		response.setBody(this->_cgi->getOutput());
+		response.setBody(cgi_output);
 		this->setResponse(response.getResponse());
+
 		return;
 	}
 
 	std::map< std::string, std::string > _headers;
 	std::size_t start = 0;
-	std::size_t end = this->_cgi->getOutput().find(httpConstants::FIELD_BREAK, start);
+	std::size_t end = cgi_output.find(httpConstants::FIELD_BREAK);
 
 	if (end == std::string::npos)
-		throw ABaseHTTPCall::Incomplete("Bad header: missing end of the first header");
-	while (end != std::string::npos && end <= this->_cgi->getOutput().find(httpConstants::HEADER_BREAK) && start != end)
 	{
-		std::size_t colon_pos = this->_cgi->getOutput().find(":", start);
+		std::cerr << "CGI: Bad header" << std::endl;
+		return;
+	}
+
+	while (end != std::string::npos && end <= cgi_output.find(httpConstants::HEADER_BREAK) && start != end)
+	{
+		std::size_t colon_pos = cgi_output.find(":", start);
 		if (colon_pos > end)
-			throw ABaseHTTPCall::Invalid("Bad header: missing colon");
+		{
+			std::cerr << "CGI: Bad header: missing colon" << std::endl;
+			return;
+		}
 
-		std::string key = converter::toNginxStyle(this->_cgi->getOutput().substr(start, colon_pos - start));
+		std::string key = converter::toNginxStyle(cgi_output.substr(start, colon_pos - start));
 
-		colon_pos += 2;
-		std::string value = this->_cgi->getOutput().substr(colon_pos, end - colon_pos);
+		++colon_pos;
+		while (cgi_output[colon_pos] == ' ')
+			++colon_pos;
+
+		std::string value = cgi_output.substr(colon_pos, end - colon_pos);
+
 		if (ABaseHTTPCall::isKeyRestricted(key) && !_headers[key].empty())
-			throw ABaseHTTPCall::Invalid("Bad header: duplicate restricted key: " + key);
+		{
+			std::cerr << "CGI: Bad header: duplicate restricted key: " << key << std::endl;
+			return;
+		}
 		if (_headers[key].empty())
 			_headers[key] = value;
 		else
 			_headers[key] += ", " + value;
 		start = end + 2;
-		end = this->_cgi->getOutput().find(httpConstants::FIELD_BREAK, start);
+		end = cgi_output.find(httpConstants::FIELD_BREAK, start);
 	}
 	for (std::map< std::string, std::string >::const_iterator it = _headers.begin(); it != _headers.end(); ++it)
 	{
 		response.setHeader(it->first, it->second);
 	}
-	response.setBody(this->_cgi->getOutput().substr(this->_cgi->getOutput().find(httpConstants::HEADER_BREAK) +
-													httpConstants::HEADER_BREAK.length() + 1));
+	response.setBody(
+		cgi_output.substr(cgi_output.find(httpConstants::HEADER_BREAK) + httpConstants::HEADER_BREAK.length()));
 	this->setResponse(response.getResponse());
 }
 

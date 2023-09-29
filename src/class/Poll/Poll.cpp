@@ -67,6 +67,35 @@ void Poll::exitLoop(void)
 	_run = false;
 }
 
+// TODO change this to use the same in ServeManager
+Poll::ret_stt clientWrite(Poll &p, int fd, int revents, Poll::Param &param)
+{
+	(void)p;
+	(void)fd;
+	if (!Poll::isWriteEvent(revents))
+		return Poll::CONTINUE;
+	try
+	{
+		param.call.sendResponse();
+
+		BasicHTTPRequest::Type t = param.call.getBasicRequest().getType();
+
+		std::cout << "[" << fd << "] <-- " << BasicHTTPRequest::toStringType(t) << " "
+				  << param.call.getBasicRequest().getPath() << " "
+				  << converter::HTTPResponseSimplified(param.call.getResponse()) << std::endl;
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << e.what() << '\n';
+		return Poll::DONE_CLOSE_FD;
+	}
+
+	if (param.call.getBytesSent() < param.call.getResponse().size())
+		return Poll::CONTINUE;
+	return Poll::DONE_CLOSE_FD;
+}
+
+//
 void Poll::_closeTimeoutCallsIfNeeded(void)
 {
 	std::pair< int, ret_stt > p;
@@ -78,7 +107,12 @@ void Poll::_closeTimeoutCallsIfNeeded(void)
 		{
 			if (_params[i].start_read.hasSecondsPassed(_CALL_TIMEOUT_SEC))
 			{
-				std::cout << "Timeout on fd: " << _fds[i].fd << std::endl;
+				std::cout << "Timeout on fd[" << _fds[i].fd << "]" << std::endl;
+				if (_params[i].call.isCGI())
+				{
+					_params[i].call.setInternalServerResponse();
+					addWrite(_params[i].call.getClientFd(), clientWrite, _params[i]);
+				}
 				p.first = i;
 				_pop_index(p);
 			}
@@ -106,7 +140,7 @@ void Poll::loop(void)
 		{
 			for (size_t i = 0; i < _fds.size(); ++i)
 			{
-				if (_fds[i].revents & POLLOUT || _fds[i].revents & POLLIN)
+				if (_fds[i].revents & POLLOUT || _fds[i].revents & POLLIN || _fds[i].revents & POLLHUP)
 				{
 					ret_stt s = _handlers[i](*this, _fds[i].fd, _fds[i].revents, _params[i]);
 					p.first = i;
@@ -123,6 +157,11 @@ void Poll::loop(void)
 			_pop(pop_indexes);
 		}
 	}
+}
+
+bool Poll::isEOFEvent(int revents)
+{
+	return revents & POLLHUP;
 }
 
 bool Poll::isReadEvent(int revents)

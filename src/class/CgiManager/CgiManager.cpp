@@ -136,35 +136,84 @@ void CgiManager::writeToCgi(void)
 		throw CgiManager::CgiManagerException();
 }
 
+::size_t findCaseInsensitive(const std::string &str, const std::string &search)
+{
+	std::string strLower = str;
+	std::string searchLower = search;
+
+	std::transform(strLower.begin(), strLower.end(), strLower.begin(), ::tolower);
+	std::transform(searchLower.begin(), searchLower.end(), searchLower.begin(), ::tolower);
+
+	return strLower.find(searchLower);
+}
+
 void CgiManager::readFromCgi(void)
 {
-	int bytes_read = 0;
+	::ssize_t bytes_read = 0;
 	char buffer[BUFFER_SIZE];
-	std::size_t pos;
-	int contentLenght;
+	::size_t pos;
 
 	bytes_read = read(this->getReadFd(), buffer, sizeof(buffer));
+
 	if (bytes_read <= -1)
 		throw CgiManagerException();
-	if (bytes_read > 0)
-	{
-		_output.append(buffer, bytes_read);
-		if ((pos = _output.find(httpConstants::CONTENT_LENGHT_FIELD_KEY)) != std::string::npos)
-		{
-			std::string content_length = _output.substr(pos + httpConstants::CONTENT_LENGHT_FIELD_KEY.length());
-			if ((pos = content_length.find(httpConstants::FIELD_BREAK)) != std::string::npos)
-				contentLenght = converter::stringToInt(content_length.substr(0, pos));
-			pos = _output.find(httpConstants::HEADER_BREAK);
-			if ((pos != std::string::npos) &&
-				_output.substr(pos + httpConstants::HEADER_BREAK.length()).length() >= (size_t)contentLenght)
-			{
-				_output = _output.substr(0, pos + httpConstants::HEADER_BREAK.length() + contentLenght);
-				return;
-			}
-		}
-		if (bytes_read < BUFFER_SIZE)
-			return;
+
+	_output.append(buffer, bytes_read);
+
+	if (bytes_read == BUFFER_SIZE)
 		throw CgiManagerIncompleteRead();
+
+	pos = _output.find(httpConstants::HEADER_BREAK);
+	if (pos == std::string::npos)
+	{
+		return;
+	}
+
+	pos = findCaseInsensitive(_output, httpConstants::headers::CONTENT_LENGTH);
+	if (pos == std::string::npos)
+	{
+		return;
+	}
+	pos += httpConstants::headers::CONTENT_LENGTH.length() + 1;
+	while (_output[pos] == ' ')
+	{
+		++pos;
+	}
+	::size_t end = _output.find(httpConstants::FIELD_BREAK, pos);
+
+	::size_t content_length;
+	try
+	{
+		content_length = converter::stringToSizeT(_output.substr(pos, end - pos));
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << "Error in CGI response: invalid content length: " << e.what() << std::endl;
+		return;
+	}
+
+	pos = _output.find(httpConstants::HEADER_BREAK);
+	if (pos == std::string::npos)
+	{
+		return;
+	}
+
+	std::string tmp_body = _output.substr(pos + httpConstants::HEADER_BREAK.length());
+	if (content_length == tmp_body.size())
+	{
+		return;
+	}
+
+	if (content_length > tmp_body.size())
+	{
+		if (bytes_read != 0)
+			throw CgiManagerIncompleteRead();
+	}
+
+	if (content_length < tmp_body.size())
+	{
+		_output[pos + httpConstants::HEADER_BREAK.length() + content_length] = '\0';
+		return;
 	}
 }
 
