@@ -90,6 +90,7 @@ TEST(HTTPResponse, appendMultiReads)
 	catch (const ABaseHTTPCall::Incomplete &e)
 	{
 		obj.extenedRaw(p2);
+		obj.extenedBin(p2, strlen(p2));
 		obj.unParse();
 	}
 	obj.parseRaw();
@@ -101,6 +102,7 @@ TEST(HTTPResponse, appendMultiReads)
 	catch (const ABaseHTTPCall::Incomplete &e)
 	{
 		obj.extenedRaw(p3);
+		obj.extenedBin(p3, strlen(p3));
 	}
 	try
 	{
@@ -109,6 +111,7 @@ TEST(HTTPResponse, appendMultiReads)
 	catch (const ABaseHTTPCall::Incomplete &e)
 	{
 		obj.extenedRaw(p4);
+		obj.extenedBin(p4, strlen(p4));
 	}
 	obj.parseBody();
 	EXPECT_STREQ("HelloWorld", obj.getBodyAsString().c_str());

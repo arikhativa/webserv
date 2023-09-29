@@ -8,6 +8,7 @@
 ABaseHTTPCall::ABaseHTTPCall(const std::string &raw_request)
 	: _raw(raw_request)
 	, _http_version(UNKNOWN)
+	, _bin(raw_request.begin(), raw_request.end())
 {
 }
 
@@ -16,6 +17,7 @@ ABaseHTTPCall::ABaseHTTPCall(const ABaseHTTPCall &src)
 	, _headers(src.getHeaders())
 	, _http_version(src.getHTTPVersion())
 	, _body(src.getBody())
+	, _bin(src._bin)
 {
 }
 
@@ -69,6 +71,7 @@ ABaseHTTPCall &ABaseHTTPCall::operator=(ABaseHTTPCall const &rhs)
 		this->_headers = rhs.getHeaders();
 		this->_http_version = rhs.getHTTPVersion();
 		this->_body = rhs.getBody();
+		this->_bin = rhs._bin;
 	}
 	return *this;
 }
@@ -300,7 +303,7 @@ void ABaseHTTPCall::extenedRaw(const std::string &raw)
 	this->_raw += raw;
 }
 
-void ABaseHTTPCall::extenedBin(char *buff, int len)
+void ABaseHTTPCall::extenedBin(const char *buff, int len)
 {
 	_bin.insert(_bin.end(), buff, buff + len);
 }

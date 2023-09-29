@@ -71,7 +71,7 @@ class ABaseHTTPCall
 	bool isChunked(void) const;
 	bool isBody(void) const;
 	void extenedRaw(const std::string &raw);
-	void extenedBin(char *buff, int len);
+	void extenedBin(const char *buff, int len);
 	static bool isKeyRestricted(const std::string &key);
 
   protected:

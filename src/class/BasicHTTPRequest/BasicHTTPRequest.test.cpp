@@ -123,6 +123,7 @@ TEST(BasicHTTPRequest, appendReq)
 	catch (const ABaseHTTPCall::Incomplete &e)
 	{
 		obj.extenedRaw(p2);
+		obj.extenedBin(p2, strlen(p2));
 		obj.unParse();
 	}
 	obj.parseRaw();
@@ -149,6 +150,7 @@ TEST(BasicHTTPRequest, appendReqBadHeaders)
 	catch (const ABaseHTTPCall::Incomplete &e)
 	{
 		obj.extenedRaw(p2);
+		obj.extenedBin(p2, strlen(p2));
 		obj.unParse();
 	}
 	obj.parseRaw();
@@ -175,6 +177,7 @@ TEST(BasicHTTPRequest, appendReqBadFirstLine)
 	catch (const ABaseHTTPCall::Incomplete &e)
 	{
 		obj.extenedRaw(p2);
+		obj.extenedBin(p2, strlen(p2));
 		obj.unParse();
 	}
 	try
@@ -186,6 +189,7 @@ TEST(BasicHTTPRequest, appendReqBadFirstLine)
 	catch (const ABaseHTTPCall::Incomplete &e)
 	{
 		obj.extenedRaw(p3);
+		obj.extenedBin(p3, strlen(p3));
 		obj.unParse();
 	}
 	obj.parseRaw();
