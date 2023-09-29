@@ -208,41 +208,6 @@ void ABaseHTTPCall::parseBody(void)
 		_parseBodyByContentLength();
 }
 
-void printVector(const std::vector< char > &vec, int content_length)
-{
-	std::vector< char >::const_iterator it = vec.begin();
-	int i = 0;
-	while (i < content_length && it != vec.end())
-	{
-		std::cout << *it;
-		++it;
-		++i;
-	}
-	std::cout << std::endl;
-}
-
-size_t findInVector(const std::vector< char > &buff, const std::vector< char > &find)
-{
-	for (size_t i = 0; i <= buff.size() - find.size(); ++i)
-	{
-		bool found = true;
-		for (size_t j = 0; j < find.size(); ++j)
-		{
-			if (buff[i + j] != find[j])
-			{
-				found = false;
-				break;
-			}
-		}
-		if (found)
-		{
-			return i;
-		}
-	}
-	return std::string::npos; // Not found
-}
-
-// TODO check with bad content length
 void ABaseHTTPCall::_parseBodyByContentLength(void)
 {
 	std::map< std::string, std::string >::const_iterator it = _headers.find(httpConstants::headers::CONTENT_LENGTH);
@@ -257,8 +222,7 @@ void ABaseHTTPCall::_parseBodyByContentLength(void)
 
 	start += 4;
 
-	std::vector< char > tmp;
-	tmp = _bin;
+	std::vector< char > tmp(_bin);
 	tmp.erase(tmp.begin(), tmp.begin() + start);
 	if (tmp.size() < content_length)
 		throw ABaseHTTPCall::Incomplete("body is too short");
@@ -311,7 +275,7 @@ void ABaseHTTPCall::extenedRaw(const std::string &raw)
 	this->_raw += raw;
 }
 
-void ABaseHTTPCall::extenedRaw(char *buff, int len)
+void ABaseHTTPCall::extenedBin(char *buff, int len)
 {
 	_bin.insert(_bin.end(), buff, buff + len);
 }
@@ -338,17 +302,7 @@ const std::vector< char > &ABaseHTTPCall::getBody(void) const
 
 std::string ABaseHTTPCall::getBodyAsString(void) const
 {
-	return std::string(_body.data(), _body.size());
+	return converter::vectorToString(_body);
 }
-
-// std::string ABaseHTTPCall::getRawBody(void) const
-// {
-// 	std::size_t start = _raw.find(httpConstants::HEADER_BREAK);
-// 	if (start == std::string::npos)
-// 		throw ABaseHTTPCall::Invalid("missing body");
-// 	start += 4;
-
-// 	return _raw.substr(start, _raw.size() - start);
-// }
 
 /* ************************************************************************** */

@@ -113,39 +113,3 @@ TEST(HTTPResponse, appendMultiReads)
 	obj.parseBody();
 	EXPECT_STREQ("HelloWorld", obj.getBodyAsString().c_str());
 }
-
-// TEST(HTTPResponse, appendMultiReadsChunked)
-// {
-// 	const char *p1 = "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nContent-Type: text/plain\r\n\r\n5";
-// 	const char *p2 = "\r\nHello\r\n";
-// 	const char *p3 = "5\r\nWorld\r\n";
-// 	const char *p4 = "0\r\n\r\n";
-
-// 	HTTPResponse obj(p1);
-
-// 	obj.parseRaw();
-
-// 	if (!obj.isBody())
-// 		ASSERT_EXIT(1, ::testing::ExitedWithCode(1), "isBody() == false");
-
-// 	try
-// 	{
-// 		obj.parseBody();
-// 	}
-// 	catch (const ABaseHTTPCall::Incomplete &e)
-// 	{
-// 		EXPECT_STREQ("5", obj.getRawBody().c_str());
-// 	}
-// 	if (!obj.isChunked())
-// 		ASSERT_EXIT(1, ::testing::ExitedWithCode(1), "isChunked() == false");
-
-// 	obj.extenedRaw(p2);
-// 	EXPECT_STREQ(p2, obj.getLastExtention().c_str());
-// 	obj.extenedRaw(p3);
-// 	EXPECT_STREQ(p3, obj.getLastExtention().c_str());
-// 	obj.extenedRaw(p4);
-// 	EXPECT_STREQ(p4, obj.getLastExtention().c_str());
-
-// 	obj.parseBody();
-// 	EXPECT_STREQ("5\r\nHello\r\n5\r\nWorld\r\n0\r\n\r\n", obj.getBody().c_str());
-// }

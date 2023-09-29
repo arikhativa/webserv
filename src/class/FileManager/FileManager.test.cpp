@@ -103,7 +103,7 @@ TEST(FileManager, fileContent)
 	std::string content = "<div id=\"main\">\n\t<div class=\"fof\">\n\t\t\t<h1>Error 404</h1>\n\t</div>\n</div>";
 	FileManager obj(url);
 
-	EXPECT_EQ(content, converter::vectorToString(obj.getFileContent(url)));
+	EXPECT_EQ(content, obj.getFileContent(url));
 
 	EXPECT_THROW(obj.getFileContent(""), FileManager::FileManagerException);
 	EXPECT_THROW(obj.getFileContent("other"), FileManager::FileManagerException);

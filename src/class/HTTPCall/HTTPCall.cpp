@@ -283,7 +283,7 @@ void HTTPCall::recvRequest(void)
 	tmp_raw[tmp_recv_len] = '\0';
 	this->_request_attempts++;
 	this->_basic_request.extenedRaw(tmp_raw);
-	this->_basic_request.extenedRaw(tmp_raw, tmp_recv_len);
+	this->_basic_request.extenedBin(tmp_raw, tmp_recv_len);
 }
 
 void HTTPCall::sendResponse(void)

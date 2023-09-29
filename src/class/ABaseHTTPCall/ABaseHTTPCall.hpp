@@ -68,11 +68,10 @@ class ABaseHTTPCall
 	const std::map< std::string, std::string > &getHeaders(void) const;
 	const std::vector< char > &getBody(void) const;
 	std::string getBodyAsString(void) const;
-	// std::string getRawBody(void) const;
 	bool isChunked(void) const;
 	bool isBody(void) const;
 	void extenedRaw(const std::string &raw);
-	void extenedRaw(char *buff, int len);
+	void extenedBin(char *buff, int len);
 	static bool isKeyRestricted(const std::string &key);
 
   protected:
@@ -82,7 +81,6 @@ class ABaseHTTPCall
 	std::string _raw;
 	std::map< std::string, std::string > _headers;
 	HTTPVersion _http_version;
-	// std::string _body;
 	std::vector< char > _body;
 	std::vector< char > _bin;
 
