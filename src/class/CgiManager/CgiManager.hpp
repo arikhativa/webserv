@@ -13,6 +13,7 @@
 #include <string>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <vector>
 
 #ifdef TEST_ON
 #define private public
@@ -73,6 +74,7 @@ class CgiManager
 	Tab _argv;
 	Pipe _pipe;
 	std::string _output;
+	std::vector< char > _bin;
 	int _pid;
 
 	size_t _byte_write;

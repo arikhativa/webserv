@@ -22,7 +22,7 @@ namespace httpConstants
 	const std::string CONTENT_TYPE_FIELD_KEY("Content-Type: ");
 	const std::string HOST_HEADER("Host: ");
 	const std::string CONTENT_TYPE_FIELD("Content-Type");
-	const std::string CONTENT_LENGHT_FIELD_KEY("Content-Length: ");
+	const std::string CONTENT_LENGTH_FIELD_KEY("Content-Length: ");
 	const std::string CONNECTION_FIELD_KEY("Connection: ");
 	const std::string ALLOW_HEADER("Allow: ");
 	const std::string CONNECTION_ALIVE("keep-alive");

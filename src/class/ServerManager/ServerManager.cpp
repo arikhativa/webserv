@@ -57,6 +57,7 @@ Poll::ret_stt ServerManager::cgiRead(Poll &p, int fd, int revents, Poll::Param &
 	}
 	catch (CgiManager::CgiManagerIncompleteRead &e)
 	{
+		std::cerr << "CGI reading is not finished [" << e.what() << "]" << std::endl;
 		return Poll::CONTINUE;
 	}
 

@@ -75,7 +75,7 @@ void ResponseHeader::_defaultConstructor()
 	_header[DATE].value = _getCurrentDate();
 	_header[CONNECTION_TYPE].name = httpConstants::CONTENT_TYPE_FIELD_KEY;
 	_header[CONNECTION_TYPE].value = "";
-	_header[CONTENT_LENGTH].name = httpConstants::CONTENT_LENGHT_FIELD_KEY;
+	_header[CONTENT_LENGTH].name = httpConstants::CONTENT_LENGTH_FIELD_KEY;
 	_header[CONTENT_LENGTH].value = "";
 	_header[CONNECTION].name = httpConstants::CONNECTION_FIELD_KEY;
 	_header[LOCATION].value = "";
