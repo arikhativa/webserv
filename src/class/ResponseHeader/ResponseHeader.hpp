@@ -49,7 +49,7 @@ class ResponseHeader
 		std::string name;
 		std::string value;
 	};
-	explicit ResponseHeader(HTTPStatusCode code, const ErrorPageSet &error_page_set);
+	ResponseHeader(HTTPStatusCode code, const ErrorPageSet &error_page_set);
 	ResponseHeader(ResponseHeader const &src);
 	~ResponseHeader();
 	ResponseHeader &operator=(ResponseHeader const &rhs);

@@ -51,6 +51,7 @@ namespace httpConstants
 
 	namespace headers
 	{
+		const std::string JSON("application/json");
 		const std::string DATE("Date");
 		const std::string CONNECTION("Connection");
 		const std::string CONTENT_LENGTH("Content-Length");

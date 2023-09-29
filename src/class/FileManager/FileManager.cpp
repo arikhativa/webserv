@@ -105,12 +105,13 @@ bool FileManager::isDirectory(const std::string &path)
 
 void FileManager::createFile(const BasicHTTPRequest &request, const std::string &root)
 {
-	std::string fileName = request.getPath().substr(request.getPath().find_last_of("/"));
-	Path path(root + fileName);
-	std::string content = request.getBody();
-	std::ofstream file(path.get().c_str());
+	std::string path(root + request.getPath());
+	std::ofstream file(path.c_str());
+
 	if (!file.is_open())
 		throw FileManager::FileManagerException();
+
+	std::string content = request.getBody();
 	file << content;
 	file.close();
 }
