@@ -171,7 +171,6 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		return Poll::DONE_CLOSE_FD;
 	}
 
-	std::cout << "TOTAL SIZE: " << param.call.getBytesRecieved() << std::endl;
 	param.call.handleRequest();
 	if (param.call.isCGI())
 	{
