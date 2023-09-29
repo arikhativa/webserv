@@ -10,6 +10,7 @@
 #include <sstream>
 #include <string>
 #include <sys/stat.h>
+#include <vector>
 
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <Path/Path.hpp>

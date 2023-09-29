@@ -280,8 +280,10 @@ void HTTPCall::recvRequest(void)
 		throw ReceivingRequestError();
 	if (tmp_recv_len == 0)
 		throw ReceivingRequestEmpty();
+	tmp_raw[tmp_recv_len] = '\0';
 	this->_request_attempts++;
 	this->_basic_request.extenedRaw(tmp_raw);
+	this->_basic_request.extenedBin(tmp_raw, tmp_recv_len);
 }
 
 void HTTPCall::sendResponse(void)

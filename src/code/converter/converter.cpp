@@ -92,6 +92,12 @@ size_t converter::hexStringToSizeT(const std::string &hexStr)
 	return (result);
 }
 
+std::string converter::vectorToString(std::vector< char > vec)
+{
+	std::string result(vec.begin(), vec.end());
+	return result;
+}
+
 std::string converter::escapeString(const std::string &input)
 {
 	std::string escapedString;

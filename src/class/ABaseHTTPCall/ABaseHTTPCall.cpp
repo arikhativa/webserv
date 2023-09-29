@@ -8,8 +8,7 @@
 ABaseHTTPCall::ABaseHTTPCall(const std::string &raw_request)
 	: _raw(raw_request)
 	, _http_version(UNKNOWN)
-	, _body("")
-	, _last_extention("")
+	, _bin(raw_request.begin(), raw_request.end())
 {
 }
 
@@ -18,7 +17,7 @@ ABaseHTTPCall::ABaseHTTPCall(const ABaseHTTPCall &src)
 	, _headers(src.getHeaders())
 	, _http_version(src.getHTTPVersion())
 	, _body(src.getBody())
-	, _last_extention(src.getLastExtention())
+	, _bin(src._bin)
 {
 }
 
@@ -72,7 +71,7 @@ ABaseHTTPCall &ABaseHTTPCall::operator=(ABaseHTTPCall const &rhs)
 		this->_headers = rhs.getHeaders();
 		this->_http_version = rhs.getHTTPVersion();
 		this->_body = rhs.getBody();
-		this->_last_extention = rhs.getLastExtention();
+		this->_bin = rhs._bin;
 	}
 	return *this;
 }
@@ -212,7 +211,6 @@ void ABaseHTTPCall::parseBody(void)
 		_parseBodyByContentLength();
 }
 
-// TODO check with bad content length
 void ABaseHTTPCall::_parseBodyByContentLength(void)
 {
 	std::map< std::string, std::string >::const_iterator it = _headers.find(httpConstants::headers::CONTENT_LENGTH);
@@ -224,10 +222,40 @@ void ABaseHTTPCall::_parseBodyByContentLength(void)
 	std::size_t start = _raw.find(httpConstants::HEADER_BREAK);
 	if (start == std::string::npos)
 		throw ABaseHTTPCall::Incomplete("missing body");
+
 	start += 4;
-	_body = _raw.substr(start, content_length);
-	if (_body.size() != content_length)
+
+	std::vector< char > tmp(_bin);
+	tmp.erase(tmp.begin(), tmp.begin() + start);
+	if (tmp.size() < content_length)
 		throw ABaseHTTPCall::Incomplete("body is too short");
+	if (tmp.size() > content_length)
+	{
+		std::cout << "Note: Client sent more bytes then " << httpConstants::headers::CONTENT_LENGTH << std::endl;
+		tmp.erase(tmp.begin() + content_length, tmp.end());
+	}
+	_body = tmp;
+}
+
+static ::size_t vectorFind(const std::vector< char > &buff, const std::vector< char > &find)
+{
+	for (size_t i = 0; i <= buff.size() - find.size(); ++i)
+	{
+		bool found = true;
+		for (size_t j = 0; j < find.size(); ++j)
+		{
+			if (buff[i + j] != find[j])
+			{
+				found = false;
+				break;
+			}
+		}
+		if (found)
+		{
+			return i;
+		}
+	}
+	return std::string::npos;
 }
 
 void ABaseHTTPCall::_parseBodyByChunked(void)
@@ -237,9 +265,17 @@ void ABaseHTTPCall::_parseBodyByChunked(void)
 		throw ABaseHTTPCall::Incomplete("missing body");
 	start += 4;
 
-	_body = _raw.substr(start, _raw.size() - start);
-	if (_body.find(httpConstants::CHUNKED_END) == std::string::npos)
+	std::vector< char > tmp(_bin);
+	tmp.erase(tmp.begin(), tmp.begin() + start);
+
+	std::vector< char > to_find(httpConstants::CHUNKED_END.begin(), httpConstants::CHUNKED_END.end());
+
+	::size_t index = vectorFind(tmp, to_find);
+
+	if (index == std::string::npos)
 		throw ABaseHTTPCall::Incomplete("body is too short");
+
+	_body.assign(tmp.begin(), tmp.end());
 }
 
 // Note that we don't clear _raw.
@@ -248,7 +284,6 @@ void ABaseHTTPCall::unParse(void)
 	_headers.clear();
 	_http_version = UNKNOWN;
 	_body.clear();
-	_last_extention.clear();
 }
 
 /*
@@ -265,13 +300,12 @@ bool ABaseHTTPCall::isChunked(void) const
 
 void ABaseHTTPCall::extenedRaw(const std::string &raw)
 {
-	this->_last_extention = raw;
 	this->_raw += raw;
 }
 
-const std::string &ABaseHTTPCall::getLastExtention(void) const
+void ABaseHTTPCall::extenedBin(const char *buff, int len)
 {
-	return this->_last_extention;
+	_bin.insert(_bin.end(), buff, buff + len);
 }
 
 const std::string &ABaseHTTPCall::getRawRequest(void) const
@@ -289,19 +323,14 @@ const std::map< std::string, std::string > &ABaseHTTPCall::getHeaders(void) cons
 	return this->_headers;
 }
 
-const std::string &ABaseHTTPCall::getBody(void) const
+const std::vector< char > &ABaseHTTPCall::getBody(void) const
 {
 	return this->_body;
 }
 
-std::string ABaseHTTPCall::getRawBody(void) const
+std::string ABaseHTTPCall::getBodyAsString(void) const
 {
-	std::size_t start = _raw.find(httpConstants::HEADER_BREAK);
-	if (start == std::string::npos)
-		throw ABaseHTTPCall::Invalid("missing body");
-	start += 4;
-
-	return _raw.substr(start, _raw.size() - start);
+	return converter::vectorToString(_body);
 }
 
 /* ************************************************************************** */

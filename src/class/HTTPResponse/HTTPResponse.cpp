@@ -46,7 +46,7 @@ std::ostream &operator<<(std::ostream &o, HTTPResponse const &i)
 	o << "{\"_http_version\": \"" << http_version << "\", "
 	  << "\"_stt\": \"" << i.getStatusCode() << "\", "
 	  << "\"_headers\": " << i.getHeaders() << ", "
-	  << "\"_body\": \"" << i.getBody() << "\""
+	  << "\"_body\": \"" << i.getBodyAsString() << "\""
 	  << "}";
 	return o;
 }
@@ -76,7 +76,7 @@ std::string HTTPResponse::toString(void) const
 	ret += httpConstants::SPACE + converter::numToString< int >(_stt.get()) + httpConstants::SPACE + _stt.toString() +
 		   httpConstants::FIELD_BREAK;
 
-	ret += converter::headersToString(this->getHeaders()) + this->getBody();
+	ret += converter::headersToString(this->getHeaders()) + this->getBodyAsString();
 	return ret;
 }
 

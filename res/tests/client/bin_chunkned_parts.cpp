@@ -32,12 +32,21 @@ int main()
 	}
 
 	// Prepare HTTP request
-	std::string httpRequest = "AsSw /index.html HTTP/1.1\r\n"
+	const char *httpRequest = "POST /upload/bin HTTP/1.1\r\n"
 							  "Host: localhost\r\n"
-							  "\r\n";
+							  "Transfer-Encoding: chunked\r\n"
+							  "\r\n"
+							  "5\r\n"
+							  "f\0g\0h\r\n"
+							  "4\r\n"
+							  "\0aa\0\r\n";
+
+	const char *part1 = "0\r\n\r\n";
 
 	// Send HTTP request
-	send(clientSocket, httpRequest.c_str(), httpRequest.size(), 0);
+	send(clientSocket, httpRequest, 27 + 17 + 28 + 2 + 3 + 7 + 3 + 6, 0);
+	sleep(1);
+	send(clientSocket, part1, 5, 0);
 
 	// Receive HTTP response
 	char buffer[1024];

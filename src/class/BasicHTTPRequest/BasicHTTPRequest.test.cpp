@@ -42,7 +42,7 @@ TEST(BasicHTTPRequest, Accessor)
 	EXPECT_EQ("localhost:8081", obj.getHeaders().at(httpConstants::headers::HOST));
 	EXPECT_EQ("keep-alive", obj.getHeaders().at(httpConstants::headers::CONNECTION));
 	EXPECT_EQ("10", obj.getHeaders().at(httpConstants::headers::CONTENT_LENGTH));
-	EXPECT_EQ("abcdefghij", obj.getBody());
+	EXPECT_EQ("abcdefghij", obj.getBodyAsString());
 }
 
 TEST(BasicHTTPRequest, Print)
@@ -79,7 +79,7 @@ TEST(BasicHTTPRequest, parseRaw)
 	obj.parseRaw();
 	if (obj.isBody())
 		obj.parseBody();
-	EXPECT_STREQ("body", obj.getBody().c_str());
+	EXPECT_STREQ("body", obj.getBodyAsString().c_str());
 }
 
 TEST(BasicHTTPRequest, ExceptionDupHeaders)
@@ -123,6 +123,7 @@ TEST(BasicHTTPRequest, appendReq)
 	catch (const ABaseHTTPCall::Incomplete &e)
 	{
 		obj.extenedRaw(p2);
+		obj.extenedBin(p2, strlen(p2));
 		obj.unParse();
 	}
 	obj.parseRaw();
@@ -132,7 +133,7 @@ TEST(BasicHTTPRequest, appendReq)
 	EXPECT_EQ(BasicHTTPRequest::POST, obj.getType());
 	EXPECT_EQ("/", obj.getPath());
 	EXPECT_EQ(ABaseHTTPCall::HTTP_1_1, obj.getHTTPVersion());
-	EXPECT_STREQ("body", obj.getBody().c_str());
+	EXPECT_STREQ("body", obj.getBodyAsString().c_str());
 }
 
 TEST(BasicHTTPRequest, appendReqBadHeaders)
@@ -149,6 +150,7 @@ TEST(BasicHTTPRequest, appendReqBadHeaders)
 	catch (const ABaseHTTPCall::Incomplete &e)
 	{
 		obj.extenedRaw(p2);
+		obj.extenedBin(p2, strlen(p2));
 		obj.unParse();
 	}
 	obj.parseRaw();
@@ -157,7 +159,7 @@ TEST(BasicHTTPRequest, appendReqBadHeaders)
 	EXPECT_EQ(BasicHTTPRequest::POST, obj.getType());
 	EXPECT_EQ("/", obj.getPath());
 	EXPECT_EQ(ABaseHTTPCall::HTTP_1_1, obj.getHTTPVersion());
-	EXPECT_STREQ("body", obj.getBody().c_str());
+	EXPECT_STREQ("body", obj.getBodyAsString().c_str());
 }
 
 TEST(BasicHTTPRequest, appendReqBadFirstLine)
@@ -175,6 +177,7 @@ TEST(BasicHTTPRequest, appendReqBadFirstLine)
 	catch (const ABaseHTTPCall::Incomplete &e)
 	{
 		obj.extenedRaw(p2);
+		obj.extenedBin(p2, strlen(p2));
 		obj.unParse();
 	}
 	try
@@ -186,6 +189,7 @@ TEST(BasicHTTPRequest, appendReqBadFirstLine)
 	catch (const ABaseHTTPCall::Incomplete &e)
 	{
 		obj.extenedRaw(p3);
+		obj.extenedBin(p3, strlen(p3));
 		obj.unParse();
 	}
 	obj.parseRaw();
@@ -194,5 +198,5 @@ TEST(BasicHTTPRequest, appendReqBadFirstLine)
 	EXPECT_EQ(BasicHTTPRequest::POST, obj.getType());
 	EXPECT_EQ("/", obj.getPath());
 	EXPECT_EQ(ABaseHTTPCall::HTTP_1_1, obj.getHTTPVersion());
-	EXPECT_STREQ("body", obj.getBody().c_str());
+	EXPECT_STREQ("body", obj.getBodyAsString().c_str());
 }

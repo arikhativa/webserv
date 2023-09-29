@@ -5,6 +5,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <vector>
 
 #include <converter/converter.hpp>
 #include <httpConstants/httpConstants.hpp>
@@ -63,14 +64,14 @@ class ABaseHTTPCall
 	static std::string toStringVersion(HTTPVersion);
 
 	const std::string &getRawRequest(void) const;
-	const std::string &getLastExtention(void) const;
 	HTTPVersion getHTTPVersion(void) const;
 	const std::map< std::string, std::string > &getHeaders(void) const;
-	const std::string &getBody(void) const;
-	std::string getRawBody(void) const;
+	const std::vector< char > &getBody(void) const;
+	std::string getBodyAsString(void) const;
 	bool isChunked(void) const;
 	bool isBody(void) const;
 	void extenedRaw(const std::string &raw);
+	void extenedBin(const char *buff, int len);
 	static bool isKeyRestricted(const std::string &key);
 
   protected:
@@ -80,8 +81,8 @@ class ABaseHTTPCall
 	std::string _raw;
 	std::map< std::string, std::string > _headers;
 	HTTPVersion _http_version;
-	std::string _body;
-	std::string _last_extention;
+	std::vector< char > _body;
+	std::vector< char > _bin;
 
   private:
 	void _parseBodyByChunked(void);
