@@ -234,7 +234,27 @@ void ABaseHTTPCall::_parseBodyByContentLength(void)
 	_body = tmp;
 }
 
-// TODO chunk does not support binary
+static ::size_t vectorFind(const std::vector< char > &buff, const std::vector< char > &find)
+{
+	for (size_t i = 0; i <= buff.size() - find.size(); ++i)
+	{
+		bool found = true;
+		for (size_t j = 0; j < find.size(); ++j)
+		{
+			if (buff[i + j] != find[j])
+			{
+				found = false;
+				break;
+			}
+		}
+		if (found)
+		{
+			return i;
+		}
+	}
+	return std::string::npos;
+}
+
 void ABaseHTTPCall::_parseBodyByChunked(void)
 {
 	std::size_t start = _raw.find(httpConstants::HEADER_BREAK);
@@ -242,9 +262,14 @@ void ABaseHTTPCall::_parseBodyByChunked(void)
 		throw ABaseHTTPCall::Incomplete("missing body");
 	start += 4;
 
-	std::string tmp = _raw.substr(start, _raw.size() - start);
+	std::vector< char > tmp(_bin);
+	tmp.erase(tmp.begin(), tmp.begin() + start);
 
-	if (tmp.find(httpConstants::CHUNKED_END) == std::string::npos)
+	std::vector< char > to_find(httpConstants::CHUNKED_END.begin(), httpConstants::CHUNKED_END.end());
+
+	::size_t index = vectorFind(tmp, to_find);
+
+	if (index == std::string::npos)
 		throw ABaseHTTPCall::Incomplete("body is too short");
 
 	_body.assign(tmp.begin(), tmp.end());
