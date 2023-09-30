@@ -136,13 +136,20 @@ void CgiManager::writeToCgi(void)
 		throw CgiManager::CgiManagerException();
 }
 
+static std::string toLowerCase(const std::string &str)
+{
+	std::string result = str;
+	for (size_t i = 0; i < result.length(); ++i)
+	{
+		result[i] = std::tolower(result[i]);
+	}
+	return result;
+}
+
 ::size_t findCaseInsensitive(const std::string &str, const std::string &search)
 {
-	std::string strLower = str;
-	std::string searchLower = search;
-
-	std::transform(strLower.begin(), strLower.end(), strLower.begin(), ::tolower);
-	std::transform(searchLower.begin(), searchLower.end(), searchLower.begin(), ::tolower);
+	std::string strLower = toLowerCase(str);
+	std::string searchLower = toLowerCase(search);
 
 	return strLower.find(searchLower);
 }

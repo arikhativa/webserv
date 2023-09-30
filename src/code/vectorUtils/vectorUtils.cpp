@@ -22,10 +22,19 @@
 	return std::string::npos;
 }
 
+static std::string toLowerCase(const std::string &str)
+{
+	std::string result = str;
+	for (size_t i = 0; i < result.length(); ++i)
+	{
+		result[i] = std::tolower(result[i]);
+	}
+	return result;
+}
+
 ::size_t vectorUtils::findCaseInsensitive(const std::vector< char > &vec, const std::string &search)
 {
-	std::string search_lower = search;
-	std::transform(search_lower.begin(), search_lower.end(), search_lower.begin(), ::tolower);
+	std::string search_lower = toLowerCase(search);
 
 	for (size_t i = 0; i < vec.size(); ++i)
 	{

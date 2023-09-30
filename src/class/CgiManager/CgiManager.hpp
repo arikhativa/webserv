@@ -7,8 +7,8 @@
 #include <Pipe/Pipe.hpp>
 #include <Tab/Tab.hpp>
 #include <converter/converter.hpp>
-#include <vectorUtils/vectorUtils.hpp>
 #include <header/header.hpp>
+#include <vectorUtils/vectorUtils.hpp>
 
 #include <cstring>
 #include <iostream>
@@ -40,7 +40,7 @@ class CgiManager
 	int getPid(void) const;
 	int getBytesWrite(void) const;
 	int getBytesRead(void) const;
-	const std::vector< char > & getOutput(void) const;
+	const std::vector< char > &getOutput(void) const;
 
 	void writeToCgi(void);
 	void readFromCgi(void);

@@ -49,6 +49,7 @@ int main()
 	// Receive HTTP response
 	char buffer[1024];
 	int recvLen = recv(clientSocket, buffer, sizeof(buffer), 0);
+	buffer[recvLen] = '\0';
 	if (recvLen < 0)
 	{
 		perror("Error receiving response");
