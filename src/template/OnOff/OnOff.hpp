@@ -9,10 +9,10 @@
 #define protected public
 #endif
 
-template < typename T >
+template <typename T>
 class OnOff
 {
-  public:
+public:
 	OnOff(const T &value, bool isOn)
 		: data(value, isOn)
 	{
@@ -38,8 +38,8 @@ class OnOff
 		data.second = isOn;
 	}
 
-  private:
-	std::pair< T, bool > data;
+private:
+	std::pair<T, bool> data;
 };
 
 #ifdef TEST_ON
