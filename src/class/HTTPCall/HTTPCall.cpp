@@ -275,7 +275,7 @@ void HTTPCall::recvRequest(void)
 	int tmp_recv_len;
 	char tmp_raw[HTTPCall::RECV_BUFFER_SIZE];
 
-	tmp_recv_len = recv(this->_client_fd, tmp_raw, sizeof(tmp_raw), MSG_DONTWAIT | SO_NOSIGPIPE);
+	tmp_recv_len = recv(this->_client_fd, tmp_raw, sizeof(tmp_raw), MSG_DONTWAIT);
 	if (tmp_recv_len <= -1)
 		throw ReceivingRequestError();
 	if (tmp_recv_len == 0)
@@ -289,7 +289,7 @@ void HTTPCall::recvRequest(void)
 void HTTPCall::sendResponse(void)
 {
 	int send_status;
-	send_status = send(this->_client_fd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT | SO_NOSIGPIPE);
+	send_status = send(this->_client_fd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
 	if (send_status <= -1)
 		throw SendingResponseError();
 	if (send_status == 0)
