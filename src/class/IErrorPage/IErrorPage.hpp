@@ -13,7 +13,6 @@
 #define protected public
 #endif
 
-// TODO maybe HTTPStatusCode should be an interface
 class IErrorPage
 {
   public:
