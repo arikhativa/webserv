@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alopez-g <alopez-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 10:25:39 by yrabby            #+#    #+#             */
-/*   Updated: 2023/08/30 10:15:28 by alopez-g         ###   ########.fr       */
+/*   Updated: 2023/09/30 10:53:14 by yrabby           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ int main(int ac, char **av)
 	{
 		ServerManager sm(conf);
 		sm.setup();
+		signalHandler::setup();
 		sm.start();
 		sm.terminate();
 	}

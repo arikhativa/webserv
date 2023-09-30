@@ -52,23 +52,25 @@ class Poll
 
 	Poll();
 	~Poll();
-	Poll(const Poll &src);
-
-	Poll &operator=(Poll const &rhs);
 
 	void loop(void);
 	void addRead(int fd, t_handler h, Param p);
 	void addWrite(int fd, t_handler h, Param p);
-	void exitLoop(void);
+	static void exitLoop(void);
 	static bool isEOFEvent(int revents);
 	static bool isReadEvent(int revents);
 	static bool isWriteEvent(int revents);
 
   private:
+	Poll(const Poll &src);
+
+	Poll &operator=(Poll const &rhs);
+
 	static const int _TIMEOUT = 10000;
 	static const int _CALL_TIMEOUT_SEC = 5;
 
-	bool _run;
+	static bool _run;
+
 	std::vector< pollfd > _fds;
 	std::vector< t_handler > _handlers;
 	std::vector< std::string > _buffers;

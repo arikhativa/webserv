@@ -1,18 +1,18 @@
 
 #include <Poll/Poll.hpp>
 
+bool Poll::_run = true;
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
 Poll::Poll()
-	: _run(true)
 {
 }
 
 Poll::Poll(const Poll &src)
-	: _run(src._run)
-	, _fds(src._fds)
+	: _fds(src._fds)
 {
 }
 
@@ -52,7 +52,6 @@ Poll &Poll::operator=(Poll const &rhs)
 {
 	if (this != &rhs)
 	{
-		this->_run = rhs._run;
 		this->_fds = rhs._fds;
 	}
 	return *this;
@@ -64,7 +63,7 @@ Poll &Poll::operator=(Poll const &rhs)
 
 void Poll::exitLoop(void)
 {
-	_run = false;
+	Poll::_run = false;
 }
 
 void Poll::_closeTimeoutCallsIfNeeded(void)
@@ -102,7 +101,9 @@ void Poll::loop(void)
 		int stt = poll(_fds.data(), _fds.size(), _TIMEOUT);
 
 		if (stt == -1)
-			std::cerr << "poll() failed" << std::endl;
+		{
+			std::cerr << "poll() error" << std::endl;
+		}
 		else if (stt == 0)
 		{
 			_closeTimeoutCallsIfNeeded();
