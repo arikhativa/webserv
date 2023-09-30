@@ -19,6 +19,10 @@
 #define protected public
 #endif
 
+#ifndef SO_NOSIGPIPE
+#define SO_NOSIGPIPE 0
+#endif
+
 #define MAX_SYS_BACKLOG 128
 
 class Socket

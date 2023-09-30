@@ -88,7 +88,6 @@ Token::Token()
 {
 }
 
-// TODO think about exceptions
 Token::Token(const std::string &value)
 	: _type(Token::_initType(value))
 	, _value(value)
