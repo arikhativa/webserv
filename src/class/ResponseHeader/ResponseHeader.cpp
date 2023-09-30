@@ -195,7 +195,10 @@ void ResponseHeader::setHeader(const std::string &key, const std::string &value)
 	_header[i].name = key + ": ";
 	_header[i].value = value;
 	++i;
+	if (i == 10000)
+		i = BODY + 1;
 }
+
 void ResponseHeader::setLocationHeader(const std::string &value)
 {
 	this->_header[LOCATION].value = value;
