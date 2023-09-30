@@ -90,7 +90,6 @@ void Poll::_closeTimeoutCallsIfNeeded(void)
 	}
 }
 
-// TODO think of error handling
 void Poll::loop(void)
 {
 	std::pair< int, ret_stt > p;

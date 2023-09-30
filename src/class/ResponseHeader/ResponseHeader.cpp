@@ -169,7 +169,6 @@ void ResponseHeader::setConnection(const std::string &connection)
 	this->_header.at(CONNECTION).value = connection;
 }
 
-// TODO be sure about CONTENT_LENGTH].value should be
 void ResponseHeader::setBody(const std::string &body)
 {
 	this->_header[BODY].value = body;
@@ -180,7 +179,6 @@ void ResponseHeader::setBody(const std::string &body)
 		setContentType(httpConstants::HTML_SUFFIX);
 }
 
-// TODO think about it the static "i"
 void ResponseHeader::setHeader(const std::string &key, const std::string &value)
 {
 	static int i = BODY + 1;
