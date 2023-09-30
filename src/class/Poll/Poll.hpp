@@ -79,6 +79,8 @@ class Poll
 	void _closeTimeoutCallsIfNeeded(void);
 };
 
+#include <pollHandler/pollHandler.hpp>
+
 #ifdef TEST_ON
 #undef private
 #undef protected

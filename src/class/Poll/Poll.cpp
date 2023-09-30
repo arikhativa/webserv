@@ -67,35 +67,6 @@ void Poll::exitLoop(void)
 	_run = false;
 }
 
-// TODO change this to use the same in ServeManager
-Poll::ret_stt clientWrite(Poll &p, int fd, int revents, Poll::Param &param)
-{
-	(void)p;
-	(void)fd;
-	if (!Poll::isWriteEvent(revents))
-		return Poll::CONTINUE;
-	try
-	{
-		param.call.sendResponse();
-
-		BasicHTTPRequest::Type t = param.call.getBasicRequest().getType();
-
-		std::cout << "[" << fd << "] <-- " << BasicHTTPRequest::toStringType(t) << " "
-				  << param.call.getBasicRequest().getPath() << " "
-				  << converter::HTTPResponseSimplified(param.call.getResponse()) << std::endl;
-	}
-	catch (const std::exception &e)
-	{
-		std::cerr << e.what() << '\n';
-		return Poll::DONE_CLOSE_FD;
-	}
-
-	if (param.call.getBytesSent() < param.call.getResponse().size())
-		return Poll::CONTINUE;
-	return Poll::DONE_CLOSE_FD;
-}
-
-//
 void Poll::_closeTimeoutCallsIfNeeded(void)
 {
 	std::pair< int, ret_stt > p;
@@ -111,7 +82,7 @@ void Poll::_closeTimeoutCallsIfNeeded(void)
 				if (_params[i].call.isCGI())
 				{
 					_params[i].call.setInternalServerResponse();
-					addWrite(_params[i].call.getClientFd(), clientWrite, _params[i]);
+					addWrite(_params[i].call.getClientFd(), pollHandler::clientWrite, _params[i]);
 				}
 				p.first = i;
 				_pop_index(p);
