@@ -8,6 +8,7 @@
 namespace signalHandler
 {
 	void sigHandler(int signal);
+	void sigPipeHandler(int signal);
 	void setup(void);
 } // namespace signalHandler
 
