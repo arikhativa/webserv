@@ -291,7 +291,9 @@ void HTTPCall::recvRequest(void)
 void HTTPCall::sendResponse(void)
 {
 	int send_status;
-	send_status = send(this->_client_fd, &(_response[0]), _response.size(), MSG_DONTWAIT);
+
+	send_status = send(this->_client_fd, &(_response[_bytes_sent]), _response.size() - _bytes_sent, MSG_DONTWAIT);
+
 	if (send_status <= -1)
 		throw SendingResponseError();
 	if (send_status == 0)
