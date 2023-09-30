@@ -56,6 +56,7 @@ class HTTPCall
 	void setLocation(const ILocation *location);
 	void setCgi(CgiManager *cgi);
 
+	bool isRedirect(void);
 	bool isRequestAllowed(void);
 	bool isCGIValid(void);
 	bool isCGIPostExtValid(void);
@@ -65,7 +66,6 @@ class HTTPCall
 	void recvRequest(void);
 	void sendResponse(void);
 	void handleRequest(void);
-	void terminate(void);
 
 	void cgiToResponse(void);
 
