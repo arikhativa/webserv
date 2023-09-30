@@ -237,27 +237,6 @@ void ABaseHTTPCall::_parseBodyByContentLength(void)
 	_body = tmp;
 }
 
-static ::size_t vectorFind(const std::vector< char > &buff, const std::vector< char > &find)
-{
-	for (size_t i = 0; i <= buff.size() - find.size(); ++i)
-	{
-		bool found = true;
-		for (size_t j = 0; j < find.size(); ++j)
-		{
-			if (buff[i + j] != find[j])
-			{
-				found = false;
-				break;
-			}
-		}
-		if (found)
-		{
-			return i;
-		}
-	}
-	return std::string::npos;
-}
-
 void ABaseHTTPCall::_parseBodyByChunked(void)
 {
 	std::size_t start = _raw.find(httpConstants::HEADER_BREAK);
@@ -270,7 +249,7 @@ void ABaseHTTPCall::_parseBodyByChunked(void)
 
 	std::vector< char > to_find(httpConstants::CHUNKED_END.begin(), httpConstants::CHUNKED_END.end());
 
-	::size_t index = vectorFind(tmp, to_find);
+	::size_t index = vectorUtils::find(tmp, to_find);
 
 	if (index == std::string::npos)
 		throw ABaseHTTPCall::Incomplete("body is too short");

@@ -9,6 +9,7 @@
 
 #include <converter/converter.hpp>
 #include <httpConstants/httpConstants.hpp>
+#include <vectorUtils/vectorUtils.hpp>
 
 #ifdef TEST_ON
 #define private public

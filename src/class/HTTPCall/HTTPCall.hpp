@@ -6,6 +6,7 @@
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 #include <Socket/Socket.hpp>
 #include <matcher/matcher.hpp>
+#include <vectorUtils/vectorUtils.hpp>
 
 #include <iostream>
 #include <map>
