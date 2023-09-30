@@ -1,7 +1,7 @@
 
 #include <vectorUtils/vectorUtils.hpp>
 
-::size_t vectorUtils::find(const std::vector< char > &buff, const std::vector< char > &find, ::size_t start = 0)
+::size_t vectorUtils::find(const std::vector< char > &buff, const std::vector< char > &find, ::size_t start)
 {
 	for (size_t i = start; i <= buff.size() - find.size(); ++i)
 	{
@@ -60,6 +60,10 @@ std::vector< char > vectorUtils::subvec(const std::vector< char > &vec, size_t s
 
 	size_t end = start + length;
 	if (end > vec.size())
+	{
+		end = vec.size();
+	}
+	if (0 == length)
 	{
 		end = vec.size();
 	}

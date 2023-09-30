@@ -7,12 +7,14 @@
 #include <Pipe/Pipe.hpp>
 #include <Tab/Tab.hpp>
 #include <converter/converter.hpp>
+#include <vectorUtils/vectorUtils.hpp>
 
 #include <cstring>
 #include <iostream>
 #include <string>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <vector>
 
 #ifdef TEST_ON
 #define private public
@@ -37,7 +39,7 @@ class CgiManager
 	int getPid(void) const;
 	int getBytesWrite(void) const;
 	int getBytesRead(void) const;
-	std::string getOutput(void) const;
+	const std::vector< char > & getOutput(void) const;
 
 	void writeToCgi(void);
 	void readFromCgi(void);
@@ -72,7 +74,7 @@ class CgiManager
 	Tab _env;
 	Tab _argv;
 	Pipe _pipe;
-	std::string _output;
+	std::vector< char > _output;
 	int _pid;
 
 	size_t _byte_write;

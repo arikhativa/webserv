@@ -331,41 +331,30 @@ void HTTPCall::cgiToResponse(void)
 {
 	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), this->getLocation()->getErrorPageSet());
 
-	const std::vector< char > &cgi_output = this->_cgi->getOutput();
+	const std::vector< char > &bin(_cgi->getOutput());
 
-	std::vector< char > tmp(httpConstants::HEADER_BREAK.begin(), httpConstants::HEADER_BREAK.end());
-	::size_t pos = vectorUtils::find(cgi_output, tmp);
-	if (pos == std::string::npos)
+	std::string cgi_output(bin.begin(), bin.end());
+
+	if (cgi_output.find(httpConstants::HEADER_BREAK) == std::string::npos)
 	{
-		response.setBody(cgi_output);
+		response.setBody(bin);
 		this->setResponse(response.getResponse());
-
 		return;
 	}
 
 	std::map< std::string, std::string > _headers;
-	::size_t start = 0;
+	std::size_t start = 0;
+	std::size_t end = cgi_output.find(httpConstants::FIELD_BREAK);
 
-	tmp.assign(httpConstants::FIELD_BREAK.begin(), httpConstants::FIELD_BREAK.end());
-	::size_t end = vectorUtils::find(cgi_output, tmp);
 	if (end == std::string::npos)
 	{
 		std::cerr << "CGI: Bad header" << std::endl;
 		return;
 	}
 
-	while (end != std::string::npos &&
-		   end <= vectorUtils::find(cgi_output, std::vector< char >(httpConstants::HEADER_BREAK.begin(),
-																	httpConstants::HEADER_BREAK.end())) &&
-		   start != end)
+	while (end != std::string::npos && end <= cgi_output.find(httpConstants::HEADER_BREAK) && start != end)
 	{
-
-		std::string colon_str(":");
-		tmp.assign(colon_str.begin(), colon_str.end());
-
-		::size_t colon_pos = vectorUtils::find(cgi_output, tmp);
-
-		// std::size_t colon_pos = cgi_output.find(":", start);
+		std::size_t colon_pos = cgi_output.find(":", start);
 		if (colon_pos > end)
 		{
 			std::cerr << "CGI: Bad header: missing colon" << std::endl;
@@ -396,8 +385,18 @@ void HTTPCall::cgiToResponse(void)
 	{
 		response.setHeader(it->first, it->second);
 	}
-	response.setBody(
-		cgi_output.substr(cgi_output.find(httpConstants::HEADER_BREAK) + httpConstants::HEADER_BREAK.length()));
+
+	start = cgi_output.find(httpConstants::HEADER_BREAK) + httpConstants::HEADER_BREAK.length();
+	if (start == std::string::npos)
+	{
+		std::cerr << "CGI: Bad header" << std::endl;
+		return;
+	}
+
+	std::vector< char > tmp = vectorUtils::subvec(bin, start);
+
+	response.setBody(tmp);
+
 	this->setResponse(response.getResponse());
 }
 
