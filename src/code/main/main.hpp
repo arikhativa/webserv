@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alopez-g <alopez-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 10:26:19 by yrabby            #+#    #+#             */
-/*   Updated: 2023/08/30 10:13:25 by alopez-g         ###   ########.fr       */
+/*   Updated: 2023/09/30 10:51:23 by yrabby           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,6 @@
 #include <builder/builder.hpp>
 #include <lexer/lexer.hpp>
 #include <parser/parser.hpp>
+#include <signalHandler/signalHandler.hpp>
 
 #endif /* MAIN_H */

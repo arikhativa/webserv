@@ -190,11 +190,9 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 */
 
 ServerManager::ServerManager(const IConf *conf)
-	: _poll()
-	, _conf(conf)
+	: _conf(conf)
 {
 	createServerSockets(conf);
-	this->_poll = Poll();
 }
 
 const char *ServerManager::ServerCreationFailed::what() const throw()
