@@ -87,6 +87,7 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 		param.call.getBasicRequest().parseRaw();
 		if (param.call.getBasicRequest().isBody())
 			param.call.getBasicRequest().parseBody();
+		param.call.setIsCompleted(true);
 		std::cout << "[" << fd << "] --> " << param.call << std::endl;
 	}
 	catch (ABaseHTTPCall::Incomplete &e)

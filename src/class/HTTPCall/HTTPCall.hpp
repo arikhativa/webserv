@@ -48,6 +48,8 @@ class HTTPCall
 	const ILocation *getLocation(void) const;
 	const Path &getLocalPath(void) const;
 	std::string getExtension(void) const;
+	void setIsCompleted(bool flag);
+	bool isCompleted(void) const;
 
 	void setBasicRequest(const BasicHTTPRequest &request);
 	void setResponse(const std::string &response);
@@ -106,6 +108,7 @@ class HTTPCall
 	const IServerConf *_server_conf;
 	const ILocation *_location;
 	Path _local_path;
+	bool _isCompleted;
 
 	void _setLocalPath(void);
 	bool _isMethodAllowed(void);

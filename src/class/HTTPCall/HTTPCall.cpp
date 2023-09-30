@@ -16,6 +16,7 @@ HTTPCall::HTTPCall()
 	, _bytes_sent(0)
 	, _response("")
 	, _basic_request("")
+	, _isCompleted(false)
 {
 }
 
@@ -31,6 +32,8 @@ HTTPCall::HTTPCall(const HTTPCall &src)
 	, _server_conf(src._server_conf)
 	, _location(src._location)
 	, _local_path(src._local_path)
+	, _isCompleted(src._isCompleted)
+
 {
 }
 
@@ -43,6 +46,8 @@ HTTPCall::HTTPCall(const Socket *socket, int client_fd)
 	, _bytes_sent(0)
 	, _response("")
 	, _basic_request("")
+	, _isCompleted(false)
+
 {
 }
 
@@ -93,6 +98,7 @@ HTTPCall HTTPCall::operator=(const HTTPCall &rhs)
 		this->_server_conf = rhs._server_conf;
 		this->_location = rhs._location;
 		this->_local_path = rhs._local_path;
+		this->_isCompleted = rhs._isCompleted;
 	}
 	return *this;
 }
@@ -118,6 +124,7 @@ std::string HTTPCall::getExtension(void) const
 
 bool HTTPCall::isCGI(void) const
 {
+	std::cout << "CGI" << std::endl;
 	return (this->getLocation()->getCGIConf().isSet() &&
 			this->getLocation()->getCGIConf().getExtension() == this->getExtension());
 }
@@ -494,6 +501,16 @@ const ILocation *HTTPCall::getLocation(void) const
 const Path &HTTPCall::getLocalPath(void) const
 {
 	return this->_local_path;
+}
+
+bool HTTPCall::isCompleted(void) const
+{
+	return this->_isCompleted;
+}
+
+void HTTPCall::setIsCompleted(bool flag)
+{
+	this->_isCompleted = flag;
 }
 
 void HTTPCall::setServerConf(const IServerConf *server_conf)
