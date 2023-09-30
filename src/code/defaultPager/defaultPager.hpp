@@ -11,7 +11,7 @@
 
 namespace defaultPager
 {
-	std::string getPage(HTTPStatusCode::Code code);
+	std::vector< char > getPage(HTTPStatusCode::Code code);
 	const std::map< HTTPStatusCode::Code, std::string > &getPages(void);
 
 } // namespace defaultPager

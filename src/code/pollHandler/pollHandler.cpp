@@ -15,7 +15,7 @@ Poll::ret_stt pollHandler::clientWrite(Poll &p, int fd, int revents, Poll::Param
 
 		std::cout << "[" << fd << "] <-- " << BasicHTTPRequest::toStringType(t) << " "
 				  << param.call.getBasicRequest().getPath() << " "
-				  << converter::HTTPResponseSimplified(param.call.getResponse()) << std::endl;
+				  << converter::HTTPResponseSimplified(param.call.getResponseAsString()) << std::endl;
 	}
 	catch (const std::exception &e)
 	{

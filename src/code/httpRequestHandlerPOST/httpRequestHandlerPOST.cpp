@@ -16,7 +16,7 @@ bool httpRequestHandlerPOST::isDirectoryListing(const Path &path, const HTTPCall
 	return (FileManager::isDirectory(path.get()) && request.getLocation()->isAutoIndexOn());
 }
 
-std::string httpRequestHandlerPOST::getFileContent(const std::string &path, ResponseHeader &response)
+std::vector< char > httpRequestHandlerPOST::getFileContent(const std::string &path, ResponseHeader &response)
 {
 
 	if (path.find(".") != std::string::npos)

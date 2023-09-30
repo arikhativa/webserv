@@ -12,6 +12,7 @@
 #include <string>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <vector>
 
 #ifdef TEST_ON
 #define private public
@@ -34,11 +35,10 @@ class HTTPCall
 	const BasicHTTPRequest &getBasicRequest(void) const;
 
 	CgiManager *getCgi(void) const;
-	std::string getResponse(void) const;
+	const std::vector< char > &getResponse(void) const;
+	std::string getResponseAsString(void) const;
 	std::string getClientHostHeader(void) const;
 	int getClientFd(void) const;
-	int getRequestAttempts(void) const;
-	int getResponseAttempts(void) const;
 	long unsigned int getBytesSent(void) const;
 	const Socket *getSocket(void) const;
 	std::list< const IErrorPage * > getErrorPages(void) const;
@@ -50,7 +50,7 @@ class HTTPCall
 	std::string getExtension(void) const;
 
 	void setBasicRequest(const BasicHTTPRequest &request);
-	void setResponse(const std::string &response);
+	void setResponse(const std::vector< char > &response);
 	void setClientFd(int fd);
 	void setServerConf(const IServerConf *server_conf);
 	void setLocation(const ILocation *location);
@@ -98,10 +98,8 @@ class HTTPCall
 	int _client_fd;
 	CgiManager *_cgi;
 
-	int _request_attempts;
-	int _response_attempts;
 	long unsigned int _bytes_sent;
-	std::string _response;
+	std::vector< char > _response;
 	BasicHTTPRequest _basic_request;
 	const IServerConf *_server_conf;
 	const ILocation *_location;
