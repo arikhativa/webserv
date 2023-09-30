@@ -16,7 +16,7 @@ TEST(Socket, Accessor)
 	Listen *listenobj = new Listen("127.0.0.1", "1235");
 	Socket obj = Socket(listenobj);
 	EXPECT_NE(-1, obj.getFd());
-	EXPECT_EQ(htons(1234), htons(obj.getPort().get()));
+	EXPECT_EQ(htons(1235), htons(obj.getPort().get()));
 	EXPECT_EQ(inet_addr("127.0.0.1"), inet_addr(obj.getIp().get().c_str()));
 	delete listenobj;
 }
