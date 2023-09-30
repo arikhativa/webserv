@@ -136,13 +136,20 @@ void CgiManager::writeToCgi(void)
 		throw CgiManager::CgiManagerException();
 }
 
+static std::string toLowerCase(const std::string &str)
+{
+	std::string result = str;
+	for (size_t i = 0; i < result.length(); ++i)
+	{
+		result[i] = std::tolower(result[i]);
+	}
+	return result;
+}
+
 ::size_t findCaseInsensitive(const std::string &str, const std::string &search)
 {
-	std::string strLower = str;
-	std::string searchLower = search;
-
-	std::transform(strLower.begin(), strLower.end(), strLower.begin(), ::tolower);
-	std::transform(searchLower.begin(), searchLower.end(), searchLower.begin(), ::tolower);
+	std::string strLower = toLowerCase(str);
+	std::string searchLower = toLowerCase(search);
 
 	return strLower.find(searchLower);
 }
@@ -158,18 +165,25 @@ void CgiManager::readFromCgi(void)
 	if (bytes_read <= -1)
 		throw CgiManagerException();
 
-	_output.append(buffer, bytes_read);
+	_output.insert(_output.end(), buffer, buffer + bytes_read);
 
 	if (bytes_read == BUFFER_SIZE)
 		throw CgiManagerIncompleteRead();
 
-	pos = _output.find(httpConstants::HEADER_BREAK);
+	std::string headers_str(_output.begin(), _output.end());
+
+	if (!header::validateHeaders(headers_str))
+	{
+		return;
+	}
+
+	pos = headers_str.find(httpConstants::HEADER_BREAK);
 	if (pos == std::string::npos)
 	{
 		return;
 	}
 
-	pos = findCaseInsensitive(_output, httpConstants::headers::CONTENT_LENGTH);
+	pos = findCaseInsensitive(headers_str, httpConstants::headers::CONTENT_LENGTH);
 	if (pos == std::string::npos)
 	{
 		return;
@@ -179,12 +193,12 @@ void CgiManager::readFromCgi(void)
 	{
 		++pos;
 	}
-	::size_t end = _output.find(httpConstants::FIELD_BREAK, pos);
+	::size_t end = headers_str.find(httpConstants::FIELD_BREAK, pos);
 
 	::size_t content_length;
 	try
 	{
-		content_length = converter::stringToSizeT(_output.substr(pos, end - pos));
+		content_length = converter::stringToSizeT(headers_str.substr(pos, end - pos));
 	}
 	catch (const std::exception &e)
 	{
@@ -192,13 +206,14 @@ void CgiManager::readFromCgi(void)
 		return;
 	}
 
-	pos = _output.find(httpConstants::HEADER_BREAK);
+	pos = headers_str.find(httpConstants::HEADER_BREAK);
 	if (pos == std::string::npos)
 	{
 		return;
 	}
 
-	std::string tmp_body = _output.substr(pos + httpConstants::HEADER_BREAK.length());
+	std::vector< char > tmp_body = vectorUtils::subvec(_output, pos + httpConstants::HEADER_BREAK.length());
+
 	if (content_length == tmp_body.size())
 	{
 		return;
@@ -226,7 +241,7 @@ void CgiManager::closePipe(void)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-std::string CgiManager::getOutput(void) const
+const std::vector< char > &CgiManager::getOutput(void) const
 {
 	return this->_output;
 }

@@ -24,7 +24,7 @@ static std::map< HTTPStatusCode::Code, std::string > initPages(void)
 
 static const std::map< HTTPStatusCode::Code, std::string > _default_pages(initPages());
 
-std::string defaultPager::getPage(HTTPStatusCode::Code code)
+std::vector< char > defaultPager::getPage(HTTPStatusCode::Code code)
 {
 	std::string key;
 
@@ -34,7 +34,7 @@ std::string defaultPager::getPage(HTTPStatusCode::Code code)
 	}
 	catch (const std::exception &e)
 	{
-		return "";
+		return std::vector< char >();
 	}
 
 	return FileManager::getFileContent(key);

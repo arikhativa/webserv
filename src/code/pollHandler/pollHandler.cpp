@@ -10,12 +10,6 @@ Poll::ret_stt pollHandler::clientWrite(Poll &p, int fd, int revents, Poll::Param
 	try
 	{
 		param.call.sendResponse();
-
-		BasicHTTPRequest::Type t = param.call.getBasicRequest().getType();
-
-		std::cout << "[" << fd << "] <-- " << BasicHTTPRequest::toStringType(t) << " "
-				  << param.call.getBasicRequest().getPath() << " "
-				  << converter::HTTPResponseSimplified(param.call.getResponse()) << std::endl;
 	}
 	catch (const std::exception &e)
 	{
@@ -25,5 +19,10 @@ Poll::ret_stt pollHandler::clientWrite(Poll &p, int fd, int revents, Poll::Param
 
 	if (param.call.getBytesSent() < param.call.getResponse().size())
 		return Poll::CONTINUE;
+
+	BasicHTTPRequest::Type t = param.call.getBasicRequest().getType();
+	std::cout << "[" << fd << "] <-- " << BasicHTTPRequest::toStringType(t) << " "
+			  << param.call.getBasicRequest().getPath() << " "
+			  << converter::HTTPResponseSimplified(param.call.getResponseAsString()) << std::endl;
 	return Poll::DONE_CLOSE_FD;
 }

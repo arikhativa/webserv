@@ -52,7 +52,7 @@ ResponseHeader &ResponseHeader::operator=(ResponseHeader const &rhs)
 
 std::ostream &operator<<(std::ostream &o, ResponseHeader const &i)
 {
-	o << i.getResponse();
+	o << converter::vectorToString(i.getResponse());
 	return o;
 }
 
@@ -62,7 +62,7 @@ std::ostream &operator<<(std::ostream &o, ResponseHeader const &i)
 
 void ResponseHeader::_defaultConstructor()
 {
-	for (field_key f = STANDARD; f <= BODY; f = static_cast< field_key >(static_cast< int >(f) + 1))
+	for (field_key f = STANDARD; f <= LOCATION; f = static_cast< field_key >(static_cast< int >(f) + 1))
 	{
 		Field defaultHeader;
 		_header.insert(std::make_pair(f, defaultHeader));
@@ -80,8 +80,6 @@ void ResponseHeader::_defaultConstructor()
 	_header[CONNECTION].name = httpConstants::CONNECTION_FIELD_KEY;
 	_header[LOCATION].value = "";
 	_header[LOCATION].name = "";
-	_header[BODY].name = httpConstants::FIELD_BREAK;
-	_header[BODY].value = "";
 	setContentType(httpConstants::TXT_SUFFIX);
 	_setContentLength(0);
 	setConnection(httpConstants::CONNECTION_ALIVE);
@@ -92,14 +90,20 @@ void ResponseHeader::_setErrorPageIfNeeded(HTTPStatusCode code, const ErrorPageS
 	std::string path(error_page_set.getPage(code.get()));
 	if (!path.empty())
 	{
-		std::ifstream file(path.c_str());
+		std::ifstream file(path.c_str(), std::ios::binary);
 		if (!file)
 			throw ResponseHeader::InvalidDefaultPage();
-		std::stringstream contentStream;
-		contentStream << file.rdbuf();
+
+		file.seekg(0, std::ios::end);
+		std::streampos fileSize = file.tellg();
+		file.seekg(0, std::ios::beg);
+
+		std::vector< char > buffer(fileSize);
+
+		file.read(&buffer[0], fileSize);
+
 		file.close();
-		std::string content = contentStream.str();
-		setBody(content);
+		setBody(buffer);
 	}
 	else
 		setBody("<!DOCTYPE html>\n<html>\n<body>\n<h1>" + converter::numToString(code.get()) + httpConstants::SPACE +
@@ -139,7 +143,7 @@ size_t ResponseHeader::_getTotalSize(void) const
 	{
 		totalSize += it->second.name.length() + it->second.value.length();
 	}
-	return (totalSize);
+	return (totalSize + _body.size());
 }
 
 /*
@@ -171,18 +175,23 @@ void ResponseHeader::setConnection(const std::string &connection)
 
 void ResponseHeader::setBody(const std::string &body)
 {
-	this->_header[BODY].value = body;
+	setBody(std::vector< char >(body.begin(), body.end()));
+}
+
+void ResponseHeader::setBody(const std::vector< char > &body)
+{
+	_body = body;
 
 	if (_header[CONTENT_LENGTH].value == "0" || _header[CONTENT_LENGTH].value == "")
-		_setContentLength(body.length());
+		_setContentLength(_body.size());
 	if (this->_header.at(CONNECTION_TYPE).value == "")
 		setContentType(httpConstants::HTML_SUFFIX);
 }
 
 void ResponseHeader::setHeader(const std::string &key, const std::string &value)
 {
-	static int i = BODY + 1;
-	for (field_key f = STANDARD; f <= BODY; f = static_cast< field_key >(static_cast< int >(f) + 1))
+	static int i = LOCATION + 1;
+	for (field_key f = STANDARD; f <= LOCATION; f = static_cast< field_key >(static_cast< int >(f) + 1))
 	{
 		if (_header.at(f).name.find(key) != std::string::npos)
 		{
@@ -194,7 +203,7 @@ void ResponseHeader::setHeader(const std::string &key, const std::string &value)
 	_header[i].value = value;
 	++i;
 	if (i == 10000)
-		i = BODY + 1;
+		i = LOCATION + 1;
 }
 
 void ResponseHeader::setLocationHeader(const std::string &value)
@@ -213,9 +222,9 @@ const std::string ResponseHeader::getContentType()
 	return (this->_header.at(CONNECTION_TYPE).value);
 }
 
-const std::string ResponseHeader::getBody()
+const std::vector< char > &ResponseHeader::getBody()
 {
-	return (this->_header.at(BODY).value);
+	return _body;
 }
 
 const std::string ResponseHeader::getConnection()
@@ -228,9 +237,9 @@ const std::map< int, ResponseHeader::Field > ResponseHeader::getHeader() const
 	return (_header);
 }
 
-const std::string ResponseHeader::getResponse() const
+const std::vector< char > ResponseHeader::getResponse() const
 {
-	std::string res = "";
+	std::vector< char > res;
 	try
 	{
 		res.reserve(_getTotalSize());
@@ -239,16 +248,19 @@ const std::string ResponseHeader::getResponse() const
 
 		for (; it != _header.end(); it++)
 		{
-			if (it->second.name == "" || it->second.value == "" || it->first == BODY)
+			if (it->second.name == "" || it->second.value == "")
 				continue;
-			res += it->second.name + it->second.value + httpConstants::FIELD_BREAK;
+			std::string tmp = it->second.name + it->second.value + httpConstants::FIELD_BREAK;
+			res.insert(res.end(), tmp.begin(), tmp.end());
 		}
-		res += httpConstants::FIELD_BREAK + _header.at(BODY).value;
+		std::string tmp = httpConstants::FIELD_BREAK;
+		res.insert(res.end(), tmp.begin(), tmp.end());
+		res.insert(res.end(), _body.begin(), _body.end());
 	}
 	catch (const std::exception &e)
 	{
 		std::cerr << e.what() << '\n';
-		res = "";
+		res.empty();
 	}
 	return res;
 }

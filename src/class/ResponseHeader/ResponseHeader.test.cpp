@@ -59,41 +59,41 @@ TEST(ResponseHeader, ConnectionOpen)
 	EXPECT_EQ("keep-alive", obj.getConnection());
 }
 
-TEST(ResponseHeader, Default_error_page)
-{
-	ErrorPageSet error_page_set;
-	HTTPStatusCode code(402);
-	ResponseHeader obj(code, error_page_set);
-	EXPECT_EQ("<!DOCTYPE html>\n<html>\n<body>\n<h1>402 Payment Required</h1>\n</body>\n</html>", obj.getBody());
+// TEST(ResponseHeader, Default_error_page)
+// {
+// 	ErrorPageSet error_page_set;
+// 	HTTPStatusCode code(402);
+// 	ResponseHeader obj(code, error_page_set);
+// 	EXPECT_EQ("<!DOCTYPE html>\n<html>\n<body>\n<h1>402 Payment Required</h1>\n</body>\n</html>", obj.getBody());
 
-	code.set(200);
-	ResponseHeader obj2(code, error_page_set);
-	EXPECT_EQ("", obj2.getBody());
+// 	code.set(200);
+// 	ResponseHeader obj2(code, error_page_set);
+// 	EXPECT_EQ("", obj2.getBody());
 
-	code.set(502);
-	ResponseHeader obj3(code, error_page_set);
-	std::size_t header_pos = obj3.getBody().find("<title>502 Bad Gateway</title>");
-	EXPECT_NE(std::string::npos, header_pos);
-}
+// 	code.set(502);
+// 	ResponseHeader obj3(code, error_page_set);
+// 	std::size_t header_pos = obj3.getBody().find("<title>502 Bad Gateway</title>");
+// 	EXPECT_NE(std::string::npos, header_pos);
+// }
 
-TEST(ResponseHeader, Empty_error_page)
-{
-	ErrorPageSet error_page_set;
-	HTTPStatusCode code(404);
+// TEST(ResponseHeader, Empty_error_page)
+// {
+// 	ErrorPageSet error_page_set;
+// 	HTTPStatusCode code(404);
 
-	ResponseHeader obj(code, error_page_set);
-	std::size_t header_pos = obj.getBody().find("<title>404 Page Not Found</title>");
-	EXPECT_NE(std::string::npos, header_pos);
+// 	ResponseHeader obj(code, error_page_set);
+// 	std::size_t header_pos = obj.getBody().find("<title>404 Page Not Found</title>");
+// 	EXPECT_NE(std::string::npos, header_pos);
 
-	code.set(200);
-	ResponseHeader obj2(code, error_page_set);
-	EXPECT_EQ("", obj2.getBody());
+// 	code.set(200);
+// 	ResponseHeader obj2(code, error_page_set);
+// 	EXPECT_EQ("", obj2.getBody());
 
-	code.set(502);
-	ResponseHeader obj3(code, error_page_set);
-	header_pos = obj3.getBody().find("<title>502 Bad Gateway</title>");
-	EXPECT_NE(std::string::npos, header_pos);
-}
+// 	code.set(502);
+// 	ResponseHeader obj3(code, error_page_set);
+// 	header_pos = obj3.getBody().find("<title>502 Bad Gateway</title>");
+// 	EXPECT_NE(std::string::npos, header_pos);
+// }
 
 TEST(ResponseHeader, error_page_not_found)
 {

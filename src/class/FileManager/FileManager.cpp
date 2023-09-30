@@ -128,17 +128,28 @@ std::string FileManager::getFileDate(const std::string &path)
 	return (std::string(buf, ret));
 }
 
-std::string FileManager::getFileContent(const std::string &path)
+std::string FileManager::getFileContentAsString(const std::string &path)
 {
-	std::string content = "";
-	std::ifstream file(path.c_str());
+	return converter::vectorToString(getFileContent(path));
+}
+
+std::vector< char > FileManager::getFileContent(const std::string &path)
+{
+	std::ifstream file(path.c_str(), std::ios::binary);
+
 	if (!file.is_open())
 		throw FileManager::FileManagerException();
-	std::stringstream buffer;
-	buffer << file.rdbuf();
+
+	file.seekg(0, std::ios::end);
+	std::streampos fileSize = file.tellg();
+	file.seekg(0, std::ios::beg);
+
+	std::vector< char > buffer(fileSize);
+
+	file.read(&buffer[0], fileSize);
+
 	file.close();
-	content = buffer.str();
-	return (content);
+	return buffer;
 }
 
 size_t FileManager::getFileSize(const std::string &path)

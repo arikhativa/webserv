@@ -23,6 +23,7 @@
 #include <string>
 #include <sys/time.h>
 #include <time.h>
+#include <vector>
 
 #ifdef TEST_ON
 #define private public
@@ -42,7 +43,6 @@ class ResponseHeader
 		CONTENT_LENGTH,
 		CONNECTION,
 		LOCATION,
-		BODY,
 	};
 	struct Field
 	{
@@ -57,12 +57,13 @@ class ResponseHeader
 	void setContentType(const std::string &type);
 	void setConnection(const std::string &connection);
 	void setBody(const std::string &body);
+	void setBody(const std::vector< char > &body);
 	void setHeader(const std::string &key, const std::string &value);
 	void setLocationHeader(const std::string &value);
 	const std::string getStatusMessage(void);
 	const std::string getContentType(void);
-	const std::string getBody(void);
-	const std::string getResponse(void) const;
+	const std::vector< char > &getBody(void);
+	const std::vector< char > getResponse(void) const;
 	const std::string getConnection(void);
 	size_t _getTotalSize(void) const;
 	const std::map< int, ResponseHeader::Field > getHeader() const;
@@ -80,6 +81,7 @@ class ResponseHeader
 	const std::string _getCurrentDate();
 	bool _isErrorCode(HTTPStatusCode code);
 	std::map< int, ResponseHeader::Field > _header;
+	std::vector< char > _body;
 };
 std::ostream &operator<<(std::ostream &o, ResponseHeader const &i);
 

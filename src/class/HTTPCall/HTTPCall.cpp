@@ -11,10 +11,7 @@ HTTPCall::HTTPCall()
 	: _socket(NULL)
 	, _client_fd(-1)
 	, _cgi(NULL)
-	, _request_attempts(0)
-	, _response_attempts(0)
 	, _bytes_sent(0)
-	, _response("")
 	, _basic_request("")
 {
 }
@@ -23,8 +20,6 @@ HTTPCall::HTTPCall(const HTTPCall &src)
 	: _socket(src._socket)
 	, _client_fd(src._client_fd)
 	, _cgi(src._cgi)
-	, _request_attempts(src._request_attempts)
-	, _response_attempts(src._response_attempts)
 	, _bytes_sent(src._bytes_sent)
 	, _response(src._response)
 	, _basic_request(src._basic_request)
@@ -38,10 +33,7 @@ HTTPCall::HTTPCall(const Socket *socket, int client_fd)
 	: _socket(socket)
 	, _client_fd(client_fd)
 	, _cgi(NULL)
-	, _request_attempts(0)
-	, _response_attempts(0)
 	, _bytes_sent(0)
-	, _response("")
 	, _basic_request("")
 {
 }
@@ -85,8 +77,6 @@ HTTPCall HTTPCall::operator=(const HTTPCall &rhs)
 		this->_socket = rhs._socket;
 		this->_client_fd = rhs._client_fd;
 		this->_cgi = rhs._cgi;
-		this->_request_attempts = rhs._request_attempts;
-		this->_response_attempts = rhs._response_attempts;
 		this->_bytes_sent = rhs._bytes_sent;
 		this->_response = rhs._response;
 		this->_basic_request = rhs._basic_request;
@@ -294,7 +284,6 @@ void HTTPCall::recvRequest(void)
 	if (tmp_recv_len == 0)
 		throw ReceivingRequestEmpty();
 	tmp_raw[tmp_recv_len] = '\0';
-	this->_request_attempts++;
 	this->_basic_request.extenedRaw(tmp_raw);
 	this->_basic_request.extenedBin(tmp_raw, tmp_recv_len);
 }
@@ -302,12 +291,13 @@ void HTTPCall::recvRequest(void)
 void HTTPCall::sendResponse(void)
 {
 	int send_status;
-	send_status = send(this->_client_fd, this->_response.c_str(), this->_response.size(), MSG_DONTWAIT);
+
+	send_status = send(this->_client_fd, &(_response[_bytes_sent]), _response.size() - _bytes_sent, MSG_DONTWAIT);
+
 	if (send_status <= -1)
 		throw SendingResponseError();
 	if (send_status == 0)
 		throw SendingResponseEmpty();
-	this->_response_attempts++;
 	this->_bytes_sent += send_status;
 }
 
@@ -343,13 +333,14 @@ void HTTPCall::cgiToResponse(void)
 {
 	ResponseHeader response(HTTPStatusCode(HTTPStatusCode::OK), this->getLocation()->getErrorPageSet());
 
-	const std::string &cgi_output = this->_cgi->getOutput();
+	const std::vector< char > &bin(_cgi->getOutput());
 
-	if (cgi_output.find(httpConstants::HEADER_BREAK) == std::string::npos)
+	std::string cgi_output(bin.begin(), bin.end());
+
+	if (header::validateHeaders(cgi_output) == false)
 	{
-		response.setBody(cgi_output);
+		response.setBody(bin);
 		this->setResponse(response.getResponse());
-
 		return;
 	}
 
@@ -396,8 +387,18 @@ void HTTPCall::cgiToResponse(void)
 	{
 		response.setHeader(it->first, it->second);
 	}
-	response.setBody(
-		cgi_output.substr(cgi_output.find(httpConstants::HEADER_BREAK) + httpConstants::HEADER_BREAK.length()));
+
+	start = cgi_output.find(httpConstants::HEADER_BREAK) + httpConstants::HEADER_BREAK.length();
+	if (start == std::string::npos)
+	{
+		std::cerr << "CGI: Bad header" << std::endl;
+		return;
+	}
+
+	std::vector< char > tmp = vectorUtils::subvec(bin, start);
+
+	response.setBody(tmp);
+
 	this->setResponse(response.getResponse());
 }
 
@@ -408,16 +409,6 @@ void HTTPCall::cgiToResponse(void)
 CgiManager *HTTPCall::getCgi(void) const
 {
 	return this->_cgi;
-}
-
-int HTTPCall::getRequestAttempts(void) const
-{
-	return this->_request_attempts;
-}
-
-int HTTPCall::getResponseAttempts(void) const
-{
-	return this->_response_attempts;
 }
 
 long unsigned int HTTPCall::getBytesSent(void) const
@@ -440,9 +431,14 @@ const BasicHTTPRequest &HTTPCall::getBasicRequest(void) const
 	return this->_basic_request;
 }
 
-std::string HTTPCall::getResponse(void) const
+const std::vector< char > &HTTPCall::getResponse(void) const
 {
 	return this->_response;
+}
+
+std::string HTTPCall::getResponseAsString(void) const
+{
+	return converter::vectorToString(getResponse());
 }
 
 std::string HTTPCall::getClientHostHeader(void) const
@@ -467,7 +463,7 @@ void HTTPCall::setBasicRequest(const BasicHTTPRequest &request)
 	this->_basic_request = request;
 }
 
-void HTTPCall::setResponse(const std::string &response)
+void HTTPCall::setResponse(const std::vector< char > &response)
 {
 	this->_response = response;
 }
