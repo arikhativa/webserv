@@ -75,7 +75,7 @@ void ResponseHeader::_defaultConstructor()
 	_header[DATE].value = _getCurrentDate();
 	_header[CONNECTION_TYPE].name = httpConstants::CONTENT_TYPE_FIELD_KEY;
 	_header[CONNECTION_TYPE].value = "";
-	_header[CONTENT_LENGTH].name = httpConstants::CONTENT_LENGHT_FIELD_KEY;
+	_header[CONTENT_LENGTH].name = httpConstants::CONTENT_LENGTH_FIELD_KEY;
 	_header[CONTENT_LENGTH].value = "";
 	_header[CONNECTION].name = httpConstants::CONNECTION_FIELD_KEY;
 	_header[LOCATION].value = "";
@@ -133,8 +133,12 @@ bool ResponseHeader::_isErrorCode(HTTPStatusCode code)
 size_t ResponseHeader::_getTotalSize(void) const
 {
 	size_t totalSize = 0;
-	for (field_key f = STANDARD; f <= BODY; f = static_cast< field_key >(static_cast< int >(f) + 1))
-		totalSize += _header.at(f).name.length() + _header.at(f).value.length() + 10;
+	std::map< int, ResponseHeader::Field >::const_iterator it = _header.begin();
+
+	for (; it != _header.end(); it++)
+	{
+		totalSize += it->second.name.length() + it->second.value.length();
+	}
 	return (totalSize);
 }
 
@@ -165,31 +169,36 @@ void ResponseHeader::setConnection(const std::string &connection)
 	this->_header.at(CONNECTION).value = connection;
 }
 
+// TODO be sure about CONTENT_LENGTH].value should be
 void ResponseHeader::setBody(const std::string &body)
 {
-
 	this->_header[BODY].value = body;
-	int length = body.length();
-	if (length == 0)
-		_setContentLength(length);
-	else
-		_setContentLength(length + 1);
+
+	if (_header[CONTENT_LENGTH].value == "0" || _header[CONTENT_LENGTH].value == "")
+		_setContentLength(body.length());
 	if (this->_header.at(CONNECTION_TYPE).value == "")
 		setContentType(httpConstants::HTML_SUFFIX);
 }
 
+// TODO think about it the static "i"
 void ResponseHeader::setHeader(const std::string &key, const std::string &value)
 {
+	static int i = BODY + 1;
 	for (field_key f = STANDARD; f <= BODY; f = static_cast< field_key >(static_cast< int >(f) + 1))
 	{
-		if (_header.at(f).name == key)
+		if (_header.at(f).name.find(key) != std::string::npos)
 		{
 			_header.at(f).value = value;
 			return;
 		}
 	}
-	_header.at(BODY).name = key + ": " + value + httpConstants::FIELD_BREAK + _header.at(BODY).name;
+	_header[i].name = key + ": ";
+	_header[i].value = value;
+	++i;
+	if (i == 10000)
+		i = BODY + 1;
 }
+
 void ResponseHeader::setLocationHeader(const std::string &value)
 {
 	this->_header[LOCATION].value = value;
@@ -216,7 +225,7 @@ const std::string ResponseHeader::getConnection()
 	return (this->_header.at(CONNECTION).value);
 }
 
-const std::map< ResponseHeader::field_key, ResponseHeader::Field > ResponseHeader::getHeader() const
+const std::map< int, ResponseHeader::Field > ResponseHeader::getHeader() const
 {
 	return (_header);
 }
@@ -227,18 +236,16 @@ const std::string ResponseHeader::getResponse() const
 	try
 	{
 		res.reserve(_getTotalSize());
-		for (field_key f = STANDARD; f <= BODY; f = static_cast< field_key >(static_cast< int >(f) + 1))
+
+		std::map< int, ResponseHeader::Field >::const_iterator it = _header.begin();
+
+		for (; it != _header.end(); it++)
 		{
-			std::string key = "";
-			if (_header.find(f) != _header.end())
-				key = _header.at(f).name;
-			if (key == "")
+			if (it->second.name == "" || it->second.value == "" || it->first == BODY)
 				continue;
-			std::string value = "";
-			if (_header.find(f) != _header.end())
-				value = _header.at(f).value;
-			res += key + value + httpConstants::FIELD_BREAK;
+			res += it->second.name + it->second.value + httpConstants::FIELD_BREAK;
 		}
+		res += httpConstants::FIELD_BREAK + _header.at(BODY).value;
 	}
 	catch (const std::exception &e)
 	{

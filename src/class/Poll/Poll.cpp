@@ -78,7 +78,12 @@ void Poll::_closeTimeoutCallsIfNeeded(void)
 		{
 			if (_params[i].start_read.hasSecondsPassed(_CALL_TIMEOUT_SEC))
 			{
-				std::cout << "Timeout on fd: " << _fds[i].fd << std::endl;
+				std::cout << "Timeout on fd[" << _fds[i].fd << "]" << std::endl;
+				if (_params[i].call.isCGI())
+				{
+					_params[i].call.setInternalServerResponse();
+					addWrite(_params[i].call.getClientFd(), pollHandler::clientWrite, _params[i]);
+				}
 				p.first = i;
 				_pop_index(p);
 			}
@@ -106,7 +111,7 @@ void Poll::loop(void)
 		{
 			for (size_t i = 0; i < _fds.size(); ++i)
 			{
-				if (_fds[i].revents & POLLOUT || _fds[i].revents & POLLIN)
+				if (_fds[i].revents & POLLOUT || _fds[i].revents & POLLIN || _fds[i].revents & POLLHUP)
 				{
 					ret_stt s = _handlers[i](*this, _fds[i].fd, _fds[i].revents, _params[i]);
 					p.first = i;
@@ -123,6 +128,11 @@ void Poll::loop(void)
 			_pop(pop_indexes);
 		}
 	}
+}
+
+bool Poll::isEOFEvent(int revents)
+{
+	return revents & POLLHUP;
 }
 
 bool Poll::isReadEvent(int revents)

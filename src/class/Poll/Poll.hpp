@@ -60,6 +60,7 @@ class Poll
 	void addRead(int fd, t_handler h, Param p);
 	void addWrite(int fd, t_handler h, Param p);
 	void exitLoop(void);
+	static bool isEOFEvent(int revents);
 	static bool isReadEvent(int revents);
 	static bool isWriteEvent(int revents);
 
@@ -77,6 +78,8 @@ class Poll
 	void _pop_index(std::pair< int, ret_stt > p);
 	void _closeTimeoutCallsIfNeeded(void);
 };
+
+#include <pollHandler/pollHandler.hpp>
 
 #ifdef TEST_ON
 #undef private
