@@ -14,7 +14,6 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 		{
 			Poll::Param new_param = param;
 			new_param.start_read.setToNow();
-			fcntl(param.call.getCgi()->getReadFd(), F_SETFL, O_NONBLOCK);
 			p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, new_param);
 			return Poll::DONE_CLOSE_FD;
 		}
@@ -37,7 +36,6 @@ Poll::ret_stt ServerManager::cgiWrite(Poll &p, int fd, int revents, Poll::Param 
 
 	Poll::Param new_param = param;
 	new_param.start_read.setToNow();
-	fcntl(param.call.getCgi()->getReadFd(), F_SETFL, O_NONBLOCK);
 	p.addRead(param.call.getCgi()->getReadFd(), ServerManager::cgiRead, new_param);
 	return Poll::DONE_CLOSE_FD;
 }
@@ -154,7 +152,6 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	if (param.call.isCGI())
 	{
 		param.start_read.reset();
-		fcntl(param.call.getCgi()->getWriteFd(), F_SETFL, O_NONBLOCK);
 		p.addWrite(param.call.getCgi()->getWriteFd(), ServerManager::cgiWrite, param);
 		return Poll::DONE_NO_CLOSE_FD;
 	}
@@ -188,6 +185,7 @@ Poll::ret_stt ServerManager::initSocketsHandler(Poll &p, int fd, int revents, Po
 	Poll::Param new_param = param;
 	new_param.call = HTTPCall(param.src_socket, client_fd);
 	new_param.start_read.setToNow();
+	fcntl(client_fd, F_SETFL, O_NONBLOCK);
 	p.addRead(client_fd, ServerManager::clientRead, new_param);
 	return Poll::CONTINUE;
 }
@@ -284,6 +282,7 @@ void ServerManager::setup()
 		param.src_listen = it->getListen();
 		param.src_socket = &(*it);
 
+		fcntl(it->getFd(), F_SETFL, O_NONBLOCK);
 		this->_poll.addRead(it->getFd(), ServerManager::initSocketsHandler, param);
 	}
 }
