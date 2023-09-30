@@ -58,6 +58,9 @@ void Pipe::setChild(void) const
 
 void Pipe::setParent(void) const
 {
+	fcntl(_inputPipe[OUTPUT], F_SETFL, O_NONBLOCK);
+	fcntl(_outputPipe[INPUT], F_SETFL, O_NONBLOCK);
+
 	close(_inputPipe[INPUT]);
 	close(_outputPipe[OUTPUT]);
 }

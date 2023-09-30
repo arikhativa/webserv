@@ -2,9 +2,9 @@
 #ifndef PIPE_HPP
 #define PIPE_HPP
 
+#include <fcntl.h>
 #include <iostream>
 #include <string>
-
 #include <unistd.h>
 
 #ifdef TEST_ON
