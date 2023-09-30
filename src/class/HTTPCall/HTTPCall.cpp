@@ -335,7 +335,7 @@ void HTTPCall::cgiToResponse(void)
 
 	std::string cgi_output(bin.begin(), bin.end());
 
-	if (cgi_output.find(httpConstants::HEADER_BREAK) == std::string::npos)
+	if (header::validateHeaders(cgi_output) == false)
 	{
 		response.setBody(bin);
 		this->setResponse(response.getResponse());

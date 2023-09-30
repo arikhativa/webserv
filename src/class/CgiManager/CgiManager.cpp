@@ -165,6 +165,11 @@ void CgiManager::readFromCgi(void)
 
 	std::string headers_str(_output.begin(), _output.end());
 
+	if (!header::validateHeaders(headers_str))
+	{
+		return;
+	}
+
 	pos = headers_str.find(httpConstants::HEADER_BREAK);
 	if (pos == std::string::npos)
 	{

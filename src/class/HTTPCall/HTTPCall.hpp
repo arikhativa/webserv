@@ -5,6 +5,7 @@
 #include <BasicHTTPRequest/BasicHTTPRequest.hpp>
 #include <HTTPRequestHandler/HTTPRequestHandler.hpp>
 #include <Socket/Socket.hpp>
+#include <header/header.hpp>
 #include <matcher/matcher.hpp>
 #include <vectorUtils/vectorUtils.hpp>
 

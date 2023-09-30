@@ -8,6 +8,7 @@
 #include <Tab/Tab.hpp>
 #include <converter/converter.hpp>
 #include <vectorUtils/vectorUtils.hpp>
+#include <header/header.hpp>
 
 #include <cstring>
 #include <iostream>
