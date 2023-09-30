@@ -25,6 +25,5 @@ Poll::ret_stt pollHandler::clientWrite(Poll &p, int fd, int revents, Poll::Param
 
 	if (param.call.getBytesSent() < param.call.getResponse().size())
 		return Poll::CONTINUE;
-	param.call.terminate();
 	return Poll::DONE_CLOSE_FD;
 }
