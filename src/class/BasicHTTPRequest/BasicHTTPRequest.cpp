@@ -142,7 +142,6 @@ BasicHTTPRequest::Type BasicHTTPRequest::_parseType(const std::string &raw_reque
 	throw Incomplete("Missing type");
 }
 
-// TODO maybe add some checks for the first line before the parsing path
 Path BasicHTTPRequest::_parsePath(const std::string &raw_request)
 {
 	std::size_t start = raw_request.find("/");
