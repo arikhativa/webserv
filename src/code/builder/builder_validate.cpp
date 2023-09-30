@@ -1,7 +1,6 @@
 
 #include <builder/builder.hpp>
 
-// TODO maybe create execpt obj
 static void validateNoDupNames(const IConf *conf)
 {
 	std::map< std::string, bool > names;
