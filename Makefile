@@ -6,7 +6,7 @@
 #    By: yrabby <yrabby@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/18 13:56:52 by yrabby            #+#    #+#              #
-#    Updated: 2023/09/30 17:21:11 by yrabby           ###   ########.fr        #
+#    Updated: 2023/09/30 17:26:03 by yrabby           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,57 @@ export ROOT_DIR				:= $(CURDIR)
 # src
 SRC_SUFFIX					:= .cpp
 SRC_DIR						:= src
-ALL_SRC_FULL_PATH			:= $(wildcard $(SRC_DIR)/**/**/*$(SRC_SUFFIX))
+ALL_SRC_FULL_PATH			:= src/class/ABaseHTTPCall/ABaseHTTPCall.cpp \
+	src/class/AllowedMethods/AllowedMethods.cpp \
+	src/class/BasePairCodePath/BasePairCodePath.cpp \
+	src/class/BasicHTTPRequest/BasicHTTPRequest.cpp \
+	src/class/CGIConf/CGIConf.cpp \
+	src/class/CgiManager/CgiManager.cpp \
+	src/class/Conf/Conf.cpp \
+	src/class/ContentTypes/ContentTypes.cpp \
+	src/class/ErrorPage/ErrorPage.cpp \
+	src/class/ErrorPageSet/ErrorPageSet.cpp \
+	src/class/FileManager/FileManager.cpp \
+	src/class/HTTPCall/HTTPCall.cpp \
+	src/class/HTTPResponse/HTTPResponse.cpp \
+	src/class/HTTPStatusCode/HTTPStatusCode.cpp \
+	src/class/IP/IP.cpp \
+	src/class/Listen/Listen.cpp \
+	src/class/Location/Location.cpp \
+	src/class/Path/Path.cpp \
+	src/class/Pipe/Pipe.cpp \
+	src/class/Poll/Poll.cpp \
+	src/class/Port/Port.cpp \
+	src/class/ResponseHeader/ResponseHeader.cpp \
+	src/class/Return/Return.cpp \
+	src/class/ServerConf/ServerConf.cpp \
+	src/class/ServerManager/ServerManager.cpp \
+	src/class/Socket/Socket.cpp \
+	src/class/Tab/Tab.cpp \
+	src/class/Time/Time.cpp \
+	src/class/Token/Token.cpp \
+	src/code/HTTPRequestHandler/HTTPRequestHandler.cpp \
+	src/code/builder/builder.cpp \
+	src/code/builder/builder_location.cpp \
+	src/code/builder/builder_server.cpp \
+	src/code/builder/builder_validate.cpp \
+	src/code/converter/converter.cpp \
+	src/code/defaultPager/defaultPager.cpp \
+	src/code/header/header.cpp \
+	src/code/httpRequestHandlerDELETE/httpRequestHandlerDELETE.cpp \
+	src/code/httpRequestHandlerGET/httpRequestHandlerGET.cpp \
+	src/code/httpRequestHandlerPOST/httpRequestHandlerPOST.cpp \
+	src/code/lexer/lexer.cpp \
+	src/code/listPrint/listPrint.cpp \
+	src/code/main/main.cpp \
+	src/code/mapPrint/mapPrint.cpp \
+	src/code/matcher/matcher.cpp \
+	src/code/parser/parser.cpp \
+	src/code/parser/parser_rules.cpp \
+	src/code/pollHandler/pollHandler.cpp \
+	src/code/signalHandler/signalHandler.cpp \
+	src/code/vectorUtils/vectorUtils.cpp
+
 SRC							:= $(filter-out $(UNIT_TEST),$(ALL_SRC_FULL_PATH))
 
 # template
