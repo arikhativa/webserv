@@ -6,6 +6,7 @@
 #include <string>
 
 #include <unistd.h>
+#include <fcntl.h>
 
 #ifdef TEST_ON
 #define private public
