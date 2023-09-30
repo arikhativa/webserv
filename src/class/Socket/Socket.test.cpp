@@ -13,17 +13,17 @@ TEST(Socket, CreateDestroy)
 
 TEST(Socket, Accessor)
 {
-	Listen *listenobj = new Listen("127.0.0.1", "1234");
+	Listen *listenobj = new Listen("127.0.0.1", "1235");
 	Socket obj = Socket(listenobj);
 	EXPECT_NE(-1, obj.getFd());
-	EXPECT_EQ(htons(1234), htons(obj.getPort().get()));
+	EXPECT_EQ(htons(1235), htons(obj.getPort().get()));
 	EXPECT_EQ(inet_addr("127.0.0.1"), inet_addr(obj.getIp().get().c_str()));
 	delete listenobj;
 }
 
 TEST(Socket, SocketCreationFailed)
 {
-	Listen *listenobj = new Listen("127.0.0.1", "1234");
+	Listen *listenobj = new Listen("127.0.0.1", "1236");
 	Socket obj = Socket(listenobj);
 	EXPECT_NO_THROW(Socket obj1(obj));
 	delete listenobj;
@@ -31,7 +31,7 @@ TEST(Socket, SocketCreationFailed)
 
 TEST(Socket, SocketListeningFailed)
 {
-	Listen *listenobj = new Listen("127.0.0.1", "1234");
+	Listen *listenobj = new Listen("127.0.0.1", "1237");
 	Socket obj = Socket(listenobj);
 	EXPECT_NO_THROW(obj.bind());
 	delete listenobj;
@@ -39,7 +39,7 @@ TEST(Socket, SocketListeningFailed)
 
 TEST(Socket, SocketBindingFailed)
 {
-	Listen *listenobj = new Listen("127.0.0.1", "1234");
+	Listen *listenobj = new Listen("127.0.0.1", "1238");
 	Socket obj = Socket(listenobj);
 	EXPECT_THROW(obj.listen(), Socket::SocketNotBinded);
 	EXPECT_NO_THROW(obj.bind());
