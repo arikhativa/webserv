@@ -244,6 +244,19 @@ bool HTTPCall::isCGIPostExtValid(void)
 	return true;
 }
 
+bool HTTPCall::isRedirect(void)
+{
+	const IReturn *r = getLocation()->getReturn();
+
+	if (!r)
+		return false;
+
+	ResponseHeader response(r->getStatus(), getLocation()->getErrorPageSet());
+	response.setLocationHeader(r->getPath().get());
+	setResponse(response.getResponse());
+	return true;
+}
+
 bool HTTPCall::isRequestAllowed(void)
 {
 	HTTPStatusCode stt(HTTPStatusCode::ACCEPTED);
@@ -324,11 +337,6 @@ void HTTPCall::handleRequest(void)
 		HTTPRequestHandler::UNKNOWN(*this);
 		break;
 	}
-}
-
-void HTTPCall::terminate(void)
-{
-	close(this->_client_fd);
 }
 
 void HTTPCall::cgiToResponse(void)
