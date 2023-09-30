@@ -119,11 +119,6 @@ void HTTPRequestHandler::DELETE(HTTPCall &request)
 	}
 	catch (const httprequesthandlerDELETE::DeleteFileException &e)
 	{
-		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::CONFLICT),
-									 request.getLocation()->getErrorPageSet());
-		request.setResponse(errorResponse.getResponse());
-	}
-	{
 		ResponseHeader errorResponse(HTTPStatusCode(HTTPStatusCode::INTERNAL_SERVER_ERROR),
 									 request.getLocation()->getErrorPageSet());
 		request.setResponse(errorResponse.getResponse());
