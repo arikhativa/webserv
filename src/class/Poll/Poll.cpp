@@ -78,11 +78,12 @@ void Poll::_closeTimeoutCallsIfNeeded(void)
 			if (_params[i].start_read.hasSecondsPassed(_CALL_TIMEOUT_SEC))
 			{
 				std::cout << "Timeout on fd[" << _fds[i].fd << "]" << std::endl;
-				if (_params[i].call.isCGI())
-				{
-					_params[i].call.setInternalServerResponse();
-					addWrite(_params[i].call.getClientFd(), pollHandler::clientWrite, _params[i]);
-				}
+				if (_params[i].call.getCgi() != NULL)
+					if (_params[i].call.isCGI())
+					{
+						_params[i].call.setInternalServerResponse();
+						addWrite(_params[i].call.getClientFd(), pollHandler::clientWrite, _params[i]);
+					}
 				p.first = i;
 				_pop_index(p);
 			}
