@@ -92,7 +92,6 @@ Poll::ret_stt ServerManager::clientRead(Poll &p, int fd, int revents, Poll::Para
 	}
 	catch (ABaseHTTPCall::Incomplete &e)
 	{
-		std::cerr << "Request is not finished [" << e.what() << "]" << std::endl;
 		param.call.getBasicRequest().unParse();
 
 		param.start_read.setToNow();
