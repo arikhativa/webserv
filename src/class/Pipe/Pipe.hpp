@@ -5,8 +5,8 @@
 #include <iostream>
 #include <string>
 
-#include <unistd.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #ifdef TEST_ON
 #define private public
