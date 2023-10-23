@@ -4,18 +4,18 @@ Webserv is a project developed as part of the curriculum at 42 School. It is a b
 
 ## Table of Contents 📑
 
-- [Features](#features)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Contributing](#contributing)
-- [License](#license)
+- [Keywords](#keywords)
+- [Authors](#authors)
 
-## Features
+## Requirements 📋
 
 - HTTP/1.1 protocol implementation
 - Support for GET POST and DELETE requests
-- Configurable server behavior through a configuration file (based on nginx conf style)
+- Configurable server behavior through a configuration file
 - Support for serving static files
 - Dynamic content generation with CGI scripts
 - Response codes and headers handling
@@ -24,8 +24,9 @@ Webserv is a project developed as part of the curriculum at 42 School. It is a b
 
 1. Clone the repository:
 
+```
 git clone https://github.com/your-username/webserv.git
-
+```
 
 2. Change into the project directory:
 ```
@@ -37,7 +38,7 @@ cd webserv
 make
 ```
 
-## Usage
+## Usage 🔧
 
 To start the server, run the following command:
 ```
@@ -46,7 +47,7 @@ To start the server, run the following command:
 
 Replace `<config-file>` with the path to your configuration file.
 
-## Configuration
+## Configuration 📁
 
 The server behavior can be configured using a configuration file in a format based on nginx conf file.
 <details>
@@ -124,7 +125,7 @@ server {
 ```
 </details>
 
-### Keywords
+### Keywords 🔑
 
 - `server`: Configuration for a virtual server.
 - `server_name`: The domain name or names associated with this particular server block, allowing it to respond to requests for those names.
@@ -140,7 +141,7 @@ server {
 - `upload_store`: Defines the directory where uploaded files are stored.
 - `cgi`: Defines the extension for gci file and the location of the cgi binary.
 
-## Authors
+## Authors 👥
 
 - [@arikhativa](https://github.com/arikhativa)
 - [@llanahp](https://github.com/llanahp)
