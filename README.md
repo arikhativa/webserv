@@ -1,11 +1,8 @@
-# Webserv
+# Webserv 🖥️
 
+Webserv is a project developed as part of the curriculum at 42 School. It is a basic HTTP server implementation that supports static and dynamic content, and handles GET POST and DELETE requests.
 
-# Not Ready Yet :)
-
-Webserv is a project developed as part of the curriculum at 42 School. It is a basic HTTP server implementation that supports static and dynamic content, and handles GET and POST requests.
-
-## Table of Contents
+## Table of Contents 📑
 
 - [Features](#features)
 - [Installation](#installation)
@@ -17,15 +14,13 @@ Webserv is a project developed as part of the curriculum at 42 School. It is a b
 ## Features
 
 - HTTP/1.1 protocol implementation
-- Support for GET and POST requests
-- Configurable server behavior through a configuration file
+- Support for GET POST and DELETE requests
+- Configurable server behavior through a configuration file (based on nginx conf style)
 - Support for serving static files
 - Dynamic content generation with CGI scripts
 - Response codes and headers handling
-- Logging of server activity
-- Multi-threaded architecture for handling concurrent connections
 
-## Installation
+## Installation 🛠️
 
 1. Clone the repository:
 
@@ -53,37 +48,100 @@ Replace `<config-file>` with the path to your configuration file.
 
 ## Configuration
 
-The server behavior can be configured using a configuration file in the following format:
+The server behavior can be configured using a configuration file in a format based on nginx conf file.
+<details>
+  <summary> Basic Example</summary>
+
 ```
-[server]
-port = <port-number>
-host = <host-name>
+server {
+	server_name pigafetta.com;
+	listen 127.0.0.1:1234;
 
-[location]
-route = <route>
-root = <root-path>
-cgi = <cgi-path>
+	root /var/www/html;
+
+	location / {
+		autoindex on;	
+	}
+}	
+
 ```
+</details>
+<details>
+  <summary> Full Example</summary>
 
-- `port`: The port number on which the server will listen for incoming connections.
-- `host`: The host name or IP address to bind the server to.
-- `route`: The URL route for which the configuration applies.
-- `root`: The path to the directory containing the static files to serve.
-- `cgi`: The path to the directory containing the CGI scripts.
+```
+server {
+	location /default {
+	}
+}
 
-You can define multiple `[location]` sections in the configuration file to handle different routes.
+server {
+	server_name antonio pigafetta;
+	client_max_body_size 20;
+	return 200 /200.html;
+	root /asd;
+	index 1.htm 2.htm 3.htm;
+	listen 127.0.0.2:6660;
 
-## Contributing
+	location /DEL {
+		allow_methods DELETE;
+	}
+}
 
-Contributions are welcome! If you would like to contribute to this project, please follow these steps:
+server {
+	server_name yoda.com;
 
-1. Fork the repository.
-2. Create a new branch.
-3. Make your changes and commit them.
-4. Push your changes to your forked repository.
-5. Submit a pull request.
+	root /var/www/example.com;
+	listen 1.1.2.2:89;
+	listen 8.8.8.8:88;
+	index 1.htm 2.htm 3.htm;
+	error_page 404 /404.html;
+	return 500 /500.html;
+	client_max_body_size 100;
 
-## License
 
-This project is licensed under the [MIT License](LICENSE).
+	location /loc1 {
+		allow_methods POST;
+		client_max_body_size 0;
+		root /var/www/example1.com;
+		index 1.htm 2.htm 3.htm;
+		return 303 /303.html;
+		autoindex on;
+		cgi .py /usr/bin/python3;
+	}
 
+	location /loc2 {
+		allow_methods GET POST;
+		client_max_body_size 555;
+		root /var/www/example2.com;
+		index 1.htm 2.htm 3.htm;
+		return 400 /400.html;
+		autoindex off;
+	}
+	
+}
+
+```
+</details>
+
+### Keywords
+
+- `server`: Configuration for a virtual server.
+- `server_name`: The domain name or names associated with this particular server block, allowing it to respond to requests for those names.
+- `root`: The absolute filesystem path to the directory that will be considered the root directory for serving files.
+- `listen`: Defines the IP address and port number on which the server will listen for incoming connections.
+- `index`: Specifies the default files to serve when a directory is requested.
+- `error_page`: Specifies a file for which custom error pages should be displayed.
+- `return`: Provides the ability to specify different HTTP response codes and associated content for specific paths.
+- `client_max_body_size`: Sets the maximum allowed size for a client request body.
+- `location`: Allows configuration based on the request path, enabling fine-grained control over how requests are handled.
+- `allow_methods`: Specifies the HTTP methods allowed for a particular location.
+- `autoindex`: Enables or disables directory listing if an index file is not found.
+- `upload_store`: Defines the directory where uploaded files are stored.
+- `cgi`: Defines the extension for gci file and the location of the cgi binary.
+
+## Authors
+
+- [@arikhativa](https://github.com/arikhativa)
+- [@llanahp](https://github.com/llanahp)
+- [@dVaGaymer](https://github.com/dVaGaymer)
