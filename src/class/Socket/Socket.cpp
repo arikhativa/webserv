@@ -22,7 +22,7 @@ Socket::Socket(const IListen *listen)
 
 	/* Set the socket to reuse (makes it re-bindable directly after close) */
 	int reuse_addr = true;
-	setsockopt(this->_fd, SOL_SOCKET, SO_NOSIGPIPE, &reuse_addr, sizeof(reuse_addr));
+	setsockopt(this->_fd, SOL_SOCKET, SO_NOSIGPIPE | SO_REUSEPORT, &reuse_addr, sizeof(reuse_addr));
 
 	/* Init sockaddr */
 	memset(&this->_sockaddr, 0, sizeof(this->_sockaddr));
