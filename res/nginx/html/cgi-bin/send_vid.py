@@ -3,7 +3,7 @@
 import sys
 import os
 
-file_path = 'res/nginx/html/cgi-bin/tmp.mp4'
+file_path = 'res/nginx/html/cgi-bin/asd.mp4'
 
 try:
     with open(file_path, 'rb') as file:
